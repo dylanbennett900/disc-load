@@ -1,0 +1,953 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<title>Disc Load</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#07070e;--sf:#0e0e1c;--sf2:#141426;
+  --bd:rgba(255,255,255,0.07);--bd2:rgba(255,255,255,0.13);
+  --t:rgba(255,255,255,0.92);--t2:rgba(255,255,255,0.55);--t3:rgba(255,255,255,0.3);
+  --green:#00e87a;--cyan:#00d4ff;--amber:#ffb800;--red:#ff4060;--purple:#a855f7;
+  --gold:#ffd700;--silver:#8eb4cc;--bronze:#c87a4a;
+  --mono:'Courier New',Courier,monospace;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--t);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;line-height:1.5;-webkit-text-size-adjust:100%}
+button{cursor:pointer;border:none;font-family:inherit;-webkit-tap-highlight-color:transparent}
+input,select{font-family:inherit;outline:none}
+::-webkit-scrollbar{width:3px;height:3px}::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.1);border-radius:2px}
+
+/* HEADER */
+#header{padding:12px 16px 0;border-bottom:1px solid var(--bd)}
+.htop{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
+.logo{width:34px;height:34px;border-radius:8px;background:#0a0a1a;border:1px solid rgba(0,232,122,0.2);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.lname{font-size:20px;font-weight:800;letter-spacing:2px;color:var(--green)}
+.lsub{font-size:9px;color:var(--t3);letter-spacing:1px;text-transform:uppercase}
+.lvlpills{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap}
+.lp{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;border:1px solid var(--bd2);background:transparent;color:var(--t3);transition:all .15s}
+.lp.on{border-color:var(--silver);background:rgba(142,180,204,.08);color:var(--silver)}
+.tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tabs::-webkit-scrollbar{display:none}
+.tab{padding:9px 16px;background:transparent;border:none;color:var(--t3);font-size:12px;font-weight:600;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;flex-shrink:0}
+.tab.on{color:var(--green);border-bottom-color:var(--green)}
+
+/* CONTENT */
+#content{padding:16px}
+.panel{display:none}.panel.on{display:block}
+
+/* SUMMARY CARDS */
+.sumrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:7px;margin-bottom:14px}
+.sc{background:var(--sf);border:1px solid var(--bd);border-radius:9px;padding:10px 12px}
+.sl{font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.sv{font-family:var(--mono);font-size:20px;font-weight:700;line-height:1}
+.su{font-size:10px;margin-left:2px;opacity:.6}
+
+/* TARGET BAR */
+.tbar{padding:8px 12px;background:var(--sf);border:1px solid var(--bd);border-radius:7px;font-size:11px;color:var(--t2);margin-bottom:14px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
+
+/* GAUGES */
+.gaugewrap{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:20px}
+@media(max-width:400px){.gaugewrap{grid-template-columns:repeat(2,1fr)}}
+.gc{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:10px 8px;display:flex;flex-direction:column;align-items:center;gap:2px}
+.gv{font-family:var(--mono);font-size:13px;font-weight:700}
+.gs{font-size:9px;font-weight:700;letter-spacing:.5px;text-transform:uppercase}
+.gt{font-size:9px;color:var(--t3)}
+.gl{font-size:10px;color:var(--t2);text-align:center;font-weight:600}
+
+/* PRESCRIPTION */
+.rectitle{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:10px}
+.rrow{padding:10px 12px;border-radius:9px;background:var(--sf);border-left:3px solid transparent;display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.rm{font-size:12px;font-weight:700;margin-bottom:2px}
+.rt{font-size:11px;color:var(--t3);line-height:1.45}
+.rbw{width:48px;height:4px;background:rgba(255,255,255,.06);border-radius:2px;flex-shrink:0;margin-top:4px}
+.rb{height:100%;border-radius:2px}
+.sug{display:inline-flex;align-items:center;gap:5px;margin-top:6px;padding:5px 10px;border-radius:6px;background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.09);font-size:10px;color:var(--t2)}
+.sug b{color:var(--t)}
+
+/* WEEK STRIP */
+.ws-outer{margin-bottom:16px}
+.ws-row{display:flex;gap:7px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.ws-row::-webkit-scrollbar{display:none}
+.wk{flex-shrink:0;width:130px;border-radius:10px;padding:11px 12px;border:1px solid var(--bd);background:var(--sf);position:relative}
+.wk.now{border-width:2px}
+.wk-now-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:8px;font-weight:800;padding:1px 7px;border-radius:0 0 4px 4px;letter-spacing:.5px}
+.wk-head{margin-bottom:7px}
+.wk-iso{font-size:11px;font-weight:800;letter-spacing:.5px}
+.wk-dates{font-size:9px;color:var(--t3);margin-top:1px}
+.wk-band{font-size:9px;font-weight:800;letter-spacing:.8px;padding:2px 6px;border-radius:3px;display:inline-block;text-transform:uppercase;margin:4px 0 6px}
+.wk-desc{font-size:10px;color:var(--t2);margin-bottom:8px;line-height:1.4}
+.wk-bars{display:flex;flex-direction:column;gap:4px}
+.wk-bar-row{display:flex;align-items:center;gap:5px}
+.wk-bar-lbl{font-size:8px;color:var(--t3);width:26px;flex-shrink:0}
+.wk-bar-track{flex:1;height:3px;background:rgba(255,255,255,0.07);border-radius:2px}
+.wk-bar-fill{height:100%;border-radius:2px;transition:width .3s}
+.wk-bar-pct{font-size:8px;font-family:var(--mono);width:22px;text-align:right;flex-shrink:0}
+.wk-tourn{flex-shrink:0;width:80px;border-radius:10px;padding:11px 8px;border:1px solid rgba(255,215,0,0.25);background:rgba(255,215,0,0.04);display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
+
+/* SESSIONS */
+.shd{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px}
+.stitle{font-size:18px;font-weight:800;letter-spacing:1px}
+.btnadd{padding:7px 13px;border-radius:7px;border:1px solid var(--green);background:transparent;color:var(--green);font-size:12px;font-weight:700}
+.aform{padding:14px;border-radius:10px;background:rgba(0,232,122,.03);border:1px solid rgba(0,232,122,.12);margin-bottom:14px}
+.aft{font-size:10px;font-weight:700;color:var(--green);letter-spacing:1px;margin-bottom:12px}
+.tbtns{display:flex;gap:6px;margin-bottom:12px}
+.tbtn{padding:6px 13px;border-radius:7px;border:1px solid rgba(255,255,255,.1);background:transparent;color:var(--t3);font-size:12px;font-weight:700}
+.tbtn.on{border-color:var(--green);background:rgba(0,232,122,.1);color:var(--green)}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
+.ff label{font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;display:block;margin-bottom:4px}
+.ff input[type=text],.ff select,.ff input[type=date]{width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:13px}
+.ff input[type=range]{width:100%;accent-color:var(--green);margin-top:3px}
+.rv{color:var(--green);font-family:var(--mono);font-weight:700}
+.btsub{padding:9px 20px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--cyan));border:none;color:#07070e;font-size:13px;font-weight:800}
+.si{padding:12px 14px;border-radius:9px;background:var(--sf);border:1px solid var(--bd);display:flex;align-items:flex-start;gap:10px;margin-bottom:6px}
+.sico{font-size:16px;flex-shrink:0;padding-top:1px}
+.sbody{flex:1;min-width:0}
+.sname{font-size:13px;font-weight:600;margin-bottom:3px}
+.sbadge{font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:6px}
+.sstats{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
+.ss{font-size:10px;color:var(--t3)}
+.btnx{background:transparent;border:none;color:var(--t3);font-size:18px;padding:2px 4px;opacity:.4;line-height:1;flex-shrink:0}
+.btnx:hover{opacity:.9}
+.empty{text-align:center;padding:40px;color:var(--t3)}
+.drill-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
+.drill-row select{flex:1;padding:6px 9px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:12px;min-width:0}
+.drill-row input[type=number]{width:55px;padding:6px 7px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:12px;text-align:center;flex-shrink:0}
+.drill-row .dmin{font-size:10px;color:var(--t3);flex-shrink:0}
+.pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.06);margin:2px 2px 0 0;color:var(--t2)}
+
+/* ROADMAP */
+.week-card{border-radius:10px;padding:14px 16px;margin-bottom:9px;border:1px solid var(--bd)}
+.week-card.current{border-width:2px}
+.week-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;flex-wrap:wrap}
+.week-badge{font-size:9px;font-weight:800;letter-spacing:1px;padding:2px 8px;border-radius:3px;text-transform:uppercase}
+.week-label{font-size:13px;font-weight:700}
+.week-date{font-size:10px;color:var(--t3);margin-left:auto}
+.week-metrics{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:6px}
+.wm-cell{padding:7px 10px;border-radius:7px;background:rgba(0,0,0,0.25)}
+.wm-lbl{font-size:9px;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.wm-val{font-family:var(--mono);font-size:13px;font-weight:700}
+.gap-row{display:flex;align-items:center;gap:8px;padding:8px 11px;border-radius:7px;background:rgba(255,255,255,0.03);margin-top:8px;flex-wrap:wrap}
+.gap-m{font-size:10px;color:var(--t3)}
+
+/* METRICS CHART */
+.chart-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px;margin-bottom:14px}
+.metric-sel{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:14px}
+.ms-btn{padding:5px 11px;border-radius:6px;border:1px solid var(--bd2);background:transparent;color:var(--t3);font-size:11px;font-weight:700}
+.ms-btn.on{color:#07070e;border-color:transparent}
+
+/* BENCHMARKS */
+.bcard{margin-bottom:14px;padding:14px;border-radius:10px}
+.bcard.gold{background:rgba(255,215,0,.04);border:1px solid rgba(255,215,0,.18)}
+.bcard.silver{background:rgba(142,180,204,.04);border:1px solid rgba(142,180,204,.18)}
+.bcard.bronze{background:rgba(200,122,74,.04);border:1px solid rgba(200,122,74,.18)}
+.bgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(100px,1fr));gap:6px}
+.bm{padding:8px 10px;border-radius:7px;background:rgba(0,0,0,.3)}
+.bml{font-size:9px;color:var(--t3);letter-spacing:.5px;text-transform:uppercase;margin-bottom:2px}
+.bmv{font-family:var(--mono);font-size:14px;font-weight:700}
+.bmu{font-size:9px;margin-left:2px;opacity:.5}
+.bsrc{margin-top:10px;padding:9px 12px;border-radius:7px;background:rgba(255,255,255,.02);border:1px solid var(--bd);font-size:10px;color:var(--t3);line-height:1.6}
+/* Definitions */
+.def-card{background:var(--sf);border:1px solid var(--bd);border-radius:10px;padding:14px 16px;margin-bottom:8px}
+.def-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.def-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.def-name{font-size:14px;font-weight:700}
+.def-abbr{font-size:10px;font-family:var(--mono);color:var(--t3);margin-left:4px}
+.def-body{font-size:12px;color:var(--t2);line-height:1.6}
+.def-why{margin-top:6px;font-size:11px;color:var(--t3);border-left:2px solid rgba(255,255,255,0.1);padding-left:10px;line-height:1.5}
+</style>
+</head>
+<body>
+<div id="header">
+  <div class="htop">
+    <div class="logo">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+        <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#00e87a"/><stop offset="100%" stop-color="#00d4ff"/></linearGradient></defs>
+        <circle cx="18" cy="18" r="13" stroke="url(#lg)" stroke-width="2.5" stroke-dasharray="60 22" stroke-linecap="round" transform="rotate(-120 18 18)"/>
+        <circle cx="18" cy="18" r="6.5" stroke="url(#lg)" stroke-width="2"/>
+        <line x1="22" y1="13" x2="29" y2="7" stroke="#00d4ff" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="29" cy="7" r="1.5" fill="#00e87a"/>
+      </svg>
+    </div>
+    <div><div class="lname">DISC LOAD</div><div class="lsub">Performance Monitor</div></div>
+    <div class="lvlpills">
+      <button class="lp on" id="ctx-international" onclick="setContext('international')">International</button>
+      <button class="lp" id="ctx-domestic" onclick="setContext('domestic')">Domestic</button>
+    </div>
+  </div>
+  <div class="tabs">
+    <button class="tab on" onclick="switchTab('dashboard',this)">Dashboard</button>
+    <button class="tab" onclick="switchTab('sessions',this)">Sessions</button>
+    <button class="tab" onclick="switchTab('roadmap',this)">Roadmap</button>
+    <button class="tab" onclick="switchTab('metrics',this)">Metrics</button>
+    <button class="tab" onclick="switchTab('benchmarks',this)">Benchmarks</button>
+    <button class="tab" onclick="switchTab('definitions',this)">Definitions</button>
+  </div>
+</div>
+
+<div id="content">
+
+<!-- DASHBOARD -->
+<div class="panel on" id="panel-dashboard">
+  <div class="ws-outer" id="week-strip"></div>
+  <div class="sumrow" id="sumrow"></div>
+  <div class="tbar" id="tbar"></div>
+  <div class="gaugewrap" id="gaugewrap"></div>
+  <div class="rectitle">WEEKLY PRESCRIPTION</div>
+  <div id="recswrap"></div>
+</div>
+
+<!-- SESSIONS -->
+<div class="panel" id="panel-sessions">
+  <div class="shd">
+    <div class="stitle">SESSIONS</div>
+    <button class="btnadd" id="btnadd" onclick="toggleForm()">+ Add</button>
+  </div>
+  <div class="aform" id="aform" style="display:none">
+    <div class="aft">NEW SESSION</div>
+    <div class="tbtns">
+      <button class="tbtn on" id="tb-game" onclick="setType('game')">&#x1F3C6; Game</button>
+      <button class="tbtn" id="tb-training" onclick="setType('training')">&#x1F3C3; Training</button>
+    </div>
+    <div id="fw-game">
+      <div class="fgrid">
+        <div class="ff"><label>Label</label><input type="text" id="flabel" placeholder="e.g. vs Manly"></div>
+        <div class="ff"><label>Level</label>
+          <select id="flevel">
+            <option value="worldClass">World Class</option>
+            <option value="international" selected>International</option>
+            <option value="club">Club (Intl)</option>
+            <option value="elite">Elite (Dom)</option>
+            <option value="league">League (Dom)</option>
+          </select>
+        </div>
+        <div class="ff" style="grid-column:1/-1">
+          <label>Points played: <span class="rv" id="fpts-v">12</span></label>
+          <input type="range" min="1" max="25" value="12" id="fpts" oninput="document.getElementById('fpts-v').textContent=this.value">
+        </div>
+      </div>
+    </div>
+    <div id="fw-training" style="display:none">
+      <div class="ff" style="margin-bottom:10px"><label>Session label</label><input type="text" id="flabel-tr" placeholder="e.g. Tuesday training"></div>
+      <div style="font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px">Drills</div>
+      <div id="drill-rows"></div>
+      <button onclick="addDrillRow()" style="margin-top:7px;padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:var(--t2);font-size:11px;font-weight:700">+ Add drill</button>
+      <div id="drill-preview" style="margin-top:12px;padding:9px 12px;border-radius:7px;background:rgba(0,0,0,0.2);font-size:10px;color:var(--t3);display:none"></div>
+    </div>
+    <button class="btsub" style="margin-top:14px" onclick="addSession()">Add Session</button>
+  </div>
+  <div id="slist"></div>
+</div>
+
+<!-- ROADMAP -->
+<div class="panel" id="panel-roadmap">
+  <div style="font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:5px">LOAD ROADMAP</div>
+  <div style="font-size:11px;color:var(--t3);margin-bottom:16px">4-week periodisation leading into your tournament.</div>
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+    <div class="ff" style="flex:1;min-width:160px"><label>Tournament date</label><input type="date" id="tourn-date" oninput="syncRoadmap()" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:13px"></div>
+    <div class="ff" style="flex:1;min-width:140px"><label>Tournament name</label><input type="text" id="tourn-name" placeholder="e.g. Nationals 2025" oninput="syncRoadmap()" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:13px"></div>
+  </div>
+  <div id="roadmap-content"><div style="text-align:center;padding:44px;color:var(--t3)">Enter a tournament date to generate your load roadmap.</div></div>
+</div>
+
+<!-- METRICS -->
+<div class="panel" id="panel-metrics">
+  <div style="font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:5px">METRICS</div>
+  <div style="font-size:11px;color:var(--t3);margin-bottom:16px">Cumulative weekly load by session vs prescribed target bands.</div>
+  <div class="metric-sel" id="metric-sel"></div>
+  <div class="chart-wrap"><canvas id="metric-chart" height="240" style="width:100%;display:block"></canvas></div>
+  <div style="font-size:10px;color:var(--t3);display:flex;gap:14px;flex-wrap:wrap">
+    <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(0,232,122,0.2);margin-right:3px"></span>High zone</span>
+    <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(255,184,0,0.2);margin-right:3px"></span>Moderate zone</span>
+    <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(142,180,204,0.2);margin-right:3px"></span>Low zone</span>
+  </div>
+</div>
+
+<!-- BENCHMARKS -->
+<div class="panel" id="panel-benchmarks">
+  <div style="font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:14px">MATCH DEMAND MATRIX</div>
+  <div id="bcontent"></div>
+  <div class="bsrc"><strong style="color:rgba(255,255,255,.4)">Source:</strong> GPS match data from international and domestic competition. Per-point averages derived from full match demand matrix across all athletes.</div>
+</div>
+
+<!-- DEFINITIONS -->
+<div class="panel" id="panel-definitions">
+  <div style="font-size:18px;font-weight:800;letter-spacing:1px;margin-bottom:5px">METRIC DEFINITIONS</div>
+  <div style="font-size:11px;color:var(--t3);margin-bottom:20px">Understanding what each GPS metric means for your training and performance.</div>
+  <div id="def-content"></div>
+</div>
+<!-- DEFINITIONS PANEL (outside #content so it's a full panel) -->
+</div><!-- /content -->
+
+<script>
+// ── GAME BENCHMARKS (per-point rates) ──
+var BM={
+  worldClass:   {label:"World Class",  icon:"WC", color:"#ffd700",pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.9, hacc:1.05,dec:2.4, hdec:1.05,acl:92.7}},
+  international:{label:"International",icon:"IN", color:"#8eb4cc",pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:2.5, hacc:0.7, dec:1.5, hdec:0.5, acl:73.5}},
+  club:         {label:"Club",         icon:"CL", color:"#c87a4a",pp:{dur:1.745,dist:230.9,hsr:55.2, vhsr:10.95,acc:1.5,hacc:0.3, dec:1.0, hdec:0.3, acl:54.3}},
+  elite:        {label:"Elite",        icon:"EL", color:"#ffd700",pp:{dur:1.751,dist:205.7,hsr:45.8, vhsr:7.9,  acc:2.5, hacc:0.41,dec:1.14,hdec:0.32,acl:59.4}},
+  league:       {label:"League",       icon:"LG", color:"#c87a4a",pp:{dur:2.013,dist:253.1,hsr:46.4, vhsr:4.9,  acc:2.13,hacc:0.31,dec:1.05,hdec:0.30,acl:69.5}}
+};
+
+// ── WEEKLY TARGETS (from Dylan's match demand spreadsheet) ──
+var WT={
+  international:{
+    low:     {dist:13888,hsr:2860, vhsr:700, acc:154,hacc:42,dec:49,hdec:55,acl:4868},
+    moderate:{dist:16864,hsr:3473, vhsr:850, acc:187,hacc:51,dec:60,hdec:67,acl:5912},
+    high:    {dist:19840,hsr:4085, vhsr:1000,acc:220,hacc:60,dec:70,hdec:79,acl:6955}
+  },
+  domestic:{
+    low:     {dist:10801,hsr:2405, vhsr:455, acc:129,hacc:21,dec:35,hdec:17,acl:3120},
+    moderate:{dist:13116,hsr:2921, vhsr:553, acc:156,hacc:26,dec:43,hdec:20,acl:3789},
+    high:    {dist:15431,hsr:3436, vhsr:650, acc:184,hacc:31,dec:50,hdec:24,acl:4458}
+  }
+};
+
+// ── DRILL CATEGORIES (real GPS per-minute rates from 933 periods, 244 sessions) ──
+var DRILLS={
+  speed_sprints:{label:"Speed Efforts / Sprints",  dist_pm:147.3,hsr_pm:77.7,vhsr_pm:41.2,acc_pm:1.5},
+  mas:          {label:"MAS / Fitness Runs",        dist_pm:123.9,hsr_pm:64.0,vhsr_pm:0.5, acc_pm:0.5},
+  tactical:     {label:"Tactical / Unit Work",      dist_pm:101.9,hsr_pm:34.3,vhsr_pm:0.8, acc_pm:0.6},
+  v4v4:         {label:"4v4 Mini",                  dist_pm:125.2,hsr_pm:27.1,vhsr_pm:2.5, acc_pm:0.8},
+  v7v7:         {label:"7v7 / Match Sim",           dist_pm:123.1,hsr_pm:21.5,vhsr_pm:2.6, acc_pm:0.7},
+  short_accels: {label:"Short Sprints / Accels",    dist_pm:93.6, hsr_pm:20.8,vhsr_pm:11.1,acc_pm:2.0},
+  v6v6:         {label:"6v6 / Half Field",          dist_pm:119.1,hsr_pm:17.5,vhsr_pm:1.6, acc_pm:0.7},
+  agility:      {label:"Agility / Box Drills",      dist_pm:116.2,hsr_pm:15.0,vhsr_pm:0.0, acc_pm:1.2},
+  zone_d:       {label:"Zone D",                    dist_pm:111.6,hsr_pm:13.7,vhsr_pm:0.8, acc_pm:0.5},
+  v5v5:         {label:"5v5 Small Sided",           dist_pm:83.8, hsr_pm:9.8, vhsr_pm:1.3, acc_pm:0.6},
+  warmup:       {label:"Warm Up / Athletic Prep",   dist_pm:79.6, hsr_pm:9.3, vhsr_pm:3.1, acc_pm:0.4},
+  v3v3:         {label:"3v3 Mini",                  dist_pm:96.6, hsr_pm:8.3, vhsr_pm:0.5, acc_pm:0.8},
+  v4v5:         {label:"4v5 / 5v4 Conditioned",    dist_pm:146.1,hsr_pm:8.0, vhsr_pm:0.1, acc_pm:0.6},
+  throwing:     {label:"Throwing / Technical",      dist_pm:77.7, hsr_pm:6.6, vhsr_pm:0.6, acc_pm:0.1}
+};
+
+// ── NAMED DRILL SUGGESTIONS (actual GPS-measured drills, frisbee-relevant) ──
+// {name, dk (category key), hsr_pm, vhsr_pm, dist_pm, note}
+var NAMED_DRILLS=[
+  // High HSR producers (7v7 / match sim context)
+  {name:"Slice vs Dice",      dk:"v7v7",        hsr_pm:27.5,vhsr_pm:3.0, dist_pm:133.0,note:"n=290 obs"},
+  {name:"Unit Battles",       dk:"tactical",    hsr_pm:25.0,vhsr_pm:5.5, dist_pm:120.0,note:"n=48 obs"},
+  {name:"NSU Match Sim",      dk:"v7v7",        hsr_pm:23.0,vhsr_pm:3.5, dist_pm:127.0,note:"n=120 obs"},
+  {name:"Long Patterns",      dk:"throwing",    hsr_pm:19.9,vhsr_pm:5.1, dist_pm:101.9,note:"n=4 obs"},
+  {name:"Power Long Patterns",dk:"throwing",    hsr_pm:12.4,vhsr_pm:0.5, dist_pm:110.6,note:"n=1 obs"},
+  {name:"5v5 Block",          dk:"v5v5",        hsr_pm:11.0,vhsr_pm:2.5, dist_pm:85.0, note:"n=9 obs"},
+  {name:"Box Out Skills",     dk:"agility",     hsr_pm:15.9,vhsr_pm:1.4, dist_pm:80.3, note:"n=2 obs"},
+  {name:"Stage Battles",      dk:"v7v7",        hsr_pm:15.6,vhsr_pm:3.0, dist_pm:92.6, note:"n=2 obs"},
+  {name:"4 Lines Gauntlet",   dk:"throwing",    hsr_pm:5.7, vhsr_pm:0.8, dist_pm:85.4, note:"n=27 obs"},
+  {name:"3v3 Mini",           dk:"v3v3",        hsr_pm:8.1, vhsr_pm:0.8, dist_pm:85.0, note:"n=5 obs"},
+  {name:"Cutting Patterns",   dk:"throwing",    hsr_pm:8.3, vhsr_pm:0.7, dist_pm:76.6, note:"n=5 obs"},
+  {name:"Break Mark",         dk:"throwing",    hsr_pm:6.2, vhsr_pm:0.1, dist_pm:67.9, note:"n=21 obs"},
+  {name:"Break Gates",        dk:"throwing",    hsr_pm:3.7, vhsr_pm:0.0, dist_pm:73.5, note:"n=14 obs"},
+  {name:"Warm Up",            dk:"warmup",      hsr_pm:13.8,vhsr_pm:3.4, dist_pm:89.9, note:"n=25 obs"},
+  {name:"Athletic Prep",      dk:"warmup",      hsr_pm:9.9, vhsr_pm:2.6, dist_pm:76.6, note:"n=72 obs"},
+  {name:"Drilling & Mechanics",dk:"warmup",     hsr_pm:6.7, vhsr_pm:0.4, dist_pm:73.4, note:"n=60 obs"},
+];
+
+// ── ROADMAP PATTERN ──
+// 4 weeks out → 1 week out (index 0=4wks, 3=1wk)
+var ROADMAP={
+  pattern:['moderate','high','high','low'],
+  desc:['Build Phase — establish base load at moderate intensity.',
+        'Peak Phase — maximum load week. High intensity across all metrics.',
+        'Peak Phase — sustain high output. Second quality week.',
+        'Taper — reduce volume. Maintain speed, recover for competition.']
+};
+
+// ── STATE ──
+var ctx="international", sType="game", uid=10, drid=0;
+var chartMetric="hsr";
+var DRILL_OPTS=Object.keys(DRILLS).map(function(k){return'<option value="'+k+'">'+DRILLS[k].label+'</option>';}).join('');
+
+// ── SESSION DATA ──
+function makeGame(lbl,pts,lvl){
+  var b=BM[lvl],pp=b.pp;
+  return{id:uid++,label:lbl,type:"game",lvl:lvl,pts:pts,
+    dist:Math.round(pts*pp.dist),hsr:Math.round(pts*pp.hsr),vhsr:Math.round(pts*pp.vhsr),
+    acc:Math.round(pts*pp.acc),hacc:Math.round(pts*pp.hacc),dec:Math.round(pts*pp.dec),
+    hdec:Math.round(pts*pp.hdec),acl:Math.round(pts*pp.acl),dur:+(pts*pp.dur).toFixed(1)};
+}
+function drillLoad(dk,mins){
+  var d=DRILLS[dk];
+  return{dk:dk,durMin:mins,
+    dist:Math.round(mins*d.dist_pm),hsr:Math.round(mins*d.hsr_pm),vhsr:Math.round(mins*d.vhsr_pm),
+    acc:Math.round(mins*d.acc_pm),hacc:Math.round(mins*d.acc_pm*.3),
+    dec:Math.round(mins*d.acc_pm*.85),hdec:Math.round(mins*d.acc_pm*.25),
+    acl:Math.round(mins*d.dist_pm*.18)};
+}
+function makeTraining(lbl,drillArr){
+  var tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0};
+  drillArr.forEach(function(d){var l=drillLoad(d.dk,d.durMin);Object.keys(tot).forEach(function(k){tot[k]+=(l[k]||d.durMin);});tot.dur+=d.durMin-d.durMin;tot.dur+=d.durMin;});
+  // recalculate properly
+  tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0};
+  drillArr.forEach(function(d){
+    var l=drillLoad(d.dk,d.durMin);
+    tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;
+    tot.acc+=l.acc;tot.hacc+=l.hacc;tot.dec+=l.dec;tot.hdec+=l.hdec;tot.acl+=l.acl;tot.dur+=d.durMin;
+  });
+  return Object.assign({id:uid++,label:lbl,type:"training",src:"real",drills:drillArr},tot);
+}
+
+var sessions=[
+  makeGame("AUS vs International (13 pts)",13,"international"),
+  makeTraining("Tuesday Training",[{dk:"warmup",durMin:15},{dk:"speed_sprints",durMin:20},{dk:"v7v7",durMin:30}]),
+  makeGame("Club Pickup (8 pts)",8,"club")
+];
+
+// ── AGGREGATES ──
+function totals(){
+  return sessions.reduce(function(a,s){
+    return{dist:a.dist+s.dist,hsr:a.hsr+s.hsr,vhsr:a.vhsr+s.vhsr,
+      acc:a.acc+s.acc,hacc:a.hacc+s.hacc,dec:a.dec+s.dec,
+      hdec:a.hdec+s.hdec,acl:a.acl+s.acl,dur:a.dur+s.dur};
+  },{dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0});
+}
+
+// ── ROADMAP HELPERS ──
+function weekStart(d){var dt=new Date(d),day=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-day);dt.setHours(0,0,0,0);return dt;}
+function isoWeek(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()+3-(dt.getDay()+6)%7);var w1=new Date(dt.getFullYear(),0,4);return 1+Math.round(((dt-w1)/86400000-3+(w1.getDay()+6)%7)/7);}
+function isoYear(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()+3-(dt.getDay()+6)%7);return dt.getFullYear();}
+function getCurrentBand(){
+  var el=document.getElementById("tourn-date");
+  if(!el||!el.value)return"moderate";
+  var tourn=new Date(el.value),ws=weekStart(new Date());
+  var wo=Math.ceil((tourn-ws)/(7*24*60*60*1000));
+  if(wo<=0||wo>4)return"moderate";
+  return ROADMAP.pattern[4-wo];
+}
+function weeklyTarget(){return WT[ctx][getCurrentBand()];}
+
+// ── STATUS ──
+function status(r){
+  if(r>=1.15)return{label:"Overload",color:"#ff4060",icon:"!"};
+  if(r>=0.85)return{label:"Optimal", color:"#00e87a",icon:"✓"};
+  if(r>=0.50)return{label:"Moderate",color:"#ffb800",icon:"~"};
+  return            {label:"Low",    color:"#555566",icon:"↓"};
+}
+
+// ── SMART SUGGESTIONS (named drills, not just categories) ──
+function suggestDrill(metricKey, gap){
+  if(gap<=0)return null;
+  // Score each named drill by efficiency for this metric
+  // Cap at realistic session dose (exclude pure conditioning from frisbee suggestions)
+  var excludeCats=["speed_sprints","mas"];
+  var scored=NAMED_DRILLS
+    .filter(function(d){return excludeCats.indexOf(d.dk)===-1;})
+    .map(function(d){
+      var rate=0;
+      if(metricKey==="hsr")  rate=d.hsr_pm;
+      else if(metricKey==="vhsr")rate=d.vhsr_pm;
+      else if(metricKey==="dist")rate=d.dist_pm;
+      else if(metricKey==="acc") rate=DRILLS[d.dk].acc_pm;
+      else if(metricKey==="hacc")rate=DRILLS[d.dk].acc_pm*.3;
+      else if(metricKey==="dec") rate=DRILLS[d.dk].acc_pm*.85;
+      else if(metricKey==="hdec")rate=DRILLS[d.dk].acc_pm*.25;
+      else if(metricKey==="acl") rate=d.dist_pm*.18;
+      return{d:d,rate:rate};
+    })
+    .filter(function(x){return x.rate>0;})
+    .sort(function(a,b){return b.rate-a.rate;});
+  if(!scored.length)return null;
+  var best=scored[0];
+  var mins=Math.ceil(gap/best.rate);
+  mins=Math.max(10,Math.min(mins,45));
+  mins=Math.ceil(mins/5)*5;
+  // Estimate how much of the gap this closes
+  var closes=Math.round(Math.min(mins*best.rate,gap));
+  return{name:best.d.name,dk:best.d.dk,mins:mins,closes:closes};
+}
+
+// ── ARC GAUGE ──
+function arc(pct,col){
+  var r=32,cx=40,cy=42,sw=6;
+  var circ=2*Math.PI*r,tot=.75*circ,fill=Math.min(pct,1)*tot;
+  var gc=pct>1.15?"#ff4060":pct>.85?col:pct>.5?"#ffb800":"#2a2a3a";
+  return "<svg width='80' height='62' viewBox='0 0 80 80' style='overflow:visible'>"
+    +"<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='rgba(255,255,255,.06)' stroke-width='"+sw+"' stroke-dasharray='"+tot.toFixed(1)+" "+circ.toFixed(1)+"' stroke-linecap='round' transform='rotate(135,"+cx+","+cy+")'></circle>"
+    +"<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='"+gc+"' stroke-width='"+sw+"' stroke-dasharray='"+fill.toFixed(1)+" "+circ.toFixed(1)+"' stroke-linecap='round' transform='rotate(135,"+cx+","+cy+")'></circle>"
+    +"<text x='"+cx+"' y='"+(cy+1)+"' text-anchor='middle' dominant-baseline='middle' fill='white' font-family='Courier New,monospace' font-size='10' font-weight='700'>"+Math.round(pct*100)+"%</text></svg>";
+}
+
+// ── WEEK STRIP ──
+function renderWeekStrip(){
+  var el=document.getElementById("week-strip");
+  var dateEl=document.getElementById("tourn-date");
+  if(!dateEl||!dateEl.value){
+    el.innerHTML="<div style='padding:9px 12px;border-radius:8px;background:var(--sf);border:1px solid var(--bd);font-size:11px;color:var(--t3);margin-bottom:14px'>Set a tournament date in <b style=\"color:var(--t2)\">Roadmap</b> to see your 4-week plan here.</div>";
+    return;
+  }
+  var tourn=new Date(dateEl.value),now=new Date();
+  var ws=weekStart(now);
+  var wo=Math.ceil((tourn-ws)/(7*24*60*60*1000));
+  var T=totals();
+  var BC={high:"#00e87a",moderate:"#ffb800",low:"#8eb4cc"};
+  var fmt=function(d){return d.toLocaleDateString("en-AU",{day:"numeric",month:"short"});};
+  var html="<div class='ws-row'>";
+
+  for(var w=4;w>=1;w--){
+    var band=ROADMAP.pattern[4-w];
+    var bc=BC[band];
+    var wkS=new Date(tourn); wkS.setDate(tourn.getDate()-(w*7));
+    var wkE=new Date(wkS); wkE.setDate(wkS.getDate()+6);
+    var isCurrent=(wo===w);
+    var wn="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
+    var tgt=WT[ctx][band];
+    // 4 bar metrics
+    var barMetrics=[
+      {k:"dist",lbl:"Dist",col:"#00d4ff"},
+      {k:"hsr", lbl:"HSR", col:"#00e87a"},
+      {k:"vhsr",lbl:"VHSR",col:"#ffb800"},
+      {k:"acc", lbl:"Acc", col:"#a855f7"},
+      {k:"acl", lbl:"ACL", col:"#ff4060"}
+    ];
+    var barsHtml="<div class='wk-bars'>";
+    barMetrics.forEach(function(m){
+      var pct=isCurrent?Math.min(T[m.k]/Math.max(tgt[m.k],1),1):0;
+      var pctDisp=isCurrent?Math.round(pct*100):null;
+      barsHtml+="<div class='wk-bar-row'>"
+        +"<div class='wk-bar-lbl'>"+m.lbl+"</div>"
+        +"<div class='wk-bar-track'><div class='wk-bar-fill' style='width:"+(isCurrent?pct*100:0)+"%;background:"+m.col+(isCurrent?"":";opacity:0.2")+"'></div></div>"
+        +(isCurrent?"<div class='wk-bar-pct' style='color:"+m.col+"'>"+pctDisp+"%</div>":"<div class='wk-bar-pct' style='color:var(--t3)'>"+Math.round(tgt[m.k]/1000>=1?tgt[m.k]/1000:tgt[m.k])+(tgt[m.k]/1000>=1?"k":"")+"</div>")
+        +"</div>";
+    });
+    barsHtml+="</div>";
+
+    html+="<div class='wk"+(isCurrent?" now":"")+"' style='"+(isCurrent?"border-color:"+bc+";background:"+bc+"0d":"")+"'>"
+      +(isCurrent?"<div class='wk-now-tag' style='background:"+bc+";color:#07070e'>NOW</div>":"")
+      +"<div class='wk-head'>"
+      +"<div class='wk-iso' style='color:"+bc+"'>"+wn+"</div>"
+      +"<div class='wk-dates'>"+fmt(wkS)+" &ndash; "+fmt(wkE)+"</div>"
+      +"</div>"
+      +"<div class='wk-band' style='background:"+bc+"1a;color:"+bc+"'>"+band+"</div>"
+      +"<div class='wk-desc'>"+ROADMAP.desc[4-w]+"</div>"
+      +barsHtml
+      +"</div>";
+  }
+
+  // Tournament block
+  var tournName=document.getElementById("tourn-name").value||"Tournament";
+  html+="<div class='wk-tourn'>"
+    +"<svg width='22' height='22' viewBox='0 0 22 22' fill='none'><circle cx='11' cy='11' r='9' stroke='#ffd700' stroke-width='1.5'/><path d='M7.5 11l2.5 2.5L15 8' stroke='#ffd700' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>"
+    +"<div style='font-size:9px;font-weight:800;color:#ffd700;margin-top:3px;line-height:1.3'>"+tournName+"</div>"
+    +"<div style='font-size:8px;color:var(--t3)'>"+fmt(tourn)+"</div>"
+    +(wo>0?"<div style='font-size:8px;color:var(--t3)'>"+wo+"w away</div>":"<div style='font-size:8px;color:#00e87a'>This week</div>")
+    +"</div>";
+
+  html+="</div>";
+  el.innerHTML=html;
+}
+
+// ── DASHBOARD ──
+function renderDashboard(){
+  var T=totals(),G=weeklyTarget();
+  var totalPts=sessions.filter(function(s){return s.type==="game";}).reduce(function(a,s){return a+s.pts;},0);
+  renderWeekStrip();
+
+  function sc(col,lbl,val,unit){
+    return "<div class='sc' style='border-color:"+col+"22'><div class='sl'>"+lbl+"</div>"
+      +"<div class='sv' style='color:"+col+"'>"+val+"<span class='su'>"+unit+"</span></div></div>";
+  }
+  document.getElementById("sumrow").innerHTML=
+    sc("#00d4ff","Sessions",sessions.length,"")+
+    sc("#ffd700","Points",totalPts,"pts")+
+    sc("#00e87a","Distance",(T.dist/1000).toFixed(1),"km")+
+    sc("#ffb800","HSR",T.hsr,"m")+
+    sc("#5ad4ff","VHSR",T.vhsr,"m")+
+    sc("#ff4060","Accel Load",T.acl,"AU")+
+    sc("#a855f7","Duration",Math.round(T.dur),"min");
+
+  var band=getCurrentBand();
+  var bc={high:"#00e87a",moderate:"#ffb800",low:"#8eb4cc"}[band];
+  var hasDate=document.getElementById("tourn-date")&&document.getElementById("tourn-date").value;
+  document.getElementById("tbar").innerHTML=
+    "<span style='font-weight:700;color:var(--t2)'>"+(ctx==="international"?"International":"Domestic")+"</span>"
+    +" &middot; <span style='font-weight:700;color:"+bc+"'>"+(band.charAt(0).toUpperCase()+band.slice(1))+" target</span>"
+    +(hasDate?"":"<span style='color:var(--t3)'> — set a tournament date in Roadmap</span>")
+    +" &middot; Dist <b style='color:#00d4ff'>"+G.dist.toLocaleString()+"m</b>"
+    +" &middot; HSR <b style='color:#00e87a'>"+G.hsr.toLocaleString()+"m</b>";
+
+  var gm=[
+    {key:"dist",label:"Distance",  unit:"m",  color:"#00d4ff"},
+    {key:"hsr", label:"HSR",       unit:"m",  color:"#00e87a"},
+    {key:"vhsr",label:"VHSR",      unit:"m",  color:"#ffb800"},
+    {key:"acc", label:"Accels",    unit:"",   color:"#ff7a44"},
+    {key:"hacc",label:"Hard Acc",  unit:"",   color:"#ff4060"},
+    {key:"dec", label:"Decels",    unit:"",   color:"#a855f7"},
+    {key:"hdec",label:"Hard Dec",  unit:"",   color:"#c060ff"},
+    {key:"acl", label:"Accel Load",unit:"AU", color:"#ff6090"}
+  ];
+  document.getElementById("gaugewrap").innerHTML=gm.map(function(m){
+    var pct=T[m.key]/Math.max(G[m.key],1),st=status(pct);
+    return "<div class='gc'>"+arc(pct,m.color)
+      +"<div class='gs' style='color:"+st.color+"'>"+st.label+"</div>"
+      +"<div class='gv' style='color:"+m.color+"'>"+T[m.key].toLocaleString()+"</div>"
+      +"<div class='gt'>/"+Math.round(G[m.key]).toLocaleString()+" "+m.unit+"</div>"
+      +"<div class='gl'>"+m.label+"</div></div>";
+  }).join("");
+
+  var rm=[
+    {key:"hsr", label:"High Speed Running",     unit:"m"},
+    {key:"vhsr",label:"Very High Speed Running", unit:"m"},
+    {key:"dist",label:"Total Distance",          unit:"m"},
+    {key:"acc", label:"Acceleration Efforts",    unit:""},
+    {key:"hacc",label:"Hard Accelerations",      unit:""},
+    {key:"dec", label:"Deceleration Efforts",    unit:""},
+    {key:"acl", label:"Acceleration Load",       unit:"AU"}
+  ];
+  document.getElementById("recswrap").innerHTML=rm.map(function(m){
+    var ratio=T[m.key]/Math.max(G[m.key],1),st=status(ratio);
+    var gap=G[m.key]-T[m.key];
+    var bw=Math.min(ratio*100,100).toFixed(1);
+    var sug=suggestDrill(m.key,gap);
+    var sugHtml="";
+    if(sug&&ratio<0.85){
+      var drillCat=DRILLS[sug.dk]?DRILLS[sug.dk].label:"";
+      sugHtml="<div class='sug'>"
+        +"Try <b>"+sug.name+"</b> ("+drillCat+") for <b>"+sug.mins+" min</b>"
+        +" &mdash; gains ~<b>"+sug.closes.toLocaleString()+m.unit+"</b>"
+        +"</div>";
+    } else if(ratio>=1.15){
+      sugHtml="<div class='sug'>Ease off — prioritise recovery or technical work.</div>";
+    }
+    var recText="";
+    if(ratio>=1.15)recText="Above target. Consider reducing volume next session.";
+    else if(ratio>=0.85)recText="On track this week.";
+    else if(ratio>=0.5)recText="Moderate. More volume needed before week end.";
+    else recText="Below target. Prioritise this metric in your next session.";
+
+    return "<div class='rrow' style='border-left-color:"+st.color+"'>"
+      +"<span style='font-size:13px;flex-shrink:0;padding-top:1px'>"+st.icon+"</span>"
+      +"<div style='flex:1;min-width:0'>"
+      +"<div class='rm' style='color:"+st.color+"'>"+m.label
+      +" <span style='color:var(--t3);font-weight:400;font-size:10px;margin-left:4px'>"+Math.round(ratio*100)+"% &middot; gap "+(gap>0?"+":"")+Math.round(gap)+m.unit+"</span></div>"
+      +"<div class='rt'>"+recText+"</div>"
+      +sugHtml+"</div>"
+      +"<div style='display:flex;flex-direction:column;align-items:flex-end;gap:3px;flex-shrink:0'>"
+      +"<div class='rbw'><div class='rb' style='width:"+bw+"%;background:"+st.color+"'></div></div></div></div>";
+  }).join("");
+}
+
+// ── SESSIONS ──
+function renderSessions(){
+  var el=document.getElementById("slist");
+  if(!sessions.length){el.innerHTML="<div class='empty'>No sessions yet.</div>";return;}
+  el.innerHTML=sessions.map(function(s){
+    var ig=s.type==="game",b=ig?BM[s.lvl]:null;
+    var badge=b?"<span class='sbadge' style='color:"+b.color+";background:"+b.color+"18'>"+b.icon+" "+b.label+"</span>":"";
+    var pills="";
+    if(!ig&&s.drills){
+      pills="<div style='display:flex;flex-wrap:wrap;gap:3px;margin-top:5px'>"
+        +s.drills.map(function(d){return"<span class='pill'>"+DRILLS[d.dk].label+" <b style='color:var(--t)'>"+d.durMin+"m</b></span>";}).join("")
+        +"</div>";
+    }
+    return "<div class='si'>"
+      +"<div class='sico'>"+(ig?"🏆":"🏃")+"</div>"
+      +"<div class='sbody'>"
+      +"<div class='sname'>"+(s.label||(ig?"Game":"Training"))+badge+"</div>"
+      +pills
+      +"<div class='sstats'>"
+      +"<div class='ss'>Dist <b style='color:#00d4ff'>"+s.dist+"m</b></div>"
+      +"<div class='ss'>HSR <b style='color:#00e87a'>"+s.hsr+"m</b></div>"
+      +"<div class='ss'>VHSR <b style='color:#ffb800'>"+s.vhsr+"m</b></div>"
+      +(ig?"<div class='ss'>Pts <b style='color:#ffd700'>"+s.pts+"</b></div>":"<div class='ss'>Dur <b style='color:#ff7a44'>"+s.dur+"min</b></div>")
+      +"<div class='ss'>Acc <b style='color:#a855f7'>"+s.acc+"</b></div>"
+      +"<div class='ss'>Acl <b style='color:#ff4060'>"+s.acl+"</b></div>"
+      +"</div></div>"
+      +"<button class='btnx' onclick='removeSession("+s.id+")'>×</button></div>";
+  }).join("");
+}
+
+// ── ROADMAP ──
+function renderRoadmap(){
+  var dateEl=document.getElementById("tourn-date");
+  var el=document.getElementById("roadmap-content");
+  if(!dateEl||!dateEl.value){
+    el.innerHTML='<div style="text-align:center;padding:44px;color:var(--t3)">Enter a tournament date to generate your load roadmap.</div>';
+    return;
+  }
+  var tourn=new Date(dateEl.value),now=new Date();
+  var ws=weekStart(now);
+  var wo=Math.ceil((tourn-ws)/(7*24*60*60*1000));
+  var T=totals();
+  var tournName=document.getElementById("tourn-name").value||"Tournament";
+  var fmt=function(d){return d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});};
+  var BC={high:"#00e87a",moderate:"#ffb800",low:"#8eb4cc"};
+  var BG={high:"rgba(0,232,122,0.05)",moderate:"rgba(255,184,0,0.05)",low:"rgba(142,180,204,0.05)"};
+
+  var html="<div style='padding:12px 16px;border-radius:10px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);margin-bottom:14px;display:flex;align-items:center;gap:10px'>"
+    +"<span style='font-size:20px'>🏆</span>"
+    +"<div><div style='font-size:14px;font-weight:800;color:#ffd700'>"+tournName+"</div>"
+    +"<div style='font-size:10px;color:var(--t3)'>"+tourn.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long",year:"numeric"})
+    +(wo>0?" &middot; "+wo+" week"+(wo!==1?"s":"")+" away":" &middot; This week")+"</div></div></div>";
+
+  for(var w=4;w>=1;w--){
+    var band=ROADMAP.pattern[4-w];
+    var bc=BC[band],bg=BG[band];
+    var wkS=new Date(tourn); wkS.setDate(tourn.getDate()-(w*7));
+    var wkE=new Date(wkS); wkE.setDate(wkS.getDate()+6);
+    var isCurrent=(wo===w);
+    var tgt=WT[ctx][band];
+    var wn="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
+
+    html+="<div class='week-card"+(isCurrent?" current":"")+"' style='background:"+bg+";border-color:"+(isCurrent?bc:"rgba(255,255,255,0.07)")+"'>"
+      +"<div class='week-head'>"
+      +"<span class='week-badge' style='background:"+bc+"22;color:"+bc+"'>"+band+"</span>"
+      +"<span class='week-label' style='color:"+(isCurrent?bc:"var(--t)")+"'>"+wn+" "+(isCurrent?"<span style='font-size:10px'>● Current</span>":"")+"</span>"
+      +"<span class='week-date'>"+fmt(wkS)+" – "+fmt(wkE)+"</span></div>"
+      +"<div style='font-size:11px;color:var(--t2);margin-bottom:10px'>"+ROADMAP.desc[4-w]+"</div>"
+      +"<div class='week-metrics'>"
+      +wmCell(bc,"Distance",tgt.dist.toLocaleString(),"m")
+      +wmCell(bc,"HSR",tgt.hsr.toLocaleString(),"m")
+      +wmCell(bc,"VHSR",tgt.vhsr.toLocaleString(),"m")
+      +wmCell(bc,"Accels",tgt.acc,"")
+      +wmCell(bc,"Hard Acc",tgt.hacc,"")
+      +wmCell(bc,"Decels",tgt.dec,"")
+      +wmCell(bc,"Accel Load",tgt.acl.toLocaleString(),"AU")
+      +"</div>";
+
+    if(isCurrent){
+      var gaps=[
+        {k:"dist",lbl:"Dist",u:"m"},{k:"hsr",lbl:"HSR",u:"m"},{k:"vhsr",lbl:"VHSR",u:"m"},
+        {k:"acc",lbl:"Acc",u:""},{k:"acl",lbl:"ACL",u:"AU"}
+      ];
+      html+="<div class='gap-row'><span style='font-size:10px;font-weight:700;color:var(--t2);margin-right:4px'>Gap:</span>";
+      gaps.forEach(function(g){
+        var gap=tgt[g.k]-T[g.k];
+        var col=gap<=0?"#00e87a":"#ff4060";
+        html+="<span class='gap-m'>"+g.lbl+" <b style='color:"+col+"'>"+(gap<=0?"✓":"+"+Math.round(gap))+g.u+"</b></span>";
+      });
+      html+="</div>";
+    }
+    html+="</div>";
+  }
+  el.innerHTML=html;
+  renderDashboard();
+}
+function wmCell(col,lbl,val,unit){
+  return "<div class='wm-cell'><div class='wm-lbl'>"+lbl+"</div><div class='wm-val' style='color:"+col+"'>"+val+(unit?"<span style='font-size:9px;opacity:.5;margin-left:2px'>"+unit+"</span>":"")+"</div></div>";
+}
+function syncRoadmap(){renderRoadmap();renderWeekStrip();}
+
+// ── CHART ──
+var CHART_METRICS=[
+  {key:"dist",label:"Distance",  color:"#00d4ff"},
+  {key:"hsr", label:"HSR",       color:"#00e87a"},
+  {key:"vhsr",label:"VHSR",      color:"#ffb800"},
+  {key:"acc", label:"Accels",    color:"#a855f7"},
+  {key:"acl", label:"Accel Load",color:"#ff4060"}
+];
+function renderMetricSel(){
+  document.getElementById("metric-sel").innerHTML=CHART_METRICS.map(function(m){
+    return "<button class='ms-btn"+(m.key===chartMetric?" on":"")+"' style='"+(m.key===chartMetric?"background:"+m.color+";":"")+"' onclick='setChart(\""+m.key+"\")'>"
+      +m.label+"</button>";
+  }).join("");
+}
+function setChart(k){chartMetric=k;renderMetricSel();drawChart();}
+function drawChart(){
+  renderMetricSel();
+  var canvas=document.getElementById("metric-chart");
+  if(!canvas)return;
+  var W=canvas.offsetWidth||340,H=240;
+  canvas.width=W;canvas.height=H;
+  var c=canvas.getContext("2d");
+  c.clearRect(0,0,W,H);
+  var m=CHART_METRICS.find(function(x){return x.key===chartMetric;})||CHART_METRICS[0];
+  var tgts=WT[ctx];
+  var lo=tgts.low[m.key],mod=tgts.moderate[m.key],hi=tgts.high[m.key];
+  // Cumulative
+  var pts=[],cum=0;
+  sessions.forEach(function(s,i){cum+=(s[m.key]||0);pts.push({i:i+1,v:cum});});
+  var maxV=Math.max(hi*1.2,cum||hi);
+  var pad={l:50,r:12,t:14,b:32};
+  var cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
+  function xp(i){return pad.l+(i/Math.max(pts.length,1))*cw;}
+  function yp(v){return pad.t+ch-(v/maxV)*ch;}
+  // Zones
+  c.fillStyle="rgba(0,232,122,0.08)"; c.fillRect(pad.l,yp(hi),cw,yp(mod)-yp(hi));
+  c.fillStyle="rgba(255,184,0,0.08)"; c.fillRect(pad.l,yp(mod),cw,yp(lo)-yp(mod));
+  c.fillStyle="rgba(142,180,204,0.08)";c.fillRect(pad.l,yp(lo),cw,ch-(yp(lo)-pad.t));
+  // Dashed target lines
+  [[hi,"#00e87a"],[mod,"#ffb800"],[lo,"#8eb4cc"]].forEach(function(pair){
+    c.strokeStyle=pair[1];c.globalAlpha=0.35;c.lineWidth=1;c.setLineDash([3,4]);
+    c.beginPath();c.moveTo(pad.l,yp(pair[0]));c.lineTo(pad.l+cw,yp(pair[0]));c.stroke();
+  });
+  c.globalAlpha=1;c.setLineDash([]);
+  // Y grid
+  c.strokeStyle="rgba(255,255,255,0.05)";c.lineWidth=1;
+  for(var g=0;g<=4;g++){
+    var gv=(maxV/4)*g,gy=yp(gv);
+    c.beginPath();c.moveTo(pad.l,gy);c.lineTo(pad.l+cw,gy);c.stroke();
+    c.fillStyle="rgba(255,255,255,0.28)";c.font="9px 'Courier New',monospace";c.textAlign="right";
+    var lbl=gv>=1000?(gv/1000).toFixed(1)+"k":Math.round(gv);
+    c.fillText(lbl,pad.l-4,gy+3);
+  }
+  if(!pts.length){
+    c.fillStyle="rgba(255,255,255,0.2)";c.font="12px sans-serif";c.textAlign="center";
+    c.fillText("Add sessions to see your chart",W/2,H/2);return;
+  }
+  // Fill + line
+  c.fillStyle=m.color+"18";
+  c.beginPath();
+  pts.forEach(function(p,i){var x=xp(p.i-.5),y=yp(p.v);if(i===0)c.moveTo(x,y);else c.lineTo(x,y);});
+  c.lineTo(xp(pts[pts.length-1].i-.5),pad.t+ch);c.lineTo(xp(0.5),pad.t+ch);c.closePath();c.fill();
+  c.strokeStyle=m.color;c.lineWidth=2;c.lineJoin="round";
+  c.shadowColor=m.color;c.shadowBlur=5;
+  c.beginPath();
+  pts.forEach(function(p,i){var x=xp(p.i-.5),y=yp(p.v);if(i===0)c.moveTo(x,y);else c.lineTo(x,y);});
+  c.stroke();c.shadowBlur=0;
+  // Dots
+  pts.forEach(function(p){
+    var x=xp(p.i-.5),y=yp(p.v);
+    c.fillStyle=m.color;c.beginPath();c.arc(x,y,3.5,0,Math.PI*2);c.fill();
+    c.fillStyle="#07070e";c.beginPath();c.arc(x,y,1.5,0,Math.PI*2);c.fill();
+  });
+  // X labels
+  c.fillStyle="rgba(255,255,255,0.28)";c.font="9px sans-serif";c.textAlign="center";
+  pts.forEach(function(p){c.fillText("S"+p.i,xp(p.i-.5),H-pad.b+12);});
+}
+
+// ── BENCHMARKS ──
+function renderBenchmarks(){
+  var lvls=["worldClass","international","club"];
+  document.getElementById("bcontent").innerHTML=lvls.map(function(k){
+    var b=BM[k];
+    var rows=[["Dist/pt",b.pp.dist.toFixed(0),"m"],["HSR/pt",b.pp.hsr.toFixed(0),"m"],
+      ["VHSR/pt",b.pp.vhsr.toFixed(1),"m"],["Acc/pt",b.pp.acc.toFixed(1),""],
+      ["Dec/pt",b.pp.dec.toFixed(1),""],["Hacc/pt",b.pp.hacc.toFixed(2),""],
+      ["Hdec/pt",b.pp.hdec.toFixed(2),""],["Dur/pt",b.pp.dur.toFixed(2),"min"],
+      ["ACL/pt",b.pp.acl.toFixed(0),"AU"]];
+    var tier=k==="worldClass"?"gold":k==="international"?"silver":"bronze";
+    return "<div class='bcard "+tier+"'>"
+      +"<div style='display:flex;align-items:center;gap:8px;margin-bottom:12px'>"
+      +"<div style='font-size:14px;font-weight:800;color:"+b.color+"'>"+b.label+"</div></div>"
+      +"<div class='bgrid'>"+rows.map(function(r){
+        return "<div class='bm'><div class='bml'>"+r[0]+"</div><div class='bmv' style='color:"+b.color+"'>"+r[1]+"<span class='bmu'>"+r[2]+"</span></div></div>";
+      }).join("")+"</div></div>";
+  }).join("");
+}
+
+// ── CONTROLS ──
+function setContext(c){
+  ctx=c;
+  document.getElementById("ctx-international").className="lp"+(c==="international"?" on":"");
+  document.getElementById("ctx-domestic").className="lp"+(c==="domestic"?" on":"");
+  renderAll();
+}
+var formOpen=false;
+function toggleForm(){
+  formOpen=!formOpen;
+  document.getElementById("aform").style.display=formOpen?"block":"none";
+  document.getElementById("btnadd").textContent=formOpen?"Cancel":"+ Add";
+  if(formOpen&&sType==="training"&&!document.getElementById("drill-rows").children.length)addDrillRow();
+}
+function setType(t){
+  sType=t;
+  document.getElementById("tb-game").className="tbtn"+(t==="game"?" on":"");
+  document.getElementById("tb-training").className="tbtn"+(t==="training"?" on":"");
+  document.getElementById("fw-game").style.display=t==="game"?"block":"none";
+  document.getElementById("fw-training").style.display=t==="training"?"block":"none";
+  if(t==="training"&&!document.getElementById("drill-rows").children.length)addDrillRow();
+}
+function addDrillRow(){
+  var id="dr"+(drid++);
+  var div=document.createElement("div");
+  div.className="drill-row";div.id=id;
+  div.innerHTML='<select onchange="updatePreview()">'+DRILL_OPTS+'</select>'
+    +'<input type="number" value="20" min="1" max="180" oninput="updatePreview()">'
+    +'<span class="dmin">min</span>'
+    +'<button class="btnx" onclick="rmDrillRow(\''+id+'\')">×</button>';
+  document.getElementById("drill-rows").appendChild(div);updatePreview();
+}
+function rmDrillRow(id){var el=document.getElementById(id);if(el)el.parentNode.removeChild(el);updatePreview();}
+function getDrillRows(){
+  var r=[];
+  document.getElementById("drill-rows").querySelectorAll(".drill-row").forEach(function(row){
+    var s=row.querySelector("select"),n=row.querySelector("input[type=number]");
+    var d=parseInt(n.value)||0;if(d>0)r.push({dk:s.value,durMin:d});
+  });
+  return r;
+}
+function updatePreview(){
+  var rows=getDrillRows(),prev=document.getElementById("drill-preview");
+  if(!rows.length){prev.style.display="none";return;}
+  var tot={dist:0,hsr:0,vhsr:0,dur:0};
+  rows.forEach(function(r){var l=drillLoad(r.dk,r.durMin);tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;tot.dur+=r.durMin;});
+  prev.style.display="block";
+  prev.innerHTML="<b style='color:var(--t2)'>Total: </b>"+tot.dur+"min &middot; "
+    +"Dist <b style='color:#00d4ff'>"+tot.dist+"m</b> &middot; "
+    +"HSR <b style='color:#00e87a'>"+tot.hsr+"m</b> &middot; "
+    +"VHSR <b style='color:#ffb800'>"+tot.vhsr+"m</b>";
+}
+function addSession(){
+  if(sType==="game"){
+    var lbl=document.getElementById("flabel").value.trim();
+    var pts=parseInt(document.getElementById("fpts").value);
+    var lvl=document.getElementById("flevel").value;
+    sessions.push(makeGame(lbl||(BM[lvl].label+" ("+pts+"pts)"),pts,lvl));
+    document.getElementById("flabel").value="";
+  } else {
+    var lbl2=document.getElementById("flabel-tr").value.trim();
+    var rows=getDrillRows();if(!rows.length)return;
+    sessions.push(makeTraining(lbl2||"Training session",rows));
+    document.getElementById("flabel-tr").value="";
+    document.getElementById("drill-rows").innerHTML="";
+    document.getElementById("drill-preview").style.display="none";
+  }
+  toggleForm();renderAll();
+}
+function removeSession(id){sessions=sessions.filter(function(s){return s.id!==id;});renderAll();}
+
+// ── DEFINITIONS ──
+var DEFS=[
+  {color:"#00d4ff",name:"Total Distance",abbr:"Dist",
+   body:"The total distance covered by the GPS unit during a session or game, measured in metres. Includes all movement — walking, jogging, running, and sprinting.",
+   why:"Your body's overall mechanical work. High weekly distance without adequate recovery increases injury risk. A meaningful foundation metric — if it's low, everything else is probably low too."},
+  {color:"#00e87a",name:"High Speed Running",abbr:"HSR",
+   body:"Distance covered at speeds typically above 4.0–5.0 m/s (roughly 15–18 km/h), depending on the Catapult velocity band configuration. Represents genuine running efforts where the aerobic and neuromuscular systems are under real demand.",
+   why:"HSR is one of the strongest predictors of match fitness. Players who don't achieve sufficient weekly HSR are underprepared for game intensity. It should be a primary target in your weekly load prescription."},
+  {color:"#ffb800",name:"Very High Speed Running",abbr:"VHSR",
+   body:"Distance covered at speeds above approximately 5.5–6.0 m/s (roughly 20 km/h). These are near-sprint efforts that place significant demand on the hamstrings and hip flexors.",
+   why:"VHSR is where soft tissue injury risk concentrates. Underprepared athletes who spike VHSR in competition without adequate training exposure are at elevated hamstring strain risk. Building this gradually and consistently is important across a season."},
+  {color:"#a855f7",name:"Accelerations",abbr:"Acc",
+   body:"The total count of acceleration efforts above a threshold (typically 2–3 m/s²). Captures every time you push off to change speed — cutting, chasing a disc, exploding off the line.",
+   why:"Ultimate Frisbee is a sport of repeated acceleration, not sustained sprinting. Your acceleration count per game is often higher than team sports of similar duration. Tracking weekly totals helps ensure you're doing enough change-of-direction work to stay prepared for game demands."},
+  {color:"#ff4060",name:"Hard Accelerations",abbr:"HAcc",
+   body:"A subset of accelerations that exceed a higher threshold (typically 3–4 m/s²). These are maximum-effort explosive pushes — the kind that happens when you're cutting hard on a stack or sprinting to a disc.",
+   why:"Hard accelerations are the most neuromuscularly taxing efforts in the game. They cause more muscle damage than sustained running and require more recovery. Monitoring these separately helps distinguish between high-volume moderate days and genuinely explosive sessions."},
+  {color:"#c060ff",name:"Decelerations",abbr:"Dec",
+   body:"Count of deceleration efforts above a set threshold. Captures braking forces — stopping from a sprint, changing direction, landing from a jump.",
+   why:"Decelerations are often overlooked but are a major contributor to muscle soreness and lower limb loading. Eccentric loading during deceleration is one of the primary causes of quad and hamstring soreness after competition. Monitoring these alongside accelerations gives a more complete picture of mechanical stress."},
+  {color:"#ff6090",name:"Hard Decelerations",abbr:"HDec",
+   body:"High-intensity braking efforts above a higher force threshold. Typically occur during sharp direction changes, defensive rotations, or stopping under control from top speed.",
+   why:"Hard decelerations create the highest peak forces on the knees and hips in field sport. Ensuring athletes are progressively exposed to these in training — not just encountering them for the first time in competition — is a key injury prevention principle."},
+  {color:"#ff4060",name:"Acceleration Load",abbr:"ACL (AU)",
+   body:"A composite metric (measured in Arbitrary Units) that combines the magnitude and frequency of all acceleration and deceleration efforts into a single running load score. A weighted sum that reflects the cumulative mechanical burden of all speed changes in a session.",
+   why:"Acceleration Load is arguably the most complete single-number summary of how hard a session was from a neuromuscular standpoint. Two sessions with identical distances can have very different Acceleration Loads depending on how much cutting and change-of-direction work was involved. Use it as your primary load management number alongside HSR."},
+];
+function renderDefinitions(){
+  document.getElementById("def-content").innerHTML=DEFS.map(function(d){
+    return "<div class='def-card'>"
+      +"<div class='def-head'>"
+      +"<div class='def-dot' style='background:"+d.color+"'></div>"
+      +"<div class='def-name' style='color:"+d.color+"'>"+d.name+"<span class='def-abbr'>"+d.abbr+"</span></div>"
+      +"</div>"
+      +"<div class='def-body'>"+d.body+"</div>"
+      +"<div class='def-why'>"+d.why+"</div>"
+      +"</div>";
+  }).join("");
+}
+
+function switchTab(name,el){
+  document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
+  document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});
+  document.getElementById("panel-"+name).classList.add("on");el.classList.add("on");
+  if(name==="benchmarks")renderBenchmarks();
+  if(name==="roadmap")renderRoadmap();
+  if(name==="metrics"){renderMetricSel();drawChart();}
+  if(name==="definitions")renderDefinitions();
+}
+function renderAll(){renderDashboard();renderSessions();}
+renderAll();
+</script>
+</body>
+</html>
