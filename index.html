@@ -28,6 +28,16 @@ input,select{font-family:inherit;outline:none}
 .lvlpills{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap}
 .lp{padding:5px 10px;border-radius:6px;font-size:11px;font-weight:700;border:1px solid var(--bd2);background:transparent;color:var(--t3);transition:all .15s}
 .lp.on{border-color:var(--silver);background:rgba(142,180,204,.08);color:var(--silver)}
+/* Auth */
+.auth-login{padding:5px 11px;border-radius:6px;font-size:11px;font-weight:700;border:1px solid rgba(0,232,122,0.4);background:rgba(0,232,122,0.08);color:var(--green)}
+.auth-user{display:flex;align-items:center;gap:6px;padding:4px 9px;border-radius:6px;border:1px solid var(--bd2);background:transparent;font-size:11px;color:var(--t2)}
+.auth-avatar{width:20px;height:20px;border-radius:50%;background:var(--sf2);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;font-size:10px;font-weight:700;color:var(--green);flex-shrink:0}
+/* Save status */
+.save-indicator{position:fixed;bottom:16px;right:16px;padding:7px 13px;border-radius:7px;font-size:11px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none;z-index:100}
+.save-indicator.show{opacity:1}
+.save-indicator.saving{background:rgba(255,184,0,0.15);border:1px solid rgba(255,184,0,0.3);color:#ffb800}
+.save-indicator.saved{background:rgba(0,232,122,0.12);border:1px solid rgba(0,232,122,0.25);color:#00e87a}
+.save-indicator.error{background:rgba(255,64,96,0.12);border:1px solid rgba(255,64,96,0.25);color:#ff4060}
 .tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch}
 .tabs::-webkit-scrollbar{display:none}
 .tab{padding:9px 16px;background:transparent;border:none;color:var(--t3);font-size:12px;font-weight:600;border-bottom:2px solid transparent;transition:all .15s;white-space:nowrap;flex-shrink:0}
@@ -157,8 +167,10 @@ input,select{font-family:inherit;outline:none}
 .def-body{font-size:12px;color:var(--t2);line-height:1.6}
 .def-why{margin-top:6px;font-size:11px;color:var(--t3);border-left:2px solid rgba(255,255,255,0.1);padding-left:10px;line-height:1.5}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
+<div class="save-indicator" id="save-indicator"></div>
 <div id="header">
   <div class="htop">
     <div class="logo">
@@ -174,6 +186,7 @@ input,select{font-family:inherit;outline:none}
     <div class="lvlpills">
       <button class="lp on" id="ctx-international" onclick="setContext('international')">International</button>
       <button class="lp" id="ctx-domestic" onclick="setContext('domestic')">Domestic</button>
+      <div id="auth-btn" style="margin-left:4px"></div>
     </div>
   </div>
   <div class="tabs">
@@ -388,11 +401,100 @@ function makeTraining(lbl,drillArr){
   return Object.assign({id:uid++,label:lbl,type:"training",src:"real",drills:drillArr},tot);
 }
 
-var sessions=[
-  makeGame("AUS vs International (13 pts)",13,"international"),
-  makeTraining("Tuesday Training",[{dk:"warmup",durMin:15},{dk:"speed_sprints",durMin:20},{dk:"v7v7",durMin:30}]),
-  makeGame("Club Pickup (8 pts)",8,"club")
+// ── SUPABASE ──
+var SUPABASE_URL = 'YOUR_SUPABASE_URL';       // e.g. https://abcdefgh.supabase.co
+var SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // eyJ...
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var currentUser = null;
+
+// ── SESSION STORAGE ──
+var sessions = [];  // Loaded from DB when user signs in; demo data when signed out
+
+var DEMO_SESSIONS = [
+  makeGame("AUS vs International (13 pts)", 13, "international"),
+  makeTraining("Tuesday Training", [{dk:"warmup",durMin:15},{dk:"speed_sprints",durMin:20},{dk:"v7v7",durMin:30}]),
+  makeGame("Club Pickup (8 pts)", 8, "club")
 ];
+
+function showSave(state, msg) {
+  var el = document.getElementById("save-indicator");
+  el.textContent = msg;
+  el.className = "save-indicator show " + state;
+  clearTimeout(el._t);
+  if (state !== "saving") el._t = setTimeout(function(){ el.classList.remove("show"); }, 2000);
+}
+
+async function loadSessions() {
+  if (!currentUser) { sessions = DEMO_SESSIONS.slice(); renderAll(); return; }
+  var result = await sb.from("sessions").select("*").order("created_at", {ascending:true});
+  if (result.error) { console.error(result.error); return; }
+  sessions = result.data.map(function(row) {
+    var s = row.data;
+    s._dbId = row.id;  // keep DB id for deletes
+    return s;
+  });
+  renderAll();
+}
+
+async function saveSession(session) {
+  if (!currentUser) return;
+  showSave("saving", "Saving…");
+  var payload = { user_id: currentUser.id, label: session.label, type: session.type, data: session };
+  var result = await sb.from("sessions").insert(payload).select().single();
+  if (result.error) { showSave("error", "Save failed"); return; }
+  // Update local session with DB id so we can delete it later
+  session._dbId = result.data.id;
+  showSave("saved", "Saved ✓");
+}
+
+async function deleteSession(dbId) {
+  if (!currentUser || !dbId) return;
+  await sb.from("sessions").delete().eq("id", dbId);
+}
+
+// ── AUTH ──
+async function signIn() {
+  await sb.auth.signInWithOAuth({
+    provider: "google",
+    options: { redirectTo: window.location.href }
+  });
+}
+async function signOut() {
+  await sb.auth.signOut();
+  currentUser = null;
+  sessions = DEMO_SESSIONS.slice();
+  renderAuthUI();
+  renderAll();
+}
+
+function renderAuthUI() {
+  var el = document.getElementById("auth-btn");
+  if (!currentUser) {
+    el.innerHTML = "<button class='auth-login' onclick='signIn()'>Sign in</button>";
+  } else {
+    var initials = (currentUser.email||"?")[0].toUpperCase();
+    var name = (currentUser.user_metadata && currentUser.user_metadata.full_name)
+      ? currentUser.user_metadata.full_name.split(" ")[0]
+      : currentUser.email.split("@")[0];
+    el.innerHTML = "<div class='auth-user'>"
+      + "<div class='auth-avatar'>" + initials + "</div>"
+      + "<span>" + name + "</span>"
+      + "<button onclick='signOut()' style='background:transparent;border:none;color:var(--t3);font-size:11px;padding:0;cursor:pointer;margin-left:2px'>Sign out</button>"
+      + "</div>";
+  }
+}
+
+// Initialise auth on load
+sb.auth.onAuthStateChange(function(event, session) {
+  currentUser = session ? session.user : null;
+  renderAuthUI();
+  loadSessions();
+});
+sb.auth.getSession().then(function(result) {
+  currentUser = result.data.session ? result.data.session.user : null;
+  renderAuthUI();
+  loadSessions();
+});
 
 // ── AGGREGATES ──
 function totals(){
@@ -878,24 +980,33 @@ function updatePreview(){
     +"HSR <b style='color:#00e87a'>"+tot.hsr+"m</b> &middot; "
     +"VHSR <b style='color:#ffb800'>"+tot.vhsr+"m</b>";
 }
-function addSession(){
+async function addSession(){
+  var newSession;
   if(sType==="game"){
     var lbl=document.getElementById("flabel").value.trim();
     var pts=parseInt(document.getElementById("fpts").value);
     var lvl=document.getElementById("flevel").value;
-    sessions.push(makeGame(lbl||(BM[lvl].label+" ("+pts+"pts)"),pts,lvl));
+    newSession=makeGame(lbl||(BM[lvl].label+" ("+pts+"pts)"),pts,lvl);
     document.getElementById("flabel").value="";
   } else {
     var lbl2=document.getElementById("flabel-tr").value.trim();
     var rows=getDrillRows();if(!rows.length)return;
-    sessions.push(makeTraining(lbl2||"Training session",rows));
+    newSession=makeTraining(lbl2||"Training session",rows);
     document.getElementById("flabel-tr").value="";
     document.getElementById("drill-rows").innerHTML="";
     document.getElementById("drill-preview").style.display="none";
   }
-  toggleForm();renderAll();
+  sessions.push(newSession);
+  toggleForm();
+  renderAll();
+  await saveSession(newSession);
 }
-function removeSession(id){sessions=sessions.filter(function(s){return s.id!==id;});renderAll();}
+async function removeSession(id){
+  var s=sessions.find(function(x){return x.id===id;});
+  sessions=sessions.filter(function(x){return x.id!==id;});
+  renderAll();
+  if(s&&s._dbId) await deleteSession(s._dbId);
+}
 
 // ── DEFINITIONS ──
 var DEFS=[
