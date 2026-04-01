@@ -167,6 +167,7 @@ input,select{font-family:inherit;outline:none}
 .def-body{font-size:12px;color:var(--t2);line-height:1.6}
 .def-why{margin-top:6px;font-size:11px;color:var(--t3);border-left:2px solid rgba(255,255,255,0.1);padding-left:10px;line-height:1.5}
 </style>
+<script src="config.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -402,8 +403,6 @@ function makeTraining(lbl,drillArr){
 }
 
 // ── SUPABASE ──
-var SUPABASE_URL = 'YOUR_SUPABASE_URL';       // e.g. https://abcdefgh.supabase.co
-var SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // eyJ...
 var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var currentUser = null;
 
