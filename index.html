@@ -206,6 +206,7 @@ input,select{font-family:inherit;outline:none}
 <!-- DASHBOARD -->
 <div class="panel on" id="panel-dashboard">
   <div class="ws-outer" id="week-strip"></div>
+  <div id="week-sessions" style="margin-bottom:14px"></div>
   <div class="sumrow" id="sumrow"></div>
   <div class="tbar" id="tbar"></div>
   <div class="gaugewrap" id="gaugewrap"></div>
@@ -586,19 +587,48 @@ if(SUPABASE_READY){
 }
 
 // ── AGGREGATES ──
-function totals(){
-  return sessions.reduce(function(a,s){
-    return{dist:a.dist+s.dist,hsr:a.hsr+s.hsr,vhsr:a.vhsr+s.vhsr,
-      acc:a.acc+s.acc,hacc:a.hacc+s.hacc,dec:a.dec+s.dec,
-      hdec:a.hdec+s.hdec,acl:a.acl+s.acl,dur:a.dur+s.dur};
-  },{dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0});
-}
+function totals(){return weekTotals();}
 
 // ── ROADMAP HELPERS ──
 function weekStart(d){var dt=new Date(d),day=(dt.getDay()+6)%7;dt.setDate(dt.getDate()-day);dt.setHours(0,0,0,0);return dt;}
+function weekEnd(d){var dt=weekStart(d);dt.setDate(dt.getDate()+6);dt.setHours(23,59,59,999);return dt;}
 function isoWeek(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()+3-(dt.getDay()+6)%7);var w1=new Date(dt.getFullYear(),0,4);return 1+Math.round(((dt-w1)/86400000-3+(w1.getDay()+6)%7)/7);}
 function isoYear(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()+3-(dt.getDay()+6)%7);return dt.getFullYear();}
+
+// ── SELECTED WEEK STATE ──
+var selectedWeek=null; // null = current week
+
+function currentWeekRange(){return{start:weekStart(new Date()),end:weekEnd(new Date())};}
+function getSelectedRange(){return selectedWeek||currentWeekRange();}
+function isCurrentWeekSelected(){
+  if(!selectedWeek)return true;
+  return selectedWeek.start.getTime()===weekStart(new Date()).getTime();
+}
+function sessionInWeek(s,range){
+  // Sessions without a date belong to current week only
+  if(!s.date) return isCurrentWeekSelected();
+  var d=new Date(s.date);
+  return d>=range.start&&d<=range.end;
+}
+function weekTotals(){
+  var range=getSelectedRange();
+  return sessions.filter(function(s){return sessionInWeek(s,range);})
+    .reduce(function(a,s){
+      return{dist:a.dist+s.dist,hsr:a.hsr+s.hsr,vhsr:a.vhsr+s.vhsr,
+        acc:a.acc+s.acc,hacc:a.hacc+s.hacc,dec:a.dec+s.dec,
+        hdec:a.hdec+s.hdec,acl:a.acl+s.acl,dur:a.dur+s.dur};
+    },{dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0});
+}
+function weekSessions(){
+  var range=getSelectedRange();
+  return sessions.filter(function(s){return sessionInWeek(s,range);});
+}
+function selectWeek(startTs,endTs,band,wn){
+  selectedWeek={start:new Date(startTs),end:new Date(endTs),band:band,wn:wn};
+  renderDashboard();
+}
 function getCurrentBand(){
+  if(selectedWeek&&selectedWeek.band)return selectedWeek.band;
   var el=document.getElementById("tourn-date");
   if(!el||!el.value)return"moderate";
   var tourn=new Date(el.value),ws=weekStart(new Date());
@@ -663,60 +693,71 @@ function arc(pct,col){
 function renderWeekStrip(){
   var el=document.getElementById("week-strip");
   var dateEl=document.getElementById("tourn-date");
-  if(!dateEl||!dateEl.value){
-    el.innerHTML="<div style='padding:9px 12px;border-radius:8px;background:var(--sf);border:1px solid var(--bd);font-size:11px;color:var(--t3);margin-bottom:14px'>Set a tournament date in <b style=\"color:var(--t2)\">Roadmap</b> to see your 4-week plan here.</div>";
-    return;
-  }
-  var tourn=new Date(dateEl.value),now=new Date();
-  var ws=weekStart(now);
-  var wo=Math.ceil((tourn-ws)/(7*24*60*60*1000));
-  var T=totals();
   var BC={high:"#00e87a",moderate:"#ffb800",low:"#8eb4cc"};
   var fmt=function(d){return d.toLocaleDateString("en-AU",{day:"numeric",month:"short"});};
+  var now=new Date();
+  var curWs=weekStart(now);
+  var selRange=getSelectedRange();
+
+  // If no tournament set, show single current week tile
+  if(!dateEl||!dateEl.value){
+    var isSelected=true;
+    var wn="W"+isoWeek(curWs)+" '"+String(isoYear(curWs)).slice(2);
+    var wkE=weekEnd(now);
+    var tgt=WT[ctx][getCurrentBand()];
+    var T=weekTotals();
+    var barsHtml=buildBars(T,tgt,"#00e87a",true);
+    el.innerHTML="<div class='ws-row'>"
+      +"<div class='wk now' style='border-color:#00e87a;background:#00e87a0d;cursor:pointer'>"
+      +"<div class='wk-now-tag' style='background:#00e87a;color:#07070e'>NOW</div>"
+      +"<div class='wk-head'><div class='wk-iso' style='color:#00e87a'>"+wn+"</div>"
+      +"<div class='wk-dates'>"+fmt(curWs)+" &ndash; "+fmt(wkE)+"</div></div>"
+      +"<div class='wk-band' style='background:#00e87a1a;color:#00e87a'>current</div>"
+      +"<div class='wk-desc' style='font-size:9px;color:var(--t3)'>Set a tournament date in Roadmap</div>"
+      +barsHtml+"</div>"
+      +"</div>";
+    renderWeekSessionList();
+    return;
+  }
+
+  var tourn=new Date(dateEl.value);
+  var wo=Math.ceil((tourn-curWs)/(7*24*60*60*1000));
+  var tournName=document.getElementById("tourn-name").value||"Tournament";
   var html="<div class='ws-row'>";
 
   for(var w=4;w>=1;w--){
     var band=ROADMAP.pattern[4-w];
     var bc=BC[band];
     var wkS=new Date(tourn); wkS.setDate(tourn.getDate()-(w*7));
-    var wkE=new Date(wkS); wkE.setDate(wkS.getDate()+6);
+    var wkE2=new Date(wkS); wkE2.setDate(wkS.getDate()+6); wkE2.setHours(23,59,59,999);
     var isCurrent=(wo===w);
-    var wn="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
-    var tgt=WT[ctx][band];
-    // 4 bar metrics
-    var barMetrics=[
-      {k:"dist",lbl:"Dist",col:"#00d4ff"},
-      {k:"hsr", lbl:"HSR", col:"#00e87a"},
-      {k:"vhsr",lbl:"VHSR",col:"#ffb800"},
-      {k:"acc", lbl:"Acc", col:"#a855f7"},
-      {k:"acl", lbl:"ACL", col:"#ff4060"}
-    ];
-    var barsHtml="<div class='wk-bars'>";
-    barMetrics.forEach(function(m){
-      var pct=isCurrent?Math.min(T[m.k]/Math.max(tgt[m.k],1),1):0;
-      var pctDisp=isCurrent?Math.round(pct*100):null;
-      barsHtml+="<div class='wk-bar-row'>"
-        +"<div class='wk-bar-lbl'>"+m.lbl+"</div>"
-        +"<div class='wk-bar-track'><div class='wk-bar-fill' style='width:"+(isCurrent?pct*100:0)+"%;background:"+m.col+(isCurrent?"":";opacity:0.2")+"'></div></div>"
-        +(isCurrent?"<div class='wk-bar-pct' style='color:"+m.col+"'>"+pctDisp+"%</div>":"<div class='wk-bar-pct' style='color:var(--t3)'>"+Math.round(tgt[m.k]/1000>=1?tgt[m.k]/1000:tgt[m.k])+(tgt[m.k]/1000>=1?"k":"")+"</div>")
-        +"</div>";
+    var isSelected2=selectedWeek
+      ?selectedWeek.start.getTime()===wkS.getTime()
+      :isCurrent;
+    var wn2="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
+    var tgt2=WT[ctx][band];
+    // Calculate this week's actual totals
+    var wkTot={dist:0,hsr:0,vhsr:0,acc:0,acl:0};
+    sessions.forEach(function(s){
+      var inWk=false;
+      if(!s.date) inWk=isCurrent;
+      else{var d=new Date(s.date); inWk=d>=wkS&&d<=wkE2;}
+      if(inWk){wkTot.dist+=s.dist;wkTot.hsr+=s.hsr;wkTot.vhsr+=s.vhsr;wkTot.acc+=s.acc;wkTot.acl+=s.acl;}
     });
-    barsHtml+="</div>";
-
-    html+="<div class='wk"+(isCurrent?" now":"")+"' style='"+(isCurrent?"border-color:"+bc+";background:"+bc+"0d":"")+"'>"
+    var barsHtml2=buildBars(wkTot,tgt2,bc,true);
+    var onclickArgs=wkS.getTime()+","+wkE2.getTime()+",'"+band+"','"+wn2+"'";
+    html+="<div class='wk"+(isCurrent?" now":"")+(isSelected2?" wk-selected":"")+"' "
+      +"style='"+(isSelected2?"border-color:"+bc+";background:"+bc+"1a;border-width:2px":"border-color:rgba(255,255,255,0.08)")+"' "
+      +"onclick='selectWeek("+onclickArgs+")' style='cursor:pointer'>"
       +(isCurrent?"<div class='wk-now-tag' style='background:"+bc+";color:#07070e'>NOW</div>":"")
       +"<div class='wk-head'>"
-      +"<div class='wk-iso' style='color:"+bc+"'>"+wn+"</div>"
-      +"<div class='wk-dates'>"+fmt(wkS)+" &ndash; "+fmt(wkE)+"</div>"
-      +"</div>"
+      +"<div class='wk-iso' style='color:"+bc+"'>"+wn2+"</div>"
+      +"<div class='wk-dates'>"+fmt(wkS)+" &ndash; "+fmt(wkE2)+"</div></div>"
       +"<div class='wk-band' style='background:"+bc+"1a;color:"+bc+"'>"+band+"</div>"
       +"<div class='wk-desc'>"+ROADMAP.desc[4-w]+"</div>"
-      +barsHtml
-      +"</div>";
+      +barsHtml2+"</div>";
   }
 
-  // Tournament block
-  var tournName=document.getElementById("tourn-name").value||"Tournament";
   html+="<div class='wk-tourn'>"
     +"<svg width='22' height='22' viewBox='0 0 22 22' fill='none'><circle cx='11' cy='11' r='9' stroke='#ffd700' stroke-width='1.5'/><path d='M7.5 11l2.5 2.5L15 8' stroke='#ffd700' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>"
     +"<div style='font-size:9px;font-weight:800;color:#ffd700;margin-top:3px;line-height:1.3'>"+tournName+"</div>"
@@ -726,12 +767,70 @@ function renderWeekStrip(){
 
   html+="</div>";
   el.innerHTML=html;
+  renderWeekSessionList();
+}
+
+function buildBars(T,tgt,bc,showPct){
+  var barMetrics=[
+    {k:"dist",lbl:"Dist",col:"#00d4ff"},
+    {k:"hsr", lbl:"HSR", col:"#00e87a"},
+    {k:"vhsr",lbl:"VHSR",col:"#ffb800"},
+    {k:"acc", lbl:"Acc", col:"#a855f7"},
+    {k:"acl", lbl:"ACL", col:"#ff4060"}
+  ];
+  var h="<div class='wk-bars'>";
+  barMetrics.forEach(function(m){
+    var pct=Math.min((T[m.k]||0)/Math.max(tgt[m.k],1),1);
+    var pctDisp=Math.round(pct*100);
+    h+="<div class='wk-bar-row'>"
+      +"<div class='wk-bar-lbl'>"+m.lbl+"</div>"
+      +"<div class='wk-bar-track'><div class='wk-bar-fill' style='width:"+(pct*100)+"%;background:"+m.col+"'></div></div>"
+      +(showPct&&(T[m.k]||0)>0
+        ?"<div class='wk-bar-pct' style='color:"+m.col+"'>"+pctDisp+"%</div>"
+        :"<div class='wk-bar-pct' style='color:var(--t3)'>"+Math.round(tgt[m.k]>=1000?tgt[m.k]/1000:tgt[m.k])+(tgt[m.k]>=1000?"k":"")+"</div>")
+      +"</div>";
+  });
+  return h+"</div>";
+}
+
+function renderWeekSessionList(){
+  var wkSess=weekSessions();
+  var el=document.getElementById("week-sessions");
+  if(!el)return;
+  var selRange=getSelectedRange();
+  var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
+  if(!wkSess.length){
+    el.innerHTML="<div style='font-size:11px;color:var(--t3);padding:8px 2px'>No sessions logged for "+wn+".</div>";
+    return;
+  }
+  var allDrills=Object.assign({},DRILLS,COND_DRILLS,MAS_DRILLS);
+  el.innerHTML="<div style='font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:7px'>"+wn+" — "+wkSess.length+" session"+(wkSess.length!==1?"s":"")+"</div>"
+    +wkSess.map(function(s){
+      var ig=s.type==="game";
+      var b=ig&&BM[s.lvl]?BM[s.lvl]:null;
+      var badge=b?"<span style='font-size:9px;font-weight:700;padding:1px 5px;border-radius:3px;margin-left:5px;color:"+b.color+";background:"+b.color+"18'>"+b.label+"</span>":"";
+      var dateStr=s.date?"<span style='font-size:9px;color:var(--t3);margin-left:5px'>"+s.date+"</span>":"";
+      return "<div style='display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:7px;background:var(--sf);border:1px solid var(--bd);margin-bottom:4px;flex-wrap:wrap'>"
+        +"<span style='font-size:14px'>"+(ig?"🏆":"🏃")+"</span>"
+        +"<span style='font-size:12px;font-weight:600;flex:1;min-width:0'>"+(s.label||"Session")+badge+dateStr+"</span>"
+        +"<span style='font-size:10px;color:var(--t3);display:flex;gap:8px;flex-wrap:wrap'>"
+        +"<span>Dist <b style='color:#00d4ff'>"+s.dist+"m</b></span>"
+        +"<span>HSR <b style='color:#00e87a'>"+s.hsr+"m</b></span>"
+        +"<span>VHSR <b style='color:#ffb800'>"+s.vhsr+"m</b></span>"
+        +(ig?"<span>Pts <b style='color:#ffd700'>"+s.pts+"</b></span>":"")
+        +"<span>Acc <b style='color:#a855f7'>"+s.acc+"</b></span>"
+        +"<span>AL <b style='color:#ff4060'>"+s.acl+"</b></span>"
+        +"</span>"
+        +"<button class='btnx' onclick='removeSession("+s.id+")'>×</button>"
+        +"</div>";
+    }).join("");
 }
 
 // ── DASHBOARD ──
 function renderDashboard(){
-  var T=totals(),G=weeklyTarget();
-  var totalPts=sessions.filter(function(s){return s.type==="game";}).reduce(function(a,s){return a+s.pts;},0);
+  var T=weekTotals(), G=weeklyTarget();
+  var wkSess=weekSessions();
+  var totalPts=wkSess.filter(function(s){return s.type==="game";}).reduce(function(a,s){return a+s.pts;},0);
   renderWeekStrip();
 
   function sc(col,lbl,val,unit){
@@ -739,7 +838,7 @@ function renderDashboard(){
       +"<div class='sv' style='color:"+col+"'>"+val+"<span class='su'>"+unit+"</span></div></div>";
   }
   document.getElementById("sumrow").innerHTML=
-    sc("#00d4ff","Sessions",sessions.length,"")+
+    sc("#00d4ff","Sessions",wkSess.length,"")+
     sc("#ffd700","Points",totalPts,"pts")+
     sc("#00e87a","Distance",(T.dist/1000).toFixed(1),"km")+
     sc("#ffb800","HSR",T.hsr,"m")+
