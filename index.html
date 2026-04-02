@@ -403,12 +403,8 @@ function makeTraining(lbl,drillArr){
 }
 
 // ── SUPABASE ──
-var sb = null;
+var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var currentUser = null;
-var SUPABASE_READY = typeof SUPABASE_URL !== 'undefined' && SUPABASE_URL !== 'YOUR_SUPABASE_URL';
-if(SUPABASE_READY){
-  try { sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); } catch(e){ SUPABASE_READY=false; }
-}
 
 // ── SESSION STORAGE ──
 var sessions = [];  // Loaded from DB when user signs in; demo data when signed out
@@ -488,22 +484,17 @@ function renderAuthUI() {
 }
 
 // Initialise auth on load
-if(SUPABASE_READY){
-  sb.auth.onAuthStateChange(function(event, session) {
-    currentUser = session ? session.user : null;
-    renderAuthUI();
-    loadSessions();
-  });
-  sb.auth.getSession().then(function(result) {
-    currentUser = result.data.session ? result.data.session.user : null;
-    renderAuthUI();
-    loadSessions();
-  });
-} else {
-  sessions = DEMO_SESSIONS.slice();
+sb.auth.onAuthStateChange(function(event, session) {
+  currentUser = session ? session.user : null;
   renderAuthUI();
-  renderAll();
-}
+  loadSessions();
+});
+sb.auth.getSession().then(function(result) {
+  currentUser = result.data.session ? result.data.session.user : null;
+  renderAuthUI();
+  loadSessions();
+});
+
 // ── AGGREGATES ──
 function totals(){
   return sessions.reduce(function(a,s){
