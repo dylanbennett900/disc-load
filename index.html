@@ -502,10 +502,11 @@ async function loadSessions() {
   if (result.error) { console.error(result.error); return; }
   sessions = result.data.map(function(row) {
     var s = row.data;
-    s._dbId = row.id;  // keep DB id for deletes
+    s._dbId = row.id;
     return s;
   });
   renderAll();
+  loadSettings();
 }
 
 async function saveSession(session) {
@@ -913,7 +914,35 @@ function renderRoadmap(){
 function wmCell(col,lbl,val,unit){
   return "<div class='wm-cell'><div class='wm-lbl'>"+lbl+"</div><div class='wm-val' style='color:"+col+"'>"+val+(unit?"<span style='font-size:9px;opacity:.5;margin-left:2px'>"+unit+"</span>":"")+"</div></div>";
 }
-function syncRoadmap(){renderRoadmap();renderWeekStrip();}
+// ── USER SETTINGS (tournament date/name) ──
+async function loadSettings() {
+  if (!currentUser || !SUPABASE_READY) return;
+  var result = await sb.from("user_settings").select("*").eq("user_id", currentUser.id).single();
+  if (result.error || !result.data) return;
+  var d = result.data;
+  if (d.tournament_date) document.getElementById("tourn-date").value = d.tournament_date;
+  if (d.tournament_name) document.getElementById("tourn-name").value = d.tournament_name;
+  renderWeekStrip();
+  renderDashboard();
+}
+
+async function saveSettings() {
+  if (!currentUser || !SUPABASE_READY) return;
+  var date = document.getElementById("tourn-date").value;
+  var name = document.getElementById("tourn-name").value;
+  await sb.from("user_settings").upsert({
+    user_id: currentUser.id,
+    tournament_date: date,
+    tournament_name: name,
+    updated_at: new Date().toISOString()
+  }, { onConflict: "user_id" });
+}
+
+function syncRoadmap() {
+  renderRoadmap();
+  renderWeekStrip();
+  saveSettings();
+}
 
 // ── CHART ──
 var CHART_METRICS=[
