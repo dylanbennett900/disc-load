@@ -107,7 +107,7 @@ input,select{font-family:inherit;outline:none}
 .tbtn.on{border-color:var(--green);background:rgba(0,232,122,.1);color:var(--green)}
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-bottom:12px}
 .ff label{font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;display:block;margin-bottom:4px}
-.ff input[type=text],.ff select,.ff input[type=date]{width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:13px}
+.ff input[type=text],.ff select,.ff input[type=date]{width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:13px}
 .ff input[type=range]{width:100%;accent-color:var(--green);margin-top:3px}
 .rv{color:var(--green);font-family:var(--mono);font-weight:700}
 .btsub{padding:9px 20px;border-radius:7px;background:linear-gradient(135deg,var(--green),var(--cyan));border:none;color:#07070e;font-size:13px;font-weight:800}
@@ -122,7 +122,7 @@ input,select{font-family:inherit;outline:none}
 .btnx:hover{opacity:.9}
 .empty{text-align:center;padding:40px;color:var(--t3)}
 .drill-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
-.drill-row select{flex:1;padding:6px 9px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:12px;min-width:0}
+.drill-row select{flex:1;padding:6px 9px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:12px;min-width:0}
 .drill-inputs{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .drill-row input[type=number]{width:55px;padding:6px 7px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:12px;text-align:center}
 .drill-row .dmin{font-size:10px;color:var(--t3);flex-shrink:0}
@@ -228,23 +228,24 @@ input,select{font-family:inherit;outline:none}
     <div id="fw-game">
       <div class="fgrid">
         <div class="ff"><label>Label</label><input type="text" id="flabel" placeholder="e.g. vs Manly"></div>
+        <div class="ff"><label>Date</label><input type="date" id="fdate-game" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:13px"></div>
         <div class="ff"><label>Level</label>
-          <select id="flevel">
-            <option value="worldClass">World Class</option>
-            <option value="international" selected>International</option>
-            <option value="club">Club (Intl)</option>
-            <option value="elite">Elite (Dom)</option>
-            <option value="league">League (Dom)</option>
+          <select id="flevel" style="color:var(--t);background:#1a1a2e">
+            <option value="international" selected style="background:#1a1a2e;color:white">International</option>
+            <option value="domestic" style="background:#1a1a2e;color:white">Domestic</option>
           </select>
         </div>
-        <div class="ff" style="grid-column:1/-1">
+        <div class="ff">
           <label>Points played: <span class="rv" id="fpts-v">12</span></label>
           <input type="range" min="1" max="25" value="12" id="fpts" oninput="document.getElementById('fpts-v').textContent=this.value">
         </div>
       </div>
     </div>
     <div id="fw-training" style="display:none">
-      <div class="ff" style="margin-bottom:10px"><label>Session label</label><input type="text" id="flabel-tr" placeholder="e.g. Tuesday training"></div>
+      <div class="fgrid">
+        <div class="ff"><label>Session label</label><input type="text" id="flabel-tr" placeholder="e.g. Tuesday training"></div>
+        <div class="ff"><label>Date</label><input type="date" id="fdate-tr" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:13px"></div>
+      </div>
       <div style="font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px">Drills</div>
       <div id="drill-rows"></div>
       <button onclick="addDrillRow()" style="margin-top:7px;padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:var(--t2);font-size:11px;font-weight:700">+ Add drill</button>
@@ -296,13 +297,14 @@ input,select{font-family:inherit;outline:none}
 </div><!-- /content -->
 
 <script>
-// ── GAME BENCHMARKS (per-point rates) ──
+// ── GAME BENCHMARKS — per-point rates from match demand matrix ──
+// International: top table, 1-point column
+// Domestic: bottom table (Elite), 1-point column
 var BM={
-  worldClass:   {label:"World Class",  icon:"WC", color:"#ffd700",pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.9, hacc:1.05,dec:2.4, hdec:1.05,acl:92.7}},
-  international:{label:"International",icon:"IN", color:"#8eb4cc",pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:2.5, hacc:0.7, dec:1.5, hdec:0.5, acl:73.5}},
-  club:         {label:"Club",         icon:"CL", color:"#c87a4a",pp:{dur:1.745,dist:230.9,hsr:55.2, vhsr:10.95,acc:1.5,hacc:0.3, dec:1.0, hdec:0.3, acl:54.3}},
-  elite:        {label:"Elite",        icon:"EL", color:"#ffd700",pp:{dur:1.751,dist:205.7,hsr:45.8, vhsr:7.9,  acc:2.5, hacc:0.41,dec:1.14,hdec:0.32,acl:59.4}},
-  league:       {label:"League",       icon:"LG", color:"#c87a4a",pp:{dur:2.013,dist:253.1,hsr:46.4, vhsr:4.9,  acc:2.13,hacc:0.31,dec:1.05,hdec:0.30,acl:69.5}}
+  international:{label:"International", color:"#8eb4cc",
+    pp:{dur:2.0, dist:264.5,hsr:54.5, vhsr:18.1,acc:3.9, hacc:1.1,dec:2.4, hdec:1.1, acl:92.7}},
+  domestic:     {label:"Domestic",      color:"#ffd700",
+    pp:{dur:1.8, dist:205.7,hsr:45.8, vhsr:7.9,  acc:2.5, hacc:0.4,dec:1.1, hdec:0.3, acl:59.4}}
 };
 
 // ── WEEKLY TARGETS (from Dylan's match demand spreadsheet) ──
@@ -325,7 +327,7 @@ var DRILLS={
   mas:          {label:"MAS / Fitness Runs",        dist_pm:123.9,hsr_pm:64.0,vhsr_pm:0.5, acc_pm:0.5},
   tactical:     {label:"Tactical / Unit Work",      dist_pm:101.9,hsr_pm:34.3,vhsr_pm:0.8, acc_pm:0.6},
   v4v4:         {label:"4v4 Mini",                  dist_pm:125.2,hsr_pm:27.1,vhsr_pm:2.5, acc_pm:0.8},
-  v7v7:         {label:"7v7 / Match Sim",           dist_pm:123.1,hsr_pm:21.5,vhsr_pm:2.6, acc_pm:0.7},
+  v7v7:         {label:"7v7 / Match Sim",           dist_pm:123.1,hsr_pm:21.5,vhsr_pm:2.6, acc_pm:0.7, inputType:"points"},
   short_accels: {label:"Short Sprints / Accels",    dist_pm:93.6, hsr_pm:20.8,vhsr_pm:11.1,acc_pm:2.0},
   v6v6:         {label:"6v6 / Half Field",          dist_pm:119.1,hsr_pm:17.5,vhsr_pm:1.6, acc_pm:0.7},
   agility:      {label:"Agility / Box Drills",      dist_pm:116.2,hsr_pm:15.0,vhsr_pm:0.0, acc_pm:1.2},
@@ -409,24 +411,31 @@ var ctx="international", sType="game", uid=10, drid=0;
 var chartMetric="hsr";
 
 // ── SESSION DATA ──
-function makeGame(lbl,pts,lvl){
+function makeGame(lbl,pts,lvl,date){
   var b=BM[lvl],pp=b.pp;
-  return{id:uid++,label:lbl,type:"game",lvl:lvl,pts:pts,
+  return{id:uid++,label:lbl,type:"game",lvl:lvl,pts:pts,date:date||'',
     dist:Math.round(pts*pp.dist),hsr:Math.round(pts*pp.hsr),vhsr:Math.round(pts*pp.vhsr),
     acc:Math.round(pts*pp.acc),hacc:Math.round(pts*pp.hacc),dec:Math.round(pts*pp.dec),
     hdec:Math.round(pts*pp.hdec),acl:Math.round(pts*pp.acl),dur:+(pts*pp.dur).toFixed(1)};
 }
 function getDrillType(dk){
-  if(DRILLS[dk]) return 'mins';
+  if(DRILLS[dk]) return DRILLS[dk].inputType||'mins';
   if(COND_DRILLS[dk]) return 'reps';
   if(MAS_DRILLS[dk]) return 'mas';
   return 'mins';
 }
 function drillLoad(dk, val1, val2){
-  // val1 = minutes (frisbee) | reps (conditioning) | reps (MAS)
-  // val2 = undefined | undefined | distance per rep (MAS)
   if(DRILLS[dk]){
     var d=DRILLS[dk];
+    if(d.inputType==='points'){
+      // Points-based: use current context per-point rates at 70% of game output (training intensity)
+      var pp=BM[ctx]?BM[ctx].pp:BM.international.pp;
+      var pts=val1, f=0.70;
+      return{dk:dk,inputType:'points',pts:pts,durMin:+(pts*pp.dur*f).toFixed(1),
+        dist:Math.round(pts*pp.dist*f),hsr:Math.round(pts*pp.hsr*f),vhsr:Math.round(pts*pp.vhsr*f),
+        acc:Math.round(pts*pp.acc*f),hacc:Math.round(pts*pp.hacc*f),
+        dec:Math.round(pts*pp.dec*f),hdec:Math.round(pts*pp.hdec*f),acl:Math.round(pts*pp.acl*f)};
+    }
     return{dk:dk,inputType:'mins',durMin:val1,
       dist:Math.round(val1*d.dist_pm),hsr:Math.round(val1*d.hsr_pm),vhsr:Math.round(val1*d.vhsr_pm),
       acc:Math.round(val1*d.acc_pm),hacc:Math.round(val1*d.acc_pm*.3),
@@ -456,14 +465,14 @@ function drillLoad(dk, val1, val2){
   }
   return{dk:dk,inputType:'mins',durMin:val1,dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0};
 }
-function makeTraining(lbl,drillArr){
+function makeTraining(lbl,drillArr,date){
   var tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0};
   drillArr.forEach(function(d){
     var l=drillLoad(d.dk, d.val1, d.val2);
     tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;
     tot.acc+=l.acc;tot.hacc+=l.hacc;tot.dec+=l.dec;tot.hdec+=l.hdec;tot.acl+=l.acl;tot.dur+=l.durMin;
   });
-  return Object.assign({id:uid++,label:lbl,type:"training",src:"real",drills:drillArr},tot);
+  return Object.assign({id:uid++,label:lbl,type:"training",src:"real",drills:drillArr,date:date||''},tot);
 }
 
 // ── SUPABASE ──
@@ -479,13 +488,13 @@ if(SUPABASE_READY){
 var sessions = [];  // Loaded from DB when user signs in; demo data when signed out
 
 var DEMO_SESSIONS = [
-  makeGame("AUS vs International (13 pts)", 13, "international"),
+  makeGame("AUS vs International (13 pts)", 13, "international", ""),
   makeTraining("Tuesday Training", [
     {dk:"warmup",       val1:15},
     {dk:"c_speedbuild", val1:8},
-    {dk:"v7v7",         val1:30}
-  ]),
-  makeGame("Club Pickup (8 pts)", 8, "club")
+    {dk:"v7v7",         val1:6}
+  ], ""),
+  makeGame("Club Pickup (8 pts)", 8, "domestic", "")
 ];
 
 function showSave(state, msg) {
@@ -811,8 +820,10 @@ function renderSessions(){
   var el=document.getElementById("slist");
   if(!sessions.length){el.innerHTML="<div class='empty'>No sessions yet.</div>";return;}
   el.innerHTML=sessions.map(function(s){
-    var ig=s.type==="game",b=ig?BM[s.lvl]:null;
-    var badge=b?"<span class='sbadge' style='color:"+b.color+";background:"+b.color+"18'>"+b.icon+" "+b.label+"</span>":"";
+    var ig=s.type==="game";
+    var b=ig&&BM[s.lvl]?BM[s.lvl]:null;
+    var badge=b?"<span class='sbadge' style='color:"+b.color+";background:"+b.color+"18'>"+b.label+"</span>":"";
+    var dateBadge=s.date?"<span class='sbadge' style='color:var(--t3);background:rgba(255,255,255,0.05)'>"+s.date+"</span>":"";
     var pills="";
     if(!ig&&s.drills){
       pills="<div style='display:flex;flex-wrap:wrap;gap:3px;margin-top:5px'>"
@@ -821,7 +832,8 @@ function renderSessions(){
           var allDrills=Object.assign({},DRILLS,COND_DRILLS,MAS_DRILLS);
           var lbl=allDrills[d.dk]?allDrills[d.dk].label:d.dk;
           var amt="";
-          if(t==='reps') amt="<b style='color:var(--t)'>"+d.val1+" reps</b>";
+          if(t==='points') amt="<b style='color:var(--t)'>"+d.val1+" pts</b>";
+          else if(t==='reps') amt="<b style='color:var(--t)'>"+d.val1+" reps</b>";
           else if(t==='mas') amt="<b style='color:var(--t)'>"+d.val1+"×"+d.val2+"m</b>";
           else amt="<b style='color:var(--t)'>"+d.val1+"min</b>";
           return "<span class='pill'>"+lbl+" "+amt+"</span>";
@@ -831,13 +843,13 @@ function renderSessions(){
     return "<div class='si'>"
       +"<div class='sico'>"+(ig?"🏆":"🏃")+"</div>"
       +"<div class='sbody'>"
-      +"<div class='sname'>"+(s.label||(ig?"Game":"Training"))+badge+"</div>"
+      +"<div class='sname'>"+(s.label||(ig?"Game":"Training"))+badge+dateBadge+"</div>"
       +pills
       +"<div class='sstats'>"
       +"<div class='ss'>Dist <b style='color:#00d4ff'>"+s.dist+"m</b></div>"
       +"<div class='ss'>HSR <b style='color:#00e87a'>"+s.hsr+"m</b></div>"
       +"<div class='ss'>VHSR <b style='color:#ffb800'>"+s.vhsr+"m</b></div>"
-      +(ig?"<div class='ss'>Pts <b style='color:#ffd700'>"+s.pts+"</b></div>":"<div class='ss'>Dur <b style='color:#ff7a44'>"+s.dur+"min</b></div>")
+      +(ig?"<div class='ss'>Pts <b style='color:#ffd700'>"+s.pts+"</b></div>":"<div class='ss'>Dur <b style='color:#ff7a44'>"+Math.round(s.dur)+"min</b></div>")
       +"<div class='ss'>Acc <b style='color:#a855f7'>"+s.acc+"</b></div>"
       +"<div class='ss'>Acl <b style='color:#ff4060'>"+s.acl+"</b></div>"
       +"</div></div>"
@@ -1066,8 +1078,9 @@ function setType(t){
 }
 function drillInputHtml(dk){
   var t=getDrillType(dk);
-  if(t==='reps') return '<input type="number" class="di1" value="8" min="1" max="50" oninput="updatePreview()"><span class="dmin">reps</span>';
-  if(t==='mas')  return '<input type="number" class="di1" value="16" min="1" max="60" oninput="updatePreview()"><span class="dmin">×</span><input type="number" class="di2" value="85" min="10" max="400" oninput="updatePreview()" style="width:50px"><span class="dmin">m</span>';
+  if(t==='points') return '<input type="number" class="di1" value="6" min="1" max="25" oninput="updatePreview()"><span class="dmin">pts</span>';
+  if(t==='reps')   return '<input type="number" class="di1" value="8" min="1" max="50" oninput="updatePreview()"><span class="dmin">reps</span>';
+  if(t==='mas')    return '<input type="number" class="di1" value="16" min="1" max="60" oninput="updatePreview()"><span class="dmin">×</span><input type="number" class="di2" value="85" min="10" max="400" oninput="updatePreview()" style="width:50px"><span class="dmin">m</span>';
   return '<input type="number" class="di1" value="20" min="1" max="180" oninput="updatePreview()"><span class="dmin">min</span>';
 }
 function updateDrillRow(id){
@@ -1122,13 +1135,17 @@ async function addSession(){
     var lbl=document.getElementById("flabel").value.trim();
     var pts=parseInt(document.getElementById("fpts").value);
     var lvl=document.getElementById("flevel").value;
-    newSession=makeGame(lbl||(BM[lvl].label+" ("+pts+"pts)"),pts,lvl);
+    var date=document.getElementById("fdate-game").value;
+    newSession=makeGame(lbl||(BM[lvl].label+" ("+pts+"pts)"),pts,lvl,date);
     document.getElementById("flabel").value="";
+    document.getElementById("fdate-game").value="";
   } else {
     var lbl2=document.getElementById("flabel-tr").value.trim();
+    var date2=document.getElementById("fdate-tr").value;
     var rows=getDrillRows(); if(!rows.length) return;
-    newSession=makeTraining(lbl2||"Training session",rows);
+    newSession=makeTraining(lbl2||"Training session",rows,date2);
     document.getElementById("flabel-tr").value="";
+    document.getElementById("fdate-tr").value="";
     document.getElementById("drill-rows").innerHTML="";
     document.getElementById("drill-preview").style.display="none";
   }
