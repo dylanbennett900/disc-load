@@ -123,7 +123,8 @@ input,select{font-family:inherit;outline:none}
 .empty{text-align:center;padding:40px;color:var(--t3)}
 .drill-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .drill-row select{flex:1;padding:6px 9px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:12px;min-width:0}
-.drill-row input[type=number]{width:55px;padding:6px 7px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:12px;text-align:center;flex-shrink:0}
+.drill-inputs{display:flex;align-items:center;gap:5px;flex-shrink:0}
+.drill-row input[type=number]{width:55px;padding:6px 7px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:12px;text-align:center}
 .drill-row .dmin{font-size:10px;color:var(--t3);flex-shrink:0}
 .pill{display:inline-flex;align-items:center;gap:4px;font-size:10px;padding:2px 7px;border-radius:4px;background:rgba(255,255,255,.06);margin:2px 2px 0 0;color:var(--t2)}
 
@@ -167,7 +168,6 @@ input,select{font-family:inherit;outline:none}
 .def-body{font-size:12px;color:var(--t2);line-height:1.6}
 .def-why{margin-top:6px;font-size:11px;color:var(--t3);border-left:2px solid rgba(255,255,255,0.1);padding-left:10px;line-height:1.5}
 </style>
-<script src="config.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 </head>
 <body>
@@ -336,13 +336,48 @@ var DRILLS={
   throwing:     {label:"Throwing / Technical",      dist_pm:77.7, hsr_pm:6.6, vhsr_pm:0.6, acc_pm:0.1}
 };
 
+// ── CONDITIONING DRILLS — rep-based (per-rep absolute GPS values) ──
+var COND_DRILLS={
+  // Speed (per rep ~0.5min, high HSR/VHSR)
+  c_speedbuild:{label:"Speed Build Up",   inputType:"reps", dist:99.8, hsr:60.5, vhsr:40.6, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:18.0},
+  c_curved:    {label:"Curved Sprint",    inputType:"reps", dist:80.2, hsr:46.9, vhsr:30.5, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:14.4},
+  c_offset:    {label:"Offset Sprint",    inputType:"reps", dist:85.2, hsr:49.2, vhsr:22.7, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:15.3},
+  // Accel (per rep ~0.3-0.5min, high acc demand)
+  c_jrun:      {label:"J Run",            inputType:"reps", dist:61.7, hsr:37.2, vhsr:20.0, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:11.1},
+  c_ndrill:    {label:"N Drill",          inputType:"reps", dist:77.0, hsr:39.5, vhsr:23.4, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:13.9},
+  c_speedgrid: {label:"Repeat Speed Grid",inputType:"reps", dist:49.3, hsr:30.9, vhsr:15.5, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:8.9},
+  c_shortaccel:{label:"Short Accel",      inputType:"reps", dist:57.7, hsr:18.1, vhsr:5.8,  acc:3,   hacc:1.5, dec:2.0, hdec:0.5, acl:10.4},
+  c_zdrill:    {label:"Z Drill",          inputType:"reps", dist:67.3, hsr:10.4, vhsr:0.0,  acc:4,   hacc:1.0, dec:3.0, hdec:0.5, acl:12.1},
+  c_shuttles:  {label:"Ground Shuttles",  inputType:"reps", dist:227.8,hsr:0.0,  vhsr:0.0,  acc:5,   hacc:0.5, dec:5.0, hdec:0.5, acl:41.0},
+};
+// ── MAS DRILLS — reps × distance (user inputs reps + distance in metres) ──
+var MAS_DRILLS={
+  m_mas:        {label:"MAS 15on15off",   inputType:"mas", hsr_ratio:0.670, vhsr_ratio:0.00, acc_per100:0.5},
+  m_straight:   {label:"50m Straights",   inputType:"mas", hsr_ratio:0.548, vhsr_ratio:0.00, acc_per100:1.0},
+  m_swerve:     {label:"50m Swerves",     inputType:"mas", hsr_ratio:0.522, vhsr_ratio:0.00, acc_per100:1.5},
+  m_100otm:     {label:"100m OTM",        inputType:"mas", hsr_ratio:0.771, vhsr_ratio:0.00, acc_per100:0.8},
+};
+
+// ── DRILL SELECT OPTIONS (grouped) ──
+var DRILL_OPTS=(function(){
+  var o='<optgroup label="── Frisbee Drills (minutes) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
+  Object.keys(DRILLS).forEach(function(k){o+='<option value="'+k+'">'+DRILLS[k].label+'</option>';});
+  o+='<optgroup label="── Speed Drills (reps) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
+  Object.keys(COND_DRILLS).filter(function(k){return['c_speedbuild','c_curved','c_offset'].indexOf(k)!==-1;}).forEach(function(k){o+='<option value="'+k+'">'+COND_DRILLS[k].label+'</option>';});
+  o+='<optgroup label="── Accel Drills (reps) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
+  Object.keys(COND_DRILLS).filter(function(k){return['c_speedbuild','c_curved','c_offset'].indexOf(k)===-1;}).forEach(function(k){o+='<option value="'+k+'">'+COND_DRILLS[k].label+'</option>';});
+  o+='<optgroup label="── MAS / Conditioning (reps × distance) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
+  Object.keys(MAS_DRILLS).forEach(function(k){o+='<option value="'+k+'">'+MAS_DRILLS[k].label+'</option>';});
+  return o;
+})();
+
 // ── NAMED DRILL SUGGESTIONS (actual GPS-measured drills, frisbee-relevant) ──
 // {name, dk (category key), hsr_pm, vhsr_pm, dist_pm, note}
 var NAMED_DRILLS=[
   // High HSR producers (7v7 / match sim context)
-  {name:"Slice vs Dice",      dk:"v7v7",        hsr_pm:27.5,vhsr_pm:3.0, dist_pm:133.0,note:"n=290 obs"},
+  {name:"7v7 Match Sim",      dk:"v7v7",        hsr_pm:27.5,vhsr_pm:3.0, dist_pm:133.0,note:"Play 6 points"},
   {name:"Unit Battles",       dk:"tactical",    hsr_pm:25.0,vhsr_pm:5.5, dist_pm:120.0,note:"n=48 obs"},
-  {name:"NSU Match Sim",      dk:"v7v7",        hsr_pm:23.0,vhsr_pm:3.5, dist_pm:127.0,note:"n=120 obs"},
+  {name:"7v7 Match Sim",      dk:"v7v7",        hsr_pm:23.0,vhsr_pm:3.5, dist_pm:127.0,note:"Play 6 points"},
   {name:"Long Patterns",      dk:"throwing",    hsr_pm:19.9,vhsr_pm:5.1, dist_pm:101.9,note:"n=4 obs"},
   {name:"Power Long Patterns",dk:"throwing",    hsr_pm:12.4,vhsr_pm:0.5, dist_pm:110.6,note:"n=1 obs"},
   {name:"5v5 Block",          dk:"v5v5",        hsr_pm:11.0,vhsr_pm:2.5, dist_pm:85.0, note:"n=9 obs"},
@@ -371,7 +406,6 @@ var ROADMAP={
 // ── STATE ──
 var ctx="international", sType="game", uid=10, drid=0;
 var chartMetric="hsr";
-var DRILL_OPTS=Object.keys(DRILLS).map(function(k){return'<option value="'+k+'">'+DRILLS[k].label+'</option>';}).join('');
 
 // ── SESSION DATA ──
 function makeGame(lbl,pts,lvl){
@@ -381,28 +415,59 @@ function makeGame(lbl,pts,lvl){
     acc:Math.round(pts*pp.acc),hacc:Math.round(pts*pp.hacc),dec:Math.round(pts*pp.dec),
     hdec:Math.round(pts*pp.hdec),acl:Math.round(pts*pp.acl),dur:+(pts*pp.dur).toFixed(1)};
 }
-function drillLoad(dk,mins){
-  var d=DRILLS[dk];
-  return{dk:dk,durMin:mins,
-    dist:Math.round(mins*d.dist_pm),hsr:Math.round(mins*d.hsr_pm),vhsr:Math.round(mins*d.vhsr_pm),
-    acc:Math.round(mins*d.acc_pm),hacc:Math.round(mins*d.acc_pm*.3),
-    dec:Math.round(mins*d.acc_pm*.85),hdec:Math.round(mins*d.acc_pm*.25),
-    acl:Math.round(mins*d.dist_pm*.18)};
+function getDrillType(dk){
+  if(DRILLS[dk]) return 'mins';
+  if(COND_DRILLS[dk]) return 'reps';
+  if(MAS_DRILLS[dk]) return 'mas';
+  return 'mins';
+}
+function drillLoad(dk, val1, val2){
+  // val1 = minutes (frisbee) | reps (conditioning) | reps (MAS)
+  // val2 = undefined | undefined | distance per rep (MAS)
+  if(DRILLS[dk]){
+    var d=DRILLS[dk];
+    return{dk:dk,inputType:'mins',durMin:val1,
+      dist:Math.round(val1*d.dist_pm),hsr:Math.round(val1*d.hsr_pm),vhsr:Math.round(val1*d.vhsr_pm),
+      acc:Math.round(val1*d.acc_pm),hacc:Math.round(val1*d.acc_pm*.3),
+      dec:Math.round(val1*d.acc_pm*.85),hdec:Math.round(val1*d.acc_pm*.25),
+      acl:Math.round(val1*d.dist_pm*.18)};
+  }
+  if(COND_DRILLS[dk]){
+    var c=COND_DRILLS[dk], r=val1;
+    return{dk:dk,inputType:'reps',reps:r,durMin:+(r*0.5).toFixed(1),
+      dist:Math.round(r*c.dist),hsr:Math.round(r*c.hsr),vhsr:Math.round(r*c.vhsr),
+      acc:Math.round(r*c.acc),hacc:Math.round(r*c.hacc),
+      dec:Math.round(r*c.dec),hdec:Math.round(r*c.hdec),
+      acl:Math.round(r*c.acl)};
+  }
+  if(MAS_DRILLS[dk]){
+    var m=MAS_DRILLS[dk], reps=val1, distPerRep=val2||50;
+    var totalDist=reps*distPerRep;
+    return{dk:dk,inputType:'mas',reps:reps,distPerRep:distPerRep,durMin:+(totalDist/200).toFixed(1),
+      dist:Math.round(totalDist),
+      hsr:Math.round(totalDist*m.hsr_ratio),
+      vhsr:Math.round(totalDist*m.vhsr_ratio),
+      acc:Math.round(totalDist/100*m.acc_per100),
+      hacc:Math.round(totalDist/100*m.acc_per100*.3),
+      dec:Math.round(totalDist/100*m.acc_per100*.85),
+      hdec:Math.round(totalDist/100*m.acc_per100*.25),
+      acl:Math.round(totalDist*.18)};
+  }
+  return{dk:dk,inputType:'mins',durMin:val1,dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0};
 }
 function makeTraining(lbl,drillArr){
   var tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0};
-  drillArr.forEach(function(d){var l=drillLoad(d.dk,d.durMin);Object.keys(tot).forEach(function(k){tot[k]+=(l[k]||d.durMin);});tot.dur+=d.durMin-d.durMin;tot.dur+=d.durMin;});
-  // recalculate properly
-  tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0};
   drillArr.forEach(function(d){
-    var l=drillLoad(d.dk,d.durMin);
+    var l=drillLoad(d.dk, d.val1, d.val2);
     tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;
-    tot.acc+=l.acc;tot.hacc+=l.hacc;tot.dec+=l.dec;tot.hdec+=l.hdec;tot.acl+=l.acl;tot.dur+=d.durMin;
+    tot.acc+=l.acc;tot.hacc+=l.hacc;tot.dec+=l.dec;tot.hdec+=l.hdec;tot.acl+=l.acl;tot.dur+=l.durMin;
   });
   return Object.assign({id:uid++,label:lbl,type:"training",src:"real",drills:drillArr},tot);
 }
 
 // ── SUPABASE ──
+var SUPABASE_URL = 'YOUR_SUPABASE_URL';       // e.g. https://abcdefgh.supabase.co
+var SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // eyJ...
 var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 var currentUser = null;
 
@@ -411,7 +476,11 @@ var sessions = [];  // Loaded from DB when user signs in; demo data when signed 
 
 var DEMO_SESSIONS = [
   makeGame("AUS vs International (13 pts)", 13, "international"),
-  makeTraining("Tuesday Training", [{dk:"warmup",durMin:15},{dk:"speed_sprints",durMin:20},{dk:"v7v7",durMin:30}]),
+  makeTraining("Tuesday Training", [
+    {dk:"warmup",       val1:15},
+    {dk:"c_speedbuild", val1:8},
+    {dk:"v7v7",         val1:30}
+  ]),
   makeGame("Club Pickup (8 pts)", 8, "club")
 ];
 
@@ -738,7 +807,16 @@ function renderSessions(){
     var pills="";
     if(!ig&&s.drills){
       pills="<div style='display:flex;flex-wrap:wrap;gap:3px;margin-top:5px'>"
-        +s.drills.map(function(d){return"<span class='pill'>"+DRILLS[d.dk].label+" <b style='color:var(--t)'>"+d.durMin+"m</b></span>";}).join("")
+        +s.drills.map(function(d){
+          var t=getDrillType(d.dk);
+          var allDrills=Object.assign({},DRILLS,COND_DRILLS,MAS_DRILLS);
+          var lbl=allDrills[d.dk]?allDrills[d.dk].label:d.dk;
+          var amt="";
+          if(t==='reps') amt="<b style='color:var(--t)'>"+d.val1+" reps</b>";
+          else if(t==='mas') amt="<b style='color:var(--t)'>"+d.val1+"×"+d.val2+"m</b>";
+          else amt="<b style='color:var(--t)'>"+d.val1+"min</b>";
+          return "<span class='pill'>"+lbl+" "+amt+"</span>";
+        }).join("")
         +"</div>";
     }
     return "<div class='si'>"
@@ -949,32 +1027,54 @@ function setType(t){
   document.getElementById("fw-training").style.display=t==="training"?"block":"none";
   if(t==="training"&&!document.getElementById("drill-rows").children.length)addDrillRow();
 }
+function drillInputHtml(dk){
+  var t=getDrillType(dk);
+  if(t==='reps') return '<input type="number" class="di1" value="8" min="1" max="50" oninput="updatePreview()"><span class="dmin">reps</span>';
+  if(t==='mas')  return '<input type="number" class="di1" value="16" min="1" max="60" oninput="updatePreview()"><span class="dmin">×</span><input type="number" class="di2" value="85" min="10" max="400" oninput="updatePreview()" style="width:50px"><span class="dmin">m</span>';
+  return '<input type="number" class="di1" value="20" min="1" max="180" oninput="updatePreview()"><span class="dmin">min</span>';
+}
+function updateDrillRow(id){
+  var row=document.getElementById(id);
+  if(!row) return;
+  var dk=row.querySelector('select').value;
+  var inputWrap=row.querySelector('.drill-inputs');
+  inputWrap.innerHTML=drillInputHtml(dk);
+  updatePreview();
+}
 function addDrillRow(){
   var id="dr"+(drid++);
   var div=document.createElement("div");
-  div.className="drill-row";div.id=id;
-  div.innerHTML='<select onchange="updatePreview()">'+DRILL_OPTS+'</select>'
-    +'<input type="number" value="20" min="1" max="180" oninput="updatePreview()">'
-    +'<span class="dmin">min</span>'
+  div.className="drill-row"; div.id=id;
+  var defaultDk=Object.keys(DRILLS)[0];
+  div.innerHTML='<select onchange="updateDrillRow(\''+id+'\')">'+DRILL_OPTS+'</select>'
+    +'<div class="drill-inputs">'+drillInputHtml(defaultDk)+'</div>'
     +'<button class="btnx" onclick="rmDrillRow(\''+id+'\')">×</button>';
-  document.getElementById("drill-rows").appendChild(div);updatePreview();
+  document.getElementById("drill-rows").appendChild(div);
+  updatePreview();
 }
 function rmDrillRow(id){var el=document.getElementById(id);if(el)el.parentNode.removeChild(el);updatePreview();}
 function getDrillRows(){
   var r=[];
   document.getElementById("drill-rows").querySelectorAll(".drill-row").forEach(function(row){
-    var s=row.querySelector("select"),n=row.querySelector("input[type=number]");
-    var d=parseInt(n.value)||0;if(d>0)r.push({dk:s.value,durMin:d});
+    var dk=row.querySelector("select").value;
+    var di1=row.querySelector(".di1");
+    var di2=row.querySelector(".di2");
+    var v1=parseInt(di1?di1.value:0)||0;
+    var v2=parseInt(di2?di2.value:0)||0;
+    if(v1>0) r.push({dk:dk, val1:v1, val2:v2||undefined});
   });
   return r;
 }
 function updatePreview(){
-  var rows=getDrillRows(),prev=document.getElementById("drill-preview");
+  var rows=getDrillRows(), prev=document.getElementById("drill-preview");
   if(!rows.length){prev.style.display="none";return;}
   var tot={dist:0,hsr:0,vhsr:0,dur:0};
-  rows.forEach(function(r){var l=drillLoad(r.dk,r.durMin);tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;tot.dur+=r.durMin;});
+  rows.forEach(function(r){
+    var l=drillLoad(r.dk,r.val1,r.val2);
+    tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;tot.dur+=l.durMin;
+  });
   prev.style.display="block";
-  prev.innerHTML="<b style='color:var(--t2)'>Total: </b>"+tot.dur+"min &middot; "
+  prev.innerHTML="<b style='color:var(--t2)'>Total: </b>"+Math.round(tot.dur)+"min &middot; "
     +"Dist <b style='color:#00d4ff'>"+tot.dist+"m</b> &middot; "
     +"HSR <b style='color:#00e87a'>"+tot.hsr+"m</b> &middot; "
     +"VHSR <b style='color:#ffb800'>"+tot.vhsr+"m</b>";
@@ -989,7 +1089,7 @@ async function addSession(){
     document.getElementById("flabel").value="";
   } else {
     var lbl2=document.getElementById("flabel-tr").value.trim();
-    var rows=getDrillRows();if(!rows.length)return;
+    var rows=getDrillRows(); if(!rows.length) return;
     newSession=makeTraining(lbl2||"Training session",rows);
     document.getElementById("flabel-tr").value="";
     document.getElementById("drill-rows").innerHTML="";
