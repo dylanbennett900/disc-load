@@ -298,13 +298,16 @@ input,select{font-family:inherit;outline:none}
 
 <script>
 // ── GAME BENCHMARKS — per-point rates from match demand matrix ──
-// International: top table, 1-point column
-// Domestic: bottom table (Elite), 1-point column
+// World Class: peak international output (WUC final level)
+// International: optimal international output
+// Domestic: Elite domestic competition (bottom table, 1-point column)
 var BM={
+  worldClass:   {label:"World Class",   color:"#ffd700",
+    pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.9, hacc:1.05,dec:2.4, hdec:1.05,acl:92.7}},
   international:{label:"International", color:"#8eb4cc",
-    pp:{dur:2.0, dist:264.5,hsr:54.5, vhsr:18.1,acc:3.9, hacc:1.1,dec:2.4, hdec:1.1, acl:92.7}},
-  domestic:     {label:"Domestic",      color:"#ffd700",
-    pp:{dur:1.8, dist:205.7,hsr:45.8, vhsr:7.9,  acc:2.5, hacc:0.4,dec:1.1, hdec:0.3, acl:59.4}}
+    pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:3.5, hacc:0.89,dec:2.2, hdec:0.88,acl:86.9}},
+  domestic:     {label:"Domestic",      color:"#c87a4a",
+    pp:{dur:1.8,  dist:205.7,hsr:45.8, vhsr:7.9,  acc:2.5, hacc:0.4, dec:1.1, hdec:0.3, acl:59.4}}
 };
 
 // ── WEEKLY TARGETS (from Dylan's match demand spreadsheet) ──
@@ -1036,14 +1039,14 @@ function drawChart(){
 
 // ── BENCHMARKS ──
 function renderBenchmarks(){
-  var lvls=["worldClass","international","club"];
+  var lvls=["worldClass","international","domestic"];
   document.getElementById("bcontent").innerHTML=lvls.map(function(k){
     var b=BM[k];
     var rows=[["Dist/pt",b.pp.dist.toFixed(0),"m"],["HSR/pt",b.pp.hsr.toFixed(0),"m"],
       ["VHSR/pt",b.pp.vhsr.toFixed(1),"m"],["Acc/pt",b.pp.acc.toFixed(1),""],
-      ["Dec/pt",b.pp.dec.toFixed(1),""],["Hacc/pt",b.pp.hacc.toFixed(2),""],
-      ["Hdec/pt",b.pp.hdec.toFixed(2),""],["Dur/pt",b.pp.dur.toFixed(2),"min"],
-      ["ACL/pt",b.pp.acl.toFixed(0),"AU"]];
+      ["Dec/pt",b.pp.dec.toFixed(1),""],["HAcc/pt",b.pp.hacc.toFixed(2),""],
+      ["HDec/pt",b.pp.hdec.toFixed(2),""],["Dur/pt",b.pp.dur.toFixed(2),"min"],
+      ["AL/pt",b.pp.acl.toFixed(0),"AU"]];
     var tier=k==="worldClass"?"gold":k==="international"?"silver":"bronze";
     return "<div class='bcard "+tier+"'>"
       +"<div style='display:flex;align-items:center;gap:8px;margin-bottom:12px'>"
