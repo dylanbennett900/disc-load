@@ -466,10 +466,13 @@ function makeTraining(lbl,drillArr){
 }
 
 // ── SUPABASE ──
-var SUPABASE_URL = 'YOUR_SUPABASE_URL';       // e.g. https://abcdefgh.supabase.co
-var SUPABASE_ANON_KEY = 'YOUR_SUPABASE_ANON_KEY'; // eyJ...
-var sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+var sb = null;
 var currentUser = null;
+var SUPABASE_READY = typeof SUPABASE_URL !== 'undefined' && SUPABASE_URL.indexOf('http') === 0;
+if(SUPABASE_READY){
+  try{ sb = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY); }
+  catch(e){ SUPABASE_READY = false; console.warn('Supabase init failed', e); }
+}
 
 // ── SESSION STORAGE ──
 var sessions = [];  // Loaded from DB when user signs in; demo data when signed out
@@ -522,13 +525,11 @@ async function deleteSession(dbId) {
 
 // ── AUTH ──
 async function signIn() {
-  await sb.auth.signInWithOAuth({
-    provider: "google",
-    options: { redirectTo: window.location.href }
-  });
+  if(!SUPABASE_READY){ alert('Sign in not available — config not loaded.'); return; }
+  await sb.auth.signInWithOAuth({ provider:"google", options:{ redirectTo: window.location.href }});
 }
 async function signOut() {
-  await sb.auth.signOut();
+  if(SUPABASE_READY) await sb.auth.signOut();
   currentUser = null;
   sessions = DEMO_SESSIONS.slice();
   renderAuthUI();
@@ -553,16 +554,22 @@ function renderAuthUI() {
 }
 
 // Initialise auth on load
-sb.auth.onAuthStateChange(function(event, session) {
-  currentUser = session ? session.user : null;
+if(SUPABASE_READY){
+  sb.auth.onAuthStateChange(function(event, session) {
+    currentUser = session ? session.user : null;
+    renderAuthUI();
+    loadSessions();
+  });
+  sb.auth.getSession().then(function(result) {
+    currentUser = result.data.session ? result.data.session.user : null;
+    renderAuthUI();
+    loadSessions();
+  });
+} else {
+  sessions = DEMO_SESSIONS.slice();
   renderAuthUI();
-  loadSessions();
-});
-sb.auth.getSession().then(function(result) {
-  currentUser = result.data.session ? result.data.session.user : null;
-  renderAuthUI();
-  loadSessions();
-});
+  renderAll();
+}
 
 // ── AGGREGATES ──
 function totals(){
