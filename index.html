@@ -120,6 +120,16 @@ input,select{font-family:inherit;outline:none}
 .ss{font-size:10px;color:var(--t3)}
 .btnx{background:transparent;border:none;color:var(--t3);font-size:18px;padding:2px 4px;opacity:.4;line-height:1;flex-shrink:0}
 .btnx:hover{opacity:.9}
+.btnedit{background:transparent;border:none;color:var(--t3);font-size:12px;padding:2px 6px;opacity:.4;line-height:1;flex-shrink:0;font-weight:700}
+.btnedit:hover{opacity:.9;color:var(--green)}
+/* Modal */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,0.7);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
+.modal{background:#0e0e1c;border:1px solid rgba(255,255,255,0.12);border-radius:12px;padding:20px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto}
+.modal-title{font-size:14px;font-weight:800;margin-bottom:14px;color:var(--t)}
+.modal-actions{display:flex;gap:8px;margin-top:16px;justify-content:flex-end}
+.btn-cancel{padding:8px 16px;border-radius:7px;border:1px solid var(--bd2);background:transparent;color:var(--t2);font-size:12px;font-weight:700}
+.btn-danger{padding:8px 16px;border-radius:7px;border:none;background:#ff4060;color:white;font-size:12px;font-weight:800}
+.btn-save{padding:8px 16px;border-radius:7px;border:none;background:linear-gradient(135deg,var(--green),var(--cyan));color:#07070e;font-size:12px;font-weight:800}
 .empty{text-align:center;padding:40px;color:var(--t3)}
 .drill-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .drill-row select{flex:1;padding:6px 9px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:12px;min-width:0}
@@ -173,6 +183,31 @@ input,select{font-family:inherit;outline:none}
 </head>
 <body>
 <div class="save-indicator" id="save-indicator"></div>
+
+<!-- CONFIRM DELETE MODAL -->
+<div class="modal-bg" id="confirm-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">Delete session?</div>
+    <div id="confirm-msg" style="font-size:12px;color:var(--t2);margin-bottom:4px"></div>
+    <div style="font-size:11px;color:var(--t3)">This can't be undone.</div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeConfirm()">Cancel</button>
+      <button class="btn-danger" onclick="confirmDelete()">Delete</button>
+    </div>
+  </div>
+</div>
+
+<!-- EDIT SESSION MODAL -->
+<div class="modal-bg" id="edit-modal" style="display:none">
+  <div class="modal">
+    <div class="modal-title">Edit Session</div>
+    <div id="edit-body"></div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+      <button class="btn-save" onclick="saveEdit()">Save</button>
+    </div>
+  </div>
+</div>
 <div id="header">
   <div class="htop">
     <div class="logo">
@@ -327,8 +362,6 @@ var WT={
 
 // ── DRILL CATEGORIES (real GPS per-minute rates from 933 periods, 244 sessions) ──
 var DRILLS={
-  speed_sprints:{label:"Speed Efforts / Sprints",  dist_pm:147.3,hsr_pm:77.7,vhsr_pm:41.2,acc_pm:1.5},
-  mas:          {label:"MAS / Fitness Runs",        dist_pm:123.9,hsr_pm:64.0,vhsr_pm:0.5, acc_pm:0.5},
   tactical:     {label:"Tactical / Unit Work",      dist_pm:101.9,hsr_pm:34.3,vhsr_pm:0.8, acc_pm:0.6},
   v4v4:         {label:"4v4 Mini",                  dist_pm:125.2,hsr_pm:27.1,vhsr_pm:2.5, acc_pm:0.8},
   v7v7:         {label:"7v7 / Match Sim",           dist_pm:123.1,hsr_pm:21.5,vhsr_pm:2.6, acc_pm:0.7, inputType:"points"},
@@ -345,36 +378,57 @@ var DRILLS={
 
 // ── CONDITIONING DRILLS — rep-based (per-rep absolute GPS values) ──
 var COND_DRILLS={
-  // Speed (per rep ~0.5min, high HSR/VHSR)
-  c_speedbuild:{label:"Speed Build Up",   inputType:"reps", dist:99.8, hsr:60.5, vhsr:40.6, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:18.0},
-  c_curved:    {label:"Curved Sprint",    inputType:"reps", dist:80.2, hsr:46.9, vhsr:30.5, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:14.4},
-  c_offset:    {label:"Offset Sprint",    inputType:"reps", dist:85.2, hsr:49.2, vhsr:22.7, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:15.3},
-  // Accel (per rep ~0.3-0.5min, high acc demand)
-  c_jrun:      {label:"J Run",            inputType:"reps", dist:61.7, hsr:37.2, vhsr:20.0, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:11.1},
-  c_ndrill:    {label:"N Drill",          inputType:"reps", dist:77.0, hsr:39.5, vhsr:23.4, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:13.9},
-  c_speedgrid: {label:"Repeat Speed Grid",inputType:"reps", dist:49.3, hsr:30.9, vhsr:15.5, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:8.9},
-  c_shortaccel:{label:"Short Accel",      inputType:"reps", dist:57.7, hsr:18.1, vhsr:5.8,  acc:3,   hacc:1.5, dec:2.0, hdec:0.5, acl:10.4},
-  c_zdrill:    {label:"Z Drill",          inputType:"reps", dist:67.3, hsr:10.4, vhsr:0.0,  acc:4,   hacc:1.0, dec:3.0, hdec:0.5, acl:12.1},
-  c_shuttles:  {label:"Ground Shuttles",  inputType:"reps", dist:227.8,hsr:0.0,  vhsr:0.0,  acc:5,   hacc:0.5, dec:5.0, hdec:0.5, acl:41.0},
+  // Speed
+  c_speedbuild:{label:"Speed Build Up",        inputType:"reps", dist:99.8, hsr:60.5, vhsr:40.6, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:18.0},
+  c_butterfly: {label:"Butterfly Speed Effort",inputType:"reps", dist:103.2,hsr:61.8, vhsr:40.6, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:18.6},
+  c_curved:    {label:"Curved Sprint",         inputType:"reps", dist:80.2, hsr:46.9, vhsr:30.5, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:14.4},
+  c_offset:    {label:"Offset Sprint",         inputType:"reps", dist:85.2, hsr:49.2, vhsr:22.7, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:15.3},
+  // Accel
+  c_jrun:      {label:"J Run",                 inputType:"reps", dist:61.7, hsr:37.2, vhsr:20.0, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:11.1},
+  c_ndrill:    {label:"N Drill",               inputType:"reps", dist:77.0, hsr:39.5, vhsr:23.4, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:13.9},
+  c_speedgrid: {label:"Repeat Speed Grid",     inputType:"reps", dist:49.3, hsr:30.9, vhsr:15.5, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:8.9},
+  c_boxdrill:  {label:"Box Drill",             inputType:"reps", dist:59.6, hsr:9.5,  vhsr:0.0,  acc:5,   hacc:1.0, dec:4.5, hdec:0.8, acl:10.7},
+  c_mungo:     {label:"D Strafe Mungo",        inputType:"reps", dist:65.3, hsr:1.0,  vhsr:0.0,  acc:5,   hacc:0.5, dec:5.0, hdec:0.5, acl:11.8},
+  c_shortaccel:{label:"Short Accel",           inputType:"reps", dist:57.7, hsr:18.1, vhsr:5.8,  acc:3,   hacc:1.5, dec:2.0, hdec:0.5, acl:10.4},
+  c_zdrill:    {label:"Z Drill",               inputType:"reps", dist:67.3, hsr:10.4, vhsr:0.0,  acc:4,   hacc:1.0, dec:3.0, hdec:0.5, acl:12.1},
+  c_shuttles:  {label:"Ground Shuttles",       inputType:"reps", dist:227.8,hsr:0.0,  vhsr:0.0,  acc:5,   hacc:0.5, dec:5.0, hdec:0.5, acl:41.0},
 };
-// ── MAS DRILLS — reps × distance (user inputs reps + distance in metres) ──
+// ── MAS DRILLS — reps × distance ──
 var MAS_DRILLS={
-  m_mas:        {label:"MAS 15on15off",   inputType:"mas", hsr_ratio:0.670, vhsr_ratio:0.00, acc_per100:0.5},
-  m_straight:   {label:"50m Straights",   inputType:"mas", hsr_ratio:0.548, vhsr_ratio:0.00, acc_per100:1.0},
-  m_swerve:     {label:"50m Swerves",     inputType:"mas", hsr_ratio:0.522, vhsr_ratio:0.00, acc_per100:1.5},
-  m_100otm:     {label:"100m OTM",        inputType:"mas", hsr_ratio:0.771, vhsr_ratio:0.00, acc_per100:0.8},
+  m_mas:    {label:"MAS 15on15off",    inputType:"mas",        hsr_ratio:0.670,vhsr_ratio:0.00,acc_per100:0.5},
+  m_straight:{label:"50m Straights",  inputType:"mas",        hsr_ratio:0.548,vhsr_ratio:0.00,acc_per100:1.0},
+  m_swerve: {label:"50m Swerves",     inputType:"mas",        hsr_ratio:0.522,vhsr_ratio:0.00,acc_per100:1.5},
+  m_100otm: {label:"100m OTM",        inputType:"mas",        hsr_ratio:0.771,vhsr_ratio:0.00,acc_per100:0.8},
+  m_604020: {label:"60-40-20 Shuttle",inputType:"reps_fixed", distPerRep:120, hsr_ratio:0.18, vhsr_ratio:0.00,acc_per_rep:5,hacc_per_rep:0.5,dec_per_rep:5,hdec_per_rep:0.5,acl_per_rep:21.6},
 };
 
 // ── DRILL SELECT OPTIONS (grouped) ──
 var DRILL_OPTS=(function(){
-  var o='<optgroup label="── Frisbee Drills (minutes) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
-  Object.keys(DRILLS).forEach(function(k){o+='<option value="'+k+'">'+DRILLS[k].label+'</option>';});
-  o+='<optgroup label="── Speed Drills (reps) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
-  Object.keys(COND_DRILLS).filter(function(k){return['c_speedbuild','c_curved','c_offset'].indexOf(k)!==-1;}).forEach(function(k){o+='<option value="'+k+'">'+COND_DRILLS[k].label+'</option>';});
-  o+='<optgroup label="── Accel Drills (reps) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
-  Object.keys(COND_DRILLS).filter(function(k){return['c_speedbuild','c_curved','c_offset'].indexOf(k)===-1;}).forEach(function(k){o+='<option value="'+k+'">'+COND_DRILLS[k].label+'</option>';});
-  o+='<optgroup label="── MAS / Conditioning (reps × distance) ──" disabled style="color:rgba(255,255,255,0.2)"></optgroup>';
-  Object.keys(MAS_DRILLS).forEach(function(k){o+='<option value="'+k+'">'+MAS_DRILLS[k].label+'</option>';});
+  var opt=function(k,lbl){return'<option value="'+k+'">'+lbl+'</option>';};
+  var grp=function(lbl){return'<optgroup label="'+lbl+'" disabled style="color:rgba(255,255,255,0.15);font-size:10px"></optgroup>';};
+  var o='';
+  // Warm Up
+  o+=grp('── Warm Up ──');
+  o+=opt('warmup','Warm Up / Athletic Prep');
+  o+=opt('throwing','Drilling & Mechanics');
+  // Frisbee Drills
+  o+=grp('── Frisbee Drills (minutes) ──');
+  ['v7v7','v6v6','v5v5','v4v4','v3v3','tactical','zone_d','v4v5','agility','short_accels'].forEach(function(k){
+    o+=opt(k,DRILLS[k].label);
+  });
+  // Speed Drills
+  o+=grp('── Speed Drills (reps) ──');
+  ['c_speedbuild','c_butterfly','c_curved','c_offset'].forEach(function(k){
+    o+=opt(k,COND_DRILLS[k].label);
+  });
+  // Accel Drills
+  o+=grp('── Accel Drills (reps) ──');
+  ['c_jrun','c_ndrill','c_speedgrid','c_boxdrill','c_mungo','c_shortaccel','c_zdrill','c_shuttles'].forEach(function(k){
+    o+=opt(k,COND_DRILLS[k].label);
+  });
+  // Conditioning
+  o+=grp('── Conditioning ──');
+  Object.keys(MAS_DRILLS).forEach(function(k){o+=opt(k,MAS_DRILLS[k].label);});
   return o;
 })();
 
@@ -425,7 +479,7 @@ function makeGame(lbl,pts,lvl,date){
 function getDrillType(dk){
   if(DRILLS[dk]) return DRILLS[dk].inputType||'mins';
   if(COND_DRILLS[dk]) return 'reps';
-  if(MAS_DRILLS[dk]) return 'mas';
+  if(MAS_DRILLS[dk]) return MAS_DRILLS[dk].inputType||'mas';
   return 'mins';
 }
 function drillLoad(dk, val1, val2){
@@ -455,17 +509,28 @@ function drillLoad(dk, val1, val2){
       acl:Math.round(r*c.acl)};
   }
   if(MAS_DRILLS[dk]){
-    var m=MAS_DRILLS[dk], reps=val1, distPerRep=val2||50;
-    var totalDist=reps*distPerRep;
-    return{dk:dk,inputType:'mas',reps:reps,distPerRep:distPerRep,durMin:+(totalDist/200).toFixed(1),
-      dist:Math.round(totalDist),
-      hsr:Math.round(totalDist*m.hsr_ratio),
-      vhsr:Math.round(totalDist*m.vhsr_ratio),
-      acc:Math.round(totalDist/100*m.acc_per100),
-      hacc:Math.round(totalDist/100*m.acc_per100*.3),
-      dec:Math.round(totalDist/100*m.acc_per100*.85),
-      hdec:Math.round(totalDist/100*m.acc_per100*.25),
-      acl:Math.round(totalDist*.18)};
+    var m=MAS_DRILLS[dk];
+    if(m.inputType==='reps_fixed'){
+      // Fixed distance per rep (e.g. 60-40-20 = 120m per rep)
+      var reps=val1, totalDist=reps*m.distPerRep;
+      return{dk:dk,inputType:'reps_fixed',reps:reps,durMin:+(totalDist/200).toFixed(1),
+        dist:Math.round(totalDist),
+        hsr:Math.round(totalDist*m.hsr_ratio),vhsr:0,
+        acc:Math.round(reps*m.acc_per_rep),hacc:Math.round(reps*m.hacc_per_rep),
+        dec:Math.round(reps*m.dec_per_rep),hdec:Math.round(reps*m.hdec_per_rep),
+        acl:Math.round(reps*m.acl_per_rep)};
+    }
+    var reps2=val1, distPerRep=val2||50;
+    var totalDist2=reps2*distPerRep;
+    return{dk:dk,inputType:'mas',reps:reps2,distPerRep:distPerRep,durMin:+(totalDist2/200).toFixed(1),
+      dist:Math.round(totalDist2),
+      hsr:Math.round(totalDist2*m.hsr_ratio),
+      vhsr:Math.round(totalDist2*m.vhsr_ratio),
+      acc:Math.round(totalDist2/100*m.acc_per100),
+      hacc:Math.round(totalDist2/100*m.acc_per100*.3),
+      dec:Math.round(totalDist2/100*m.acc_per100*.85),
+      hdec:Math.round(totalDist2/100*m.acc_per100*.25),
+      acl:Math.round(totalDist2*.18)};
   }
   return{dk:dk,inputType:'mins',durMin:val1,dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0};
 }
@@ -651,7 +716,7 @@ function suggestDrill(metricKey, gap){
   if(gap<=0)return null;
   // Score each named drill by efficiency for this metric
   // Cap at realistic session dose (exclude pure conditioning from frisbee suggestions)
-  var excludeCats=["speed_sprints","mas"];
+  var excludeCats=["warmup","throwing"];
   var scored=NAMED_DRILLS
     .filter(function(d){return excludeCats.indexOf(d.dk)===-1;})
     .map(function(d){
@@ -821,6 +886,7 @@ function renderWeekSessionList(){
         +"<span>Acc <b style='color:#a855f7'>"+s.acc+"</b></span>"
         +"<span>AL <b style='color:#ff4060'>"+s.acl+"</b></span>"
         +"</span>"
+        +"<button class='btnedit' onclick='editSession("+s.id+")' style='opacity:.5;font-size:11px'>Edit</button>"
         +"<button class='btnx' onclick='removeSession("+s.id+")'>×</button>"
         +"</div>";
     }).join("");
@@ -935,7 +1001,7 @@ function renderSessions(){
           var lbl=allDrills[d.dk]?allDrills[d.dk].label:d.dk;
           var amt="";
           if(t==='points') amt="<b style='color:var(--t)'>"+d.val1+" pts</b>";
-          else if(t==='reps') amt="<b style='color:var(--t)'>"+d.val1+" reps</b>";
+          else if(t==='reps'||t==='reps_fixed') amt="<b style='color:var(--t)'>"+d.val1+" reps</b>";
           else if(t==='mas') amt="<b style='color:var(--t)'>"+d.val1+"×"+d.val2+"m</b>";
           else amt="<b style='color:var(--t)'>"+d.val1+"min</b>";
           return "<span class='pill'>"+lbl+" "+amt+"</span>";
@@ -955,7 +1021,10 @@ function renderSessions(){
       +"<div class='ss'>Acc <b style='color:#a855f7'>"+s.acc+"</b></div>"
       +"<div class='ss'>Acl <b style='color:#ff4060'>"+s.acl+"</b></div>"
       +"</div></div>"
-      +"<button class='btnx' onclick='removeSession("+s.id+")'>×</button></div>";
+      +"<div style='display:flex;flex-direction:column;gap:4px;flex-shrink:0'>"
+      +"<button class='btnedit' onclick='editSession("+s.id+")'>Edit</button>"
+      +"<button class='btnx' onclick='removeSession("+s.id+")'>×</button>"
+      +"</div></div>";
   }).join("");
 }
 
@@ -1180,9 +1249,10 @@ function setType(t){
 }
 function drillInputHtml(dk){
   var t=getDrillType(dk);
-  if(t==='points') return '<input type="number" class="di1" value="6" min="1" max="25" oninput="updatePreview()"><span class="dmin">pts</span>';
-  if(t==='reps')   return '<input type="number" class="di1" value="8" min="1" max="50" oninput="updatePreview()"><span class="dmin">reps</span>';
-  if(t==='mas')    return '<input type="number" class="di1" value="16" min="1" max="60" oninput="updatePreview()"><span class="dmin">×</span><input type="number" class="di2" value="85" min="10" max="400" oninput="updatePreview()" style="width:50px"><span class="dmin">m</span>';
+  if(t==='points')     return '<input type="number" class="di1" value="6" min="1" max="25" oninput="updatePreview()"><span class="dmin">pts</span>';
+  if(t==='reps')       return '<input type="number" class="di1" value="8" min="1" max="50" oninput="updatePreview()"><span class="dmin">reps</span>';
+  if(t==='reps_fixed') return '<input type="number" class="di1" value="3" min="1" max="20" oninput="updatePreview()"><span class="dmin">reps</span>';
+  if(t==='mas')        return '<input type="number" class="di1" value="16" min="1" max="60" oninput="updatePreview()"><span class="dmin">×</span><input type="number" class="di2" value="85" min="10" max="400" oninput="updatePreview()" style="width:50px"><span class="dmin">m</span>';
   return '<input type="number" class="di1" value="20" min="1" max="180" oninput="updatePreview()"><span class="dmin">min</span>';
 }
 function updateDrillRow(id){
@@ -1256,11 +1326,173 @@ async function addSession(){
   renderAll();
   await saveSession(newSession);
 }
-async function removeSession(id){
+// ── CONFIRM DELETE ──
+var _pendingDeleteId = null;
+function removeSession(id){
+  var s=sessions.find(function(x){return x.id===id;});
+  if(!s) return;
+  _pendingDeleteId=id;
+  document.getElementById("confirm-msg").textContent=(s.label||(s.type==="game"?"Game":"Training session"));
+  document.getElementById("confirm-modal").style.display="flex";
+}
+function closeConfirm(){
+  _pendingDeleteId=null;
+  document.getElementById("confirm-modal").style.display="none";
+}
+async function confirmDelete(){
+  var id=_pendingDeleteId;
+  closeConfirm();
+  if(!id) return;
   var s=sessions.find(function(x){return x.id===id;});
   sessions=sessions.filter(function(x){return x.id!==id;});
   renderAll();
   if(s&&s._dbId) await deleteSession(s._dbId);
+}
+
+// ── EDIT SESSION ──
+var _editId=null;
+function editSession(id){
+  var s=sessions.find(function(x){return x.id===id;});
+  if(!s) return;
+  _editId=id;
+  var ig=s.type==="game";
+  var html="";
+  if(ig){
+    html+="<div class='ff' style='margin-bottom:10px'><label>Label</label>"
+      +"<input type='text' id='edit-label' value='"+escHtml(s.label||'')+"' style='width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:13px'></div>"
+      +"<div class='ff' style='margin-bottom:10px'><label>Date</label>"
+      +"<input type='date' id='edit-date' value='"+(s.date||'')+"' style='width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:13px'></div>"
+      +"<div class='ff' style='margin-bottom:10px'><label>Level</label>"
+      +"<select id='edit-level' style='width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:13px'>"
+      +"<option value='international'"+(s.lvl==='international'?' selected':'')+">International</option>"
+      +"<option value='domestic'"+(s.lvl==='domestic'?' selected':'')+">Domestic</option>"
+      +"</select></div>"
+      +"<div class='ff'><label>Points played: <span class='rv' id='edit-pts-v'>"+(s.pts||12)+"</span></label>"
+      +"<input type='range' min='1' max='25' value='"+(s.pts||12)+"' id='edit-pts' oninput=\"document.getElementById('edit-pts-v').textContent=this.value\" style='width:100%;accent-color:var(--green);margin-top:3px'></div>";
+  } else {
+    html+="<div class='ff' style='margin-bottom:10px'><label>Label</label>"
+      +"<input type='text' id='edit-label' value='"+escHtml(s.label||'')+"' style='width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:13px'></div>"
+      +"<div class='ff' style='margin-bottom:12px'><label>Date</label>"
+      +"<input type='date' id='edit-date' value='"+(s.date||'')+"' style='width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:#1a1a2e;color:var(--t);font-size:13px'></div>"
+      +"<div style='font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:7px'>Drills</div>"
+      +"<div id='edit-drill-rows'></div>"
+      +"<button onclick='addEditDrillRow()' style='margin-top:7px;padding:5px 12px;border-radius:7px;border:1px solid rgba(255,255,255,0.12);background:transparent;color:var(--t2);font-size:11px;font-weight:700'>+ Add drill</button>"
+      +"<div id='edit-drill-preview' style='margin-top:10px;padding:8px 11px;border-radius:7px;background:rgba(0,0,0,0.2);font-size:10px;color:var(--t3);display:none'></div>";
+  }
+  document.getElementById("edit-body").innerHTML=html;
+  document.getElementById("edit-modal").style.display="flex";
+  // Pre-populate drill rows for training sessions
+  if(!ig && s.drills){
+    var edrid=0;
+    s.drills.forEach(function(d){
+      var rid="edr"+(edrid++);
+      var div=document.createElement("div");
+      div.className="drill-row"; div.id=rid;
+      div.innerHTML='<select onchange="updateEditPreview()">'+DRILL_OPTS+'</select>'
+        +'<div class="drill-inputs">'+drillInputHtml(d.dk)+'</div>'
+        +'<button class="btnx" onclick="rmEditDrillRow(\''+rid+'\')">×</button>';
+      document.getElementById("edit-drill-rows").appendChild(div);
+      // Set the select value
+      div.querySelector("select").value=d.dk;
+      updateEditDrillRow(rid, d);
+    });
+    updateEditPreview();
+  }
+}
+var _editDrid=100;
+function addEditDrillRow(){
+  var id="edr"+(_editDrid++);
+  var div=document.createElement("div");
+  div.className="drill-row"; div.id=id;
+  var defaultDk=Object.keys(DRILLS)[0];
+  div.innerHTML='<select onchange="updateEditDrillRowSel(\''+id+'\')">'+DRILL_OPTS+'</select>'
+    +'<div class="drill-inputs">'+drillInputHtml(defaultDk)+'</div>'
+    +'<button class="btnx" onclick="rmEditDrillRow(\''+id+'\')">×</button>';
+  document.getElementById("edit-drill-rows").appendChild(div);
+  updateEditPreview();
+}
+function updateEditDrillRow(rid, d){
+  var row=document.getElementById(rid); if(!row) return;
+  var inputWrap=row.querySelector(".drill-inputs");
+  inputWrap.innerHTML=drillInputHtml(d.dk);
+  // Set values
+  var di1=row.querySelector(".di1"), di2=row.querySelector(".di2");
+  if(di1) di1.value=d.val1||d.durMin||1;
+  if(di2&&d.val2) di2.value=d.val2;
+  updateEditPreview();
+}
+function updateEditDrillRowSel(rid){
+  var row=document.getElementById(rid); if(!row) return;
+  var dk=row.querySelector("select").value;
+  row.querySelector(".drill-inputs").innerHTML=drillInputHtml(dk);
+  updateEditPreview();
+}
+function rmEditDrillRow(id){var el=document.getElementById(id);if(el)el.parentNode.removeChild(el);updateEditPreview();}
+function getEditDrillRows(){
+  var r=[];
+  var container=document.getElementById("edit-drill-rows");
+  if(!container) return r;
+  container.querySelectorAll(".drill-row").forEach(function(row){
+    var dk=row.querySelector("select").value;
+    var di1=row.querySelector(".di1"), di2=row.querySelector(".di2");
+    var v1=parseInt(di1?di1.value:0)||0;
+    var v2=parseInt(di2?di2.value:0)||0;
+    if(v1>0) r.push({dk:dk, val1:v1, val2:v2||undefined});
+  });
+  return r;
+}
+function updateEditPreview(){
+  var rows=getEditDrillRows(), prev=document.getElementById("edit-drill-preview");
+  if(!prev||!rows.length){if(prev)prev.style.display="none";return;}
+  var tot={dist:0,hsr:0,vhsr:0,dur:0};
+  rows.forEach(function(r){var l=drillLoad(r.dk,r.val1,r.val2);tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;tot.dur+=l.durMin;});
+  prev.style.display="block";
+  prev.innerHTML="<b style='color:var(--t2)'>Total: </b>"+Math.round(tot.dur)+"min &middot; "
+    +"Dist <b style='color:#00d4ff'>"+tot.dist+"m</b> &middot; "
+    +"HSR <b style='color:#00e87a'>"+tot.hsr+"m</b> &middot; "
+    +"VHSR <b style='color:#ffb800'>"+tot.vhsr+"m</b>";
+}
+function escHtml(s){return s.replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;');}
+function closeEdit(){
+  _editId=null;
+  document.getElementById("edit-modal").style.display="none";
+}
+async function saveEdit(){
+  var s=sessions.find(function(x){return x.id===_editId;});
+  if(!s){closeEdit();return;}
+  s.label=document.getElementById("edit-label").value.trim()||s.label;
+  s.date=document.getElementById("edit-date").value;
+  if(s.type==="game"){
+    var newLvl=document.getElementById("edit-level").value;
+    var newPts=parseInt(document.getElementById("edit-pts").value);
+    var pp=BM[newLvl].pp;
+    s.lvl=newLvl; s.pts=newPts;
+    s.dist=Math.round(newPts*pp.dist); s.hsr=Math.round(newPts*pp.hsr);
+    s.vhsr=Math.round(newPts*pp.vhsr); s.acc=Math.round(newPts*pp.acc);
+    s.hacc=Math.round(newPts*pp.hacc); s.dec=Math.round(newPts*pp.dec);
+    s.hdec=Math.round(newPts*pp.hdec); s.acl=Math.round(newPts*pp.acl);
+    s.dur=+(newPts*pp.dur).toFixed(1);
+  } else {
+    var newDrills=getEditDrillRows();
+    if(newDrills.length){
+      s.drills=newDrills;
+      var tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0,dur:0};
+      newDrills.forEach(function(d){
+        var l=drillLoad(d.dk,d.val1,d.val2);
+        tot.dist+=l.dist;tot.hsr+=l.hsr;tot.vhsr+=l.vhsr;
+        tot.acc+=l.acc;tot.hacc+=l.hacc;tot.dec+=l.dec;tot.hdec+=l.hdec;tot.acl+=l.acl;tot.dur+=l.durMin;
+      });
+      Object.assign(s,tot);
+    }
+  }
+  closeEdit();
+  renderAll();
+  if(SUPABASE_READY&&currentUser&&s._dbId){
+    showSave("saving","Saving…");
+    var res=await sb.from("sessions").update({data:s,label:s.label}).eq("id",s._dbId);
+    if(res.error) showSave("error","Save failed");
+    else showSave("saved","Saved ✓");
+  }
 }
 
 // ── DEFINITIONS ──
