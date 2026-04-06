@@ -452,6 +452,7 @@ input,select{font-family:inherit;outline:none}
     <div class="ff" style="flex:1;min-width:140px"><label>Tournament name</label><input type="text" id="tourn-name" placeholder="e.g. Nationals 2025" oninput="syncRoadmap()" style="width:100%;padding:7px 10px;border-radius:7px;border:1px solid var(--bd2);background:rgba(255,255,255,.04);color:var(--t);font-size:13px"></div>
   </div>
   <div id="roadmap-content"><div style="text-align:center;padding:44px;color:var(--t3)">Enter a tournament date to generate your load roadmap.</div></div>
+  <div id="tournament-history"></div>
 </div>
 
 <!-- METRICS -->
@@ -485,43 +486,42 @@ input,select{font-family:inherit;outline:none}
 
 <script>
 // ── GAME BENCHMARKS — per-point rates from match demand matrix ──
-// World Class: peak international output (WUC final level)
-// International: optimal international output
-// Domestic: Elite domestic competition (bottom table, 1-point column)
 var BM={
   worldClass:   {label:"World Class",   color:"#ffd700",
-    pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.9, hacc:1.05,dec:2.4, hdec:1.05,acl:92.7}},
+    pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.90,hacc:1.05,dec:2.42,hdec:1.05,acl:92.7}},
   international:{label:"International", color:"#8eb4cc",
-    pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:3.5, hacc:0.89,dec:2.2, hdec:0.88,acl:86.9}},
+    pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:3.52,hacc:0.89,dec:2.18,hdec:0.88,acl:86.9}},
   domestic:     {label:"Domestic",      color:"#c87a4a",
-    pp:{dur:1.8,  dist:205.7,hsr:45.8, vhsr:7.9,  acc:2.5, hacc:0.4, dec:1.1, hdec:0.3, acl:59.4}}
+    pp:{dur:1.745,dist:205.7,hsr:45.8, vhsr:7.9, acc:2.70,hacc:0.52,dec:1.64,hdec:0.50,acl:59.4}}
 };
 
 // ── WEEKLY TARGETS (from Dylan's match demand spreadsheet) ──
+// Dec/HDec corrected from per-point ratios: intl dec/acc=0.619 hdec/acc=0.250, dom dec/acc=0.609 hdec/acc=0.184
 var WT={
   international:{
-    low:     {dist:13888,hsr:2860, vhsr:700, acc:154,hacc:42,dec:49,hdec:55,acl:4868},
-    moderate:{dist:16864,hsr:3473, vhsr:850, acc:187,hacc:51,dec:60,hdec:67,acl:5912},
-    high:    {dist:19840,hsr:4085, vhsr:1000,acc:220,hacc:60,dec:70,hdec:79,acl:6955}
+    low:     {dist:13888,hsr:2860, vhsr:700, acc:154,hacc:42,dec:95, hdec:38,acl:4868},
+    moderate:{dist:16864,hsr:3473, vhsr:850, acc:187,hacc:51,dec:116,hdec:47,acl:5912},
+    high:    {dist:19840,hsr:4085, vhsr:1000,acc:220,hacc:60,dec:136,hdec:55,acl:6955}
   },
   domestic:{
-    low:     {dist:10801,hsr:2405, vhsr:455, acc:129,hacc:21,dec:35,hdec:17,acl:3120},
-    moderate:{dist:13116,hsr:2921, vhsr:553, acc:156,hacc:26,dec:43,hdec:20,acl:3789},
-    high:    {dist:15431,hsr:3436, vhsr:650, acc:184,hacc:31,dec:50,hdec:24,acl:4458}
+    low:     {dist:10801,hsr:2405, vhsr:455, acc:129,hacc:21,dec:79, hdec:24,acl:3120},
+    moderate:{dist:13116,hsr:2921, vhsr:553, acc:156,hacc:26,dec:95, hdec:29,acl:3789},
+    high:    {dist:15431,hsr:3436, vhsr:650, acc:184,hacc:31,dec:112,hdec:34,acl:4458}
   }
 };
 
 // ── DRILL CATEGORIES (real GPS per-minute rates from 933 periods, 244 sessions) ──
 var DRILLS={
+  // Warm up categories
+  warmup:       {label:"Warm Up / Athletic Prep",   dist_pm:79.6, hsr_pm:9.3, vhsr_pm:3.1, acc_pm:0.4},
+  drilling:     {label:"Drilling & Mechanics",       dist_pm:73.4, hsr_pm:6.7, vhsr_pm:0.4, acc_pm:0.3},
+  // Frisbee drills
   tactical:     {label:"Tactical / Unit Work",      dist_pm:101.9,hsr_pm:34.3,vhsr_pm:0.8, acc_pm:0.6},
   v4v4:         {label:"4v4 Mini",                  dist_pm:125.2,hsr_pm:27.1,vhsr_pm:2.5, acc_pm:0.8},
   v7v7:         {label:"7v7 / Match Sim",           dist_pm:123.1,hsr_pm:21.5,vhsr_pm:2.6, acc_pm:0.7, inputType:"points"},
-  short_accels: {label:"Short Sprints / Accels",    dist_pm:93.6, hsr_pm:20.8,vhsr_pm:11.1,acc_pm:2.0},
   v6v6:         {label:"6v6 / Half Field",          dist_pm:119.1,hsr_pm:17.5,vhsr_pm:1.6, acc_pm:0.7},
-  agility:      {label:"Agility / Box Drills",      dist_pm:116.2,hsr_pm:15.0,vhsr_pm:0.0, acc_pm:1.2},
   zone_d:       {label:"Zone D",                    dist_pm:111.6,hsr_pm:13.7,vhsr_pm:0.8, acc_pm:0.5},
   v5v5:         {label:"5v5 Small Sided",           dist_pm:83.8, hsr_pm:9.8, vhsr_pm:1.3, acc_pm:0.6},
-  warmup:       {label:"Warm Up / Athletic Prep",   dist_pm:79.6, hsr_pm:9.3, vhsr_pm:3.1, acc_pm:0.4},
   v3v3:         {label:"3v3 Mini",                  dist_pm:96.6, hsr_pm:8.3, vhsr_pm:0.5, acc_pm:0.8},
   v4v5:         {label:"4v5 / 5v4 Conditioned",    dist_pm:146.1,hsr_pm:8.0, vhsr_pm:0.1, acc_pm:0.6},
   throwing:     {label:"Throwing / Technical",      dist_pm:77.7, hsr_pm:6.6, vhsr_pm:0.6, acc_pm:0.1}
@@ -558,42 +558,35 @@ var DRILL_OPTS=(function(){
   var opt=function(k,lbl){return'<option value="'+k+'">'+lbl+'</option>';};
   var grp=function(lbl){return'<optgroup label="'+lbl+'" disabled style="color:rgba(255,255,255,0.15);font-size:10px"></optgroup>';};
   var o='';
-  // Warm Up
   o+=grp('── Warm Up ──');
   o+=opt('warmup','Warm Up / Athletic Prep');
-  o+=opt('throwing','Drilling & Mechanics');
-  // Frisbee Drills
+  o+=opt('drilling','Drilling & Mechanics');
   o+=grp('── Frisbee Drills (minutes) ──');
-  ['v7v7','v6v6','v5v5','v4v4','v3v3','tactical','zone_d','v4v5','agility','short_accels'].forEach(function(k){
+  ['v7v7','v6v6','v5v5','v4v4','v3v3','tactical','zone_d','v4v5','throwing'].forEach(function(k){
     o+=opt(k,DRILLS[k].label);
   });
-  // Speed Drills
   o+=grp('── Speed Drills (reps) ──');
   ['c_speedbuild','c_butterfly','c_curved','c_offset'].forEach(function(k){
     o+=opt(k,COND_DRILLS[k].label);
   });
-  // Accel Drills
   o+=grp('── Accel Drills (reps) ──');
   ['c_jrun','c_ndrill','c_speedgrid','c_boxdrill','c_mungo','c_shortaccel','c_zdrill','c_shuttles'].forEach(function(k){
     o+=opt(k,COND_DRILLS[k].label);
   });
-  // Conditioning
   o+=grp('── Conditioning ──');
   Object.keys(MAS_DRILLS).forEach(function(k){o+=opt(k,MAS_DRILLS[k].label);});
   return o;
 })();
 
-// ── NAMED DRILL SUGGESTIONS (actual GPS-measured drills, frisbee-relevant) ──
-// {name, dk (category key), hsr_pm, vhsr_pm, dist_pm, note}
+// ── NAMED DRILL SUGGESTIONS ──
 var NAMED_DRILLS=[
-  // High HSR producers (7v7 / match sim context)
   {name:"7v7 Match Sim",      dk:"v7v7",        hsr_pm:27.5,vhsr_pm:3.0, dist_pm:133.0,note:"Play 6 points"},
   {name:"Unit Battles",       dk:"tactical",    hsr_pm:25.0,vhsr_pm:5.5, dist_pm:120.0,note:"n=48 obs"},
   {name:"7v7 Match Sim",      dk:"v7v7",        hsr_pm:23.0,vhsr_pm:3.5, dist_pm:127.0,note:"Play 6 points"},
   {name:"Long Patterns",      dk:"throwing",    hsr_pm:19.9,vhsr_pm:5.1, dist_pm:101.9,note:"n=4 obs"},
   {name:"Power Long Patterns",dk:"throwing",    hsr_pm:12.4,vhsr_pm:0.5, dist_pm:110.6,note:"n=1 obs"},
   {name:"5v5 Block",          dk:"v5v5",        hsr_pm:11.0,vhsr_pm:2.5, dist_pm:85.0, note:"n=9 obs"},
-  {name:"Box Out Skills",     dk:"agility",     hsr_pm:15.9,vhsr_pm:1.4, dist_pm:80.3, note:"n=2 obs"},
+  {name:"Box Out Skills",     dk:"tactical",    hsr_pm:15.9,vhsr_pm:1.4, dist_pm:80.3, note:"n=2 obs"},
   {name:"Stage Battles",      dk:"v7v7",        hsr_pm:15.6,vhsr_pm:3.0, dist_pm:92.6, note:"n=2 obs"},
   {name:"4 Lines Gauntlet",   dk:"throwing",    hsr_pm:5.7, vhsr_pm:0.8, dist_pm:85.4, note:"n=27 obs"},
   {name:"3v3 Mini",           dk:"v3v3",        hsr_pm:8.1, vhsr_pm:0.8, dist_pm:85.0, note:"n=5 obs"},
@@ -602,18 +595,35 @@ var NAMED_DRILLS=[
   {name:"Break Gates",        dk:"throwing",    hsr_pm:3.7, vhsr_pm:0.0, dist_pm:73.5, note:"n=14 obs"},
   {name:"Warm Up",            dk:"warmup",      hsr_pm:13.8,vhsr_pm:3.4, dist_pm:89.9, note:"n=25 obs"},
   {name:"Athletic Prep",      dk:"warmup",      hsr_pm:9.9, vhsr_pm:2.6, dist_pm:76.6, note:"n=72 obs"},
-  {name:"Drilling & Mechanics",dk:"warmup",     hsr_pm:6.7, vhsr_pm:0.4, dist_pm:73.4, note:"n=60 obs"},
+  {name:"Drilling & Mechanics",dk:"drilling",   hsr_pm:6.7, vhsr_pm:0.4, dist_pm:73.4, note:"n=60 obs"},
 ];
 
-// ── ROADMAP PATTERN ──
-// 4 weeks out → 1 week out (index 0=4wks, 3=1wk)
-var ROADMAP={
-  pattern:['moderate','high','high','low'],
-  desc:['Build Phase — establish base load at moderate intensity.',
-        'Peak Phase — maximum load week. High intensity across all metrics.',
-        'Peak Phase — sustain high output. Second quality week.',
-        'Taper — reduce volume. Maintain speed, recover for competition.']
-};
+// ── PERIODISATION — dynamic based on weeks out ──
+// Rules: always start moderate, always end low (taper)
+// No more than 3 consecutive highs before moderate
+// Based on DBSP coaching brief — 6-8 weeks ideal
+function generatePeriodisation(n){
+  if(n<=0)  return[];
+  if(n===1) return['low'];
+  if(n===2) return['moderate','low'];
+  if(n===3) return['moderate','high','low'];
+  if(n===4) return['moderate','high','high','low'];
+  if(n===5) return['moderate','high','high','high','low'];
+  if(n===6) return['moderate','high','high','moderate','high','low'];
+  if(n===7) return['moderate','high','high','moderate','high','high','low'];
+  if(n===8) return['moderate','high','high','high','moderate','high','high','low'];
+  // 9+ weeks: prepend moderate build weeks before the 8-week base
+  var base=['moderate','high','high','high','moderate','high','high','low'];
+  var prefix=[];
+  for(var i=0;i<n-8;i++) prefix.push('moderate');
+  return prefix.concat(base);
+}
+function phaseDesc(band, weeksOut){
+  if(band==='low')      return 'Taper — remove CNS and peripheral fatigue. High intensity, low volume. Speed and acceleration only — no conditioning.';
+  if(band==='high')     return 'Peak Phase — progressively overload running demands. HSR, VHSR and Accels toward full target. Quality over everything.';
+  if(band==='moderate' && weeksOut>=5) return 'Build Phase — establish foundational load. No spikes. Prime the system for the high weeks ahead.';
+  return 'Build Phase — establish base load at moderate intensity.';
+}
 
 // ── STATE ──
 var ctx="international", sType="game", uid=10, drid=0;
@@ -637,13 +647,13 @@ function drillLoad(dk, val1, val2){
   if(DRILLS[dk]){
     var d=DRILLS[dk];
     if(d.inputType==='points'){
-      // Points-based: use current context per-point rates at 70% of game output (training intensity)
+      // Points-based: full per-point rates — player inputs actual points played, no adjustment needed
       var pp=BM[ctx]?BM[ctx].pp:BM.international.pp;
-      var pts=val1, f=0.70;
-      return{dk:dk,inputType:'points',pts:pts,durMin:+(pts*pp.dur*f).toFixed(1),
-        dist:Math.round(pts*pp.dist*f),hsr:Math.round(pts*pp.hsr*f),vhsr:Math.round(pts*pp.vhsr*f),
-        acc:Math.round(pts*pp.acc*f),hacc:Math.round(pts*pp.hacc*f),
-        dec:Math.round(pts*pp.dec*f),hdec:Math.round(pts*pp.hdec*f),acl:Math.round(pts*pp.acl*f)};
+      var pts=val1;
+      return{dk:dk,inputType:'points',pts:pts,durMin:+(pts*pp.dur).toFixed(1),
+        dist:Math.round(pts*pp.dist),hsr:Math.round(pts*pp.hsr),vhsr:Math.round(pts*pp.vhsr),
+        acc:Math.round(pts*pp.acc),hacc:Math.round(pts*pp.hacc),
+        dec:Math.round(pts*pp.dec),hdec:Math.round(pts*pp.hdec),acl:Math.round(pts*pp.acl)};
     }
     return{dk:dk,inputType:'mins',durMin:val1,
       dist:Math.round(val1*d.dist_pm),hsr:Math.round(val1*d.hsr_pm),vhsr:Math.round(val1*d.vhsr_pm),
@@ -849,8 +859,9 @@ function getCurrentBand(){
   if(!el||!el.value)return"moderate";
   var tourn=new Date(el.value),ws=weekStart(new Date());
   var wo=Math.ceil((tourn-ws)/(7*24*60*60*1000));
-  if(wo<=0||wo>4)return"moderate";
-  return ROADMAP.pattern[4-wo];
+  if(wo<=0)return"low";
+  var pattern=generatePeriodisation(wo);
+  return pattern[0]; // current week = first in pattern (furthest from tourn)
 }
 function weeklyTarget(){return WT[ctx][getCurrentBand()];}
 
@@ -867,7 +878,7 @@ function suggestDrill(metricKey, gap){
   if(gap<=0)return null;
   // Score each named drill by efficiency for this metric
   // Cap at realistic session dose (exclude pure conditioning from frisbee suggestions)
-  var excludeCats=["warmup","throwing"];
+  var excludeCats=["warmup","drilling","throwing"];
   var scored=NAMED_DRILLS
     .filter(function(d){return excludeCats.indexOf(d.dk)===-1;})
     .map(function(d){
@@ -913,16 +924,11 @@ function renderWeekStrip(){
   var fmt=function(d){return d.toLocaleDateString("en-AU",{day:"numeric",month:"short"});};
   var now=new Date();
   var curWs=weekStart(now);
-  var selRange=getSelectedRange();
 
-  // If no tournament set, show single current week tile
   if(!dateEl||!dateEl.value){
-    var isSelected=true;
     var wn="W"+isoWeek(curWs)+" '"+String(isoYear(curWs)).slice(2);
     var wkE=weekEnd(now);
-    var tgt=WT[ctx][getCurrentBand()];
-    var T=weekTotals();
-    var barsHtml=buildBars(T,tgt,"#00e87a",true);
+    var T=weekTotals(), tgt=WT[ctx]["moderate"];
     el.innerHTML="<div class='ws-row'>"
       +"<div class='wk now' style='border-color:#00e87a;background:#00e87a0d;cursor:pointer'>"
       +"<div class='wk-now-tag' style='background:#00e87a;color:#07070e'>NOW</div>"
@@ -930,8 +936,7 @@ function renderWeekStrip(){
       +"<div class='wk-dates'>"+fmt(curWs)+" &ndash; "+fmt(wkE)+"</div></div>"
       +"<div class='wk-band' style='background:#00e87a1a;color:#00e87a'>current</div>"
       +"<div class='wk-desc' style='font-size:9px;color:var(--t3)'>Set a tournament date in Roadmap</div>"
-      +barsHtml+"</div>"
-      +"</div>";
+      +buildBars(T,tgt,"#00e87a",true)+"</div></div>";
     renderWeekSessionList();
     return;
   }
@@ -939,20 +944,22 @@ function renderWeekStrip(){
   var tourn=new Date(dateEl.value);
   var wo=Math.ceil((tourn-curWs)/(7*24*60*60*1000));
   var tournName=document.getElementById("tourn-name").value||"Tournament";
+  var pattern=generatePeriodisation(Math.max(wo,1));
   var html="<div class='ws-row'>";
 
-  for(var w=4;w>=1;w--){
-    var band=ROADMAP.pattern[4-w];
+  // Render each week tile, oldest first
+  for(var i=0;i<pattern.length;i++){
+    var band=pattern[i];
     var bc=BC[band];
-    var wkS=new Date(tourn); wkS.setDate(tourn.getDate()-(w*7));
+    var weeksFromNow=pattern.length-1-i; // 0 = this week
+    var wkS=new Date(tourn); wkS.setDate(tourn.getDate()-((weeksFromNow+1)*7));
     var wkE2=new Date(wkS); wkE2.setDate(wkS.getDate()+6); wkE2.setHours(23,59,59,999);
-    var isCurrent=(wo===w);
+    var isCurrent=(weeksFromNow===wo-1);
     var isSelected2=selectedWeek
-      ?selectedWeek.start.getTime()===wkS.getTime()
+      ?selectedWeek.start.getTime()===weekStart(wkS).getTime()
       :isCurrent;
     var wn2="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
     var tgt2=WT[ctx][band];
-    // Calculate this week's actual totals
     var wkTot={dist:0,hsr:0,vhsr:0,acc:0,acl:0};
     sessions.forEach(function(s){
       var inWk=false;
@@ -960,18 +967,16 @@ function renderWeekStrip(){
       else{var d=new Date(s.date); inWk=d>=wkS&&d<=wkE2;}
       if(inWk){wkTot.dist+=s.dist;wkTot.hsr+=s.hsr;wkTot.vhsr+=s.vhsr;wkTot.acc+=s.acc;wkTot.acl+=s.acl;}
     });
-    var barsHtml2=buildBars(wkTot,tgt2,bc,true);
-    var onclickArgs=wkS.getTime()+","+wkE2.getTime()+",'"+band+"','"+wn2+"'";
+    var onclickArgs=weekStart(wkS).getTime()+","+wkE2.getTime()+",'"+band+"','"+wn2+"'";
     html+="<div class='wk"+(isCurrent?" now":"")+(isSelected2?" wk-selected":"")+"' "
       +"style='"+(isSelected2?"border-color:"+bc+";background:"+bc+"1a;border-width:2px":"border-color:rgba(255,255,255,0.08)")+"' "
       +"onclick='selectWeek("+onclickArgs+")' style='cursor:pointer'>"
       +(isCurrent?"<div class='wk-now-tag' style='background:"+bc+";color:#07070e'>NOW</div>":"")
-      +"<div class='wk-head'>"
-      +"<div class='wk-iso' style='color:"+bc+"'>"+wn2+"</div>"
+      +"<div class='wk-head'><div class='wk-iso' style='color:"+bc+"'>"+wn2+"</div>"
       +"<div class='wk-dates'>"+fmt(wkS)+" &ndash; "+fmt(wkE2)+"</div></div>"
       +"<div class='wk-band' style='background:"+bc+"1a;color:"+bc+"'>"+band+"</div>"
-      +"<div class='wk-desc'>"+ROADMAP.desc[4-w]+"</div>"
-      +barsHtml2+"</div>";
+      +"<div class='wk-desc'>"+phaseDesc(band,pattern.length-i)+"</div>"
+      +buildBars(wkTot,tgt2,bc,true)+"</div>";
   }
 
   html+="<div class='wk-tourn'>"
@@ -979,9 +984,7 @@ function renderWeekStrip(){
     +"<div style='font-size:9px;font-weight:800;color:#ffd700;margin-top:3px;line-height:1.3'>"+tournName+"</div>"
     +"<div style='font-size:8px;color:var(--t3)'>"+fmt(tourn)+"</div>"
     +(wo>0?"<div style='font-size:8px;color:var(--t3)'>"+wo+"w away</div>":"<div style='font-size:8px;color:#00e87a'>This week</div>")
-    +"</div>";
-
-  html+="</div>";
+    +"</div></div>";
   el.innerHTML=html;
   renderWeekSessionList();
 }
@@ -1047,7 +1050,12 @@ function renderWeekSessionList(){
 function renderDashboard(){
   var T=weekTotals(), G=weeklyTarget();
   var wkSess=weekSessions();
-  var totalPts=wkSess.filter(function(s){return s.type==="game";}).reduce(function(a,s){return a+s.pts;},0);
+  var totalPts=wkSess.reduce(function(a,s){
+    var pts=0;
+    if(s.type==="game") pts=s.pts||0;
+    else if(s.drills) s.drills.forEach(function(d){if(getDrillType(d.dk)==='points') pts+=d.val1||0;});
+    return a+pts;
+  },0);
   renderWeekStrip();
 
   function sc(col,lbl,val,unit){
@@ -1185,6 +1193,7 @@ function renderRoadmap(){
   var el=document.getElementById("roadmap-content");
   if(!dateEl||!dateEl.value){
     el.innerHTML='<div style="text-align:center;padding:44px;color:var(--t3)">Enter a tournament date to generate your load roadmap.</div>';
+    renderTournamentHistory();
     return;
   }
   var tourn=new Date(dateEl.value),now=new Date();
@@ -1195,28 +1204,31 @@ function renderRoadmap(){
   var fmt=function(d){return d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});};
   var BC={high:"#00e87a",moderate:"#ffb800",low:"#8eb4cc"};
   var BG={high:"rgba(0,232,122,0.05)",moderate:"rgba(255,184,0,0.05)",low:"rgba(142,180,204,0.05)"};
+  var pattern=generatePeriodisation(Math.max(wo,1));
 
   var html="<div style='padding:12px 16px;border-radius:10px;background:rgba(255,215,0,0.05);border:1px solid rgba(255,215,0,0.2);margin-bottom:14px;display:flex;align-items:center;gap:10px'>"
     +"<span style='font-size:20px'>🏆</span>"
     +"<div><div style='font-size:14px;font-weight:800;color:#ffd700'>"+tournName+"</div>"
     +"<div style='font-size:10px;color:var(--t3)'>"+tourn.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long",year:"numeric"})
-    +(wo>0?" &middot; "+wo+" week"+(wo!==1?"s":"")+" away":" &middot; This week")+"</div></div></div>";
+    +(wo>0?" &middot; "+wo+" week"+(wo!==1?"s":"")+" away":" &middot; This week")
+    +(pattern.length>4?" &middot; "+pattern.length+"-week block":"")+"</div></div></div>";
 
-  for(var w=4;w>=1;w--){
-    var band=ROADMAP.pattern[4-w];
+  for(var i=0;i<pattern.length;i++){
+    var band=pattern[i];
     var bc=BC[band],bg=BG[band];
-    var wkS=new Date(tourn); wkS.setDate(tourn.getDate()-(w*7));
+    var weeksFromNow=pattern.length-1-i;
+    var wkS=new Date(tourn); wkS.setDate(tourn.getDate()-((weeksFromNow+1)*7));
     var wkE=new Date(wkS); wkE.setDate(wkS.getDate()+6);
-    var isCurrent=(wo===w);
+    var isCurrent=(weeksFromNow===wo-1);
     var tgt=WT[ctx][band];
     var wn="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
 
     html+="<div class='week-card"+(isCurrent?" current":"")+"' style='background:"+bg+";border-color:"+(isCurrent?bc:"rgba(255,255,255,0.07)")+"'>"
       +"<div class='week-head'>"
       +"<span class='week-badge' style='background:"+bc+"22;color:"+bc+"'>"+band+"</span>"
-      +"<span class='week-label' style='color:"+(isCurrent?bc:"var(--t)")+"'>"+wn+" "+(isCurrent?"<span style='font-size:10px'>● Current</span>":"")+"</span>"
+      +"<span class='week-label' style='color:"+(isCurrent?bc:"var(--t)")+"'>"+wn+(isCurrent?" <span style='font-size:10px'>● Current</span>":"")+"</span>"
       +"<span class='week-date'>"+fmt(wkS)+" – "+fmt(wkE)+"</span></div>"
-      +"<div style='font-size:11px;color:var(--t2);margin-bottom:10px'>"+ROADMAP.desc[4-w]+"</div>"
+      +"<div style='font-size:11px;color:var(--t2);margin-bottom:10px'>"+phaseDesc(band,pattern.length-i)+"</div>"
       +"<div class='week-metrics'>"
       +wmCell(bc,"Distance",tgt.dist.toLocaleString(),"m")
       +wmCell(bc,"HSR",tgt.hsr.toLocaleString(),"m")
@@ -1243,12 +1255,46 @@ function renderRoadmap(){
     html+="</div>";
   }
   el.innerHTML=html;
+  renderTournamentHistory();
   renderDashboard();
 }
+
+// ── TOURNAMENT HISTORY ──
+var tournamentHistory=[];
+
+function renderTournamentHistory(){
+  var el=document.getElementById("tournament-history");
+  if(!el) return;
+  if(!tournamentHistory.length){
+    el.innerHTML="";
+    return;
+  }
+  var past=tournamentHistory.filter(function(t){
+    return t.date && new Date(t.date)<new Date();
+  }).sort(function(a,b){return new Date(b.date)-new Date(a.date)});
+  if(!past.length){el.innerHTML="";return;}
+  var html="<div style='margin-top:20px'>"
+    +"<div style='font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;font-family:var(--display)'>Past Tournaments</div>"
+    +past.map(function(t){
+      var d=new Date(t.date);
+      var dStr=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
+      return "<div style='display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:9px;background:var(--sf);border:1px solid var(--bd);margin-bottom:6px'>"
+        +"<span style='font-size:16px;flex-shrink:0'>🏆</span>"
+        +"<div style='flex:1;min-width:0'>"
+        +"<div style='font-size:12px;font-weight:700;font-family:var(--display);letter-spacing:.2px'>"+t.name+"</div>"
+        +"<div style='font-size:10px;color:var(--t3);margin-top:1px'>"+dStr+"</div>"
+        +"</div>"
+        +"</div>";
+    }).join("")
+    +"</div>";
+  el.innerHTML=html;
+}
+
 function wmCell(col,lbl,val,unit){
   return "<div class='wm-cell'><div class='wm-lbl'>"+lbl+"</div><div class='wm-val' style='color:"+col+"'>"+val+(unit?"<span style='font-size:9px;opacity:.5;margin-left:2px'>"+unit+"</span>":"")+"</div></div>";
 }
-// ── USER SETTINGS (tournament date/name) ──
+
+// ── USER SETTINGS (tournament date/name + history) ──
 async function loadSettings() {
   if (!currentUser || !SUPABASE_READY) return;
   var result = await sb.from("user_settings").select("*").eq("user_id", currentUser.id).single();
@@ -1256,20 +1302,31 @@ async function loadSettings() {
   var d = result.data;
   if (d.tournament_date) document.getElementById("tourn-date").value = d.tournament_date;
   if (d.tournament_name) document.getElementById("tourn-name").value = d.tournament_name;
+  if (d.tournament_history) tournamentHistory = JSON.parse(d.tournament_history) || [];
   renderWeekStrip();
   renderDashboard();
+  renderTournamentHistory();
 }
 
 async function saveSettings() {
   if (!currentUser || !SUPABASE_READY) return;
   var date = document.getElementById("tourn-date").value;
   var name = document.getElementById("tourn-name").value;
+  // Archive this tournament if it's new (not already in history)
+  if(date && name){
+    var exists=tournamentHistory.some(function(t){return t.date===date&&t.name===name;});
+    if(!exists){
+      tournamentHistory.push({date:date,name:name,savedAt:new Date().toISOString()});
+    }
+  }
   await sb.from("user_settings").upsert({
     user_id: currentUser.id,
     tournament_date: date,
     tournament_name: name,
+    tournament_history: JSON.stringify(tournamentHistory),
     updated_at: new Date().toISOString()
   }, { onConflict: "user_id" });
+  renderTournamentHistory();
 }
 
 function syncRoadmap() {
