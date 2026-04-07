@@ -1329,48 +1329,52 @@ function status(r){
   return            {label:"Low",    color:"var(--s-low)",     icon:"↓"};
 }
 
-// ── TOP-UP SUGGESTIONS — metric-specific, rep-based ──
+// ── TOP-UP SUGGESTIONS — capped to what's appropriate in one session ──
 function topUpSuggestion(metricKey, gap){
   if(gap<=0) return null;
 
   if(metricKey==='hsr'){
-    // MAS 15on15off: ~83m/rep × 0.670 HSR ratio = ~55.6m HSR/rep
-    // 100m OTM: 100m/rep × 0.771 = ~77.1m HSR/rep
-    var r1=Math.min(Math.ceil(gap/55.6),24);
-    var r2=Math.min(Math.ceil(gap/77.1),12);
+    // MAS 15on15off: ~55.6m HSR/rep | 100m OTM: ~77.1m HSR/rep
+    // Cap: 16 reps MAS max, 8 OTM max. Scale to gap but don't chase full week in one hit.
+    var r1=Math.min(Math.ceil(gap/55.6),16);
+    var r2=Math.min(Math.ceil(gap/77.1),8);
+    // If gap is small, keep it light
+    r1=Math.max(r1,4);r2=Math.max(r2,2);
     return{text:'MAS 15on15off ×'+r1+' reps  or  100m OTM ×'+r2+' reps'};
   }
 
   if(metricKey==='vhsr'){
-    // Speed Build Up (40-50m fly): ~40.6m VHSR/rep
-    var r=Math.min(Math.ceil(gap/40.6),10);
+    // Speed Build Ups: ~40.6m VHSR/rep. Max 3 reps per session — CNS demanding.
+    var r=Math.min(Math.ceil(gap/40.6),3);
     r=Math.max(r,2);
     return{text:'Speed Build Ups ×'+r+' reps'};
   }
 
-  if(metricKey==='dist') return null; // no top-up prescribed for distance
+  if(metricKey==='dist') return null;
 
   if(metricKey==='acc'){
-    // Box Drill: 5 acc/rep  |  D Strafe Mungo: 5 acc/rep
-    var r=Math.min(Math.ceil(gap/5),16);
+    // Box Drill: 5 acc/rep | D Strafe Mungo: 5 acc/rep. Max 4 reps each per session.
+    var r=Math.min(Math.ceil(gap/5),4);
+    r=Math.max(r,2);
     return{text:'Box Drill ×'+r+' reps  or  D Strafe Mungo ×'+r+' reps'};
   }
 
   if(metricKey==='hacc'){
-    // Hard accels accumulate naturally — coaching cue only
     return{text:'Focus on intent — sprint off the mark in drills, no specific top-up needed.',isNote:true};
   }
 
   if(metricKey==='dec'||metricKey==='hdec'){
-    // D Strafe Mungo: 5 dec/rep
-    var r=Math.min(Math.ceil(gap/5),16);
+    // D Strafe Mungo: 5 dec/rep. Max 4 reps per session.
+    var r=Math.min(Math.ceil(gap/5),4);
+    r=Math.max(r,2);
     return{text:'D Strafe Mungo ×'+r+' reps'};
   }
 
   if(metricKey==='acl'){
-    // 3v3 Mini: ~17.4 AU/min  |  4v4 Mini: ~22.5 AU/min
-    var m3=Math.min(Math.ceil(gap/17.4),30);
-    var m4=Math.min(Math.ceil(gap/22.5),25);
+    // 3v3: ~17.4 AU/min | 4v4: ~22.5 AU/min. Cap at 20min — these are high load.
+    var m3=Math.min(Math.ceil(gap/17.4),20);
+    var m4=Math.min(Math.ceil(gap/22.5),15);
+    m3=Math.max(m3,5);m4=Math.max(m4,5);
     return{text:'3v3 Mini '+m3+'min  or  4v4 Mini '+m4+'min'};
   }
 
@@ -1531,7 +1535,7 @@ async function getAIPrescription(){
   try{
     var apiKey=typeof GEMINI_KEY!=='undefined'?GEMINI_KEY:'';
     if(!apiKey){throw new Error("GEMINI_KEY not set in config.js");}
-    var res=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+apiKey,{
+    var res=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+apiKey,{
       method:"POST",
       headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
