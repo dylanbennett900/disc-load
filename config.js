@@ -1,0 +1,3 @@
+var SUPABASE_URL = 'https://pfojdysbhnwxyjfgglls.supabase.co';
+var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBmb2pkeXNiaG53eHlqZmdnbGxzIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzUwMjUyNDIsImV4cCI6MjA5MDYwMTI0Mn0.e3_6h6G2-NWs7-0jYi-VtARKVm4k9g_3zKtKNzuH5X8';
+var GEMINI_KEY = 'AIzaSyDD4rfqPRGl_Z_UNc7rcTWkTzy2yKaWf5c';
