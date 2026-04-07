@@ -1540,7 +1540,7 @@ async function getAIPrescription(){
         "Content-Type":"application/json",
         "Authorization":"Bearer "+SUPABASE_ANON_KEY
       },
-      body:JSON.stringify({message:userMsg,system:COACHING_BRIEF})
+      body:JSON.stringify({message:userMsg})
     });
     if(!res.ok){var err=await res.json();throw new Error(err.error||"Edge Function error");}
     var data=await res.json();
