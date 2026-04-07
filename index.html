@@ -1533,26 +1533,24 @@ async function getAIPrescription(){
   var userMsg="Week band: "+band+"\nWeeks to tournament: "+wo+"\nContext level: "+ctx+"\n\nMetrics (actual / target):\n"+metricStr;
 
   try{
-    var apiKey=typeof GEMINI_KEY!=='undefined'?GEMINI_KEY:'';
-    if(!apiKey){throw new Error("GEMINI_KEY not set in config.js");}
-    var res=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key="+apiKey,{
+    var edgeFnUrl=SUPABASE_URL+"/functions/v1/ai-prescription";
+    var res=await fetch(edgeFnUrl,{
       method:"POST",
-      headers:{"Content-Type":"application/json"},
-      body:JSON.stringify({
-        system_instruction:{parts:[{text:COACHING_BRIEF}]},
-        contents:[{role:"user",parts:[{text:userMsg}]}],
-        generationConfig:{maxOutputTokens:400}
-      })
+      headers:{
+        "Content-Type":"application/json",
+        "Authorization":"Bearer "+SUPABASE_ANON_KEY
+      },
+      body:JSON.stringify({message:userMsg,system:COACHING_BRIEF})
     });
+    if(!res.ok){var err=await res.json();throw new Error(err.error||"Edge Function error");}
     var data=await res.json();
-    if(data.error)throw new Error(data.error.message||"Gemini API error");
-    var text=data.candidates[0].content.parts[0].text;
+    var text=data.text;
     var html=text
       .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
       .split("\n\n").map(function(p){return"<p style='margin-bottom:8px'>"+p.replace(/\n/g,"<br>")+"</p>";}).join("");
     output.innerHTML="<div class='ai-result'>"+html+"</div>";
   }catch(e){
-    output.innerHTML="<div class='ai-error'><strong>Prescription unavailable:</strong> "+e.message+". Add GEMINI_KEY to config.js.</div>";
+    output.innerHTML="<div class='ai-error'><strong>Prescription unavailable:</strong> "+e.message+"</div>";
   }
   btn.disabled=false;
   btn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Get Prescription';
