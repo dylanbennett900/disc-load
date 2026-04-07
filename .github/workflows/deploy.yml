@@ -1,9 +1,7 @@
 name: Deploy
-
 on:
   push:
     branches: [main]
-
 jobs:
   deploy:
     runs-on: ubuntu-latest
@@ -11,13 +9,12 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v3
-
       - name: Create config.js
         run: |
           echo "var SUPABASE_URL = '${{ secrets.SUPABASE_URL }}';" > config.js
           echo "var SUPABASE_ANON_KEY = '${{ secrets.SUPABASE_ANON_KEY }}';" >> config.js
+          echo "var GEMINI_KEY = '${{ secrets.GEMINI_KEY }}';" >> config.js
           cat config.js
-
       - name: Deploy to gh-pages
         run: |
           git config user.name "github-actions"
@@ -28,6 +25,7 @@ jobs:
           git checkout gh-pages
           git checkout stash -- config.js
           git checkout main -- index.html
-          git add config.js index.html
+          git checkout main -- supabase-client.js
+          git add config.js index.html supabase-client.js
           git commit -m "Deploy with config" --allow-empty
           git push origin gh-pages
