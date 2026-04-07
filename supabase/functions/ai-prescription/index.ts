@@ -1,28 +1,67 @@
-import { serve } from "std/http";
+import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
 
-// Function to handle CORS 
-const handleCORS = (req: Request) => {
-    const headers = new Headers();
-    headers.set("Access-Control-Allow-Origin", "*");
-    headers.set("Access-Control-Allow-Methods", "GET, POST, OPTIONS");
-    return new Response(null, { headers });
+const corsHeaders = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-// Main handler for the Deno edge function
-serve(async (req: Request) => {
-    if (req.method === "OPTIONS") {
-        return handleCORS(req);
+serve(async (req) => {
+  // Handle CORS preflight
+  if (req.method === "OPTIONS") {
+    return new Response("ok", { headers: corsHeaders });
+  }
+
+  try {
+    const { message, system } = await req.json();
+
+    if (!message) {
+      return new Response(
+        JSON.stringify({ error: "Missing message" }),
+        { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
     }
 
-    const { message, system } = await req.json();
-    const response = await fetch("https://api.gemini.com/v1/message", {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify({ message, system })
-    });
+    const geminiKey = Deno.env.get("GEMINI_KEY");
+    if (!geminiKey) {
+      return new Response(
+        JSON.stringify({ error: "GEMINI_KEY not configured" }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
 
-    const data = await response.json();
-    return new Response(JSON.stringify(data), { headers: { "Content-Type": "application/json" } });
+    const res = await fetch(
+      `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${geminiKey}`,
+      {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          system_instruction: { parts: [{ text: system }] },
+          contents: [{ role: "user", parts: [{ text: message }] }],
+          generationConfig: { maxOutputTokens: 400 },
+        }),
+      }
+    );
+
+    const data = await res.json();
+
+    if (data.error) {
+      return new Response(
+        JSON.stringify({ error: data.error.message }),
+        { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const text = data.candidates?.[0]?.content?.parts?.[0]?.text ?? "";
+
+    return new Response(
+      JSON.stringify({ text }),
+      { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+
+  } catch (e) {
+    return new Response(
+      JSON.stringify({ error: e.message }),
+      { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
+    );
+  }
 });
