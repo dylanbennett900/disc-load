@@ -477,6 +477,40 @@ input,select{font-family:inherit;outline:none}
 /* Stats row used in session mockups in how-to */
 .how-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
 .how-stat{font-size:10px;color:var(--t3)}
+
+/* ── WEEK CALENDAR ── */
+.cal-grid{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth}
+.cal-grid::-webkit-scrollbar{display:none}
+.cal-day{flex-shrink:0;width:118px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;min-height:90px}
+.cal-today{border-color:var(--green) !important;border-width:1.5px !important;box-shadow:0 0 0 2px rgba(5,150,105,0.1),var(--sh) !important}
+.cal-day-head{display:flex;align-items:center;justify-content:space-between;padding:7px 9px 5px;border-bottom:1px solid var(--bd);background:var(--sf2)}
+.cal-day-name{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-family:var(--display)}
+.cal-today .cal-day-name{color:var(--green)}
+.cal-day-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1}
+.cal-today .cal-day-date{color:var(--green)}
+.cal-session{padding:7px 9px;cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:5px;transition:background .15s}
+.cal-session:hover{background:var(--sf3)}
+.cal-session-ico{font-size:12px;flex-shrink:0;padding-top:1px}
+.cal-session-body{flex:1;min-width:0}
+.cal-session-name{font-size:10px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-session-stats{font-size:8px;color:var(--t3);margin-top:2px;line-height:1.4}
+.cal-session-stats b{color:var(--t2);font-weight:600}
+.cal-recovery{padding:8px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
+.cal-recovery-ico{font-size:13px}
+.cal-recovery-lbl{font-size:8px;font-weight:800;color:var(--cyan);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase}
+.cal-recovery-tip{font-size:7.5px;color:var(--t3);line-height:1.4;text-align:center;margin-top:1px}
+.cal-gym{padding:10px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;cursor:pointer}
+.cal-gym:hover{opacity:.8}
+.cal-gym-ico{font-size:13px;opacity:.4}
+.cal-gym-lbl{font-size:8px;font-weight:700;color:var(--t4);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase}
+.cal-gym-link{font-size:7px;color:var(--green);font-weight:600;letter-spacing:.3px;text-decoration:none;opacity:.7}
+.cal-unscheduled{margin-bottom:12px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf);border:1px dashed var(--bd2);box-shadow:var(--sh)}
+.cal-unscheduled-title{font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);margin-bottom:7px;font-family:var(--display)}
+.cal-unsession{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:11px}
+.cal-unsession:last-child{border-bottom:none;padding-bottom:0}
+/* ── ROADMAP PAST WEEKS ── */
+.week-card.past{opacity:0.58;background:var(--sf2) !important}
+.wk-past-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display);background:var(--t4);color:#fff}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -548,7 +582,7 @@ input,select{font-family:inherit;outline:none}
 <!-- ── DASHBOARD ── -->
 <div class="panel on" id="panel-dashboard">
   <div class="ws-outer" id="week-strip"></div>
-  <div id="week-sessions" style="margin-bottom:14px"></div>
+  <div id="week-calendar" style="margin-bottom:14px"></div>
   <div class="sumrow" id="sumrow"></div>
   <div class="tbar" id="tbar"></div>
   <div class="gaugewrap" id="gaugewrap"></div>
@@ -624,7 +658,7 @@ input,select{font-family:inherit;outline:none}
 <!-- ── ROADMAP ── -->
 <div class="panel" id="panel-roadmap">
   <div style="font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:5px;font-family:var(--display)">LOAD ROADMAP</div>
-  <div style="font-size:11px;color:var(--t3);margin-bottom:16px">4-week periodisation leading into your tournament.</div>
+  <div style="font-size:11px;color:var(--t3);margin-bottom:16px">Periodisation plan leading into your tournament.</div>
   <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
     <div class="ff" style="flex:1;min-width:160px"><label>Tournament date</label><input type="date" id="tourn-date" oninput="syncRoadmap()"></div>
     <div class="ff" style="flex:1;min-width:140px"><label>Tournament name</label><input type="text" id="tourn-name" placeholder="e.g. Nationals 2025" oninput="syncRoadmap()"></div>
@@ -1412,13 +1446,14 @@ function renderWeekStrip(){
       +"<div class='wk-band' style='background:rgba(5,150,105,0.1);color:#059669'>current</div>"
       +"<div class='wk-desc'>Set a tournament date in Roadmap</div>"
       +buildBars(T,tgt,"#059669",true)+"</div></div>";
-    renderWeekSessionList();return;
+    renderWeekCalendar();return;
   }
 
   var tourn=new Date(dateEl.value);
   var wo=Math.ceil((tourn-curWs)/(7*24*60*60*1000));
   var tournName=document.getElementById("tourn-name").value||"Tournament";
-  var pattern=generatePeriodisation(Math.max(wo,1));
+  var totalWeeks=Math.max(4,wo);
+  var pattern=generatePeriodisation(totalWeeks);
   var html="<div class='ws-row'>";
 
   for(var i=0;i<pattern.length;i++){
@@ -1440,10 +1475,12 @@ function renderWeekStrip(){
       if(inWk){wkTot.dist+=s.dist;wkTot.hsr+=s.hsr;wkTot.vhsr+=s.vhsr;wkTot.acc+=s.acc;wkTot.acl+=s.acl;}
     });
     var onclickArgs=weekStart(wkS).getTime()+","+wkE2.getTime()+",'"+band+"','"+wn2+"'";
-    html+="<div class='wk"+(isCurrent?" now":"")+"' "
-      +"style='"+(isSelected2?"border-color:"+bc+";border-width:2px;box-shadow:0 0 0 3px "+bc+"22":"")+"' "
+    var isPast=(weeksFromNow>=wo);
+    html+="<div class='wk"+(isCurrent?" now":"")+(isPast?" past":"")+"' "
+      +"style='"+(isPast?"opacity:0.6;":"")+(isSelected2?"border-color:"+bc+";border-width:2px;box-shadow:0 0 0 3px "+bc+"22":"")+"' "
       +"onclick='selectWeek("+onclickArgs+")'>"
       +(isCurrent?"<div class='wk-now-tag' style='background:"+bc+";color:#fff'>NOW</div>":"")
+      +(isPast&&!isCurrent?"<div class='wk-past-tag'>DONE</div>":"")
       +"<div class='wk-head'><div class='wk-iso' style='color:"+bc+"'>"+wn2+"</div>"
       +"<div class='wk-dates'>"+fmt(wkS)+" – "+fmt(wkE2)+"</div></div>"
       +"<div class='wk-band' style='background:"+bc+"18;color:"+bc+"'>"+band+"</div>"
@@ -1457,7 +1494,7 @@ function renderWeekStrip(){
     +"<div style='font-size:8px;color:var(--t3)'>"+fmt(tourn)+"</div>"
     +(wo>0?"<div style='font-size:8px;color:var(--t3)'>"+wo+"w away</div>":"<div style='font-size:8px;color:var(--green)'>This week</div>")
     +"</div></div>";
-  el.innerHTML=html;renderWeekSessionList();
+  el.innerHTML=html;renderWeekCalendar();
 }
 
 function buildBars(T,tgt,bc,showPct){
@@ -1481,33 +1518,85 @@ function buildBars(T,tgt,bc,showPct){
   return h+"</div>";
 }
 
-function renderWeekSessionList(){
-  var wkSess=weekSessions(),el=document.getElementById("week-sessions");
+function renderWeekCalendar(){
+  var el=document.getElementById("week-calendar");
   if(!el)return;
-  var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
-  if(!wkSess.length){
-    el.innerHTML="<div style='font-size:11px;color:var(--t3);padding:6px 2px'>No sessions logged for "+wn+".</div>";
-    return;
+  var range=getSelectedRange(),wkStart2=range.start;
+  var dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var today=new Date();
+  var days=[];
+  for(var d=0;d<7;d++){
+    var dayDate=new Date(wkStart2);
+    dayDate.setDate(wkStart2.getDate()+d);
+    var daySessions=sessions.filter(function(s){
+      if(!s.date)return false;
+      var sd=new Date(s.date);
+      return sd.toDateString()===dayDate.toDateString();
+    });
+    days.push({date:dayDate,sessions:daySessions});
   }
-  el.innerHTML="<div style='font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--t3);margin-bottom:7px;font-family:var(--display)'>"+wn+" — "+wkSess.length+" session"+(wkSess.length!==1?"s":"")+"</div>"
-    +wkSess.map(function(s){
-      var ig=s.type==="game";
-      var b=ig&&BM[s.lvl]?BM[s.lvl]:null;
-      var badge=b?"<span style='font-size:9px;font-weight:700;padding:1px 6px;border-radius:3px;margin-left:5px;color:"+b.color+";background:"+b.color+"18'>"+b.label+"</span>":"";
-      return "<div style='display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius-sm);background:var(--sf);border:1px solid var(--bd);margin-bottom:5px;box-shadow:var(--sh);flex-wrap:wrap'>"
-        +"<span style='font-size:14px'>"+(ig?"🏆":"🏃")+"</span>"
-        +"<span style='font-size:12px;font-weight:700;flex:1;min-width:0;color:var(--t)'>"+(s.label||"Session")+badge+"</span>"
-        +"<span style='font-size:10px;color:var(--t3);display:flex;gap:8px;flex-wrap:wrap'>"
-        +"<span>Dist <b style='color:var(--cyan)'>"+s.dist+"m</b></span>"
-        +"<span>HSR <b style='color:var(--green)'>"+s.hsr+"m</b></span>"
-        +"<span>VHSR <b style='color:var(--amber)'>"+s.vhsr+"m</b></span>"
-        +(ig?"<span>Pts <b style='color:var(--gold)'>"+s.pts+"</b></span>":"")
-        +"<span>Acc <b style='color:var(--purple)'>"+s.acc+"</b></span>"
-        +"</span>"
-        +"<button class='btnedit' onclick='editSession("+s.id+")'>Edit</button>"
-        +"<button class='btnx' onclick='removeSession("+s.id+")'>×</button>"
+  var undated=sessions.filter(function(s){return!s.date&&isCurrentWeekSelected();});
+  var recoveryDays={};
+  days.forEach(function(day,i){
+    var hard=day.sessions.find(function(s){return s.type==='game'||s.vhsr>150||s.acl>2500;});
+    if(hard&&i<6)recoveryDays[i+1]={reason:hard.type==='game'?'post-game':'post-high-load'};
+  });
+  var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
+  var hasSessions=weekSessions().length>0||undated.length>0;
+  var html="<div style='font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;font-family:var(--display)'>"+wn+" \u2014 Week View</div>";
+  html+="<div class='cal-grid' id='cal-grid-inner'>";
+  days.forEach(function(day,i){
+    var isToday=day.date.toDateString()===today.toDateString();
+    var hasRecovery=recoveryDays[i];
+    var isEmpty=!day.sessions.length;
+    var showGym=isEmpty&&!hasRecovery;
+    html+="<div class='cal-day"+(isToday?" cal-today":"")+"'>";
+    html+="<div class='cal-day-head'><span class='cal-day-name'>"+dayNames[i]+"</span><span class='cal-day-date'>"+day.date.getDate()+"</span></div>";
+    day.sessions.forEach(function(s){
+      var ig=s.type==='game';
+      html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
+        +"<span class='cal-session-ico'>"+(ig?"\uD83C\uDFC6":"\uD83C\uDFC3")+"</span>"
+        +"<div class='cal-session-body'>"
+        +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
+        +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"+(s.vhsr>0?" \u00b7 VHSR <b>"+s.vhsr+"m</b>":"")+(ig?" \u00b7 <b>"+s.pts+"pts</b>":"")+"</div>"
+        +"</div></div>";
+    });
+    if(hasRecovery&&isEmpty){
+      var tip=hasRecovery.reason==='post-game'?"Flush run @HR<135 or cold":"Active flush or mobility";
+      html+="<div class='cal-recovery'><div class='cal-recovery-ico'>\uD83D\uDD04</div><div class='cal-recovery-lbl'>Recovery</div><div class='cal-recovery-tip'>"+tip+"</div></div>";
+    }
+    if(showGym){
+      html+="<div class='cal-gym' onclick=\"window.open('https://dylanbennett900.github.io/dbsp','_blank')\">"
+        +"<div class='cal-gym-ico'>\uD83D\uDCAA</div>"
+        +"<div class='cal-gym-lbl'>Gym?</div>"
+        +"<a class='cal-gym-link' href='https://dylanbennett900.github.io/dbsp' target='_blank'>DBSP Programs</a>"
         +"</div>";
-    }).join("");
+    }
+    html+="</div>";
+  });
+  html+="</div>";
+  if(undated.length){
+    html+="<div class='cal-unscheduled'><div class='cal-unscheduled-title'>Unscheduled this week</div>"
+      +undated.map(function(s){
+        var ig=s.type==='game';
+        return "<div class='cal-unsession'>"
+          +"<span style='font-size:14px'>"+(ig?"\uD83C\uDFC6":"\uD83C\uDFC3")+"</span>"
+          +"<span style='font-size:11px;font-weight:700;flex:1;color:var(--t)'>"+(s.label||"Session")+"</span>"
+          +"<span style='font-size:10px;color:var(--t3)'>HSR <b style='color:var(--green)'>"+s.hsr+"m</b></span>"
+          +"<button class='btnedit' onclick='editSession("+s.id+")' style='margin-left:6px'>Edit</button>"
+          +"</div>";
+      }).join("")
+      +"<div style='font-size:9px;color:var(--t4);margin-top:6px'>Add a date to place sessions on the calendar.</div>"
+      +"</div>";
+  }
+  if(!hasSessions){
+    html+="<div style='font-size:11px;color:var(--t3);padding:4px 2px 12px'>No sessions logged for "+wn+". Log one in the Sessions tab.</div>";
+  }
+  el.innerHTML=html;
+  setTimeout(function(){
+    var grid=document.getElementById("cal-grid-inner");
+    if(grid){var t=grid.querySelector(".cal-today");if(t)t.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});}
+  },50);
 }
 
 // ── AI PRESCRIPTION ──
@@ -1709,7 +1798,8 @@ function renderRoadmap(){
   var fmt=function(d){return d.toLocaleDateString("en-AU",{weekday:"short",day:"numeric",month:"short"});};
   var BC={high:"#059669",moderate:"#d97706",low:"#64748b"};
   var BG={high:"rgba(5,150,105,0.04)",moderate:"rgba(217,119,6,0.04)",low:"rgba(100,116,139,0.04)"};
-  var pattern=generatePeriodisation(Math.max(wo,1));
+  var totalWeeks=Math.max(4,wo);
+  var pattern=generatePeriodisation(totalWeeks);
 
   var html="<div style='padding:13px 16px;border-radius:var(--radius);background:rgba(161,98,7,0.06);border:1.5px solid rgba(161,98,7,0.2);margin-bottom:14px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh)'>"
     +"<span style='font-size:20px'>🏆</span>"
@@ -1726,9 +1816,18 @@ function renderRoadmap(){
     var tgt=WT[ctx][band];
     var wn="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
 
-    html+="<div class='week-card"+(isCurrent?" current":"")+"' style='background:"+bg+";border-color:"+(isCurrent?bc:"var(--bd)")+(isCurrent?";border-width:2px":"")+"'>"
+    var isPastWk=(weeksFromNow>=wo);
+    var wkAchieved={dist:0,hsr:0,vhsr:0,acc:0,acl:0};
+    sessions.forEach(function(s){
+      var inWk=false;
+      if(!s.date)inWk=isCurrent;
+      else{var sd=new Date(s.date);inWk=sd>=wkS&&sd<=wkE;}
+      if(inWk){wkAchieved.dist+=s.dist;wkAchieved.hsr+=s.hsr;wkAchieved.vhsr+=s.vhsr;wkAchieved.acc+=s.acc;wkAchieved.acl+=s.acl;}
+    });
+    html+="<div class='week-card"+(isCurrent?" current":"")+(isPastWk?" past":"")+"' style='background:"+bg+";border-color:"+(isCurrent?bc:isPastWk?"var(--bd3)":"var(--bd)")+(isCurrent?";border-width:2px":"")+"'>"
       +"<div class='week-head'>"
       +"<span class='week-badge' style='background:"+bc+"1a;color:"+bc+"'>"+band+"</span>"
+      +(isPastWk?"<span class='week-badge' style='background:rgba(100,116,139,0.1);color:var(--t4);margin-left:2px'>&#10003; Done</span>":"")
       +"<span class='week-label' style='color:"+(isCurrent?bc:"var(--t)")+"'>"+wn+(isCurrent?" <span style='font-size:10px'>● Now</span>":"")+"</span>"
       +"<span class='week-date'>"+fmt(wkS)+" – "+fmt(wkE)+"</span></div>"
       +"<div style='font-size:11px;color:var(--t2);margin-bottom:10px;line-height:1.55'>"+phaseDesc(band,pattern.length-i)+"</div>"
@@ -1753,6 +1852,16 @@ function renderRoadmap(){
       html+="</div>";
     }
     html+="</div>";
+    if(isPastWk&&(wkAchieved.hsr>0||wkAchieved.dist>0)){
+      var agaps=[{k:"dist",lbl:"Dist",u:"m"},{k:"hsr",lbl:"HSR",u:"m"},{k:"vhsr",lbl:"VHSR",u:"m"},{k:"acc",lbl:"Acc",u:""},{k:"acl",lbl:"AL",u:"AU"}];
+      html+="<div class='gap-row' style='margin-top:6px'><span style='font-size:10px;font-weight:700;color:var(--t3);margin-right:4px'>Achieved:</span>";
+      agaps.forEach(function(g){
+        var pct=Math.round((wkAchieved[g.k]||0)/Math.max(tgt[g.k],1)*100);
+        var col=pct>=85?"var(--green)":pct>=50?"var(--s-moderate)":"var(--s-low)";
+        html+="<span class='gap-m'>"+g.lbl+" <b style='color:"+col+"'>"+pct+"%</b></span>";
+      });
+      html+="</div>";
+    }
   }
   el.innerHTML=html;renderTournamentHistory();renderDashboard();
 }
