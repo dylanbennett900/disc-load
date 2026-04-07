@@ -480,6 +480,7 @@ input,select{font-family:inherit;outline:none}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script src="supabase-client.js"></script>
 </head>
 <body>
 <div class="save-indicator" id="save-indicator"></div>
@@ -1244,11 +1245,25 @@ function renderAuthUI(){
 }
 
 if(SUPABASE_READY){
-  sb.auth.onAuthStateChange(function(event,session){
-    currentUser=session?session.user:null;renderAuthUI();loadSessions();
+  sb.auth.onAuthStateChange(async function(event,session){
+    currentUser=session?session.user:null;
+    renderAuthUI();
+    if(currentUser&&typeof getUserContext==="function"){
+      ctx=await getUserContext();
+      document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
+      document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
+    }
+    loadSessions();
   });
-  sb.auth.getSession().then(function(result){
-    currentUser=result.data.session?result.data.session.user:null;renderAuthUI();loadSessions();
+  sb.auth.getSession().then(async function(result){
+    currentUser=result.data.session?result.data.session.user:null;
+    renderAuthUI();
+    if(currentUser&&typeof getUserContext==="function"){
+      ctx=await getUserContext();
+      document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
+      document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
+    }
+    loadSessions();
   });
 } else {
   sessions=DEMO_SESSIONS.slice();renderAuthUI();renderAll();
@@ -1514,32 +1529,26 @@ async function getAIPrescription(){
   var userMsg="Week band: "+band+"\nWeeks to tournament: "+wo+"\nContext level: "+ctx+"\n\nMetrics (actual / target):\n"+metricStr;
 
   try{
-    var apiKey=typeof ANTHROPIC_KEY!=='undefined'?ANTHROPIC_KEY:'';
-    if(!apiKey){throw new Error("ANTHROPIC_KEY not set in config.js");}
-    var res=await fetch("https://api.anthropic.com/v1/messages",{
+    var apiKey=typeof GEMINI_KEY!=='undefined'?GEMINI_KEY:'';
+    if(!apiKey){throw new Error("GEMINI_KEY not set in config.js");}
+    var res=await fetch("https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key="+apiKey,{
       method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "x-api-key":apiKey,
-        "anthropic-version":"2023-06-01",
-        "anthropic-dangerous-direct-browser-access":"true"
-      },
+      headers:{"Content-Type":"application/json"},
       body:JSON.stringify({
-        model:"claude-sonnet-4-20250514",
-        max_tokens:400,
-        system:COACHING_BRIEF,
-        messages:[{role:"user",content:userMsg}]
+        system_instruction:{parts:[{text:COACHING_BRIEF}]},
+        contents:[{role:"user",parts:[{text:userMsg}]}],
+        generationConfig:{maxOutputTokens:400}
       })
     });
     var data=await res.json();
-    if(data.error)throw new Error(data.error.message);
-    var text=data.content[0].text;
+    if(data.error)throw new Error(data.error.message||"Gemini API error");
+    var text=data.candidates[0].content.parts[0].text;
     var html=text
       .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
       .split("\n\n").map(function(p){return"<p style='margin-bottom:8px'>"+p.replace(/\n/g,"<br>")+"</p>";}).join("");
     output.innerHTML="<div class='ai-result'>"+html+"</div>";
   }catch(e){
-    output.innerHTML="<div class='ai-error'><strong>Prescription unavailable:</strong> "+e.message+". Add ANTHROPIC_KEY to config.js.</div>";
+    output.innerHTML="<div class='ai-error'><strong>Prescription unavailable:</strong> "+e.message+". Add GEMINI_KEY to config.js.</div>";
   }
   btn.disabled=false;
   btn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Get Prescription';
@@ -1772,25 +1781,27 @@ function wmCell(col,lbl,val,unit){
 // ── USER SETTINGS ──
 async function loadSettings(){
   if(!currentUser||!SUPABASE_READY)return;
-  var result=await sb.from("user_settings").select("*").eq("user_id",currentUser.id).single();
-  if(result.error||!result.data)return;
-  var d=result.data;
-  if(d.tournament_date)document.getElementById("tourn-date").value=d.tournament_date;
-  if(d.tournament_name)document.getElementById("tourn-name").value=d.tournament_name;
-  if(d.tournament_history)tournamentHistory=JSON.parse(d.tournament_history)||[];
+  if(typeof getTournaments!=="function")return;
+  var all=await getTournaments();
+  tournamentHistory=all.map(function(t){return{name:t.name,date:t.date};});
+  // Set the next upcoming tournament as active
+  var upcoming=all.filter(function(t){return new Date(t.date)>=new Date();})
+    .sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  if(upcoming.length){
+    document.getElementById("tourn-date").value=upcoming[0].date;
+    document.getElementById("tourn-name").value=upcoming[0].name;
+  }
   renderWeekStrip();renderDashboard();renderTournamentHistory();
 }
 async function saveSettings(){
   if(!currentUser||!SUPABASE_READY)return;
-  var date=document.getElementById("tourn-date").value,name=document.getElementById("tourn-name").value;
-  if(date&&name){
+  var date=document.getElementById("tourn-date").value;
+  var name=document.getElementById("tourn-name").value;
+  if(date&&name&&typeof saveTournament==="function"){
+    await saveTournament(name,date);
     var exists=tournamentHistory.some(function(t){return t.date===date&&t.name===name;});
-    if(!exists)tournamentHistory.push({date:date,name:name,savedAt:new Date().toISOString()});
+    if(!exists)tournamentHistory.push({name:name,date:date});
   }
-  await sb.from("user_settings").upsert({
-    user_id:currentUser.id,tournament_date:date,tournament_name:name,
-    tournament_history:JSON.stringify(tournamentHistory),updated_at:new Date().toISOString()
-  },{onConflict:"user_id"});
   renderTournamentHistory();
 }
 function syncRoadmap(){renderRoadmap();renderWeekStrip();saveSettings();}
@@ -2140,6 +2151,7 @@ function setContext(c){
   document.getElementById("ctx-international").className="lp"+(c==="international"?" on":"");
   document.getElementById("ctx-domestic").className="lp"+(c==="domestic"?" on":"");
   renderAll();
+  if(currentUser&&typeof setUserContext==="function")setUserContext(c);
 }
 function switchTab(name,el){
   document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
