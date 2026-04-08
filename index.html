@@ -478,32 +478,113 @@ input,select{font-family:inherit;outline:none}
 .how-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
 .how-stat{font-size:10px;color:var(--t3)}
 
-/* ── WEEK CALENDAR ── */
+/* ── ACTION STRIP ── */
+.action-strip{display:flex;gap:8px;margin-bottom:12px;align-items:stretch}
+.sr-trigger-btn{
+  flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;
+  padding:10px 16px;border-radius:20px;background:transparent;
+  border:1.5px solid var(--cyan);color:var(--cyan);
+  font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;
+  transition:all .18s;box-shadow:0 2px 8px rgba(2,132,199,0.12);cursor:pointer;
+}
+.sr-trigger-btn:hover{background:rgba(2,132,199,0.07)}
+.action-strip .ai-btn{flex:1}
+.sr-panel{
+  background:var(--sf);border-radius:var(--radius);
+  border:1.5px solid rgba(2,132,199,0.2);
+  box-shadow:var(--sh-md);overflow:hidden;margin-bottom:12px;
+}
+.sr-panel-head{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:12px 14px 10px;
+  background:linear-gradient(135deg,rgba(2,132,199,0.05),rgba(124,58,237,0.04));
+  border-bottom:1px solid var(--bd);
+}
+.sr-panel-title{font-size:13px;font-weight:800;color:var(--t);font-family:var(--display);letter-spacing:.5px}
+.sr-panel-sub{font-size:10px;color:var(--t3);margin-top:1px}
+.sr-panel-body{padding:13px 14px}
+.sr-state-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:2px}
+.sr-state-btn{
+  flex:1;min-width:80px;
+  padding:12px 10px;border-radius:var(--radius-sm);
+  border:1.5px solid;background:transparent;
+  font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:.3px;
+  cursor:pointer;transition:all .18s;
+  display:flex;flex-direction:column;align-items:center;gap:4px;
+}
+.sr-state-btn .sr-btn-label{font-size:11px;font-weight:800;letter-spacing:.5px}
+.sr-state-btn .sr-btn-desc{font-size:8px;font-weight:500;opacity:.7;letter-spacing:.3px;text-align:center;line-height:1.3}
+.sr-state-btn:hover{filter:brightness(.96)}
+.sr-state-btn:active{transform:scale(.97)}
+.sr-protocol{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
+.sr-protocol-opt{
+  display:flex;align-items:baseline;gap:9px;
+  padding:8px 11px;border-radius:var(--radius-xs);
+  background:var(--sf3);border:1px solid var(--bd);
+  font-size:12px;color:var(--t2);line-height:1.5;
+}
+.sr-protocol-num{font-family:var(--mono);font-size:10px;font-weight:700;min-width:14px;flex-shrink:0}
+.sr-change-btn{
+  background:transparent;border:none;font-size:10px;
+  color:var(--t3);text-decoration:underline;
+  cursor:pointer;font-family:var(--body);padding:0;margin-top:2px;
+}
+.sr-change-btn:hover{color:var(--t2)}
+.sr-confirmed{
+  display:flex;align-items:center;gap:10px;
+  padding:10px 13px;border-radius:var(--radius-sm);
+  background:var(--sf3);border:1px solid var(--bd2);
+  font-size:11px;color:var(--t2);margin-bottom:6px;
+}
+.rec-state-btns{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.rec-state-btn{
+  padding:4px 9px;border-radius:5px;font-size:8px;font-weight:800;
+  font-family:var(--display);letter-spacing:.5px;border:1.5px solid;
+  background:transparent;cursor:pointer;transition:all .15s;
+}
+.rec-state-btn:active{opacity:.7;transform:scale(.97)}
+.rec-protocol{margin-top:5px;display:flex;flex-direction:column;gap:2px}
+.rec-protocol-opt{font-size:8px;color:var(--t2);line-height:1.45;display:flex;align-items:baseline;gap:4px}
+.rec-protocol-num{font-family:var(--mono);font-size:7px;font-weight:700;min-width:10px;flex-shrink:0}
+.rec-change{font-size:7px;color:var(--t4);text-decoration:underline;cursor:pointer;margin-top:4px;display:inline-block;background:none;border:none;padding:0;font-family:var(--body)}
+.rec-change:hover{color:var(--t3)}
+
+/* ── WEEK CALENDAR — AM/PM SPLIT ── */
 .cal-grid{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth}
 .cal-grid::-webkit-scrollbar{display:none}
-.cal-day{flex-shrink:0;width:118px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;min-height:90px}
+.cal-day{flex-shrink:0;width:112px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
 .cal-today{border-color:var(--green) !important;border-width:1.5px !important;box-shadow:0 0 0 2px rgba(5,150,105,0.1),var(--sh) !important}
 .cal-day-head{display:flex;align-items:center;justify-content:space-between;padding:7px 9px 5px;border-bottom:1px solid var(--bd);background:var(--sf2)}
 .cal-day-name{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-family:var(--display)}
 .cal-today .cal-day-name{color:var(--green)}
 .cal-day-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1}
 .cal-today .cal-day-date{color:var(--green)}
-.cal-session{padding:7px 9px;cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:5px;transition:background .15s}
+/* AM/PM slot structure */
+.cal-slot{border-bottom:1px solid var(--bd)}
+.cal-slot:last-child{border-bottom:none}
+.cal-slot-row{display:flex;min-height:38px}
+.cal-slot-label{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);font-family:var(--mono);border-right:1px solid var(--bd);background:var(--sf2)}
+.cal-slot-content{flex:1;min-width:0}
+.cal-ico{display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-top:1px}
+/* Session card */
+.cal-session{padding:6px 7px;cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:5px;transition:background .15s}
+.cal-session:last-child{border-bottom:none}
 .cal-session:hover{background:var(--sf3)}
-.cal-session-ico{font-size:12px;flex-shrink:0;padding-top:1px}
 .cal-session-body{flex:1;min-width:0}
-.cal-session-name{font-size:10px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cal-session-stats{font-size:8px;color:var(--t3);margin-top:2px;line-height:1.4}
+.cal-session-name{font-size:9px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-session-stats{font-size:7px;color:var(--t3);margin-top:2px;line-height:1.4}
 .cal-session-stats b{color:var(--t2);font-weight:600}
-.cal-recovery{padding:8px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
-.cal-recovery-ico{font-size:13px}
-.cal-recovery-lbl{font-size:8px;font-weight:800;color:var(--cyan);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase}
-.cal-recovery-tip{font-size:7.5px;color:var(--t3);line-height:1.4;text-align:center;margin-top:1px}
-.cal-gym{padding:10px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;cursor:pointer}
-.cal-gym:hover{opacity:.8}
-.cal-gym-ico{font-size:13px;opacity:.4}
-.cal-gym-lbl{font-size:8px;font-weight:700;color:var(--t4);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase}
-.cal-gym-link{font-size:7px;color:var(--green);font-weight:600;letter-spacing:.3px;text-decoration:none;opacity:.7}
+/* Recovery (AM slot) */
+.cal-recovery{padding:6px 7px;display:flex;align-items:flex-start;gap:5px}
+.cal-recovery-lbl{font-size:8px;font-weight:800;color:var(--cyan);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase;line-height:1.3}
+.cal-recovery-tip{font-size:7px;color:var(--t3);line-height:1.45;margin-top:1px}
+/* Gym suggestion (AM slot) */
+.cal-gym{padding:6px 7px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:background .15s}
+.cal-gym:hover{background:var(--sf3)}
+.cal-gym-link{font-size:7.5px;color:var(--green);font-weight:600;letter-spacing:.3px;text-decoration:none;opacity:.65;pointer-events:none}
+/* Empty PM placeholder */
+.cal-empty-pm{padding:6px 7px;font-size:9px;color:var(--bd2);font-family:var(--mono);display:flex;align-items:center;justify-content:center;min-height:28px}
+/* Unscheduled */
 .cal-unscheduled{margin-bottom:12px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf);border:1px dashed var(--bd2);box-shadow:var(--sh)}
 .cal-unscheduled-title{font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);margin-bottom:7px;font-family:var(--display)}
 .cal-unsession{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:11px}
@@ -581,33 +662,46 @@ input,select{font-family:inherit;outline:none}
 
 <!-- ── DASHBOARD ── -->
 <div class="panel on" id="panel-dashboard">
+
+  <!-- ACTION STRIP -->
+  <div class="action-strip">
+    <button class="sr-trigger-btn" id="sr-trigger-btn" onclick="toggleSelfReport()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:inline-block;vertical-align:-2px;flex-shrink:0"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="var(--cyan)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/></svg>
+      How are you feeling?
+    </button>
+    <button class="ai-btn" id="ai-prescribe-btn" onclick="getAIPrescription()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      Get Prescription
+    </button>
+  </div>
+
+  <!-- SELF-REPORT PANEL -->
+  <div id="self-report-panel" style="display:none">
+    <div class="sr-panel">
+      <div class="sr-panel-head">
+        <div>
+          <div class="sr-panel-title">Recovery Check-In</div>
+          <div class="sr-panel-sub">Log how you're feeling — get your protocol for today</div>
+        </div>
+        <button onclick="toggleSelfReport()" style="background:transparent;border:none;color:var(--t4);font-size:20px;cursor:pointer;line-height:1;padding:0 2px">&times;</button>
+      </div>
+      <div class="sr-panel-body" id="sr-panel-inner"></div>
+    </div>
+  </div>
+
+  <!-- AI PRESCRIPTION OUTPUT -->
+  <div id="ai-prescription-output"></div>
+
+  <!-- WEEK STRIP + CALENDAR -->
   <div class="ws-outer" id="week-strip"></div>
   <div id="week-calendar" style="margin-bottom:14px"></div>
+
+  <!-- SUMMARY + GAUGES -->
   <div class="sumrow" id="sumrow"></div>
   <div class="tbar" id="tbar"></div>
   <div class="gaugewrap" id="gaugewrap"></div>
 
-  <!-- AI Prescription -->
-  <div class="ai-card">
-    <div class="ai-card-head">
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
-        <circle cx="11" cy="11" r="9" stroke="#059669" stroke-width="1.5"/>
-        <path d="M7 11h8M11 7v8" stroke="#0284c7" stroke-width="1.5" stroke-linecap="round"/>
-      </svg>
-      <div>
-        <div class="ai-card-title">COACHING PRESCRIPTION</div>
-        <div class="ai-card-sub">Personalised drill prescription based on your current week load</div>
-      </div>
-    </div>
-    <div class="ai-card-body">
-      <button class="ai-btn" id="ai-prescribe-btn" onclick="getAIPrescription()">
-        <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
-        Get Prescription
-      </button>
-      <div id="ai-prescription-output"></div>
-    </div>
-  </div>
-
+  <!-- WEEKLY PRESCRIPTION -->
   <div class="rectitle">WEEKLY PRESCRIPTION</div>
   <div id="recswrap"></div>
 </div>
@@ -1022,6 +1116,16 @@ Session 2 (Intensive): 2 × Speed Build Ups + 4 × D Strafe Mungo + 4 × Box Dri
 **Note (if relevant):** Recovery recommendation if load is high, or a flag if chronic concern.
 
 Keep it under 150 words. Athletes read this on their phone.`;
+
+// ── RECOVERY PROTOCOLS ──
+var RECOVERY_PROTOCOLS = {
+  good:    {label:"Feeling Good",color:"#059669",desc:"Ready to train — no recovery needed.",btnDesc:"Fresh / ready",   options:["No specific recovery needed","Focus on quality in your next session","Optional: light mobility or walk if you want"]},
+  fatigued:{label:"Fatigued",   color:"#0284c7",desc:"Feeling flat or heavy legs — flush and rest.",btnDesc:"Flat / heavy legs",options:["5–10 min cold exposure","25 min flush run/bike @HR <135 bpm","Sleep (prioritise)"]},
+  sore:    {label:"Sore",       color:"#d97706",desc:"Muscle soreness — contrast and mobilise.",btnDesc:"Muscle soreness",  options:["8–12 min cold exposure","2 min hot \u2192 4 min cold, repeat \xd72","20 min mobility/flex + foam roll"]},
+  both:    {label:"Both",       color:"#7c3aed",desc:"Fatigued and sore — full recovery protocol.",btnDesc:"Fatigued + sore",options:["2 min hot \u2192 2 min cold, repeat \xd74","Sleep w/ compression","10 min flush @HR <135 + 10 min mobility + foam roll"]}
+};
+var recoveryStates = {};
+var srPanelOpen = false;
 
 // ── GAME BENCHMARKS — per-point rates from match demand matrix ──
 var BM={
@@ -1524,6 +1628,16 @@ function renderWeekCalendar(){
   var range=getSelectedRange(),wkStart2=range.start;
   var dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   var today=new Date();
+
+  // SVG icon set — no emoji
+  var ICO={
+    disc:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><ellipse cx="7" cy="9.5" rx="5.5" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 9.5Q3.5 4.5 7 4Q10.5 4.5 12.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>',
+    pulse:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><polyline points="1,7 4,7 5.5,3.5 7.5,10.5 9,7 13,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    barbell:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.5"/><rect x="4.5" y="4.2" width="5" height="5.6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x=".5" y="5" width="2" height="4" rx=".6" fill="currentColor"/><rect x="11.5" y="5" width="2" height="4" rx=".6" fill="currentColor"/></svg>',
+    wave:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".3"/></svg>'
+  };
+  function sIco(s){return s.type==='game'?ICO.disc:ICO.pulse;}
+
   var days=[];
   for(var d=0;d<7;d++){
     var dayDate=new Date(wkStart2);
@@ -1536,51 +1650,112 @@ function renderWeekCalendar(){
     days.push({date:dayDate,sessions:daySessions});
   }
   var undated=sessions.filter(function(s){return!s.date&&isCurrentWeekSelected();});
+
+  // Recovery day = morning after a hard session
   var recoveryDays={};
   days.forEach(function(day,i){
-    var hard=day.sessions.find(function(s){return s.type==='game'||s.vhsr>150||s.acl>2500;});
+    var hard=day.sessions.find(function(s){
+      return s.type==='game'||s.vhsr>150||s.acl>2500;
+    });
     if(hard&&i<6)recoveryDays[i+1]={reason:hard.type==='game'?'post-game':'post-high-load'};
   });
+
   var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
   var hasSessions=weekSessions().length>0||undated.length>0;
+
   var html="<div style='font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;font-family:var(--display)'>"+wn+" \u2014 Week View</div>";
   html+="<div class='cal-grid' id='cal-grid-inner'>";
+
   days.forEach(function(day,i){
     var isToday=day.date.toDateString()===today.toDateString();
     var hasRecovery=recoveryDays[i];
-    var isEmpty=!day.sessions.length;
-    var showGym=isEmpty&&!hasRecovery;
+    var dayDateStr=day.date.toISOString().split('T')[0];
+    var pmSessions=day.sessions;
+
     html+="<div class='cal-day"+(isToday?" cal-today":"")+"'>";
-    html+="<div class='cal-day-head'><span class='cal-day-name'>"+dayNames[i]+"</span><span class='cal-day-date'>"+day.date.getDate()+"</span></div>";
-    day.sessions.forEach(function(s){
-      var ig=s.type==='game';
-      html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
-        +"<span class='cal-session-ico'>"+(ig?"\uD83C\uDFC6":"\uD83C\uDFC3")+"</span>"
-        +"<div class='cal-session-body'>"
-        +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
-        +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"+(s.vhsr>0?" \u00b7 VHSR <b>"+s.vhsr+"m</b>":"")+(ig?" \u00b7 <b>"+s.pts+"pts</b>":"")+"</div>"
-        +"</div></div>";
-    });
-    if(hasRecovery&&isEmpty){
-      var tip=hasRecovery.reason==='post-game'?"Flush run @HR<135 or cold":"Active flush or mobility";
-      html+="<div class='cal-recovery'><div class='cal-recovery-ico'>\uD83D\uDD04</div><div class='cal-recovery-lbl'>Recovery</div><div class='cal-recovery-tip'>"+tip+"</div></div>";
-    }
-    if(showGym){
+
+    // Day header
+    html+="<div class='cal-day-head'>"
+      +"<span class='cal-day-name'>"+dayNames[i]+"</span>"
+      +"<span class='cal-day-date'>"+day.date.getDate()+"</span>"
+      +"</div>";
+
+    // AM slot
+    html+="<div class='cal-slot'>"
+      +"<div class='cal-slot-row'>"
+      +"<div class='cal-slot-label'>AM</div>"
+      +"<div class='cal-slot-content'>";
+
+    if(hasRecovery){
+      var recState=recoveryStates[dayDateStr];
+      var reasonLabel=hasRecovery.reason==='post-game'?'Post-game':'Post-high-load';
+      if(!recState){
+        html+="<div class='cal-recovery' style='align-items:flex-start'>"
+          +"<span class='cal-ico' style='color:var(--cyan);margin-top:1px'>"+ICO.wave+"</span>"
+          +"<div style='flex:1;min-width:0'>"
+          +"<div class='cal-recovery-lbl'>"+reasonLabel+" recovery</div>"
+          +"<div class='cal-recovery-tip' style='margin-bottom:2px'>How are you feeling?</div>"
+          +"<div class='rec-state-btns'>"
+          +"<button class='rec-state-btn' style='border-color:#059669;color:#059669' onclick='setRecoveryState(\""+dayDateStr+"\",\"good\")'>Good</button>"
+          +"<button class='rec-state-btn' style='border-color:#0284c7;color:#0284c7' onclick='setRecoveryState(\""+dayDateStr+"\",\"fatigued\")'>Fatigued</button>"
+          +"<button class='rec-state-btn' style='border-color:#d97706;color:#d97706' onclick='setRecoveryState(\""+dayDateStr+"\",\"sore\")'>Sore</button>"
+          +"<button class='rec-state-btn' style='border-color:#7c3aed;color:#7c3aed' onclick='setRecoveryState(\""+dayDateStr+"\",\"both\")'>Both</button>"
+          +"</div></div></div>";
+      } else {
+        var proto=RECOVERY_PROTOCOLS[recState];
+        html+="<div class='cal-recovery' style='align-items:flex-start'>"
+          +"<span class='cal-ico' style='color:"+proto.color+";margin-top:1px'>"+ICO.wave+"</span>"
+          +"<div style='flex:1;min-width:0'>"
+          +"<div class='cal-recovery-lbl' style='color:"+proto.color+"'>Recovery \u2014 "+proto.label+"</div>"
+          +"<div class='rec-protocol'>"
+          +proto.options.map(function(o,idx){return"<div class='rec-protocol-opt'><span class='rec-protocol-num' style='color:"+proto.color+"'>"+(idx+1)+".</span><span>"+o+"</span></div>";}).join("")
+          +"</div>"
+          +"<button class='rec-change' onclick='setRecoveryState(\""+dayDateStr+"\",null)'>\u21ba change</button>"
+          +"</div></div>";
+      }
+    } else {
       html+="<div class='cal-gym' onclick=\"window.open('https://dylanbennett900.github.io/dbsp','_blank')\">"
-        +"<div class='cal-gym-ico'>\uD83D\uDCAA</div>"
-        +"<div class='cal-gym-lbl'>Gym?</div>"
-        +"<a class='cal-gym-link' href='https://dylanbennett900.github.io/dbsp' target='_blank'>DBSP Programs</a>"
+        +"<span class='cal-ico' style='color:var(--t4)'>"+ICO.barbell+"</span>"
+        +"<a class='cal-gym-link' href='https://dylanbennett900.github.io/dbsp' target='_blank'>DBSP gym</a>"
         +"</div>";
     }
-    html+="</div>";
+
+    html+="</div></div></div>"; // cal-slot-content, cal-slot-row, cal-slot
+
+    // PM slot
+    html+="<div class='cal-slot'>"
+      +"<div class='cal-slot-row'>"
+      +"<div class='cal-slot-label'>PM</div>"
+      +"<div class='cal-slot-content'>";
+
+    if(pmSessions.length){
+      pmSessions.forEach(function(s){
+        var ig=s.type==='game';
+        html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
+          +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+sIco(s)+"</span>"
+          +"<div class='cal-session-body'>"
+          +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
+          +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"
+          +(s.vhsr>0?" \xb7 VHSR <b>"+s.vhsr+"m</b>":"")
+          +(ig?" \xb7 <b>"+s.pts+"pts</b>":"")
+          +"</div></div></div>";
+      });
+    } else {
+      html+="<div class='cal-empty-pm'>\u2014</div>";
+    }
+
+    html+="</div></div></div>"; // cal-slot-content, cal-slot-row, cal-slot
+    html+="</div>"; // cal-day
   });
-  html+="</div>";
+
+  html+="</div>"; // cal-grid
+
   if(undated.length){
     html+="<div class='cal-unscheduled'><div class='cal-unscheduled-title'>Unscheduled this week</div>"
       +undated.map(function(s){
         var ig=s.type==='game';
         return "<div class='cal-unsession'>"
-          +"<span style='font-size:14px'>"+(ig?"\uD83C\uDFC6":"\uD83C\uDFC3")+"</span>"
+          +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+(ig?ICO.disc:ICO.pulse)+"</span>"
           +"<span style='font-size:11px;font-weight:700;flex:1;color:var(--t)'>"+(s.label||"Session")+"</span>"
           +"<span style='font-size:10px;color:var(--t3)'>HSR <b style='color:var(--green)'>"+s.hsr+"m</b></span>"
           +"<button class='btnedit' onclick='editSession("+s.id+")' style='margin-left:6px'>Edit</button>"
@@ -1592,6 +1767,7 @@ function renderWeekCalendar(){
   if(!hasSessions){
     html+="<div style='font-size:11px;color:var(--t3);padding:4px 2px 12px'>No sessions logged for "+wn+". Log one in the Sessions tab.</div>";
   }
+
   el.innerHTML=html;
   setTimeout(function(){
     var grid=document.getElementById("cal-grid-inner");
@@ -1647,6 +1823,7 @@ async function getAIPrescription(){
 
 // ── DASHBOARD ──
 function renderDashboard(){
+  renderSRButton();
   var T=weekTotals(),G=weeklyTarget(),wkSess=weekSessions();
   var totalPts=wkSess.reduce(function(a,s){
     var pts=0;
@@ -1902,6 +2079,12 @@ async function loadSettings(){
     document.getElementById("tourn-date").value=upcoming[0].date;
     document.getElementById("tourn-name").value=upcoming[0].name;
   }
+  // Load recovery states
+  try{
+    var recRes=await sb.from('user_settings').select('value').eq('user_id',currentUser.id).eq('key','recovery_states').maybeSingle();
+    if(recRes.data&&recRes.data.value){try{recoveryStates=JSON.parse(recRes.data.value);}catch(e){}}
+  }catch(e){}
+  renderSRButton();
   renderWeekStrip();renderDashboard();renderTournamentHistory();
 }
 async function saveSettings(){
@@ -2253,6 +2436,78 @@ async function saveEdit(){
     showSave("saving","Saving…");
     var res=await sb.from("sessions").update({data:s,label:s.label}).eq("id",s._dbId);
     if(res.error)showSave("error","Save failed");else showSave("saved","Saved ✓");
+  }
+}
+
+// ── SELF-REPORT / RECOVERY ──
+function srDateKey(){ return new Date().toISOString().split('T')[0]; }
+
+function toggleSelfReport(){
+  srPanelOpen=!srPanelOpen;
+  var panel=document.getElementById('self-report-panel');
+  if(!panel)return;
+  if(srPanelOpen){panel.style.display='block';renderSRPanel();}
+  else{panel.style.display='none';}
+  renderSRButton();
+}
+function setSelfReportState(state){
+  recoveryStates[srDateKey()]=state;
+  renderSRPanel();renderSRButton();persistRecoveryStates();
+}
+function clearSRState(){
+  delete recoveryStates[srDateKey()];
+  renderSRPanel();renderSRButton();persistRecoveryStates();
+}
+function persistRecoveryStates(){
+  if(!currentUser||!SUPABASE_READY)return;
+  sb.from('user_settings').upsert({user_id:currentUser.id,key:'recovery_states',value:JSON.stringify(recoveryStates)},{onConflict:'user_id,key'});
+}
+function setRecoveryState(dateStr,state){
+  if(state===null){delete recoveryStates[dateStr];}
+  else{recoveryStates[dateStr]=state;}
+  renderWeekCalendar();persistRecoveryStates();
+}
+function renderSRButton(){
+  var btn=document.getElementById('sr-trigger-btn');
+  if(!btn)return;
+  var state=recoveryStates[srDateKey()];
+  var wc=state?RECOVERY_PROTOCOLS[state].color:'var(--cyan)';
+  var label=state?RECOVERY_PROTOCOLS[state].label+' <span style="font-size:9px;opacity:.7">\u2713 logged</span>':'How are you feeling?';
+  if(state){
+    var p=RECOVERY_PROTOCOLS[state];
+    btn.style.cssText='flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;border-radius:20px;font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;transition:all .18s;cursor:pointer;border:1.5px solid '+p.color+';color:'+p.color+';background:'+p.color+'12;box-shadow:0 2px 8px '+p.color+'30;';
+  } else {
+    btn.style.cssText='flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;border-radius:20px;font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;transition:all .18s;cursor:pointer;border:1.5px solid var(--cyan);color:var(--cyan);background:transparent;box-shadow:0 2px 8px rgba(2,132,199,0.12);';
+  }
+  var svg='<svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:inline-block;vertical-align:-2px;flex-shrink:0"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="'+wc+'" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="'+wc+'" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/></svg>';
+  btn.innerHTML=svg+label;
+}
+function renderSRPanel(){
+  var inner=document.getElementById('sr-panel-inner');
+  if(!inner)return;
+  var state=recoveryStates[srDateKey()];
+  var panel=document.querySelector('.sr-panel');
+  if(panel){panel.style.borderColor=state?RECOVERY_PROTOCOLS[state].color+'44':'rgba(2,132,199,0.2)';}
+  if(!state){
+    inner.innerHTML="<div style='font-size:11px;color:var(--t3);margin-bottom:11px;line-height:1.55'>How are you feeling today? Pick the closest option to get your recovery protocol.</div>"
+      +"<div class='sr-state-btns'>"+Object.keys(RECOVERY_PROTOCOLS).map(function(k){
+        var p=RECOVERY_PROTOCOLS[k];
+        return "<button class='sr-state-btn' style='border-color:"+p.color+";color:"+p.color+";' onclick='setSelfReportState(\""+k+"\")'>"
+          +"<span class='sr-btn-label'>"+p.label+"</span>"
+          +"<span class='sr-btn-desc'>"+p.btnDesc+"</span>"
+          +"</button>";
+      }).join('')+"</div>";
+  } else {
+    var proto=RECOVERY_PROTOCOLS[state];
+    inner.innerHTML="<div class='sr-confirmed'>"
+      +"<div style='width:8px;height:8px;border-radius:50%;background:"+proto.color+";flex-shrink:0'></div>"
+      +"<span style='font-weight:700;color:"+proto.color+"'>"+proto.label+"</span>"
+      +"<span style='color:var(--t3)'>\u2014 "+proto.desc+"</span>"
+      +"</div>"
+      +"<div class='sr-protocol'>"+proto.options.map(function(o,i){
+        return "<div class='sr-protocol-opt'><span class='sr-protocol-num' style='color:"+proto.color+"'>"+(i+1)+"</span><span>"+o+"</span></div>";
+      }).join('')+"</div>"
+      +"<button class='sr-change-btn' onclick='clearSRState()'>\u21ba change response</button>";
   }
 }
 
