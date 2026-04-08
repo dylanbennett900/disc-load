@@ -477,37 +477,54 @@ input,select{font-family:inherit;outline:none}
 /* Stats row used in session mockups in how-to */
 .how-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
 .how-stat{font-size:10px;color:var(--t3)}
-
-/* ── WEEK CALENDAR ── */
+  
+/* ── WEEK CALENDAR — AM/PM SPLIT ── */
 .cal-grid{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth}
 .cal-grid::-webkit-scrollbar{display:none}
-.cal-day{flex-shrink:0;width:118px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;min-height:90px}
+.cal-day{flex-shrink:0;width:112px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
 .cal-today{border-color:var(--green) !important;border-width:1.5px !important;box-shadow:0 0 0 2px rgba(5,150,105,0.1),var(--sh) !important}
 .cal-day-head{display:flex;align-items:center;justify-content:space-between;padding:7px 9px 5px;border-bottom:1px solid var(--bd);background:var(--sf2)}
 .cal-day-name{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-family:var(--display)}
 .cal-today .cal-day-name{color:var(--green)}
 .cal-day-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1}
 .cal-today .cal-day-date{color:var(--green)}
-.cal-session{padding:7px 9px;cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:5px;transition:background .15s}
+
+/* AM/PM slot structure */
+.cal-slot{border-bottom:1px solid var(--bd)}
+.cal-slot:last-child{border-bottom:none}
+.cal-slot-row{display:flex;min-height:38px}
+.cal-slot-label{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);font-family:var(--mono);border-right:1px solid var(--bd);background:var(--sf2)}
+.cal-slot-content{flex:1;min-width:0}
+.cal-ico{display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-top:1px}
+
+/* Session card */
+.cal-session{padding:6px 7px;cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:5px;transition:background .15s}
+.cal-session:last-child{border-bottom:none}
 .cal-session:hover{background:var(--sf3)}
-.cal-session-ico{font-size:12px;flex-shrink:0;padding-top:1px}
 .cal-session-body{flex:1;min-width:0}
-.cal-session-name{font-size:10px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.cal-session-stats{font-size:8px;color:var(--t3);margin-top:2px;line-height:1.4}
+.cal-session-name{font-size:9px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cal-session-stats{font-size:7px;color:var(--t3);margin-top:2px;line-height:1.4}
 .cal-session-stats b{color:var(--t2);font-weight:600}
-.cal-recovery{padding:8px 9px;display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center}
-.cal-recovery-ico{font-size:13px}
-.cal-recovery-lbl{font-size:8px;font-weight:800;color:var(--cyan);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase}
-.cal-recovery-tip{font-size:7.5px;color:var(--t3);line-height:1.4;text-align:center;margin-top:1px}
-.cal-gym{padding:10px 9px;display:flex;flex-direction:column;align-items:center;gap:3px;text-align:center;cursor:pointer}
-.cal-gym:hover{opacity:.8}
-.cal-gym-ico{font-size:13px;opacity:.4}
-.cal-gym-lbl{font-size:8px;font-weight:700;color:var(--t4);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase}
-.cal-gym-link{font-size:7px;color:var(--green);font-weight:600;letter-spacing:.3px;text-decoration:none;opacity:.7}
+
+/* Recovery (AM slot) */
+.cal-recovery{padding:6px 7px;display:flex;align-items:flex-start;gap:5px}
+.cal-recovery-lbl{font-size:8px;font-weight:800;color:var(--cyan);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase;line-height:1.3}
+.cal-recovery-tip{font-size:7px;color:var(--t3);line-height:1.45;margin-top:1px}
+
+/* Gym suggestion (AM slot) */
+.cal-gym{padding:6px 7px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:background .15s}
+.cal-gym:hover{background:var(--sf3)}
+.cal-gym-link{font-size:7.5px;color:var(--green);font-weight:600;letter-spacing:.3px;text-decoration:none;opacity:.65;pointer-events:none}
+
+/* Empty PM placeholder */
+.cal-empty-pm{padding:6px 7px;font-size:9px;color:var(--bd2);font-family:var(--mono);display:flex;align-items:center;justify-content:center;min-height:28px}
+
+/* Unscheduled */
 .cal-unscheduled{margin-bottom:12px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf);border:1px dashed var(--bd2);box-shadow:var(--sh)}
 .cal-unscheduled-title{font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);margin-bottom:7px;font-family:var(--display)}
 .cal-unsession{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:11px}
 .cal-unsession:last-child{border-bottom:none;padding-bottom:0}
+  
 /* ── ROADMAP PAST WEEKS ── */
 .week-card.past{opacity:0.58;background:var(--sf2) !important}
 .wk-past-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display);background:var(--t4);color:#fff}
@@ -1524,6 +1541,16 @@ function renderWeekCalendar(){
   var range=getSelectedRange(),wkStart2=range.start;
   var dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   var today=new Date();
+
+  // ── SVG icon set — no emoji ──
+  var ICO={
+    disc:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><ellipse cx="7" cy="9.5" rx="5.5" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 9.5Q3.5 4.5 7 4Q10.5 4.5 12.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>',
+    pulse:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><polyline points="1,7 4,7 5.5,3.5 7.5,10.5 9,7 13,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    barbell:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.5"/><rect x="4.5" y="4.2" width="5" height="5.6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x=".5" y="5" width="2" height="4" rx=".6" fill="currentColor"/><rect x="11.5" y="5" width="2" height="4" rx=".6" fill="currentColor"/></svg>',
+    wave:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".3"/></svg>'
+  };
+  function sIco(s){return s.type==='game'?ICO.disc:ICO.pulse;}
+
   var days=[];
   for(var d=0;d<7;d++){
     var dayDate=new Date(wkStart2);
@@ -1536,51 +1563,91 @@ function renderWeekCalendar(){
     days.push({date:dayDate,sessions:daySessions});
   }
   var undated=sessions.filter(function(s){return!s.date&&isCurrentWeekSelected();});
+
+  // recovery day = morning after a hard session
   var recoveryDays={};
   days.forEach(function(day,i){
-    var hard=day.sessions.find(function(s){return s.type==='game'||s.vhsr>150||s.acl>2500;});
+    var hard=day.sessions.find(function(s){
+      return s.type==='game'||s.vhsr>150||s.acl>2500;
+    });
     if(hard&&i<6)recoveryDays[i+1]={reason:hard.type==='game'?'post-game':'post-high-load'};
   });
+
   var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
   var hasSessions=weekSessions().length>0||undated.length>0;
+
   var html="<div style='font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;font-family:var(--display)'>"+wn+" \u2014 Week View</div>";
   html+="<div class='cal-grid' id='cal-grid-inner'>";
+
   days.forEach(function(day,i){
     var isToday=day.date.toDateString()===today.toDateString();
     var hasRecovery=recoveryDays[i];
-    var isEmpty=!day.sessions.length;
-    var showGym=isEmpty&&!hasRecovery;
+    var pmSessions=day.sessions;
+
     html+="<div class='cal-day"+(isToday?" cal-today":"")+"'>";
-    html+="<div class='cal-day-head'><span class='cal-day-name'>"+dayNames[i]+"</span><span class='cal-day-date'>"+day.date.getDate()+"</span></div>";
-    day.sessions.forEach(function(s){
-      var ig=s.type==='game';
-      html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
-        +"<span class='cal-session-ico'>"+(ig?"\uD83C\uDFC6":"\uD83C\uDFC3")+"</span>"
-        +"<div class='cal-session-body'>"
-        +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
-        +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"+(s.vhsr>0?" \u00b7 VHSR <b>"+s.vhsr+"m</b>":"")+(ig?" \u00b7 <b>"+s.pts+"pts</b>":"")+"</div>"
-        +"</div></div>";
-    });
-    if(hasRecovery&&isEmpty){
-      var tip=hasRecovery.reason==='post-game'?"Flush run @HR<135 or cold":"Active flush or mobility";
-      html+="<div class='cal-recovery'><div class='cal-recovery-ico'>\uD83D\uDD04</div><div class='cal-recovery-lbl'>Recovery</div><div class='cal-recovery-tip'>"+tip+"</div></div>";
-    }
-    if(showGym){
+
+    // header
+    html+="<div class='cal-day-head'>"
+      +"<span class='cal-day-name'>"+dayNames[i]+"</span>"
+      +"<span class='cal-day-date'>"+day.date.getDate()+"</span>"
+      +"</div>";
+
+    // ── AM slot ──
+    html+="<div class='cal-slot'>"
+      +"<div class='cal-slot-row'>"
+      +"<div class='cal-slot-label'>AM</div>"
+      +"<div class='cal-slot-content'>";
+
+    if(hasRecovery){
+      var tip=hasRecovery.reason==='post-game'?"Flush @HR\u003C135 or cold":"Active flush or mobility";
+      html+="<div class='cal-recovery'>"
+        +"<span class='cal-ico' style='color:var(--cyan)'>"+ICO.wave+"</span>"
+        +"<div><div class='cal-recovery-lbl'>Recovery</div>"
+        +"<div class='cal-recovery-tip'>"+tip+"</div></div>"
+        +"</div>";
+    } else {
       html+="<div class='cal-gym' onclick=\"window.open('https://dylanbennett900.github.io/dbsp','_blank')\">"
-        +"<div class='cal-gym-ico'>\uD83D\uDCAA</div>"
-        +"<div class='cal-gym-lbl'>Gym?</div>"
-        +"<a class='cal-gym-link' href='https://dylanbennett900.github.io/dbsp' target='_blank'>DBSP Programs</a>"
+        +"<span class='cal-ico' style='color:var(--t4)'>"+ICO.barbell+"</span>"
+        +"<a class='cal-gym-link' href='https://dylanbennett900.github.io/dbsp' target='_blank'>DBSP gym</a>"
         +"</div>";
     }
-    html+="</div>";
+
+    html+="</div></div></div>";
+
+    // ── PM slot ──
+    html+="<div class='cal-slot'>"
+      +"<div class='cal-slot-row'>"
+      +"<div class='cal-slot-label'>PM</div>"
+      +"<div class='cal-slot-content'>";
+
+    if(pmSessions.length){
+      pmSessions.forEach(function(s){
+        var ig=s.type==='game';
+        html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
+          +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+sIco(s)+"</span>"
+          +"<div class='cal-session-body'>"
+          +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
+          +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"
+          +(s.vhsr>0?" \u00b7 VHSR <b>"+s.vhsr+"m</b>":"")
+          +(ig?" \u00b7 <b>"+s.pts+"pts</b>":"")
+          +"</div></div></div>";
+      });
+    } else {
+      html+="<div class='cal-empty-pm'>\u2014</div>";
+    }
+
+    html+="</div></div></div>";
+    html+="</div>"; // cal-day
   });
-  html+="</div>";
+
+  html+="</div>"; // cal-grid
+
   if(undated.length){
     html+="<div class='cal-unscheduled'><div class='cal-unscheduled-title'>Unscheduled this week</div>"
       +undated.map(function(s){
         var ig=s.type==='game';
         return "<div class='cal-unsession'>"
-          +"<span style='font-size:14px'>"+(ig?"\uD83C\uDFC6":"\uD83C\uDFC3")+"</span>"
+          +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+(ig?ICO.disc:ICO.pulse)+"</span>"
           +"<span style='font-size:11px;font-weight:700;flex:1;color:var(--t)'>"+(s.label||"Session")+"</span>"
           +"<span style='font-size:10px;color:var(--t3)'>HSR <b style='color:var(--green)'>"+s.hsr+"m</b></span>"
           +"<button class='btnedit' onclick='editSession("+s.id+")' style='margin-left:6px'>Edit</button>"
@@ -1592,6 +1659,7 @@ function renderWeekCalendar(){
   if(!hasSessions){
     html+="<div style='font-size:11px;color:var(--t3);padding:4px 2px 12px'>No sessions logged for "+wn+". Log one in the Sessions tab.</div>";
   }
+
   el.innerHTML=html;
   setTimeout(function(){
     var grid=document.getElementById("cal-grid-inner");
