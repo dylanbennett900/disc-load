@@ -1431,7 +1431,18 @@ async function getAIPrescription(){
     return m.l+": "+T[m.k]+" / "+G[m.k]+" ("+pct+"%, gap: "+(gap>0?"+":"")+gap+")";
   }).join("\n");
 
-  var userMsg="Week band: "+band+"\nWeeks to tournament: "+wo+"\nContext level: "+ctx+"\n\nMetrics (actual / target):\n"+metricStr;
+  // Pre-compute metric gating in JS and pass explicit drill restrictions to the model
+  var hsrPct  = Math.round((T.hsr  / Math.max(G.hsr,  1)) * 100);
+  var vhsrPct = Math.round((T.vhsr / Math.max(G.vhsr, 1)) * 100);
+  var accPct  = Math.round((T.acc  / Math.max(G.acc,  1)) * 100);
+
+  var drillRules = "\n\nDRILL RESTRICTIONS — computed from this athlete's data. You MUST follow these exactly:\n";
+  drillRules += "- HSR at "  + hsrPct  + "% → " + (hsrPct  >= 100 ? "DO NOT prescribe MAS. HSR target is met." : "MAS is appropriate to top up HSR.") + "\n";
+  drillRules += "- VHSR at " + vhsrPct + "% → " + (vhsrPct >= 120 ? "DO NOT prescribe any speed work. VHSR has exceeded the hard ceiling." : vhsrPct >= 100 ? "DO NOT prescribe Speed Build Ups, Butterfly Speed Efforts, or Curved Sprints. VHSR target is met." : "Speed Build Ups are appropriate to top up VHSR.") + "\n";
+  drillRules += "- Accels at " + accPct + "% → " + (accPct  >= 100 ? "DO NOT prescribe Box Drill, D Strafe Mungo, or Ground Shuttles. Accels target is met." : "Box Drill and accel drills are appropriate to top up Accels.") + "\n";
+  drillRules += "Only prescribe a drill if its line above explicitly says it is appropriate.";
+
+  var userMsg="Week band: "+band+"\nWeeks to tournament: "+wo+"\nContext level: "+ctx+"\n\nMetrics (actual / target):\n"+metricStr+drillRules;
 
   try{
     var edgeFnUrl=SUPABASE_URL+"/functions/v1/ai-prescription";
