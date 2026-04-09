@@ -10,7 +10,6 @@
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* ── LIGHT THEME ── */
   --bg:#eef2f7;
   --sf:#ffffff;
   --sf2:#f8fafc;
@@ -22,262 +21,103 @@
   --t2:#334155;
   --t3:#64748b;
   --t4:#94a3b8;
-
-  /* ── DATA COLOURS — WCAG AA on white ── */
-  --green:#059669;   /* HSR */
-  --cyan:#0284c7;    /* Distance */
-  --amber:#b45309;   /* VHSR */
-  --red:#dc2626;     /* AL / Overload */
-  --purple:#7c3aed;  /* Accels */
-  --gold:#a16207;    /* Tournament */
-  --silver:#475569;  /* International */
-  --bronze:#92400e;  /* Domestic */
-
-  /* Bar/chart fill (brighter, for fill areas) */
+  --green:#059669;
+  --cyan:#0284c7;
+  --amber:#b45309;
+  --red:#dc2626;
+  --purple:#7c3aed;
+  --gold:#a16207;
+  --silver:#475569;
+  --bronze:#92400e;
   --g-fill:#10b981;
   --c-fill:#0ea5e9;
   --a-fill:#8b5cf6;
-
-  /* Band colours */
   --high:#059669;
   --moderate:#d97706;
   --low:#64748b;
-
-  /* Status */
   --optimal:#059669;
   --s-moderate:#d97706;
   --s-low:#94a3b8;
   --s-overload:#dc2626;
-
-  /* Shadows */
   --sh:0 1px 3px rgba(15,23,42,0.08),0 1px 2px rgba(15,23,42,0.04);
   --sh-md:0 4px 12px rgba(15,23,42,0.10),0 2px 4px rgba(15,23,42,0.06);
   --sh-lg:0 12px 32px rgba(15,23,42,0.12),0 4px 8px rgba(15,23,42,0.06);
-
   --mono:'JetBrains Mono','Courier New',monospace;
   --display:'Barlow Condensed','Arial Narrow',sans-serif;
   --body:'DM Sans',-apple-system,BlinkMacSystemFont,sans-serif;
   --radius:14px;--radius-sm:9px;--radius-xs:6px;
 }
-
-html,body{
-  min-height:100vh;
-  background:var(--bg);
-  color:var(--t);
-  font-family:var(--body);
-  font-size:14px;
-  line-height:1.5;
-  -webkit-text-size-adjust:100%;
-}
+html,body{min-height:100vh;background:var(--bg);color:var(--t);font-family:var(--body);font-size:14px;line-height:1.5;-webkit-text-size-adjust:100%}
 button{cursor:pointer;border:none;font-family:inherit;-webkit-tap-highlight-color:transparent}
 input,select{font-family:inherit;outline:none}
 ::-webkit-scrollbar{width:3px;height:3px}
 ::-webkit-scrollbar-thumb{background:var(--bd2);border-radius:3px}
-
-/* ── HEADER ── */
-#header{
-  padding:14px 16px 0;
-  border-bottom:1px solid var(--bd);
-  background:#ffffff;
-  box-shadow:0 1px 0 var(--bd),0 2px 8px rgba(15,23,42,0.04);
-  position:sticky;top:0;z-index:50;
-}
+#header{padding:14px 16px 0;border-bottom:1px solid var(--bd);background:#ffffff;box-shadow:0 1px 0 var(--bd),0 2px 8px rgba(15,23,42,0.04);position:sticky;top:0;z-index:50}
 .htop{display:flex;align-items:center;gap:10px;margin-bottom:12px;flex-wrap:wrap}
-.logo{
-  width:36px;height:36px;border-radius:10px;
-  background:linear-gradient(135deg,#ecfdf5,#eff6ff);
-  border:1.5px solid rgba(5,150,105,0.25);
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;
-  box-shadow:0 2px 8px rgba(5,150,105,0.15);
-}
-.lname{
-  font-family:var(--display);
-  font-size:21px;font-weight:900;letter-spacing:2.5px;
-  color:var(--t);
-  line-height:1;
-}
+.logo{width:36px;height:36px;border-radius:10px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid rgba(5,150,105,0.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;box-shadow:0 2px 8px rgba(5,150,105,0.15)}
+.lname{font-family:var(--display);font-size:21px;font-weight:900;letter-spacing:2.5px;color:var(--t);line-height:1}
 .lsub{font-size:8px;color:var(--t4);letter-spacing:2px;text-transform:uppercase;font-weight:500;margin-top:1px}
 .laccent{color:var(--green)}
 .lvlpills{margin-left:auto;display:flex;gap:5px;flex-wrap:wrap;align-items:center}
-.lp{
-  padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;
-  border:1.5px solid var(--bd2);background:transparent;color:var(--t3);
-  transition:all .18s;font-family:var(--display);letter-spacing:.5px;
-}
+.lp{padding:5px 12px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(--bd2);background:transparent;color:var(--t3);transition:all .18s;font-family:var(--display);letter-spacing:.5px}
 .lp.on{border-color:var(--green);background:rgba(5,150,105,0.08);color:var(--green)}
-
-/* Auth */
-.auth-login{
-  padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;
-  border:1.5px solid var(--green);background:var(--green);color:#fff;
-  font-family:var(--display);letter-spacing:.5px;transition:all .18s;
-}
+.auth-login{padding:6px 14px;border-radius:20px;font-size:11px;font-weight:700;border:1.5px solid var(--green);background:var(--green);color:#fff;font-family:var(--display);letter-spacing:.5px;transition:all .18s}
 .auth-login:hover{background:#047857}
-.auth-user{
-  display:flex;align-items:center;gap:7px;padding:4px 10px;
-  border-radius:20px;border:1.5px solid var(--bd2);background:var(--sf);
-  font-size:11px;color:var(--t2);box-shadow:var(--sh);
-}
-.auth-avatar{
-  width:22px;height:22px;border-radius:50%;
-  background:linear-gradient(135deg,#ecfdf5,#eff6ff);
-  border:1.5px solid rgba(5,150,105,0.3);
-  display:flex;align-items:center;justify-content:center;
-  font-size:9px;font-weight:800;color:var(--green);flex-shrink:0;
-}
-
-/* Save indicator */
+.auth-user{display:flex;align-items:center;gap:7px;padding:4px 10px;border-radius:20px;border:1.5px solid var(--bd2);background:var(--sf);font-size:11px;color:var(--t2);box-shadow:var(--sh)}
+.auth-avatar{width:22px;height:22px;border-radius:50%;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid rgba(5,150,105,0.3);display:flex;align-items:center;justify-content:center;font-size:9px;font-weight:800;color:var(--green);flex-shrink:0}
 .save-indicator{position:fixed;bottom:20px;right:16px;padding:8px 14px;border-radius:20px;font-size:11px;font-weight:700;opacity:0;transition:opacity .3s;pointer-events:none;z-index:100;font-family:var(--display);letter-spacing:.5px;box-shadow:var(--sh-md)}
 .save-indicator.show{opacity:1}
 .save-indicator.saving{background:#fef3c7;border:1.5px solid #fbbf24;color:#92400e}
 .save-indicator.saved{background:#d1fae5;border:1.5px solid #6ee7b7;color:#065f46}
 .save-indicator.error{background:#fee2e2;border:1.5px solid #fca5a5;color:#991b1b}
-
-/* Tabs */
 .tabs{display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch;gap:0;padding:0}
 .tabs::-webkit-scrollbar{display:none}
-.tab{
-  padding:10px 14px;background:transparent;border:none;
-  color:var(--t3);font-size:11px;font-weight:700;
-  border-bottom:2.5px solid transparent;transition:all .18s;
-  white-space:nowrap;flex-shrink:0;
-  font-family:var(--display);letter-spacing:1px;text-transform:uppercase;
-}
+.tab{padding:10px 14px;background:transparent;border:none;color:var(--t3);font-size:11px;font-weight:700;border-bottom:2.5px solid transparent;transition:all .18s;white-space:nowrap;flex-shrink:0;font-family:var(--display);letter-spacing:1px;text-transform:uppercase}
 .tab.on{color:var(--green);border-bottom-color:var(--green)}
 .tab:hover:not(.on){color:var(--t2)}
-
-/* ── CONTENT ── */
 #content{padding:16px}
 .panel{display:none}.panel.on{display:block}
-
-/* ── SUMMARY CARDS ── */
 .sumrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:16px}
-.sc{
-  background:var(--sf);
-  border-radius:var(--radius);
-  padding:13px 14px;
-  box-shadow:var(--sh);
-  border:1px solid var(--bd);
-}
+.sc{background:var(--sf);border-radius:var(--radius);padding:13px 14px;box-shadow:var(--sh);border:1px solid var(--bd)}
 .sl{font-size:8px;color:var(--t3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:5px;font-weight:600}
 .sv{font-family:var(--mono);font-size:20px;font-weight:700;line-height:1;color:var(--t)}
 .su{font-size:9px;margin-left:2px;color:var(--t4);font-family:var(--body);font-weight:400}
-
-/* Target bar */
-.tbar{
-  padding:10px 14px;background:var(--sf);
-  border-radius:var(--radius-sm);
-  box-shadow:var(--sh);
-  border:1px solid var(--bd);
-  font-size:11px;color:var(--t2);margin-bottom:16px;
-  display:flex;align-items:center;gap:6px;flex-wrap:wrap;
-}
-
-/* ── GAUGES ── */
+.tbar{padding:10px 14px;background:var(--sf);border-radius:var(--radius-sm);box-shadow:var(--sh);border:1px solid var(--bd);font-size:11px;color:var(--t2);margin-bottom:16px;display:flex;align-items:center;gap:6px;flex-wrap:wrap}
 .gaugewrap{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:20px}
 @media(max-width:400px){.gaugewrap{grid-template-columns:repeat(2,1fr)}}
-.gc{
-  background:var(--sf);border-radius:var(--radius);
-  padding:13px 8px 10px;
-  display:flex;flex-direction:column;align-items:center;gap:2px;
-  box-shadow:var(--sh);border:1px solid var(--bd);
-}
+.gc{background:var(--sf);border-radius:var(--radius);padding:13px 8px 10px;display:flex;flex-direction:column;align-items:center;gap:2px;box-shadow:var(--sh);border:1px solid var(--bd)}
 .gv{font-family:var(--mono);font-size:11px;font-weight:700;letter-spacing:-.3px;color:var(--t)}
 .gs{font-size:8px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;font-family:var(--display)}
 .gt{font-size:8px;color:var(--t3);font-family:var(--mono)}
 .gl{font-size:9px;color:var(--t2);text-align:center;font-weight:600;font-family:var(--body)}
-
-/* ── PRESCRIPTION ROWS ── */
-.rectitle{
-  font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;
-  color:var(--t3);margin-bottom:10px;font-family:var(--display);
-  display:flex;align-items:center;gap:8px;
-}
-.rrow{
-  padding:12px 14px;border-radius:var(--radius-sm);
-  background:var(--sf);border-left:3px solid transparent;
-  display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;
-  box-shadow:var(--sh);border-top:1px solid var(--bd);
-  border-right:1px solid var(--bd);border-bottom:1px solid var(--bd);
-}
+.rectitle{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;font-family:var(--display);display:flex;align-items:center;gap:8px}
+.rrow{padding:12px 14px;border-radius:var(--radius-sm);background:var(--sf);border-left:3px solid transparent;display:flex;align-items:flex-start;gap:10px;margin-bottom:6px;box-shadow:var(--sh);border-top:1px solid var(--bd);border-right:1px solid var(--bd);border-bottom:1px solid var(--bd)}
 .rm{font-size:12px;font-weight:700;margin-bottom:2px;font-family:var(--display);letter-spacing:.3px}
 .rt{font-size:11px;color:var(--t2);line-height:1.5}
 .rbw{width:44px;height:4px;background:var(--sf3);border-radius:2px;flex-shrink:0;margin-top:6px}
 .rb{height:100%;border-radius:2px}
-.sug{
-  display:inline-flex;align-items:center;gap:5px;margin-top:7px;
-  padding:5px 10px;border-radius:20px;
-  background:var(--sf3);border:1px solid var(--bd2);
-  font-size:10px;color:var(--t2);
-}
+.sug{display:inline-flex;align-items:center;gap:5px;margin-top:7px;padding:5px 10px;border-radius:20px;background:var(--sf3);border:1px solid var(--bd2);font-size:10px;color:var(--t2)}
 .sug b{color:var(--t);font-weight:700}
-
-/* ── AI PRESCRIPTION CARD ── */
-.ai-card{
-  background:var(--sf);border-radius:var(--radius);
-  border:1.5px solid rgba(5,150,105,0.2);
-  box-shadow:var(--sh-md);
-  margin-bottom:20px;overflow:hidden;
-}
-.ai-card-head{
-  display:flex;align-items:center;gap:10px;
-  padding:14px 16px;
-  background:linear-gradient(135deg,rgba(5,150,105,0.05),rgba(2,132,199,0.04));
-  border-bottom:1px solid var(--bd);
-}
+.ai-card{background:var(--sf);border-radius:var(--radius);border:1.5px solid rgba(5,150,105,0.2);box-shadow:var(--sh-md);margin-bottom:20px;overflow:hidden}
+.ai-card-head{display:flex;align-items:center;gap:10px;padding:14px 16px;background:linear-gradient(135deg,rgba(5,150,105,0.05),rgba(2,132,199,0.04));border-bottom:1px solid var(--bd)}
 .ai-card-title{font-size:13px;font-weight:800;color:var(--t);font-family:var(--display);letter-spacing:.5px}
 .ai-card-sub{font-size:10px;color:var(--t3);margin-top:1px}
 .ai-card-body{padding:14px 16px}
-.ai-btn{
-  padding:9px 20px;border-radius:20px;
-  background:var(--green);color:#fff;
-  font-size:12px;font-weight:800;
-  font-family:var(--display);letter-spacing:.5px;
-  box-shadow:0 2px 8px rgba(5,150,105,0.25);
-  transition:all .18s;
-  display:inline-flex;align-items:center;gap:7px;
-}
+.ai-btn{padding:9px 20px;border-radius:20px;background:var(--green);color:#fff;font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;box-shadow:0 2px 8px rgba(5,150,105,0.25);transition:all .18s;display:inline-flex;align-items:center;gap:7px}
 .ai-btn:hover{background:#047857;box-shadow:0 4px 14px rgba(5,150,105,0.35);transform:translateY(-1px)}
 .ai-btn:disabled{background:var(--t4);box-shadow:none;transform:none;cursor:not-allowed}
-.ai-result{
-  margin-top:12px;padding:14px 16px;border-radius:var(--radius-sm);
-  background:var(--sf3);border:1px solid var(--bd2);
-  font-size:12.5px;color:var(--t);line-height:1.7;
-}
+.ai-result{margin-top:12px;padding:14px 16px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:12.5px;color:var(--t);line-height:1.7}
 .ai-result strong{color:var(--t);font-weight:700}
-.ai-loading{
-  margin-top:12px;padding:16px;border-radius:var(--radius-sm);
-  background:var(--sf3);border:1px solid var(--bd);
-  font-size:12px;color:var(--t3);display:flex;align-items:center;gap:10px;
-}
-.ai-spinner{
-  width:16px;height:16px;border:2px solid var(--bd2);
-  border-top-color:var(--green);border-radius:50%;
-  animation:spin .8s linear infinite;flex-shrink:0;
-}
+.ai-loading{margin-top:12px;padding:16px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd);font-size:12px;color:var(--t3);display:flex;align-items:center;gap:10px}
+.ai-spinner{width:16px;height:16px;border:2px solid var(--bd2);border-top-color:var(--green);border-radius:50%;animation:spin .8s linear infinite;flex-shrink:0}
 @keyframes spin{to{transform:rotate(360deg)}}
-.ai-error{
-  margin-top:12px;padding:12px 14px;border-radius:var(--radius-sm);
-  background:#fee2e2;border:1px solid #fca5a5;
-  font-size:12px;color:#991b1b;
-}
-
-/* ── WEEK STRIP ── */
+.ai-error{margin-top:12px;padding:12px 14px;border-radius:var(--radius-sm);background:#fee2e2;border:1px solid #fca5a5;font-size:12px;color:#991b1b}
 .ws-outer{margin-bottom:16px}
 .ws-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
 .ws-row::-webkit-scrollbar{display:none}
-.wk{
-  flex-shrink:0;width:140px;border-radius:var(--radius);padding:13px 13px;
-  border:1.5px solid var(--bd);background:var(--sf);
-  cursor:pointer;transition:all .18s;box-shadow:var(--sh);
-  position:relative;
-}
+.wk{flex-shrink:0;width:140px;border-radius:var(--radius);padding:13px 13px;border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;transition:all .18s;box-shadow:var(--sh);position:relative}
 .wk:active{transform:scale(0.98)}
-.wk-now-tag{
-  position:absolute;top:-1px;left:50%;transform:translateX(-50%);
-  font-size:7px;font-weight:800;padding:2px 8px;
-  border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display);
-}
+.wk-now-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display)}
 .wk-head{margin-bottom:6px}
 .wk-iso{font-size:13px;font-weight:800;letter-spacing:.5px;font-family:var(--display);color:var(--t)}
 .wk-dates{font-size:8px;color:var(--t3);margin-top:1px}
@@ -289,69 +129,25 @@ input,select{font-family:inherit;outline:none}
 .wk-bar-track{flex:1;height:3px;background:var(--sf3);border-radius:2px;border:1px solid var(--bd)}
 .wk-bar-fill{height:100%;border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
 .wk-bar-pct{font-size:7px;font-family:var(--mono);width:22px;text-align:right;flex-shrink:0}
-.wk-tourn{
-  flex-shrink:0;width:76px;border-radius:var(--radius);padding:11px 8px;
-  border:1.5px solid rgba(161,98,7,0.25);
-  background:linear-gradient(135deg,rgba(161,98,7,0.06),rgba(180,83,9,0.03));
-  display:flex;flex-direction:column;align-items:center;justify-content:center;
-  text-align:center;gap:4px;box-shadow:var(--sh);
-}
-
-/* ── SESSIONS ── */
+.wk-tourn{flex-shrink:0;width:76px;border-radius:var(--radius);padding:11px 8px;border:1.5px solid rgba(161,98,7,0.25);background:linear-gradient(135deg,rgba(161,98,7,0.06),rgba(180,83,9,0.03));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;box-shadow:var(--sh)}
 .shd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .stitle{font-size:22px;font-weight:900;letter-spacing:1px;font-family:var(--display);color:var(--t)}
-.btnadd{
-  padding:8px 18px;border-radius:20px;
-  border:1.5px solid var(--green);background:var(--green);
-  color:#fff;font-size:11px;font-weight:800;
-  font-family:var(--display);letter-spacing:.5px;
-  transition:all .18s;box-shadow:0 2px 8px rgba(5,150,105,0.2);
-}
+.btnadd{padding:8px 18px;border-radius:20px;border:1.5px solid var(--green);background:var(--green);color:#fff;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;transition:all .18s;box-shadow:0 2px 8px rgba(5,150,105,0.2)}
 .btnadd:hover{background:#047857}
-.aform{
-  padding:16px;border-radius:var(--radius);
-  background:var(--sf);border:1.5px solid rgba(5,150,105,0.15);
-  box-shadow:var(--sh-md);margin-bottom:16px;
-}
+.aform{padding:16px;border-radius:var(--radius);background:var(--sf);border:1.5px solid rgba(5,150,105,0.15);box-shadow:var(--sh-md);margin-bottom:16px}
 .aft{font-size:9px;font-weight:800;color:var(--green);letter-spacing:2px;margin-bottom:14px;font-family:var(--display)}
 .tbtns{display:flex;gap:6px;margin-bottom:14px}
-.tbtn{
-  padding:8px 16px;border-radius:20px;
-  border:1.5px solid var(--bd2);background:transparent;
-  color:var(--t3);font-size:11px;font-weight:700;
-  font-family:var(--display);letter-spacing:.5px;transition:all .18s;
-}
+.tbtn{padding:8px 16px;border-radius:20px;border:1.5px solid var(--bd2);background:transparent;color:var(--t3);font-size:11px;font-weight:700;font-family:var(--display);letter-spacing:.5px;transition:all .18s}
 .tbtn.on{border-color:var(--green);background:rgba(5,150,105,0.08);color:var(--green)}
-
-/* Form fields */
 .fgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
 .ff label{font-size:8px;color:var(--t3);letter-spacing:1.2px;text-transform:uppercase;display:block;margin-bottom:5px;font-weight:700}
-.ff input[type=text],.ff select,.ff input[type=date]{
-  width:100%;padding:9px 11px;border-radius:var(--radius-sm);
-  border:1.5px solid var(--bd2);background:var(--sf2);
-  color:var(--t);font-size:13px;transition:border-color .18s;
-  box-shadow:inset 0 1px 2px rgba(15,23,42,0.04);
-}
+.ff input[type=text],.ff select,.ff input[type=date]{width:100%;padding:9px 11px;border-radius:var(--radius-sm);border:1.5px solid var(--bd2);background:var(--sf2);color:var(--t);font-size:13px;transition:border-color .18s;box-shadow:inset 0 1px 2px rgba(15,23,42,0.04)}
 .ff input:focus,.ff select:focus{border-color:var(--green);box-shadow:0 0 0 3px rgba(5,150,105,0.1)}
 .ff input[type=range]{width:100%;accent-color:var(--green);margin-top:4px}
 .rv{color:var(--green);font-family:var(--mono);font-weight:700}
-.btsub{
-  padding:10px 22px;border-radius:20px;
-  background:var(--green);border:none;
-  color:#fff;font-size:13px;font-weight:800;
-  font-family:var(--display);letter-spacing:.5px;
-  box-shadow:0 4px 14px rgba(5,150,105,0.3);
-  transition:all .18s;
-}
+.btsub{padding:10px 22px;border-radius:20px;background:var(--green);border:none;color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.5px;box-shadow:0 4px 14px rgba(5,150,105,0.3);transition:all .18s}
 .btsub:hover{background:#047857;box-shadow:0 6px 20px rgba(5,150,105,0.4);transform:translateY(-1px)}
-
-/* Session item */
-.si{
-  padding:13px 15px;border-radius:var(--radius);
-  background:var(--sf);border:1px solid var(--bd);
-  display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;
-  box-shadow:var(--sh);transition:box-shadow .18s;
-}
+.si{padding:13px 15px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);display:flex;align-items:flex-start;gap:10px;margin-bottom:8px;box-shadow:var(--sh);transition:box-shadow .18s}
 .si:hover{box-shadow:var(--sh-md)}
 .sico{font-size:16px;flex-shrink:0;padding-top:1px}
 .sbody{flex:1;min-width:0}
@@ -363,30 +159,20 @@ input,select{font-family:inherit;outline:none}
 .btnx:hover{color:var(--red)}
 .btnedit{background:transparent;border:1px solid var(--bd2);border-radius:20px;color:var(--t3);font-size:10px;padding:3px 9px;font-weight:700;font-family:var(--display);letter-spacing:.5px;transition:all .15s}
 .btnedit:hover{border-color:var(--green);color:var(--green)}
-
-/* Modal */
 .modal-bg{position:fixed;inset:0;background:rgba(15,23,42,0.4);backdrop-filter:blur(4px);-webkit-backdrop-filter:blur(4px);z-index:200;display:flex;align-items:center;justify-content:center;padding:16px}
-.modal{
-  background:var(--sf);border:1px solid var(--bd2);
-  border-radius:16px;padding:22px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;
-  box-shadow:var(--sh-lg);
-}
+.modal{background:var(--sf);border:1px solid var(--bd2);border-radius:16px;padding:22px;width:100%;max-width:420px;max-height:90vh;overflow-y:auto;box-shadow:var(--sh-lg)}
 .modal-title{font-size:16px;font-weight:800;margin-bottom:16px;color:var(--t);font-family:var(--display);letter-spacing:.5px}
 .modal-actions{display:flex;gap:8px;margin-top:18px;justify-content:flex-end}
 .btn-cancel{padding:8px 18px;border-radius:20px;border:1.5px solid var(--bd2);background:transparent;color:var(--t2);font-size:11px;font-weight:700;font-family:var(--display);letter-spacing:.5px}
 .btn-danger{padding:8px 18px;border-radius:20px;border:none;background:var(--red);color:#fff;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;box-shadow:0 4px 12px rgba(220,38,38,0.25)}
 .btn-save{padding:8px 18px;border-radius:20px;border:none;background:var(--green);color:#fff;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;box-shadow:0 4px 12px rgba(5,150,105,0.25)}
 .empty{text-align:center;padding:40px;color:var(--t3)}
-
-/* Drill rows */
 .drill-row{display:flex;align-items:center;gap:6px;margin-bottom:6px}
 .drill-row select{flex:1;padding:7px 10px;border-radius:var(--radius-sm);border:1.5px solid var(--bd2);background:var(--sf2);color:var(--t);font-size:12px;min-width:0}
 .drill-inputs{display:flex;align-items:center;gap:5px;flex-shrink:0}
 .drill-row input[type=number]{width:55px;padding:6px 8px;border-radius:var(--radius-sm);border:1.5px solid var(--bd2);background:var(--sf2);color:var(--t);font-size:12px;text-align:center;font-family:var(--mono)}
 .drill-row .dmin{font-size:9px;color:var(--t3);flex-shrink:0;font-weight:600}
 .pill{display:inline-flex;align-items:center;gap:3px;font-size:9px;padding:3px 8px;border-radius:20px;background:var(--sf3);margin:2px 2px 0 0;color:var(--t2);border:1px solid var(--bd2)}
-
-/* ── ROADMAP ── */
 .week-card{border-radius:var(--radius);padding:15px 17px;margin-bottom:10px;border:1.5px solid var(--bd);background:var(--sf);box-shadow:var(--sh)}
 .week-card.current{border-width:2px}
 .week-head{display:flex;align-items:center;gap:9px;margin-bottom:10px;flex-wrap:wrap}
@@ -399,14 +185,10 @@ input,select{font-family:inherit;outline:none}
 .wm-val{font-family:var(--mono);font-size:13px;font-weight:700;color:var(--t)}
 .gap-row{display:flex;align-items:center;gap:8px;padding:9px 12px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);margin-top:9px;flex-wrap:wrap}
 .gap-m{font-size:10px;color:var(--t3)}
-
-/* ── METRICS CHART ── */
 .chart-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:16px;margin-bottom:16px;box-shadow:var(--sh)}
 .metric-sel{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:16px}
 .ms-btn{padding:5px 12px;border-radius:20px;border:1.5px solid var(--bd2);background:transparent;color:var(--t3);font-size:10px;font-weight:700;font-family:var(--display);letter-spacing:.5px;transition:all .18s}
 .ms-btn.on{color:#fff;border-color:transparent;font-weight:800;box-shadow:0 2px 8px rgba(0,0,0,0.15)}
-
-/* ── BENCHMARKS ── */
 .bcard{margin-bottom:14px;padding:16px;border-radius:var(--radius);background:var(--sf);box-shadow:var(--sh)}
 .bcard.gold{border:1.5px solid rgba(161,98,7,0.2)}
 .bcard.silver{border:1.5px solid rgba(71,85,105,0.2)}
@@ -417,8 +199,6 @@ input,select{font-family:inherit;outline:none}
 .bmv{font-family:var(--mono);font-size:14px;font-weight:700}
 .bmu{font-size:9px;margin-left:2px;color:var(--t3);font-family:var(--body);font-weight:400}
 .bsrc{margin-top:10px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd);font-size:10px;color:var(--t3);line-height:1.6}
-
-/* ── DEFINITIONS ── */
 .def-card{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:16px 18px;margin-bottom:9px;box-shadow:var(--sh)}
 .def-head{display:flex;align-items:center;gap:10px;margin-bottom:9px}
 .def-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
@@ -426,130 +206,47 @@ input,select{font-family:inherit;outline:none}
 .def-abbr{font-size:10px;font-family:var(--mono);color:var(--t3);margin-left:4px;font-weight:400}
 .def-body{font-size:12px;color:var(--t2);line-height:1.65}
 .def-why{margin-top:7px;font-size:11px;color:var(--t3);border-left:2.5px solid var(--bd2);padding-left:11px;line-height:1.55}
-
-/* ── HOW-TO TAB ── */
 .howto-panel{max-width:600px;margin:0 auto}
-.howto-intro{
-  padding:14px 16px;border-radius:var(--radius);
-  background:linear-gradient(135deg,rgba(5,150,105,0.07),rgba(2,132,199,0.05));
-  border:1.5px solid rgba(5,150,105,0.15);
-  font-size:12.5px;color:var(--t2);line-height:1.65;
-  margin-bottom:16px;box-shadow:var(--sh);
-}
+.howto-intro{padding:14px 16px;border-radius:var(--radius);background:linear-gradient(135deg,rgba(5,150,105,0.07),rgba(2,132,199,0.05));border:1.5px solid rgba(5,150,105,0.15);font-size:12.5px;color:var(--t2);line-height:1.65;margin-bottom:16px;box-shadow:var(--sh)}
 .howto-intro strong{color:var(--t);font-weight:700}
-.how-step{
-  background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);
-  margin-bottom:12px;overflow:hidden;box-shadow:var(--sh);
-}
-.how-step-head{
-  display:flex;align-items:flex-start;gap:12px;padding:16px 16px 12px;
-  border-bottom:1px solid var(--bd);
-}
-.how-num{
-  font-family:var(--mono);font-size:10px;font-weight:700;
-  border-radius:7px;width:28px;height:28px;
-  display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px;
-}
+.how-step{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);margin-bottom:12px;overflow:hidden;box-shadow:var(--sh)}
+.how-step-head{display:flex;align-items:flex-start;gap:12px;padding:16px 16px 12px;border-bottom:1px solid var(--bd)}
+.how-num{font-family:var(--mono);font-size:10px;font-weight:700;border-radius:7px;width:28px;height:28px;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
 .how-step-title{font-size:15px;font-weight:800;color:var(--t);letter-spacing:.2px}
-.how-step-tab{
-  display:inline-block;margin-top:3px;font-size:9px;font-weight:700;
-  color:var(--t3);background:var(--sf3);border:1px solid var(--bd2);
-  border-radius:4px;padding:2px 8px;letter-spacing:.8px;text-transform:uppercase;
-}
+.how-step-tab{display:inline-block;margin-top:3px;font-size:9px;font-weight:700;color:var(--t3);background:var(--sf3);border:1px solid var(--bd2);border-radius:4px;padding:2px 8px;letter-spacing:.8px;text-transform:uppercase}
 .how-step-body{padding:14px 16px;font-size:12px;color:var(--t2);line-height:1.65}
-.how-tip{
-  margin-top:10px;padding:9px 12px;border-radius:var(--radius-sm);
-  font-size:11px;color:var(--t2);line-height:1.5;
-  border-left:3px solid;
-}
-/* Mini roadmap in how-to */
-.how-wk-mini{
-  border-radius:9px;padding:8px 10px;text-align:center;border:1.5px solid;
-}
+.how-tip{margin-top:10px;padding:9px 12px;border-radius:var(--radius-sm);font-size:11px;color:var(--t2);line-height:1.5;border-left:3px solid}
+.how-wk-mini{border-radius:9px;padding:8px 10px;text-align:center;border:1.5px solid}
 .how-wk-lbl{font-family:var(--mono);font-size:8px;font-weight:700;letter-spacing:.5px}
 .how-wk-band{font-family:var(--display);font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;margin-top:2px}
-/* Mini bar mockup */
 .how-bar-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
 .how-bar-lbl{font-size:9px;color:var(--t3);width:40px;flex-shrink:0;font-weight:600;font-family:var(--display)}
 .how-bar-track{flex:1;height:7px;background:var(--sf3);border-radius:4px;overflow:hidden;border:1px solid var(--bd)}
 .how-bar-fill{height:100%;border-radius:4px}
 .how-bar-pct{font-family:var(--mono);font-size:9px;color:var(--t3);width:28px;text-align:right}
-/* Stats row used in session mockups in how-to */
 .how-stats{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
 .how-stat{font-size:10px;color:var(--t3)}
-
-/* ── ACTION STRIP ── */
 .action-strip{display:flex;gap:8px;margin-bottom:12px;align-items:stretch}
-.sr-trigger-btn{
-  flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;
-  padding:10px 16px;border-radius:20px;background:transparent;
-  border:1.5px solid var(--cyan);color:var(--cyan);
-  font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;
-  transition:all .18s;box-shadow:0 2px 8px rgba(2,132,199,0.12);cursor:pointer;
-}
+.sr-trigger-btn{flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;border-radius:20px;background:transparent;border:1.5px solid var(--cyan);color:var(--cyan);font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;transition:all .18s;box-shadow:0 2px 8px rgba(2,132,199,0.12);cursor:pointer}
 .sr-trigger-btn:hover{background:rgba(2,132,199,0.07)}
 .action-strip .ai-btn{flex:1}
-.sr-panel{
-  background:var(--sf);border-radius:var(--radius);
-  border:1.5px solid rgba(2,132,199,0.2);
-  box-shadow:var(--sh-md);overflow:hidden;margin-bottom:12px;
-}
-.sr-panel-head{
-  display:flex;align-items:center;justify-content:space-between;
-  padding:12px 14px 10px;
-  background:linear-gradient(135deg,rgba(2,132,199,0.05),rgba(124,58,237,0.04));
-  border-bottom:1px solid var(--bd);
-}
+.sr-panel{background:var(--sf);border-radius:var(--radius);border:1.5px solid rgba(2,132,199,0.2);box-shadow:var(--sh-md);overflow:hidden;margin-bottom:12px}
+.sr-panel-head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px 10px;background:linear-gradient(135deg,rgba(2,132,199,0.05),rgba(124,58,237,0.04));border-bottom:1px solid var(--bd)}
 .sr-panel-title{font-size:13px;font-weight:800;color:var(--t);font-family:var(--display);letter-spacing:.5px}
 .sr-panel-sub{font-size:10px;color:var(--t3);margin-top:1px}
 .sr-panel-body{padding:13px 14px}
 .sr-state-btns{display:flex;gap:7px;flex-wrap:wrap;margin-bottom:2px}
-.sr-state-btn{
-  flex:1;min-width:80px;
-  padding:12px 10px;border-radius:var(--radius-sm);
-  border:1.5px solid;background:transparent;
-  font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:.3px;
-  cursor:pointer;transition:all .18s;
-  display:flex;flex-direction:column;align-items:center;gap:4px;
-}
+.sr-state-btn{flex:1;min-width:80px;padding:12px 10px;border-radius:var(--radius-sm);border:1.5px solid;background:transparent;font-size:14px;font-weight:800;font-family:var(--display);letter-spacing:.3px;cursor:pointer;transition:all .18s;display:flex;flex-direction:column;align-items:center;gap:4px}
 .sr-state-btn .sr-btn-label{font-size:11px;font-weight:800;letter-spacing:.5px}
 .sr-state-btn .sr-btn-desc{font-size:8px;font-weight:500;opacity:.7;letter-spacing:.3px;text-align:center;line-height:1.3}
 .sr-state-btn:hover{filter:brightness(.96)}
 .sr-state-btn:active{transform:scale(.97)}
 .sr-protocol{display:flex;flex-direction:column;gap:5px;margin-bottom:8px}
-.sr-protocol-opt{
-  display:flex;align-items:baseline;gap:9px;
-  padding:8px 11px;border-radius:var(--radius-xs);
-  background:var(--sf3);border:1px solid var(--bd);
-  font-size:12px;color:var(--t2);line-height:1.5;
-}
+.sr-protocol-opt{display:flex;align-items:baseline;gap:9px;padding:8px 11px;border-radius:var(--radius-xs);background:var(--sf3);border:1px solid var(--bd);font-size:12px;color:var(--t2);line-height:1.5}
 .sr-protocol-num{font-family:var(--mono);font-size:10px;font-weight:700;min-width:14px;flex-shrink:0}
-.sr-change-btn{
-  background:transparent;border:none;font-size:10px;
-  color:var(--t3);text-decoration:underline;
-  cursor:pointer;font-family:var(--body);padding:0;margin-top:2px;
-}
+.sr-change-btn{background:transparent;border:none;font-size:10px;color:var(--t3);text-decoration:underline;cursor:pointer;font-family:var(--body);padding:0;margin-top:2px}
 .sr-change-btn:hover{color:var(--t2)}
-.sr-confirmed{
-  display:flex;align-items:center;gap:10px;
-  padding:10px 13px;border-radius:var(--radius-sm);
-  background:var(--sf3);border:1px solid var(--bd2);
-  font-size:11px;color:var(--t2);margin-bottom:6px;
-}
-.rec-state-btns{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
-.rec-state-btn{
-  padding:4px 9px;border-radius:5px;font-size:8px;font-weight:800;
-  font-family:var(--display);letter-spacing:.5px;border:1.5px solid;
-  background:transparent;cursor:pointer;transition:all .15s;
-}
-.rec-state-btn:active{opacity:.7;transform:scale(.97)}
-.rec-protocol{margin-top:5px;display:flex;flex-direction:column;gap:2px}
-.rec-protocol-opt{font-size:8px;color:var(--t2);line-height:1.45;display:flex;align-items:baseline;gap:4px}
-.rec-protocol-num{font-family:var(--mono);font-size:7px;font-weight:700;min-width:10px;flex-shrink:0}
-.rec-change{font-size:7px;color:var(--t4);text-decoration:underline;cursor:pointer;margin-top:4px;display:inline-block;background:none;border:none;padding:0;font-family:var(--body)}
-.rec-change:hover{color:var(--t3)}
-
-/* ── WEEK CALENDAR — AM/PM SPLIT ── */
+.sr-confirmed{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:11px;color:var(--t2);margin-bottom:6px}
 .cal-grid{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth}
 .cal-grid::-webkit-scrollbar{display:none}
 .cal-day{flex-shrink:0;width:112px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
@@ -559,14 +256,12 @@ input,select{font-family:inherit;outline:none}
 .cal-today .cal-day-name{color:var(--green)}
 .cal-day-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1}
 .cal-today .cal-day-date{color:var(--green)}
-/* AM/PM slot structure */
 .cal-slot{border-bottom:1px solid var(--bd)}
 .cal-slot:last-child{border-bottom:none}
 .cal-slot-row{display:flex;min-height:38px}
 .cal-slot-label{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);font-family:var(--mono);border-right:1px solid var(--bd);background:var(--sf2)}
 .cal-slot-content{flex:1;min-width:0}
 .cal-ico{display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-top:1px}
-/* Session card */
 .cal-session{padding:6px 7px;cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:5px;transition:background .15s}
 .cal-session:last-child{border-bottom:none}
 .cal-session:hover{background:var(--sf3)}
@@ -574,24 +269,23 @@ input,select{font-family:inherit;outline:none}
 .cal-session-name{font-size:9px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .cal-session-stats{font-size:7px;color:var(--t3);margin-top:2px;line-height:1.4}
 .cal-session-stats b{color:var(--t2);font-weight:600}
-/* Recovery (AM slot) */
 .cal-recovery{padding:6px 7px;display:flex;align-items:flex-start;gap:5px}
 .cal-recovery-lbl{font-size:8px;font-weight:800;color:var(--cyan);font-family:var(--display);letter-spacing:.5px;text-transform:uppercase;line-height:1.3}
 .cal-recovery-tip{font-size:7px;color:var(--t3);line-height:1.45;margin-top:1px}
-/* Gym suggestion (AM slot) */
-.cal-gym{padding:6px 7px;display:flex;align-items:center;gap:5px;cursor:pointer;transition:background .15s}
-.cal-gym:hover{background:var(--sf3)}
 .cal-gym-link{font-size:7.5px;color:var(--green);font-weight:600;letter-spacing:.3px;text-decoration:none;opacity:.65;pointer-events:none}
-/* Empty PM placeholder */
 .cal-empty-pm{padding:6px 7px;font-size:9px;color:var(--bd2);font-family:var(--mono);display:flex;align-items:center;justify-content:center;min-height:28px}
-/* Unscheduled */
 .cal-unscheduled{margin-bottom:12px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf);border:1px dashed var(--bd2);box-shadow:var(--sh)}
 .cal-unscheduled-title{font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);margin-bottom:7px;font-family:var(--display)}
 .cal-unsession{display:flex;align-items:center;gap:7px;padding:6px 0;border-bottom:1px solid var(--bd);font-size:11px}
 .cal-unsession:last-child{border-bottom:none;padding-bottom:0}
-/* ── ROADMAP PAST WEEKS ── */
 .week-card.past{opacity:0.58;background:var(--sf2) !important}
 .wk-past-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display);background:var(--t4);color:#fff}
+/* ── GYM CALENDAR CARD ── */
+.cal-gym-card{padding:6px 7px;display:flex;align-items:flex-start;gap:5px}
+.cal-gym-name{font-size:8px;font-weight:800;color:var(--green);font-family:var(--display);letter-spacing:.5px;line-height:1.3;text-transform:uppercase}
+.cal-gym-intent{font-size:7px;color:var(--t3);line-height:1.45;margin-top:1px}
+.cal-gym-ofc{display:inline-block;margin-top:3px;font-size:7px;font-weight:800;padding:1px 6px;border-radius:10px;background:rgba(124,58,237,0.1);color:var(--purple);border:1px solid rgba(124,58,237,0.2);letter-spacing:.5px;font-family:var(--display)}
+.cal-recovery-inline{padding:6px 7px;display:flex;align-items:flex-start;gap:5px;border-top:1px solid var(--bd)}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -662,8 +356,6 @@ input,select{font-family:inherit;outline:none}
 
 <!-- ── DASHBOARD ── -->
 <div class="panel on" id="panel-dashboard">
-
-  <!-- ACTION STRIP -->
   <div class="action-strip">
     <button class="sr-trigger-btn" id="sr-trigger-btn" onclick="toggleSelfReport()">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:inline-block;vertical-align:-2px;flex-shrink:0"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="var(--cyan)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/></svg>
@@ -674,8 +366,6 @@ input,select{font-family:inherit;outline:none}
       Get Prescription
     </button>
   </div>
-
-  <!-- SELF-REPORT PANEL -->
   <div id="self-report-panel" style="display:none">
     <div class="sr-panel">
       <div class="sr-panel-head">
@@ -688,20 +378,12 @@ input,select{font-family:inherit;outline:none}
       <div class="sr-panel-body" id="sr-panel-inner"></div>
     </div>
   </div>
-
-  <!-- AI PRESCRIPTION OUTPUT -->
   <div id="ai-prescription-output"></div>
-
-  <!-- WEEK STRIP + CALENDAR -->
   <div class="ws-outer" id="week-strip"></div>
   <div id="week-calendar" style="margin-bottom:14px"></div>
-
-  <!-- SUMMARY + GAUGES -->
   <div class="sumrow" id="sumrow"></div>
   <div class="tbar" id="tbar"></div>
   <div class="gaugewrap" id="gaugewrap"></div>
-
-  <!-- WEEKLY PRESCRIPTION -->
   <div class="rectitle">WEEKLY PRESCRIPTION</div>
   <div id="recswrap"></div>
 </div>
@@ -794,293 +476,110 @@ input,select{font-family:inherit;outline:none}
   <div class="howto-intro">
     Frisbee Track tracks your training load across the <strong>4 weeks</strong> leading into a tournament. Log your sessions — the app tells you where you're at and what to do next. <strong style="color:var(--green)">No GPS device needed.</strong> Built on <strong>244 real GPS sessions</strong> and <strong>933 drill periods</strong>.
   </div>
-
-  <!-- STEP 1 -->
   <div class="how-step" style="border-top:3px solid var(--green)">
     <div class="how-step-head">
       <div class="how-num" style="background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.25)">01</div>
-      <div>
-        <div class="how-step-title">Sign In with Google</div>
-        <div class="how-step-tab">One-time setup</div>
-      </div>
+      <div><div class="how-step-title">Sign In with Google</div><div class="how-step-tab">One-time setup</div></div>
     </div>
     <div class="how-step-body">
       <p>Tap <strong>Sign in</strong> in the top right. Your sessions save to your account and sync across all your devices automatically.</p>
-      <!-- Real auth mockup -->
       <div style="display:flex;align-items:center;gap:10px;margin-top:12px;padding:12px;background:var(--sf3);border-radius:var(--radius-sm);border:1px solid var(--bd2)">
-        <div>
-          <div style="font-size:10px;color:var(--t3);margin-bottom:6px">Before signing in:</div>
-          <button class="auth-login" style="cursor:default;pointer-events:none">Sign in</button>
-        </div>
+        <div><div style="font-size:10px;color:var(--t3);margin-bottom:6px">Before signing in:</div><button class="auth-login" style="cursor:default;pointer-events:none">Sign in</button></div>
         <div style="width:1px;height:40px;background:var(--bd2)"></div>
-        <div>
-          <div style="font-size:10px;color:var(--t3);margin-bottom:6px">After signing in:</div>
-          <div class="auth-user" style="cursor:default">
-            <div class="auth-avatar">D</div>
-            <span style="font-size:11px">Dylan</span>
-            <span style="font-size:10px;color:var(--t4)">Sign out</span>
-          </div>
-        </div>
+        <div><div style="font-size:10px;color:var(--t3);margin-bottom:6px">After signing in:</div><div class="auth-user" style="cursor:default"><div class="auth-avatar">D</div><span style="font-size:11px">Dylan</span><span style="font-size:10px;color:var(--t4)">Sign out</span></div></div>
       </div>
     </div>
   </div>
-
-  <!-- STEP 2 -->
   <div class="how-step" style="border-top:3px solid var(--cyan)">
     <div class="how-step-head">
       <div class="how-num" style="background:rgba(2,132,199,0.1);color:var(--cyan);border:1px solid rgba(2,132,199,0.25)">02</div>
-      <div>
-        <div class="how-step-title">Set Your Tournament Date</div>
-        <div class="how-step-tab">Roadmap tab</div>
-      </div>
+      <div><div class="how-step-title">Set Your Tournament Date</div><div class="how-step-tab">Roadmap tab</div></div>
     </div>
     <div class="how-step-body">
       <p>Go to <strong>Roadmap</strong> and enter your tournament name and date. The app automatically builds your 4-week load roadmap — and your weekly targets update week by week as you get closer.</p>
-      <!-- Real week strip mockup using app CSS -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px">
-        <div class="how-wk-mini" style="background:rgba(2,132,199,0.07);border-color:rgba(2,132,199,0.3)">
-          <div class="how-wk-lbl" style="color:var(--cyan)">WK 4</div>
-          <div class="how-wk-band" style="color:var(--cyan)">MOD</div>
-          <div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Build the base</div>
-        </div>
-        <div class="how-wk-mini" style="background:rgba(5,150,105,0.07);border-color:rgba(5,150,105,0.3)">
-          <div class="how-wk-lbl" style="color:var(--green)">WK 3</div>
-          <div class="how-wk-band" style="color:var(--green)">HIGH</div>
-          <div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Peak stimulus</div>
-        </div>
-        <div class="how-wk-mini" style="background:rgba(5,150,105,0.07);border-color:rgba(5,150,105,0.3)">
-          <div class="how-wk-lbl" style="color:var(--green)">WK 2</div>
-          <div class="how-wk-band" style="color:var(--green)">HIGH</div>
-          <div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Consolidate</div>
-        </div>
-        <div class="how-wk-mini" style="background:rgba(100,116,139,0.07);border-color:rgba(100,116,139,0.3)">
-          <div class="how-wk-lbl" style="color:var(--low)">WK 1</div>
-          <div class="how-wk-band" style="color:var(--low)">TAPER</div>
-          <div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Arrive fresh</div>
-        </div>
+        <div class="how-wk-mini" style="background:rgba(2,132,199,0.07);border-color:rgba(2,132,199,0.3)"><div class="how-wk-lbl" style="color:var(--cyan)">WK 4</div><div class="how-wk-band" style="color:var(--cyan)">MOD</div><div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Build the base</div></div>
+        <div class="how-wk-mini" style="background:rgba(5,150,105,0.07);border-color:rgba(5,150,105,0.3)"><div class="how-wk-lbl" style="color:var(--green)">WK 3</div><div class="how-wk-band" style="color:var(--green)">HIGH</div><div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Peak stimulus</div></div>
+        <div class="how-wk-mini" style="background:rgba(5,150,105,0.07);border-color:rgba(5,150,105,0.3)"><div class="how-wk-lbl" style="color:var(--green)">WK 2</div><div class="how-wk-band" style="color:var(--green)">HIGH</div><div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Consolidate</div></div>
+        <div class="how-wk-mini" style="background:rgba(100,116,139,0.07);border-color:rgba(100,116,139,0.3)"><div class="how-wk-lbl" style="color:var(--low)">WK 1</div><div class="how-wk-band" style="color:var(--low)">TAPER</div><div style="font-size:8px;color:var(--t3);margin-top:3px;line-height:1.3">Arrive fresh</div></div>
       </div>
     </div>
   </div>
-
-  <!-- STEP 3 -->
   <div class="how-step" style="border-top:3px solid var(--green)">
     <div class="how-step-head">
       <div class="how-num" style="background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.25)">03</div>
-      <div>
-        <div class="how-step-title">Log a Session</div>
-        <div class="how-step-tab">Sessions tab → + Add</div>
-      </div>
+      <div><div class="how-step-title">Log a Session</div><div class="how-step-tab">Sessions tab → + Add</div></div>
     </div>
     <div class="how-step-body">
       <p>Tap <strong>+ Add</strong> and choose your session type. GPS values are calculated automatically — no device needed.</p>
-      <!-- Real session card mockups -->
       <div style="margin-top:12px;display:flex;flex-direction:column;gap:8px">
-        <!-- Game card -->
-        <div class="si" style="cursor:default">
-          <div class="sico">🏆</div>
-          <div class="sbody">
-            <div class="sname">AUS Club Championships
-              <span class="sbadge" style="color:var(--silver);background:rgba(71,85,105,0.1)">International</span>
-            </div>
-            <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px">
-              <span style="font-size:11px;color:var(--t3)">Select level + enter <strong style="color:var(--t)">points played</strong> → GPS loads automatically</span>
-            </div>
-            <div class="sstats">
-              <div class="ss">Dist <b style="color:var(--cyan)">3302m</b></div>
-              <div class="ss">HSR <b style="color:var(--green)">711m</b></div>
-              <div class="ss">VHSR <b style="color:var(--amber)">205m</b></div>
-              <div class="ss">Pts <b style="color:var(--gold)">13</b></div>
-            </div>
-          </div>
-        </div>
-        <!-- Training card -->
-        <div class="si" style="cursor:default">
-          <div class="sico">🏃</div>
-          <div class="sbody">
-            <div class="sname">Tuesday Training</div>
-            <div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:5px">
-              <span class="pill">7v7 Match Sim <b style="color:var(--t)">6 pts</b></span>
-              <span class="pill">Speed Build Up <b style="color:var(--t)">8 reps</b></span>
-              <span class="pill">MAS 15on15off <b style="color:var(--t)">16×85m</b></span>
-            </div>
-            <div class="sstats">
-              <div class="ss">Dist <b style="color:var(--cyan)">4210m</b></div>
-              <div class="ss">HSR <b style="color:var(--green)">1048m</b></div>
-              <div class="ss">VHSR <b style="color:var(--amber)">324m</b></div>
-              <div class="ss">Dur <b style="color:var(--amber)">62min</b></div>
-            </div>
-          </div>
-        </div>
+        <div class="si" style="cursor:default"><div class="sico">🏆</div><div class="sbody"><div class="sname">AUS Club Championships<span class="sbadge" style="color:var(--silver);background:rgba(71,85,105,0.1)">International</span></div><div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:6px"><span style="font-size:11px;color:var(--t3)">Select level + enter <strong style="color:var(--t)">points played</strong> → GPS loads automatically</span></div><div class="sstats"><div class="ss">Dist <b style="color:var(--cyan)">3302m</b></div><div class="ss">HSR <b style="color:var(--green)">711m</b></div><div class="ss">VHSR <b style="color:var(--amber)">205m</b></div><div class="ss">Pts <b style="color:var(--gold)">13</b></div></div></div></div>
+        <div class="si" style="cursor:default"><div class="sico">🏃</div><div class="sbody"><div class="sname">Tuesday Training</div><div style="display:flex;flex-wrap:wrap;gap:3px;margin-top:5px"><span class="pill">7v7 Match Sim <b style="color:var(--t)">6 pts</b></span><span class="pill">Speed Build Up <b style="color:var(--t)">8 reps</b></span><span class="pill">MAS 15on15off <b style="color:var(--t)">16×85m</b></span></div><div class="sstats"><div class="ss">Dist <b style="color:var(--cyan)">4210m</b></div><div class="ss">HSR <b style="color:var(--green)">1048m</b></div><div class="ss">VHSR <b style="color:var(--amber)">324m</b></div><div class="ss">Dur <b style="color:var(--amber)">62min</b></div></div></div></div>
       </div>
-      <div class="how-tip" style="background:rgba(5,150,105,0.06);border-color:var(--green)">
-        <strong style="color:var(--green)">Tip:</strong> Log sessions as you go through the week — the dashboard updates in real time.
-      </div>
+      <div class="how-tip" style="background:rgba(5,150,105,0.06);border-color:var(--green)"><strong style="color:var(--green)">Tip:</strong> Log sessions as you go through the week — the dashboard updates in real time.</div>
     </div>
   </div>
-
-  <!-- STEP 4 -->
   <div class="how-step" style="border-top:3px solid var(--cyan)">
     <div class="how-step-head">
       <div class="how-num" style="background:rgba(2,132,199,0.1);color:var(--cyan);border:1px solid rgba(2,132,199,0.25)">04</div>
-      <div>
-        <div class="how-step-title">Read Your Dashboard</div>
-        <div class="how-step-tab">Dashboard tab</div>
-      </div>
+      <div><div class="how-step-title">Read Your Dashboard</div><div class="how-step-tab">Dashboard tab</div></div>
     </div>
     <div class="how-step-body">
       <p>The dashboard shows your progress vs weekly targets for all 8 GPS metrics. The status indicators tell you at a glance where you're at.</p>
-      <!-- Real gauge mockup — using same classes -->
       <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin-top:12px">
-        <div class="gc">
-          <svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible">
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#059669" stroke-width="6" stroke-dasharray="117.6 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">78%</text>
-          </svg>
-          <div class="gs" style="color:var(--optimal)">Optimal</div>
-          <div class="gv">2714m</div>
-          <div class="gt">/3473m</div>
-          <div class="gl">HSR</div>
-        </div>
-        <div class="gc">
-          <svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible">
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#d97706" stroke-width="6" stroke-dasharray="79.4 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">53%</text>
-          </svg>
-          <div class="gs" style="color:var(--s-moderate)">Moderate</div>
-          <div class="gv">450m</div>
-          <div class="gt">/850m</div>
-          <div class="gl">VHSR</div>
-        </div>
-        <div class="gc">
-          <svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible">
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#059669" stroke-width="6" stroke-dasharray="136.2 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">90%</text>
-          </svg>
-          <div class="gs" style="color:var(--optimal)">Optimal</div>
-          <div class="gv">168</div>
-          <div class="gt">/187</div>
-          <div class="gl">Accels</div>
-        </div>
-        <div class="gc">
-          <svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible">
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <circle cx="40" cy="42" r="32" fill="none" stroke="#94a3b8" stroke-width="6" stroke-dasharray="46.0 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle>
-            <text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">31%</text>
-          </svg>
-          <div class="gs" style="color:var(--s-low)">Low</div>
-          <div class="gv">1803</div>
-          <div class="gt">/5912</div>
-          <div class="gl">Accel Load</div>
-        </div>
+        <div class="gc"><svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible"><circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><circle cx="40" cy="42" r="32" fill="none" stroke="#059669" stroke-width="6" stroke-dasharray="117.6 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">78%</text></svg><div class="gs" style="color:var(--optimal)">Optimal</div><div class="gv">2714m</div><div class="gt">/3473m</div><div class="gl">HSR</div></div>
+        <div class="gc"><svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible"><circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><circle cx="40" cy="42" r="32" fill="none" stroke="#d97706" stroke-width="6" stroke-dasharray="79.4 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">53%</text></svg><div class="gs" style="color:var(--s-moderate)">Moderate</div><div class="gv">450m</div><div class="gt">/850m</div><div class="gl">VHSR</div></div>
+        <div class="gc"><svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible"><circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><circle cx="40" cy="42" r="32" fill="none" stroke="#059669" stroke-width="6" stroke-dasharray="136.2 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">90%</text></svg><div class="gs" style="color:var(--optimal)">Optimal</div><div class="gv">168</div><div class="gt">/187</div><div class="gl">Accels</div></div>
+        <div class="gc"><svg width="80" height="62" viewBox="0 0 80 80" style="overflow:visible"><circle cx="40" cy="42" r="32" fill="none" stroke="#e2e8f0" stroke-width="6" stroke-dasharray="150.8 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><circle cx="40" cy="42" r="32" fill="none" stroke="#94a3b8" stroke-width="6" stroke-dasharray="46.0 201.1" stroke-linecap="round" transform="rotate(135,40,42)"></circle><text x="40" y="43" text-anchor="middle" dominant-baseline="middle" fill="#0f172a" font-family="Courier New,monospace" font-size="10" font-weight="700">31%</text></svg><div class="gs" style="color:var(--s-low)">Low</div><div class="gv">1803</div><div class="gt">/5912</div><div class="gl">Accel Load</div></div>
       </div>
-      <!-- Prescription row mockup -->
-      <div class="rrow" style="border-left-color:var(--s-moderate);margin-top:10px">
-        <span style="font-size:13px;flex-shrink:0">~</span>
-        <div style="flex:1">
-          <div class="rm" style="color:var(--s-moderate)">Very High Speed Running <span style="color:var(--t3);font-weight:400;font-size:10px;margin-left:4px">53% · gap +400m</span></div>
-          <div class="rt">Moderate. More speed volume needed before week end.</div>
-          <div class="sug">Try <b>7v7 Match Sim</b> for <b>20 min</b> — gains ~<b>460m</b></div>
-        </div>
-      </div>
-      <div class="how-tip" style="background:rgba(2,132,199,0.06);border-color:var(--cyan)">
-        <strong style="color:var(--cyan)">Priority:</strong> HSR, VHSR and Accels are the big three. Hit these every week and the rest follows.
-      </div>
+      <div class="rrow" style="border-left-color:var(--s-moderate);margin-top:10px"><span style="font-size:13px;flex-shrink:0">~</span><div style="flex:1"><div class="rm" style="color:var(--s-moderate)">Very High Speed Running <span style="color:var(--t3);font-weight:400;font-size:10px;margin-left:4px">53% · gap +400m</span></div><div class="rt">Moderate. More speed volume needed before week end.</div><div class="sug">Try <b>7v7 Match Sim</b> for <b>20 min</b> — gains ~<b>460m</b></div></div></div>
+      <div class="how-tip" style="background:rgba(2,132,199,0.06);border-color:var(--cyan)"><strong style="color:var(--cyan)">Priority:</strong> HSR, VHSR and Accels are the big three. Hit these every week and the rest follows.</div>
     </div>
   </div>
-
-  <!-- STEP 5 -->
   <div class="how-step" style="border-top:3px solid var(--amber)">
     <div class="how-step-head">
       <div class="how-num" style="background:rgba(180,83,9,0.1);color:var(--amber);border:1px solid rgba(180,83,9,0.25)">05</div>
-      <div>
-        <div class="how-step-title">Get Your AI Prescription</div>
-        <div class="how-step-tab">Dashboard → AI Coaching Prescription</div>
-      </div>
+      <div><div class="how-step-title">Get Your AI Prescription</div><div class="how-step-tab">Dashboard → AI Coaching Prescription</div></div>
     </div>
     <div class="how-step-body">
       <p>Tap <strong>Get Prescription</strong> on the Dashboard. The AI reads your current week data and gives you a personalised drill prescription — specific drills, sets and reps — to close your gaps before the week ends.</p>
-      <!-- AI card mockup -->
-      <div style="margin-top:12px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);padding:12px;font-size:11.5px;color:var(--t2);line-height:1.7">
-        <strong style="display:block;margin-bottom:4px;color:var(--t)">Where you're at:</strong>
-        HSR is sitting at 78% — solid. VHSR is the gap at 53%. Accels are nearly there at 90%. One more quality session closes this out.
-        <br><br>
-        <strong style="display:block;margin-bottom:4px;color:var(--t)">What you need to do:</strong>
-        Post warm-up — 3 × Speed Build Ups, intent to move fast. During session — 4 × Box Drill, go on the 30s. Close out with MAS 2×8 @85m.
-      </div>
+      <div style="margin-top:12px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);padding:12px;font-size:11.5px;color:var(--t2);line-height:1.7"><strong style="display:block;margin-bottom:4px;color:var(--t)">Where you're at:</strong>HSR is sitting at 78% — solid. VHSR is the gap at 53%. Accels are nearly there at 90%. One more quality session closes this out.<br><br><strong style="display:block;margin-bottom:4px;color:var(--t)">What you need to do:</strong>Post warm-up — 3 × Speed Build Ups, intent to move fast. During session — 4 × Box Drill, go on the 30s. Close out with MAS 2×8 @85m.</div>
     </div>
   </div>
-
-  <!-- STEP 6 -->
   <div class="how-step" style="border-top:3px solid var(--purple)">
     <div class="how-step-head">
       <div class="how-num" style="background:rgba(124,58,237,0.1);color:var(--purple);border:1px solid rgba(124,58,237,0.25)">06</div>
-      <div>
-        <div class="how-step-title">Track Load Over Time</div>
-        <div class="how-step-tab">Metrics tab</div>
-      </div>
+      <div><div class="how-step-title">Track Load Over Time</div><div class="how-step-tab">Metrics tab</div></div>
     </div>
     <div class="how-step-body">
       <p>The Metrics tab shows your cumulative load per session vs target bands. Use it to see whether you're building load at the right rate across the week.</p>
-      <!-- Bar zone legend -->
       <div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">
-        <div style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--radius-sm);background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2)">
-          <div style="width:12px;height:12px;border-radius:3px;background:rgba(5,150,105,0.35)"></div>
-          <span style="font-size:11px;color:var(--green);font-weight:600">High zone</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--radius-sm);background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.2)">
-          <div style="width:12px;height:12px;border-radius:3px;background:rgba(217,119,6,0.35)"></div>
-          <span style="font-size:11px;color:var(--amber);font-weight:600">Moderate zone</span>
-        </div>
-        <div style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--radius-sm);background:rgba(100,116,139,0.08);border:1px solid rgba(100,116,139,0.2)">
-          <div style="width:12px;height:12px;border-radius:3px;background:rgba(100,116,139,0.35)"></div>
-          <span style="font-size:11px;color:var(--low);font-weight:600">Low zone</span>
-        </div>
+        <div style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--radius-sm);background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2)"><div style="width:12px;height:12px;border-radius:3px;background:rgba(5,150,105,0.35)"></div><span style="font-size:11px;color:var(--green);font-weight:600">High zone</span></div>
+        <div style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--radius-sm);background:rgba(217,119,6,0.08);border:1px solid rgba(217,119,6,0.2)"><div style="width:12px;height:12px;border-radius:3px;background:rgba(217,119,6,0.35)"></div><span style="font-size:11px;color:var(--amber);font-weight:600">Moderate zone</span></div>
+        <div style="display:flex;align-items:center;gap:6px;padding:7px 10px;border-radius:var(--radius-sm);background:rgba(100,116,139,0.08);border:1px solid rgba(100,116,139,0.2)"><div style="width:12px;height:12px;border-radius:3px;background:rgba(100,116,139,0.35)"></div><span style="font-size:11px;color:var(--low);font-weight:600">Low zone</span></div>
       </div>
     </div>
   </div>
-
-  <!-- STEP 7 -->
   <div class="how-step" style="border-top:3px solid var(--t4)">
     <div class="how-step-head">
       <div class="how-num" style="background:var(--sf3);color:var(--t3);border:1px solid var(--bd2)">07</div>
-      <div>
-        <div class="how-step-title">Benchmarks &amp; Definitions</div>
-        <div class="how-step-tab">Benchmarks + Definitions tabs</div>
-      </div>
+      <div><div class="how-step-title">Benchmarks &amp; Definitions</div><div class="how-step-tab">Benchmarks + Definitions tabs</div></div>
     </div>
     <div class="how-step-body">
       <div style="display:flex;flex-direction:column;gap:8px">
-        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--sf3);border-radius:var(--radius-sm);border:1px solid var(--bd2)">
-          <span style="font-size:18px">📊</span>
-          <div>
-            <div style="font-size:12px;font-weight:700;color:var(--t);margin-bottom:2px">Benchmarks</div>
-            <div style="font-size:11px;color:var(--t3)">Real per-point GPS averages from International and Domestic Ultimate Frisbee competition — what your level actually demands.</div>
-          </div>
-        </div>
-        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--sf3);border-radius:var(--radius-sm);border:1px solid var(--bd2)">
-          <span style="font-size:18px">📖</span>
-          <div>
-            <div style="font-size:12px;font-weight:700;color:var(--t);margin-bottom:2px">Definitions</div>
-            <div style="font-size:11px;color:var(--t3)">Plain-language explanations of HSR, VHSR, Accels, and Accel Load — and why each one matters for your performance and injury resilience.</div>
-          </div>
-        </div>
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--sf3);border-radius:var(--radius-sm);border:1px solid var(--bd2)"><span style="font-size:18px">📊</span><div><div style="font-size:12px;font-weight:700;color:var(--t);margin-bottom:2px">Benchmarks</div><div style="font-size:11px;color:var(--t3)">Real per-point GPS averages from International and Domestic Ultimate Frisbee competition — what your level actually demands.</div></div></div>
+        <div style="display:flex;align-items:flex-start;gap:10px;padding:10px 12px;background:var(--sf3);border-radius:var(--radius-sm);border:1px solid var(--bd2)"><span style="font-size:18px">📖</span><div><div style="font-size:12px;font-weight:700;color:var(--t);margin-bottom:2px">Definitions</div><div style="font-size:11px;color:var(--t3)">Plain-language explanations of HSR, VHSR, Accels, and Accel Load — and why each one matters for your performance and injury resilience.</div></div></div>
       </div>
     </div>
   </div>
-
-  <div style="text-align:center;padding:20px 0 8px;font-size:11px;color:var(--t4)">
-    Built on GPS data from <strong style="color:var(--t3)">244 sessions</strong> · <strong style="color:var(--t3)">933 drill periods</strong>
-  </div>
+  <div style="text-align:center;padding:20px 0 8px;font-size:11px;color:var(--t4)">Built on GPS data from <strong style="color:var(--t3)">244 sessions</strong> · <strong style="color:var(--t3)">933 drill periods</strong></div>
 </div>
 </div>
 
 </div><!-- /content -->
 
 <script>
-// ── COACHING BRIEF (embedded for AI prescription) ──
+// ── COACHING BRIEF ──
 var COACHING_BRIEF = `You are Dylan Bennett — a sport scientist and strength & conditioning coach based in Sydney, Australia. You work with elite Ultimate Frisbee teams including Sydney Sunder and Rogue. You are direct, precise, and performance-focused. You talk to athletes like a coach, not a robot — plain language, clear intent, no jargon wall. Your voice is confident and action-oriented. Phrases like "have a crack", "intent to move", "topping up", "speed injection" are natural to you.
 
 ## Core Philosophy
@@ -1122,19 +621,16 @@ var RECOVERY_PROTOCOLS = {
   good:    {label:"Feeling Good",color:"#059669",desc:"Ready to train — no recovery needed.",btnDesc:"Fresh / ready",   options:["No specific recovery needed","Focus on quality in your next session","Optional: light mobility or walk if you want"]},
   fatigued:{label:"Fatigued",   color:"#0284c7",desc:"Feeling flat or heavy legs — flush and rest.",btnDesc:"Flat / heavy legs",options:["5–10 min cold exposure","25 min flush run/bike @HR <135 bpm","Sleep (prioritise)"]},
   sore:    {label:"Sore",       color:"#d97706",desc:"Muscle soreness — contrast and mobilise.",btnDesc:"Muscle soreness",  options:["8–12 min cold exposure","2 min hot \u2192 4 min cold, repeat \xd72","20 min mobility/flex + foam roll"]},
-  both:    {label:"Both",       color:"#7c3aed",desc:"Fatigued and sore — full recovery protocol.",btnDesc:"Fatigued + sore",options:["2 min hot \u2192 2 min cold, repeat \xd74","Sleep w/ compression","10 min flush @HR <135 + 10 min mobility + foam roll"]}
+  both:    {label:"Both",       color:"#7c3aed",desc:"Fatigued and sore — full recovery protocol.",btnDesc:"Fatigued + sore",options:["2 min hot \u2192 2 min cold, repeat \xd74","Sleep w/ compression","10 min flush walk/bike @HR <135 + 10 min mobility + foam roll"]}
 };
 var recoveryStates = {};
 var srPanelOpen = false;
 
-// ── GAME BENCHMARKS — per-point rates from match demand matrix ──
+// ── GAME BENCHMARKS ──
 var BM={
-  worldClass:   {label:"World Class",   color:"#a16207",
-    pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.90,hacc:1.05,dec:2.42,hdec:1.05,acl:92.7}},
-  international:{label:"International", color:"#475569",
-    pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:3.52,hacc:0.89,dec:2.18,hdec:0.88,acl:86.9}},
-  domestic:     {label:"Domestic",      color:"#92400e",
-    pp:{dur:1.745,dist:205.7,hsr:45.8, vhsr:7.9, acc:2.70,hacc:0.52,dec:1.64,hdec:0.50,acl:59.4}}
+  worldClass:   {label:"World Class",   color:"#a16207",pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.90,hacc:1.05,dec:2.42,hdec:1.05,acl:92.7}},
+  international:{label:"International", color:"#475569",pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:3.52,hacc:0.89,dec:2.18,hdec:0.88,acl:86.9}},
+  domestic:     {label:"Domestic",      color:"#92400e",pp:{dur:1.745,dist:205.7,hsr:45.8, vhsr:7.9, acc:2.70,hacc:0.52,dec:1.64,hdec:0.50,acl:59.4}}
 };
 
 // ── WEEKLY TARGETS ──
@@ -1194,7 +690,6 @@ var MAS_DRILLS={
 // ── DRILL SELECT OPTIONS ──
 var DRILL_OPTS=(function(){
   var opt=function(k,lbl){return'<option value="'+k+'">'+lbl+'</option>';};
-  var grp=function(lbl){return'<optgroup label="── '+lbl+' ──"></optgroup>';};
   var o='';
   o+=opt('warmup','Warm Up / Athletic Prep');
   o+=opt('drilling','Drilling & Mechanics');
@@ -1467,59 +962,37 @@ function status(r){
   return            {label:"Low",    color:"var(--s-low)",     icon:"↓"};
 }
 
-// ── TOP-UP SUGGESTIONS — capped to what's appropriate in one session ──
+// ── TOP-UP SUGGESTIONS ──
 function topUpSuggestion(metricKey, gap){
   if(gap<=0) return null;
-
   if(metricKey==='hsr'){
-    // MAS 15on15off: ~55.6m HSR/rep | 100m OTM: ~77.1m HSR/rep
-    // Cap: 16 reps MAS max, 8 OTM max. Scale to gap but don't chase full week in one hit.
-    var r1=Math.min(Math.ceil(gap/55.6),16);
-    var r2=Math.min(Math.ceil(gap/77.1),8);
-    // If gap is small, keep it light
+    var r1=Math.min(Math.ceil(gap/55.6),16);var r2=Math.min(Math.ceil(gap/77.1),8);
     r1=Math.max(r1,4);r2=Math.max(r2,2);
     return{text:'MAS 15on15off ×'+r1+' reps  or  100m OTM ×'+r2+' reps'};
   }
-
   if(metricKey==='vhsr'){
-    // Speed Build Ups: ~40.6m VHSR/rep. Max 3 reps per session — CNS demanding.
-    var r=Math.min(Math.ceil(gap/40.6),3);
-    r=Math.max(r,2);
+    var r=Math.min(Math.ceil(gap/40.6),3);r=Math.max(r,2);
     return{text:'Speed Build Ups ×'+r+' reps'};
   }
-
   if(metricKey==='dist') return null;
-
   if(metricKey==='acc'){
-    // Box Drill: 5 acc/rep | D Strafe Mungo: 5 acc/rep. Max 4 reps each per session.
-    var r=Math.min(Math.ceil(gap/5),4);
-    r=Math.max(r,2);
+    var r=Math.min(Math.ceil(gap/5),4);r=Math.max(r,2);
     return{text:'Box Drill ×'+r+' reps  or  D Strafe Mungo ×'+r+' reps'};
   }
-
-  if(metricKey==='hacc'){
-    return{text:'Focus on intent — sprint off the mark in drills, no specific top-up needed.',isNote:true};
-  }
-
+  if(metricKey==='hacc'){return{text:'Focus on intent — sprint off the mark in drills, no specific top-up needed.',isNote:true};}
   if(metricKey==='dec'||metricKey==='hdec'){
-    // D Strafe Mungo: 5 dec/rep. Max 4 reps per session.
-    var r=Math.min(Math.ceil(gap/5),4);
-    r=Math.max(r,2);
+    var r=Math.min(Math.ceil(gap/5),4);r=Math.max(r,2);
     return{text:'D Strafe Mungo ×'+r+' reps'};
   }
-
   if(metricKey==='acl'){
-    // 3v3: ~17.4 AU/min | 4v4: ~22.5 AU/min. Cap at 20min — these are high load.
-    var m3=Math.min(Math.ceil(gap/17.4),20);
-    var m4=Math.min(Math.ceil(gap/22.5),15);
+    var m3=Math.min(Math.ceil(gap/17.4),20);var m4=Math.min(Math.ceil(gap/22.5),15);
     m3=Math.max(m3,5);m4=Math.max(m4,5);
     return{text:'3v3 Mini '+m3+'min  or  4v4 Mini '+m4+'min'};
   }
-
   return null;
 }
 
-// ── ARC GAUGE — light theme ──
+// ── ARC GAUGE ──
 function arc(pct,col){
   var r=32,cx=40,cy=42,sw=6;
   var circ=2*Math.PI*r,tot=.75*circ,fill=Math.min(pct,1)*tot;
@@ -1622,6 +1095,167 @@ function buildBars(T,tgt,bc,showPct){
   return h+"</div>";
 }
 
+// ── SESSION CLASSIFICATION + GYM SCHEDULING ──
+
+function classifyRunningSession(s) {
+  if (!s) return null;
+  if (s.type === 'game') return 'team';
+  var dist = Math.max(s.dist || 0, 1);
+  var hsr  = s.hsr  || 0;
+  var vhsr = s.vhsr || 0;
+  var acc  = s.acc  || 0;
+  var acl  = s.acl  || 0;
+
+  // Extensive: speed / MAS focus — GPS thresholds
+  if (vhsr > 250 || hsr > 1100 || (hsr / dist > 0.22 && vhsr / dist > 0.07))
+    return 'extensive';
+
+  // Intensive: accel focus — acc OR AL threshold
+  if (acc > 65 || acl > 1800)
+    return 'intensive';
+
+  // Drill composition fallback for app-calculated values
+  if (s.drills && s.drills.length) {
+    var masKeys   = ['m_mas','m_straight','m_swerve','m_100otm'];
+    var accelKeys = ['c_boxdrill','c_mungo','c_shuttles','c_jrun','c_zdrill',
+                     'c_shortaccel','c_ndrill','c_speedgrid','m_604020'];
+    var speedKeys = ['c_speedbuild','c_butterfly','c_curved','c_offset'];
+    var masCount = 0, accelCount = 0, speedCount = 0;
+    s.drills.forEach(function(d) {
+      if (masKeys.indexOf(d.dk)   >= 0) masCount++;
+      if (accelKeys.indexOf(d.dk) >= 0) accelCount++;
+      if (speedKeys.indexOf(d.dk) >= 0) speedCount++;
+    });
+    if (masCount > 0)             return 'extensive';
+    if (accelCount > speedCount)  return 'intensive';
+    if (speedCount > 0)           return 'extensive';
+  }
+
+  return 'team';
+}
+
+function getGymSchedule(days, band) {
+  var isTaper = (band === 'low');
+  var placements = {};
+
+  var classified = days.map(function(day) {
+    if (!day.sessions.length) return null;
+    var types = day.sessions.map(classifyRunningSession);
+    if (types.indexOf('extensive') >= 0) return 'extensive';
+    if (types.indexOf('intensive') >= 0) return 'intensive';
+    return 'team';
+  });
+
+  var INTENTS = {
+    'FB Pwr':       'Open the week — explosive, quality over load.',
+    'LB Pwr':       'Mid-week — pairs with team training.',
+    'LB Str':       'Close the week — always last, never before a speed session.',
+    'GD -2 Pwr Up': 'Two days out — activation only. Protect the legs.'
+  };
+
+  // ── TAPER ──
+  if (isTaper) {
+    var fbDay = -1;
+    for (var i = 0; i < 7; i++) { if (classified[i] === 'extensive') { fbDay = i; break; } }
+    if (fbDay < 0) { for (var i = 0; i < 7; i++) { if (classified[i] !== null) { fbDay = i; break; } } }
+    if (fbDay < 0) fbDay = 0;
+    placements[fbDay] = { session: 'FB Pwr', intent: INTENTS['FB Pwr'] };
+
+    var tEl = document.getElementById('tourn-date');
+    if (tEl && tEl.value) {
+      var tourn = new Date(tEl.value);
+      var diff  = Math.round((tourn - getSelectedRange().start) / 86400000);
+      var gd2   = diff - 2;
+      if (gd2 >= 0 && gd2 < 7 && gd2 !== fbDay)
+        placements[gd2] = { session: 'GD -2 Pwr Up', intent: INTENTS['GD -2 Pwr Up'] };
+    }
+    return placements;
+  }
+
+  // ── STANDARD WEEK ──
+  var hasAny = classified.some(function(c) { return c !== null; });
+
+  if (!hasAny) {
+    placements[0] = { session: 'FB Pwr', intent: INTENTS['FB Pwr'] };
+    placements[2] = { session: 'LB Pwr', intent: INTENTS['LB Pwr'] };
+    placements[4] = { session: 'LB Str', intent: INTENTS['LB Str'] };
+    return placements;
+  }
+
+  var pickDay = function(preferType, excluded, fromEnd) {
+    for (var i = 0; i < 7; i++) {
+      if (excluded.indexOf(i) < 0 && classified[i] === preferType) return i;
+    }
+    if (fromEnd) {
+      for (var i = 6; i >= 0; i--) { if (excluded.indexOf(i) < 0) return i; }
+    } else {
+      for (var i = 0; i < 7; i++) { if (excluded.indexOf(i) < 0) return i; }
+    }
+    return 0;
+  };
+
+  var taken = [];
+  var fbDay    = pickDay('extensive', taken, false); taken.push(fbDay);
+  var lbPwrDay = pickDay('team',      taken, false); taken.push(lbPwrDay);
+  var lbStrDay = pickDay('intensive', taken, true);  taken.push(lbStrDay);
+
+  // Sort chronologically — FB Pwr first, LB Str last
+  var ordered      = [fbDay, lbPwrDay, lbStrDay].sort(function(a, b) { return a - b; });
+  var sessionOrder = ['FB Pwr', 'LB Pwr', 'LB Str'];
+  ordered.forEach(function(day, i) {
+    placements[day] = { session: sessionOrder[i], intent: INTENTS[sessionOrder[i]] };
+  });
+
+  // OFC: High weeks — attach to gym day with lowest running acl
+  if (band === 'high') {
+    var gymKeys = Object.keys(placements).map(Number);
+    var minLoad = Infinity, ofcDay = gymKeys[0];
+    gymKeys.forEach(function(gd) {
+      var load = days[gd].sessions.reduce(function(sum, ss) { return sum + (ss.acl || 0); }, 0);
+      if (load < minLoad) { minLoad = load; ofcDay = gd; }
+    });
+    placements[ofcDay].ofc = true;
+  }
+
+  return placements;
+}
+
+function getRecoveryPlacement(days, gymPlacements) {
+  var srState = recoveryStates[srDateKey()];
+  if (!srState || srState === 'good') return null;
+
+  var today    = new Date();
+  var todayIdx = -1;
+  days.forEach(function(day, i) {
+    if (day.date.toDateString() === today.toDateString()) todayIdx = i;
+  });
+  if (todayIdx < 0) return null;
+
+  for (var i = todayIdx; i < 7; i++) {
+    var hasGym = gymPlacements.hasOwnProperty(i);
+    var hasPM  = days[i].sessions.length > 0;
+    if (hasGym && !hasPM) return { dayIdx: i, slot: 'pm' };
+    if (!hasGym)          return { dayIdx: i, slot: 'am'  };
+  }
+  return null;
+}
+
+function getRecoveryOption(srState, dayIdx, days, dateStr) {
+  var proto = RECOVERY_PROTOCOLS[srState];
+  if (!proto) return null;
+  var load = (days[dayIdx] && days[dayIdx].sessions)
+    ? days[dayIdx].sessions.reduce(function(sum, ss) { return sum + (ss.acl || 0); }, 0)
+    : 0;
+  var isHighLoad = load > 2000;
+  var opts = proto.options.filter(function(opt) {
+    if (!isHighLoad) return true;
+    var l = opt.toLowerCase();
+    return l.indexOf('flush run') < 0 && l.indexOf('flush walk') < 0;
+  });
+  var seed  = dateStr ? parseInt(dateStr.slice(-2), 10) : 0;
+  return { label: proto.label, color: proto.color, option: opts[seed % opts.length] };
+}
+
 function renderWeekCalendar(){
   var el=document.getElementById("week-calendar");
   if(!el)return;
@@ -1629,12 +1263,11 @@ function renderWeekCalendar(){
   var dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   var today=new Date();
 
-  // SVG icon set — no emoji
   var ICO={
-    disc:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><ellipse cx="7" cy="9.5" rx="5.5" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 9.5Q3.5 4.5 7 4Q10.5 4.5 12.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>',
-    pulse:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><polyline points="1,7 4,7 5.5,3.5 7.5,10.5 9,7 13,7" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    disc:   '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><ellipse cx="7" cy="9.5" rx="5.5" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 9.5Q3.5 4.5 7 4Q10.5 4.5 12.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>',
+    pulse:  '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><polyline points="1,7 4,7 5.5,3.5 7.5,10.5 9,7 13,7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
     barbell:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.5"/><rect x="4.5" y="4.2" width="5" height="5.6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x=".5" y="5" width="2" height="4" rx=".6" fill="currentColor"/><rect x="11.5" y="5" width="2" height="4" rx=".6" fill="currentColor"/></svg>',
-    wave:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".3"/></svg>'
+    wave:   '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".3"/></svg>'
   };
   function sIco(s){return s.type==='game'?ICO.disc:ICO.pulse;}
 
@@ -1651,80 +1284,63 @@ function renderWeekCalendar(){
   }
   var undated=sessions.filter(function(s){return!s.date&&isCurrentWeekSelected();});
 
-  // Recovery day = morning after a hard session
-  var recoveryDays={};
-  days.forEach(function(day,i){
-    var hard=day.sessions.find(function(s){
-      return s.type==='game'||s.vhsr>150||s.acl>2500;
-    });
-    if(hard&&i<6)recoveryDays[i+1]={reason:hard.type==='game'?'post-game':'post-high-load'};
-  });
+  var band=getCurrentBand();
+  var gymPlacements=getGymSchedule(days,band);
+  var srState=recoveryStates[srDateKey()];
+  var recPlacement=(srState&&srState!=='good')?getRecoveryPlacement(days,gymPlacements):null;
 
   var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
   var hasSessions=weekSessions().length>0||undated.length>0;
 
-  var html="<div style='font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3);margin-bottom:8px;font-family:var(--display)'>"+wn+" \u2014 Week View</div>";
+  var html="<div style='font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;"
+    +"color:var(--t3);margin-bottom:8px;font-family:var(--display)'>"+wn+" \u2014 Week View</div>";
   html+="<div class='cal-grid' id='cal-grid-inner'>";
 
   days.forEach(function(day,i){
-    var isToday=day.date.toDateString()===today.toDateString();
-    var hasRecovery=recoveryDays[i];
-    var dayDateStr=day.date.toISOString().split('T')[0];
-    var pmSessions=day.sessions;
+    var isToday   = day.date.toDateString()===today.toDateString();
+    var dayDateStr= day.date.toISOString().split('T')[0];
+    var pmSessions= day.sessions;
+    var gp        = gymPlacements[i];
+    var isRecAM   = recPlacement&&recPlacement.dayIdx===i&&recPlacement.slot==='am';
+    var isRecPM   = recPlacement&&recPlacement.dayIdx===i&&recPlacement.slot==='pm';
 
     html+="<div class='cal-day"+(isToday?" cal-today":"")+"'>";
-
-    // Day header
     html+="<div class='cal-day-head'>"
       +"<span class='cal-day-name'>"+dayNames[i]+"</span>"
       +"<span class='cal-day-date'>"+day.date.getDate()+"</span>"
       +"</div>";
 
-    // AM slot
-    html+="<div class='cal-slot'>"
-      +"<div class='cal-slot-row'>"
+    // ── AM ──
+    html+="<div class='cal-slot'><div class='cal-slot-row'>"
       +"<div class='cal-slot-label'>AM</div>"
       +"<div class='cal-slot-content'>";
 
-    if(hasRecovery){
-      var recState=recoveryStates[dayDateStr];
-      var reasonLabel=hasRecovery.reason==='post-game'?'Post-game':'Post-high-load';
-      if(!recState){
-        html+="<div class='cal-recovery' style='align-items:flex-start'>"
-          +"<span class='cal-ico' style='color:var(--cyan);margin-top:1px'>"+ICO.wave+"</span>"
+    if(isRecAM){
+      var ro=getRecoveryOption(srState,i,days,dayDateStr);
+      if(ro){
+        html+="<div class='cal-recovery'>"
+          +"<span class='cal-ico' style='color:"+ro.color+";margin-top:1px'>"+ICO.wave+"</span>"
           +"<div style='flex:1;min-width:0'>"
-          +"<div class='cal-recovery-lbl'>"+reasonLabel+" recovery</div>"
-          +"<div class='cal-recovery-tip' style='margin-bottom:2px'>How are you feeling?</div>"
-          +"<div class='rec-state-btns'>"
-          +"<button class='rec-state-btn' style='border-color:#059669;color:#059669' onclick='setRecoveryState(\""+dayDateStr+"\",\"good\")'>Good</button>"
-          +"<button class='rec-state-btn' style='border-color:#0284c7;color:#0284c7' onclick='setRecoveryState(\""+dayDateStr+"\",\"fatigued\")'>Fatigued</button>"
-          +"<button class='rec-state-btn' style='border-color:#d97706;color:#d97706' onclick='setRecoveryState(\""+dayDateStr+"\",\"sore\")'>Sore</button>"
-          +"<button class='rec-state-btn' style='border-color:#7c3aed;color:#7c3aed' onclick='setRecoveryState(\""+dayDateStr+"\",\"both\")'>Both</button>"
-          +"</div></div></div>";
-      } else {
-        var proto=RECOVERY_PROTOCOLS[recState];
-        html+="<div class='cal-recovery' style='align-items:flex-start'>"
-          +"<span class='cal-ico' style='color:"+proto.color+";margin-top:1px'>"+ICO.wave+"</span>"
-          +"<div style='flex:1;min-width:0'>"
-          +"<div class='cal-recovery-lbl' style='color:"+proto.color+"'>Recovery \u2014 "+proto.label+"</div>"
-          +"<div class='rec-protocol'>"
-          +proto.options.map(function(o,idx){return"<div class='rec-protocol-opt'><span class='rec-protocol-num' style='color:"+proto.color+"'>"+(idx+1)+".</span><span>"+o+"</span></div>";}).join("")
-          +"</div>"
-          +"<button class='rec-change' onclick='setRecoveryState(\""+dayDateStr+"\",null)'>\u21ba change</button>"
+          +"<div class='cal-recovery-lbl' style='color:"+ro.color+"'>Recovery \u2014 "+ro.label+"</div>"
+          +"<div class='cal-recovery-tip'>"+ro.option+"</div>"
           +"</div></div>";
       }
+    } else if(gp){
+      html+="<div class='cal-gym-card'>"
+        +"<span class='cal-ico' style='color:var(--green);margin-top:1px'>"+ICO.barbell+"</span>"
+        +"<div style='flex:1;min-width:0'>"
+        +"<div class='cal-gym-name'>"+gp.session+"</div>"
+        +"<div class='cal-gym-intent'>"+gp.intent+"</div>"
+        +(gp.ofc?"<div class='cal-gym-ofc'>+ OFC</div>":"")
+        +"</div></div>";
     } else {
-      html+="<div class='cal-gym' onclick=\"window.open('https://dylanbennett900.github.io/dbsp','_blank')\">"
-        +"<span class='cal-ico' style='color:var(--t4)'>"+ICO.barbell+"</span>"
-        +"<a class='cal-gym-link' href='https://dylanbennett900.github.io/dbsp' target='_blank'>DBSP gym</a>"
-        +"</div>";
+      html+="<div class='cal-empty-pm'>\u2014</div>";
     }
 
-    html+="</div></div></div>"; // cal-slot-content, cal-slot-row, cal-slot
+    html+="</div></div></div>";
 
-    // PM slot
-    html+="<div class='cal-slot'>"
-      +"<div class='cal-slot-row'>"
+    // ── PM ──
+    html+="<div class='cal-slot'><div class='cal-slot-row'>"
       +"<div class='cal-slot-label'>PM</div>"
       +"<div class='cal-slot-content'>";
 
@@ -1740,15 +1356,29 @@ function renderWeekCalendar(){
           +(ig?" \xb7 <b>"+s.pts+"pts</b>":"")
           +"</div></div></div>";
       });
-    } else {
+    }
+
+    if(isRecPM){
+      var ro2=getRecoveryOption(srState,i,days,dayDateStr);
+      if(ro2){
+        html+="<div class='"+(pmSessions.length?"cal-recovery-inline":"cal-recovery")+"'>"
+          +"<span class='cal-ico' style='color:"+ro2.color+";margin-top:1px'>"+ICO.wave+"</span>"
+          +"<div style='flex:1;min-width:0'>"
+          +"<div class='cal-recovery-lbl' style='color:"+ro2.color+"'>Recovery \u2014 "+ro2.label+"</div>"
+          +"<div class='cal-recovery-tip'>"+ro2.option+"</div>"
+          +"</div></div>";
+      }
+    }
+
+    if(!pmSessions.length&&!isRecPM){
       html+="<div class='cal-empty-pm'>\u2014</div>";
     }
 
-    html+="</div></div></div>"; // cal-slot-content, cal-slot-row, cal-slot
-    html+="</div>"; // cal-day
+    html+="</div></div></div>";
+    html+="</div>";
   });
 
-  html+="</div>"; // cal-grid
+  html+="</div>";
 
   if(undated.length){
     html+="<div class='cal-unscheduled'><div class='cal-unscheduled-title'>Unscheduled this week</div>"
@@ -1765,13 +1395,15 @@ function renderWeekCalendar(){
       +"</div>";
   }
   if(!hasSessions){
-    html+="<div style='font-size:11px;color:var(--t3);padding:4px 2px 12px'>No sessions logged for "+wn+". Log one in the Sessions tab.</div>";
+    html+="<div style='font-size:11px;color:var(--t3);padding:4px 2px 12px'>No sessions logged for "
+      +wn+". Log one in the Sessions tab.</div>";
   }
 
   el.innerHTML=html;
   setTimeout(function(){
     var grid=document.getElementById("cal-grid-inner");
-    if(grid){var t=grid.querySelector(".cal-today");if(t)t.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});}
+    if(grid){var t=grid.querySelector(".cal-today");
+      if(t)t.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});}
   },50);
 }
 
@@ -1801,10 +1433,7 @@ async function getAIPrescription(){
     var edgeFnUrl=SUPABASE_URL+"/functions/v1/ai-prescription";
     var res=await fetch(edgeFnUrl,{
       method:"POST",
-      headers:{
-        "Content-Type":"application/json",
-        "Authorization":"Bearer "+SUPABASE_ANON_KEY
-      },
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+SUPABASE_ANON_KEY},
       body:JSON.stringify({message:userMsg})
     });
     if(!res.ok){var err=await res.json();throw new Error(err.error||"Edge Function error");}
@@ -2072,14 +1701,12 @@ async function loadSettings(){
   if(typeof getTournaments!=="function")return;
   var all=await getTournaments();
   tournamentHistory=all.map(function(t){return{name:t.name,date:t.date};});
-  // Set the next upcoming tournament as active
   var upcoming=all.filter(function(t){return new Date(t.date)>=new Date();})
     .sort(function(a,b){return new Date(a.date)-new Date(b.date);});
   if(upcoming.length){
     document.getElementById("tourn-date").value=upcoming[0].date;
     document.getElementById("tourn-name").value=upcoming[0].name;
   }
-  // Load recovery states
   try{
     var recRes=await sb.from('user_settings').select('value').eq('user_id',currentUser.id).eq('key','recovery_states').maybeSingle();
     if(recRes.data&&recRes.data.value){try{recoveryStates=JSON.parse(recRes.data.value);}catch(e){}}
@@ -2129,7 +1756,6 @@ function drawChart(){
   var cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
   function xp(i){return pad.l+(i/Math.max(pts.length,1))*cw;}
   function yp(v){return pad.t+ch-(v/maxV)*ch;}
-  // Zone fills — light theme
   c.fillStyle="rgba(5,150,105,0.08)";c.fillRect(pad.l,yp(hi),cw,yp(mod)-yp(hi));
   c.fillStyle="rgba(217,119,6,0.07)";c.fillRect(pad.l,yp(mod),cw,yp(lo)-yp(mod));
   c.fillStyle="rgba(100,116,139,0.06)";c.fillRect(pad.l,yp(lo),cw,ch-(yp(lo)-pad.t));
@@ -2188,30 +1814,19 @@ function renderBenchmarks(){
 
 // ── DEFINITIONS ──
 var DEFS=[
-  {color:"#0284c7",name:"Total Distance",abbr:"Dist",
-   body:"The total distance covered during a session or game, measured in metres. Includes all movement — walking, jogging, running, and sprinting.",
-   why:"Your body's overall mechanical work. High weekly distance without adequate recovery increases injury risk. A meaningful foundation metric."},
-  {color:"#059669",name:"High Speed Running",abbr:"HSR",
-   body:"Distance covered at speeds above 5.0 m/s (18 km/h). Represents running efforts of a high velocity that are demanding to the posterior chain.",
-   why:"HSR is one of the strongest predictors of match fitness. Players who don't achieve sufficient weekly HSR are underprepared for game intensity — it should be a primary target every week."},
-  {color:"#b45309",name:"Very High Speed Running",abbr:"VHSR",
-   body:"Distance covered at speeds above 7.0 m/s (25.2 km/h). These are near-sprint efforts that occur multiple times per session or game.",
-   why:"VHSR is where soft tissue injury risk concentrates. Underprepared athletes who spike VHSR in competition without training exposure are at elevated hamstring strain risk."},
-  {color:"#7c3aed",name:"Accelerations",abbr:"Acc",
-   body:"The total count of acceleration efforts above 2.5 m/s². Captures every time you push off to change speed — cutting, chasing a disc, exploding off the line.",
-   why:"Ultimate Frisbee is a sport of repeated acceleration. Your weekly accel count is the best proxy for sport-specific conditioning."},
-  {color:"#dc2626",name:"Hard Accelerations",abbr:"HAcc",
-   body:"Accelerations exceeding 3.5 m/s². These are maximum-effort explosive pushes during direction changes.",
-   why:"Hard accelerations are the most neuromuscularly taxing efforts in the game. Monitoring these separately distinguishes genuinely explosive sessions from high-volume moderate ones."},
-  {color:"#6d28d9",name:"Decelerations",abbr:"Dec",
-   body:"Count of deceleration efforts above -3.0 m/s². Captures braking forces — stopping from a sprint, changing direction.",
-   why:"Decelerations are often overlooked but are a major contributor to muscle soreness. Eccentric loading during deceleration is a primary cause of quad and hamstring soreness post-competition."},
-  {color:"#9333ea",name:"Hard Decelerations",abbr:"HDec",
-   body:"Deceleration efforts above -4.0 m/s². Typically occur during sharp direction changes or stopping under control from top speed.",
-   why:"Hard decelerations create the highest peak forces on knees and hips. Progressively exposing athletes to these in training — not encountering them for the first time in competition — is a key injury prevention principle."},
-  {color:"#b91c1c",name:"Acceleration Load",abbr:"AL (AU)",
-   body:"A composite metric (Arbitrary Units) combining the magnitude and frequency of all acceleration and deceleration efforts into a single running load score.",
-   why:"Accel Load summarises how much change-of-speed activity occurred in a session. Two sessions with identical distances can have very different AL depending on cutting and COD work."},
+  {color:"#0284c7",name:"Total Distance",abbr:"Dist",body:"The total distance covered during a session or game, measured in metres. Includes all movement — walking, jogging, running, and sprinting.",why:"Your body's overall mechanical work. High weekly distance without adequate recovery increases injury risk. A meaningful foundation metric."},
+  {color:"#059669",name:"High Speed Running",abbr:"HSR",body:"Distance covered at speeds above 5.0 m/s (18 km/h). Represents running efforts of a high velocity that are demanding to the posterior chain.",why:"HSR is one of the strongest predictors of match fitness. Players who don't achieve sufficient weekly HSR are underprepared for game intensity — it should be a primary target every week."},
+  {color:"#b45309",name:"Very High Speed Running",abbr:"VHSR",body:"Distance covered at speeds above 7.0 m/s (25.2 km/h). These are near-sprint efforts that occur multiple times per session or game.",why:"VHSR is where soft tissue injury risk concentrates. Underprepared athletes who spike VHSR in competition without training exposure are at elevated hamstring strain risk."},
+  {color:"#7c3aed",name:"Accelerations",abbr:"Acc",body:"The total count of acceleration efforts above 2.5 m/s². Captures every time you push off to change speed — cutting, chasing a disc, exploding off the line.",why:"Ultimate Frisbee is a sport of repeated acceleration. Your weekly accel count is the best proxy for sport-specific conditioning."},
+  {color:"#dc2626",name:"Hard Accelerations",abbr:"HAcc",body:"Accelerations exceeding 3.5 m/s². These are maximum-effort explosive pushes during direction changes.",why:"Hard accelerations are the most neuromuscularly taxing efforts in the game. Monitoring these separately distinguishes genuinely explosive sessions from high-volume moderate ones."},
+  {color:"#6d28d9",name:"Decelerations",abbr:"Dec",body:"Count of deceleration efforts above -3.0 m/s². Captures braking forces — stopping from a sprint, changing direction.",why:"Decelerations are often overlooked but are a major contributor to muscle soreness. Eccentric loading during deceleration is a primary cause of quad and hamstring soreness post-competition."},
+  {color:"#9333ea",name:"Hard Decelerations",abbr:"HDec",body:"Deceleration efforts above -4.0 m/s². Typically occur during sharp direction changes or stopping under control from top speed.",why:"Hard decelerations create the highest peak forces on knees and hips. Progressively exposing athletes to these in training — not encountering them for the first time in competition — is a key injury prevention principle."},
+  {color:"#b91c1c",name:"Acceleration Load",abbr:"AL (AU)",body:"A composite metric (Arbitrary Units) combining the magnitude and frequency of all acceleration and deceleration efforts into a single running load score.",why:"Accel Load summarises how much change-of-speed activity occurred in a session. Two sessions with identical distances can have very different AL depending on cutting and COD work."},
+  {color:"#059669",name:"FB Pwr",abbr:"Full Body Power",body:"The first gym session of the week. Explosive, power-focused movements targeting the full body. Always pairs with the extensive running day (speed/MAS focus) when the athlete is freshest.",why:"Opening the week with power work when neuromuscular fatigue is lowest maximises the quality of explosive output. Sets the tone for the week."},
+  {color:"#059669",name:"LB Pwr",abbr:"Lower Body Power",body:"The middle gym session of the week. Lower body focused power work. Pairs with team training day.",why:"Bridges the two halves of the week — maintains lower body power expression mid-week alongside team field work."},
+  {color:"#059669",name:"LB Str",abbr:"Lower Body Strength",body:"The final gym session of the week. Contains squats and RDLs. Always placed last in the week — never before a speed or accel session.",why:"Squats and RDLs create neuromuscular fatigue that compromises speed expression. Placing LB Str last protects the quality of all running sessions."},
+  {color:"#059669",name:"GD -2 Pwr Up",abbr:"Game Day -2 Power Up",body:"A taper week activation session prescribed exactly two days before tournament. Short, sharp, activation-focused only — not accumulation.",why:"Maintains neuromuscular readiness in the final taper window without adding fatigue. The goal is to arrive activated, not tired."},
+  {color:"#7c3aed",name:"OFC",abbr:"Off Feet Conditioning",body:"A hard conditioning session on the bike, rower, or in the pool. Add-on to a gym session in High weeks — supplements the training stimulus without adding running volume.",why:"High weeks warrant an additional conditioning stimulus. OFC allows you to top up cardiovascular and metabolic load without accumulating more ground-contact running volume."},
 ];
 function renderDefinitions(){
   document.getElementById("def-content").innerHTML=DEFS.map(function(d){
@@ -2452,11 +2067,11 @@ function toggleSelfReport(){
 }
 function setSelfReportState(state){
   recoveryStates[srDateKey()]=state;
-  renderSRPanel();renderSRButton();persistRecoveryStates();
+  renderSRPanel();renderSRButton();renderWeekCalendar();persistRecoveryStates();
 }
 function clearSRState(){
   delete recoveryStates[srDateKey()];
-  renderSRPanel();renderSRButton();persistRecoveryStates();
+  renderSRPanel();renderSRButton();renderWeekCalendar();persistRecoveryStates();
 }
 function persistRecoveryStates(){
   if(!currentUser||!SUPABASE_READY)return;
