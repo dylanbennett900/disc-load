@@ -115,14 +115,14 @@ input,select{font-family:inherit;outline:none}
 .ws-outer{margin-bottom:16px}
 .ws-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
 .ws-row::-webkit-scrollbar{display:none}
-.wk{flex-shrink:0;width:140px;border-radius:var(--radius);padding:13px 13px;border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;transition:all .18s;box-shadow:var(--sh);position:relative}
+.wk{flex-shrink:0;width:118px;border-radius:var(--radius);padding:10px 11px;border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;transition:all .18s;box-shadow:var(--sh);position:relative}
 .wk:active{transform:scale(0.98)}
 .wk-now-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display)}
 .wk-head{margin-bottom:6px}
 .wk-iso{font-size:13px;font-weight:800;letter-spacing:.5px;font-family:var(--display);color:var(--t)}
 .wk-dates{font-size:8px;color:var(--t3);margin-top:1px}
 .wk-band{font-size:8px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:20px;display:inline-block;text-transform:uppercase;margin:4px 0 6px;font-family:var(--display)}
-.wk-desc{font-size:9px;color:var(--t3);margin-bottom:8px;line-height:1.45}
+.wk-desc{display:none}
 .wk-bars{display:flex;flex-direction:column;gap:4px}
 .wk-bar-row{display:flex;align-items:center;gap:5px}
 .wk-bar-lbl{font-size:7px;color:var(--t3);width:26px;flex-shrink:0;font-family:var(--display);letter-spacing:.3px;font-weight:600}
@@ -247,18 +247,18 @@ input,select{font-family:inherit;outline:none}
 .sr-change-btn{background:transparent;border:none;font-size:10px;color:var(--t3);text-decoration:underline;cursor:pointer;font-family:var(--body);padding:0;margin-top:2px}
 .sr-change-btn:hover{color:var(--t2)}
 .sr-confirmed{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:11px;color:var(--t2);margin-bottom:6px}
-.cal-grid{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth}
+.cal-grid{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth;align-items:stretch}
 .cal-grid::-webkit-scrollbar{display:none}
-.cal-day{flex-shrink:0;width:112px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden}
+.cal-day{flex-shrink:0;width:112px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column}
 .cal-today{border-color:var(--green) !important;border-width:1.5px !important;box-shadow:0 0 0 2px rgba(5,150,105,0.1),var(--sh) !important}
 .cal-day-head{display:flex;align-items:center;justify-content:space-between;padding:7px 9px 5px;border-bottom:1px solid var(--bd);background:var(--sf2)}
 .cal-day-name{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-family:var(--display)}
 .cal-today .cal-day-name{color:var(--green)}
 .cal-day-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1}
 .cal-today .cal-day-date{color:var(--green)}
-.cal-slot{border-bottom:1px solid var(--bd)}
+.cal-slot{border-bottom:1px solid var(--bd);flex:1;display:flex;flex-direction:column}
 .cal-slot:last-child{border-bottom:none}
-.cal-slot-row{display:flex;min-height:38px}
+.cal-slot-row{display:flex;flex:1;min-height:52px}
 .cal-slot-label{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);font-family:var(--mono);border-right:1px solid var(--bd);background:var(--sf2)}
 .cal-slot-content{flex:1;min-width:0}
 .cal-ico{display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-top:1px}
@@ -435,9 +435,10 @@ input,select{font-family:inherit;outline:none}
 <div class="panel" id="panel-roadmap">
   <div style="font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:5px;font-family:var(--display)">LOAD ROADMAP</div>
   <div style="font-size:11px;color:var(--t3);margin-bottom:16px">Periodisation plan leading into your tournament.</div>
-  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:20px">
+  <div style="display:flex;gap:10px;flex-wrap:wrap;margin-bottom:16px;align-items:flex-end">
     <div class="ff" style="flex:1;min-width:160px"><label>Tournament date</label><input type="date" id="tourn-date" oninput="syncRoadmap()"></div>
     <div class="ff" style="flex:1;min-width:140px"><label>Tournament name</label><input type="text" id="tourn-name" placeholder="e.g. Nationals 2025" oninput="syncRoadmap()"></div>
+    <button onclick="saveTournamentClick()" style="padding:9px 18px;border-radius:20px;background:var(--green);border:none;color:#fff;font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;box-shadow:0 2px 8px rgba(5,150,105,0.25);white-space:nowrap;flex-shrink:0;margin-bottom:1px">Save Tournament</button>
   </div>
   <div id="roadmap-content"><div style="text-align:center;padding:44px;color:var(--t3)">Enter a tournament date to generate your load roadmap.</div></div>
   <div id="tournament-history"></div>
@@ -640,14 +641,16 @@ var BM={
 // ── WEEKLY TARGETS ──
 var WT={
   international:{
-    low:     {dist:13888,hsr:2860, vhsr:700, acc:154,hacc:42,dec:95, hdec:38,acl:4868},
-    moderate:{dist:16864,hsr:3473, vhsr:850, acc:187,hacc:51,dec:116,hdec:47,acl:5912},
-    high:    {dist:19840,hsr:4085, vhsr:1000,acc:220,hacc:60,dec:136,hdec:55,acl:6955}
+    low:         {dist:13888,hsr:2860, vhsr:700, acc:154,hacc:42,dec:95, hdec:38,acl:4868},
+    moderate:    {dist:16864,hsr:3473, vhsr:850, acc:187,hacc:51,dec:116,hdec:47,acl:5912},
+    high:        {dist:19840,hsr:4085, vhsr:1000,acc:220,hacc:60,dec:136,hdec:55,acl:6955},
+    maintenance: {dist:17856,hsr:3677, vhsr:900, acc:198,hacc:54,dec:122,hdec:50,acl:6260}
   },
   domestic:{
-    low:     {dist:10801,hsr:2405, vhsr:455, acc:129,hacc:21,dec:79, hdec:24,acl:3120},
-    moderate:{dist:13116,hsr:2921, vhsr:553, acc:156,hacc:26,dec:95, hdec:29,acl:3789},
-    high:    {dist:15431,hsr:3436, vhsr:650, acc:184,hacc:31,dec:112,hdec:34,acl:4458}
+    low:         {dist:10801,hsr:2405, vhsr:455, acc:129,hacc:21,dec:79, hdec:24,acl:3120},
+    moderate:    {dist:13116,hsr:2921, vhsr:553, acc:156,hacc:26,dec:95, hdec:29,acl:3789},
+    high:        {dist:15431,hsr:3436, vhsr:650, acc:184,hacc:31,dec:112,hdec:34,acl:4458},
+    maintenance: {dist:13888,hsr:3092, vhsr:585, acc:166,hacc:28,dec:101,hdec:31,acl:4012}
   }
 };
 
@@ -723,19 +726,28 @@ var NAMED_DRILLS=[
 
 // ── PERIODISATION ──
 function generatePeriodisation(n){
-  if(n<=0)return[];if(n===1)return['low'];if(n===2)return['moderate','low'];
-  if(n===3)return['moderate','high','low'];if(n===4)return['moderate','high','high','low'];
-  if(n===5)return['moderate','high','high','high','low'];
-  if(n===6)return['moderate','high','high','moderate','high','low'];
-  if(n===7)return['moderate','high','high','moderate','high','high','low'];
-  if(n===8)return['moderate','high','high','high','moderate','high','high','low'];
-  var base=['moderate','high','high','high','moderate','high','high','low'];
-  var prefix=[];for(var i=0;i<n-8;i++)prefix.push('moderate');
+  if(n<=0)return[];
+  if(n===1)return['low'];
+  if(n===2)return['moderate','low'];
+  if(n===3)return['moderate','high','low'];
+  if(n===4)return['moderate','high','high','low'];
+  if(n===5)return['moderate','moderate','high','high','low'];
+  if(n===6)return['low','moderate','moderate','high','high','low'];
+  if(n===7)return['low','moderate','moderate','high','high','high','low'];
+  if(n===8)return['low','moderate','moderate','high','high','high','high','low'];
+  if(n===9)return['low','moderate','high','high','moderate','high','high','high','low'];
+  if(n===10)return['low','moderate','high','high','high','low','moderate','high','high','low'];
+  if(n===11)return['low','moderate','high','high','high','low','moderate','high','high','high','low'];
+  if(n===12)return['low','moderate','high','high','high','low','moderate','high','high','high','high','low'];
+  // 13+ weeks: prepend moderate weeks before the 12-week anchor
+  var base=['low','moderate','high','high','high','low','moderate','high','high','high','high','low'];
+  var prefix=[];for(var i=0;i<n-12;i++)prefix.push('moderate');
   return prefix.concat(base);
 }
 function phaseDesc(band,weeksOut){
-  if(band==='low')     return'Taper — remove CNS and peripheral fatigue. High intensity, low volume. Speed and acceleration only — no conditioning.';
-  if(band==='high')    return'Peak Phase — progressively overload running demands. HSR, VHSR and Accels toward full target.';
+  if(band==='low')        return'Taper — remove CNS and peripheral fatigue. High intensity, low volume. Speed and acceleration only — no conditioning.';
+  if(band==='high')       return'Peak Phase — progressively overload running demands. HSR, VHSR and Accels toward full target.';
+  if(band==='maintenance')return'General conditioning — maintain physical qualities between tournament blocks. No periodisation pressure, just staying sharp.';
   if(band==='moderate'&&weeksOut>=5)return'Build Phase — establish foundational load. No spikes. Prime the system for the high weeks ahead.';
   return'Build Phase — establish base load at moderate intensity.';
 }
@@ -835,7 +847,8 @@ async function loadSessions(){
   if(!currentUser){sessions=DEMO_SESSIONS.slice();renderAll();return;}
   var result=await sb.from("sessions").select("*").order("created_at",{ascending:true});
   if(result.error){console.error(result.error);return;}
-  sessions=result.data.map(function(row){var s=row.data;s._dbId=row.id;return s;});
+  uid=1000; // reset to safe range, away from demo session IDs
+  sessions=result.data.map(function(row){var s=row.data;s._dbId=row.id;s.id=uid++;return s;});
   renderAll();loadSettings();
 }
 
@@ -943,7 +956,11 @@ function selectWeek(startTs,endTs,band,wn){
 function getCurrentBand(){
   if(selectedWeek&&selectedWeek.band)return selectedWeek.band;
   var el=document.getElementById("tourn-date");
-  if(!el||!el.value)return"moderate";
+  if(!el||!el.value){
+    // No tournament — rolling maintenance cycle
+    var maintCycle=['moderate','high','high','low'];
+    return maintCycle[isoWeek(new Date())%4];
+  }
   var tourn=new Date(el.value),ws=weekStart(new Date());
   var wo=Math.ceil((tourn-ws)/(7*24*60*60*1000));
   if(wo<=0)return"low";
@@ -956,7 +973,10 @@ function getWeeksOut(){
   var tourn=new Date(el.value),ws=weekStart(new Date());
   return Math.max(0,Math.ceil((tourn-ws)/(7*24*60*60*1000)));
 }
-function weeklyTarget(){return WT[ctx][getCurrentBand()];}
+function weeklyTarget(){
+  var band=getCurrentBand();
+  return WT[ctx][band]||WT[ctx]['moderate'];
+}
 
 // ── STATUS ──
 function status(r){
@@ -1000,10 +1020,9 @@ function topUpSuggestion(metricKey, gap){
 function arc(pct,col){
   var r=32,cx=40,cy=42,sw=6;
   var circ=2*Math.PI*r,tot=.75*circ,fill=Math.min(pct,1)*tot;
-  var gc=pct>1.15?"#dc2626":pct>.85?col:pct>.5?"#d97706":"#cbd5e1";
   return "<svg width='80' height='62' viewBox='0 0 80 80' style='overflow:visible'>"
     +"<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='#e2e8f0' stroke-width='"+sw+"' stroke-dasharray='"+tot.toFixed(1)+" "+circ.toFixed(1)+"' stroke-linecap='round' transform='rotate(135,"+cx+","+cy+")'></circle>"
-    +"<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='"+gc+"' stroke-width='"+sw+"' stroke-dasharray='"+fill.toFixed(1)+" "+circ.toFixed(1)+"' stroke-linecap='round' transform='rotate(135,"+cx+","+cy+")'></circle>"
+    +"<circle cx='"+cx+"' cy='"+cy+"' r='"+r+"' fill='none' stroke='"+col+"' stroke-width='"+sw+"' stroke-dasharray='"+fill.toFixed(1)+" "+circ.toFixed(1)+"' stroke-linecap='round' transform='rotate(135,"+cx+","+cy+")'></circle>"
     +"<text x='"+cx+"' y='"+(cy+1)+"' text-anchor='middle' dominant-baseline='middle' fill='#0f172a' font-family=\"'JetBrains Mono','Courier New',monospace\" font-size='10' font-weight='700'>"+Math.round(pct*100)+"%</text></svg>";
 }
 
@@ -1018,16 +1037,47 @@ function renderWeekStrip(){
   if(!dateEl||!dateEl.value){
     var wn="W"+isoWeek(curWs)+" '"+String(isoYear(curWs)).slice(2);
     var wkE=weekEnd(now);
-    var T=weekTotals(),tgt=WT[ctx]["moderate"];
-    el.innerHTML="<div class='ws-row'>"
-      +"<div class='wk' style='border-color:#059669;border-width:2px'>"
-      +"<div class='wk-now-tag' style='background:#059669;color:#fff'>NOW</div>"
-      +"<div class='wk-head'><div class='wk-iso' style='color:#059669'>"+wn+"</div>"
-      +"<div class='wk-dates'>"+fmt(curWs)+" – "+fmt(wkE)+"</div></div>"
-      +"<div class='wk-band' style='background:rgba(5,150,105,0.1);color:#059669'>current</div>"
-      +"<div class='wk-desc'>Set a tournament date in Roadmap</div>"
-      +buildBars(T,tgt,"#059669",true)+"</div></div>";
-    renderWeekCalendar();return;
+    // Rolling maintenance: 3+1 cycle (Mod/High/High/Low), anchored by ISO week mod 4
+    var maintCycle=['moderate','high','high','low'];
+    var cyclePos=isoWeek(curWs)%4;
+    var maintBands=[];
+    for(var mi=0;mi<4;mi++){
+      var pos=(cyclePos+mi)%4;
+      maintBands.push(maintCycle[pos]);
+    }
+    var BC2={high:"#059669",moderate:"#d97706",low:"#64748b",maintenance:"#0284c7"};
+    var html2="<div class='ws-row'>";
+    for(var mi=0;mi<4;mi++){
+      var mb=maintBands[mi];
+      var mwS=new Date(curWs);mwS.setDate(curWs.getDate()+mi*7);
+      var mwE=new Date(mwS);mwE.setDate(mwS.getDate()+6);mwE.setHours(23,59,59,999);
+      var mIsCurrent=(mi===0);
+      var mwn="W"+isoWeek(mwS)+" '"+String(isoYear(mwS)).slice(2);
+      var mbc=BC2[mb];
+      var mtgt=WT[ctx][mb==='moderate'||mb==='high'||mb==='low'?mb:'maintenance'];
+      var mTot={dist:0,hsr:0,vhsr:0,acc:0,acl:0};
+      sessions.forEach(function(s){
+        if(!s.date)return;
+        var d=new Date(s.date);
+        if(d>=mwS&&d<=mwE){mTot.dist+=s.dist;mTot.hsr+=s.hsr;mTot.vhsr+=s.vhsr;mTot.acc+=s.acc;mTot.acl+=s.acl;}
+      });
+      var isSelected2=selectedWeek?selectedWeek.start.getTime()===weekStart(mwS).getTime():mIsCurrent;
+      var onclickArgs=weekStart(mwS).getTime()+","+mwE.getTime()+",'"+mb+"','"+mwn+"'";
+      html2+="<div class='wk"+(mIsCurrent?" now":"")+"' "
+        +"style='"+(isSelected2?"border-color:"+mbc+";border-width:2px;box-shadow:0 0 0 3px "+mbc+"22":"")+"' "
+        +"onclick='selectWeek("+onclickArgs+")'>"
+        +(mIsCurrent?"<div class='wk-now-tag' style='background:"+mbc+";color:#fff'>NOW</div>":"")
+        +"<div class='wk-head'><div class='wk-iso' style='color:"+mbc+"'>"+mwn+"</div>"
+        +"<div class='wk-dates'>"+fmt(mwS)+" – "+fmt(mwE)+"</div></div>"
+        +"<div class='wk-band' style='background:"+mbc+"18;color:"+mbc+"'>"+mb+"</div>"
+        +buildBars(mTot,mtgt,mbc,true)+"</div>";
+    }
+    html2+="<div class='wk-tourn' style='border-color:rgba(2,132,199,0.25);background:linear-gradient(135deg,rgba(2,132,199,0.06),rgba(2,132,199,0.02))'>"
+      +"<svg width='20' height='20' viewBox='0 0 20 20' fill='none'><circle cx='10' cy='10' r='8' stroke='#0284c7' stroke-width='1.5'/><path d='M6 10h8M10 6v8' stroke='#0284c7' stroke-width='1.5' stroke-linecap='round'/></svg>"
+      +"<div style='font-size:8px;font-weight:800;color:#0284c7;margin-top:4px;line-height:1.3;text-align:center'>No tournament<br>set</div>"
+      +"<div style='font-size:7px;color:var(--t3);margin-top:2px;text-align:center'>Roadmap tab</div>"
+      +"</div></div>";
+    el.innerHTML=html2;renderWeekCalendar();return;
   }
 
   var tourn=new Date(dateEl.value);
@@ -1080,9 +1130,9 @@ function renderWeekStrip(){
 
 function buildBars(T,tgt,bc,showPct){
   var barMetrics=[
-    {k:"dist",lbl:"Dist",col:"#0284c7"},{k:"hsr",lbl:"HSR",col:"#059669"},
-    {k:"vhsr",lbl:"VHSR",col:"#b45309"},{k:"acc",lbl:"Acc",col:"#7c3aed"},
-    {k:"acl",lbl:"ACL",col:"#dc2626"}
+    {k:"hsr",lbl:"HSR",col:"#059669"},
+    {k:"vhsr",lbl:"VHSR",col:"#b45309"},
+    {k:"acc",lbl:"Acc",col:"#7c3aed"}
   ];
   var h="<div class='wk-bars'>";
   barMetrics.forEach(function(m){
@@ -1202,6 +1252,12 @@ function getGymSchedule(days, band) {
   var fbDay    = pickDay('extensive', taken, false); taken.push(fbDay);
   var lbPwrDay = pickDay('team',      taken, false); taken.push(lbPwrDay);
   var lbStrDay = pickDay('intensive', taken, true);  taken.push(lbStrDay);
+
+  // Cap LB Str at Saturday (day 5) — avoid Sunday which leaves 0 days before Monday FB Pwr
+  if(lbStrDay===6){
+    var sat=5;
+    if(taken.indexOf(sat)<0){lbStrDay=sat;taken[taken.length-1]=sat;}
+  }
 
   // Sort chronologically — FB Pwr first, LB Str last
   var ordered      = [fbDay, lbPwrDay, lbStrDay].sort(function(a, b) { return a - b; });
@@ -1512,9 +1568,9 @@ function renderDashboard(){
   ];
   document.getElementById("gaugewrap").innerHTML=gm.map(function(m){
     var pct=T[m.key]/Math.max(G[m.key],1),st=status(pct);
-    return "<div class='gc'>"+arc(pct,m.color)
+    return "<div class='gc'>"+arc(pct,st.color)
       +"<div class='gs' style='color:"+st.color+"'>"+st.label+"</div>"
-      +"<div class='gv' style='color:"+m.color+"'>"+T[m.key].toLocaleString()+"</div>"
+      +"<div class='gv' style='color:"+st.color+"'>"+T[m.key].toLocaleString()+"</div>"
       +"<div class='gt'>/"+Math.round(G[m.key]).toLocaleString()+" "+m.unit+"</div>"
       +"<div class='gl'>"+m.label+"</div></div>";
   }).join("");
@@ -1610,7 +1666,13 @@ function renderSessions(){
 function renderRoadmap(){
   var dateEl=document.getElementById("tourn-date"),el=document.getElementById("roadmap-content");
   if(!dateEl||!dateEl.value){
-    el.innerHTML='<div style="text-align:center;padding:44px;color:var(--t3)">Enter a tournament date to generate your load roadmap.</div>';
+    el.innerHTML='<div style="text-align:center;padding:32px 16px;color:var(--t3)">'
+      +'<div style="font-size:32px;margin-bottom:12px">📅</div>'
+      +'<div style="font-size:14px;font-weight:800;color:var(--t2);font-family:var(--display);letter-spacing:.3px;margin-bottom:8px">No Tournament Set</div>'
+      +'<div style="font-size:12px;line-height:1.6;max-width:280px;margin:0 auto">Enter a tournament name and date above, then hit <strong style="color:var(--green)">Save Tournament</strong> to generate your load roadmap.</div>'
+      +'<div style="margin-top:16px;padding:11px 16px;border-radius:var(--radius-sm);background:rgba(2,132,199,0.06);border:1px solid rgba(2,132,199,0.15);font-size:11px;color:var(--t2);line-height:1.55;max-width:300px;margin-left:auto;margin-right:auto">'
+      +'<strong style="color:#0284c7">Between tournaments?</strong> Your dashboard is running a rolling maintenance programme — Mod / High / High / Low — keeping you sharp until your next event.'
+      +'</div></div>';
     renderTournamentHistory();return;
   }
   var tourn=new Date(dateEl.value),now=new Date(),ws=weekStart(now);
@@ -1691,20 +1753,41 @@ var tournamentHistory=[];
 function renderTournamentHistory(){
   var el=document.getElementById("tournament-history");
   if(!el)return;
-  var past=tournamentHistory.filter(function(t){return t.date&&new Date(t.date)<new Date();})
+  var now=new Date();
+  var upcoming=tournamentHistory.filter(function(t){return t.date&&new Date(t.date)>=now;})
+    .sort(function(a,b){return new Date(a.date)-new Date(b.date);});
+  var past=tournamentHistory.filter(function(t){return t.date&&new Date(t.date)<now;})
     .sort(function(a,b){return new Date(b.date)-new Date(a.date);});
-  if(!past.length){el.innerHTML="";return;}
-  var html="<div style='margin-top:20px'>"
-    +"<div style='font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;font-family:var(--display)'>Past Tournaments</div>"
-    +past.map(function(t){
-      var d=new Date(t.date);
-      var dStr=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
-      return "<div style='display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:var(--radius-sm);background:var(--sf);border:1px solid var(--bd);margin-bottom:6px;box-shadow:var(--sh)'>"
-        +"<span style='font-size:16px'>🏆</span>"
-        +"<div><div style='font-size:12px;font-weight:700;font-family:var(--display)'>"+t.name+"</div>"
-        +"<div style='font-size:10px;color:var(--t3)'>"+dStr+"</div></div></div>";
-    }).join("")+"</div>";
+  if(!upcoming.length&&!past.length){el.innerHTML="";return;}
+  var html="";
+  function tournCard(t,isUpcoming){
+    var d=new Date(t.date);
+    var dStr=d.toLocaleDateString("en-AU",{day:"numeric",month:"short",year:"numeric"});
+    var daysAway=Math.ceil((d-now)/(86400000));
+    return "<div style='display:flex;align-items:center;gap:10px;padding:9px 13px;border-radius:var(--radius-sm);background:var(--sf);border:1px solid "+(isUpcoming?"rgba(161,98,7,0.2)":"var(--bd)")+";margin-bottom:6px;box-shadow:var(--sh);cursor:"+(isUpcoming?"pointer":"default")+"' "
+      +(isUpcoming?"onclick='loadTournament(\""+t.name+"\",\""+t.date+"\")' title='Click to load'":"")+">"+
+      "<span style='font-size:16px'>"+(isUpcoming?"🗓":"🏆")+"</span>"
+      +"<div style='flex:1'><div style='font-size:12px;font-weight:700;font-family:var(--display)'>"+t.name+"</div>"
+      +"<div style='font-size:10px;color:var(--t3)'>"+dStr+(isUpcoming?" · <b style='color:var(--amber)'>"+daysAway+"d away</b>":"")+"</div></div>"
+      +(isUpcoming?"<span style='font-size:9px;color:var(--t4);font-family:var(--display)'>tap to load →</span>":"")
+      +"</div>";
+  }
+  if(upcoming.length){
+    html+="<div style='margin-top:20px'>"
+      +"<div style='font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--amber);margin-bottom:10px;font-family:var(--display)'>Upcoming</div>"
+      +upcoming.map(function(t){return tournCard(t,true);}).join("")+"</div>";
+  }
+  if(past.length){
+    html+="<div style='margin-top:16px'>"
+      +"<div style='font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin-bottom:10px;font-family:var(--display)'>Past Tournaments</div>"
+      +past.map(function(t){return tournCard(t,false);}).join("")+"</div>";
+  }
   el.innerHTML=html;
+}
+function loadTournament(name,date){
+  document.getElementById("tourn-date").value=date;
+  document.getElementById("tourn-name").value=name;
+  syncRoadmap();
 }
 function wmCell(col,lbl,val,unit){
   return "<div class='wm-cell'><div class='wm-lbl'>"+lbl+"</div><div class='wm-val' style='color:"+col+"'>"+val+(unit?"<span style='font-size:9px;color:var(--t3);margin-left:2px'>"+unit+"</span>":"")+"</div></div>";
@@ -1729,10 +1812,17 @@ async function loadSettings(){
   renderSRButton();
   renderWeekStrip();renderDashboard();renderTournamentHistory();
 }
+async function saveTournamentClick(){
+  var date=document.getElementById("tourn-date").value;
+  var name=document.getElementById("tourn-name").value.trim();
+  if(!date||!name){showSave("error","Enter both name and date");return;}
+  await saveSettings();
+  showSave("saved","Tournament saved ✓");
+}
 async function saveSettings(){
   if(!currentUser||!SUPABASE_READY)return;
   var date=document.getElementById("tourn-date").value;
-  var name=document.getElementById("tourn-name").value;
+  var name=document.getElementById("tourn-name").value.trim();
   if(date&&name&&typeof saveTournament==="function"){
     await saveTournament(name,date);
     var exists=tournamentHistory.some(function(t){return t.date===date&&t.name===name;});
@@ -1740,7 +1830,7 @@ async function saveSettings(){
   }
   renderTournamentHistory();
 }
-function syncRoadmap(){renderRoadmap();renderWeekStrip();saveSettings();}
+function syncRoadmap(){renderRoadmap();renderWeekStrip();}
 
 // ── CHART ──
 var CHART_METRICS=[
@@ -2142,6 +2232,7 @@ function renderSRPanel(){
 }
 
 // ── CONTEXT + TAB ──
+var TAB_ORDER=['dashboard','sessions','roadmap','metrics','benchmarks','definitions','howto'];
 function setContext(c){
   ctx=c;
   document.getElementById("ctx-international").className="lp"+(c==="international"?" on":"");
@@ -2152,12 +2243,37 @@ function setContext(c){
 function switchTab(name,el){
   document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
   document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});
-  document.getElementById("panel-"+name).classList.add("on");el.classList.add("on");
+  document.getElementById("panel-"+name).classList.add("on");
+  if(el)el.classList.add("on");
+  else{
+    var tabs=document.querySelectorAll(".tab");
+    var idx=TAB_ORDER.indexOf(name);
+    if(tabs[idx])tabs[idx].classList.add("on");
+  }
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
   if(name==="metrics"){renderMetricSel();drawChart();}
   if(name==="definitions")renderDefinitions();
 }
+// Swipe gesture for tabs
+(function(){
+  var sx=0,sy=0;
+  var content=document.getElementById("content");
+  content.addEventListener("touchstart",function(e){
+    sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+  },{passive:true});
+  content.addEventListener("touchend",function(e){
+    var dx=e.changedTouches[0].clientX-sx;
+    var dy=e.changedTouches[0].clientY-sy;
+    if(Math.abs(dx)<50||Math.abs(dy)>Math.abs(dx)*0.8)return; // too small or mostly vertical
+    var cur=document.querySelector(".panel.on");
+    if(!cur)return;
+    var curName=cur.id.replace("panel-","");
+    var idx=TAB_ORDER.indexOf(curName);
+    var next=dx<0?Math.min(idx+1,TAB_ORDER.length-1):Math.max(idx-1,0);
+    if(next!==idx)switchTab(TAB_ORDER[next],null);
+  },{passive:true});
+})();
 function renderAll(){renderDashboard();renderSessions();}
 renderAll();
 </script>
