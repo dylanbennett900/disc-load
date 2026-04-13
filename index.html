@@ -1090,24 +1090,29 @@ async function redeemBetaCode(){
   var btn=document.getElementById('up-code-btn');
   var code=(inp.value||'').trim();
   if(!code){msg.textContent='Enter a code first.';msg.className='up-code-msg error';return;}
-  btn.disabled=true;btn.textContent='Checking…';msg.textContent='';msg.className='up-code-msg';
+  btn.disabled=true;btn.textContent='Checking\u2026';msg.textContent='';msg.className='up-code-msg';
   try{
-    var session=await sb.auth.getSession();
-    var token=session.data.session?session.data.session.access_token:'';
+    var sessionResult=await Promise.race([
+      sb.auth.getSession(),
+      new Promise(function(_,rej){setTimeout(function(){rej(new Error('Session timed out — sign out and back in.'));},5000);})
+    ]);
+    var token=sessionResult.data&&sessionResult.data.session?sessionResult.data.session.access_token:'';
+    if(!token)throw new Error('Not signed in. Please sign out and sign back in.');
     var res=await fetch(SUPABASE_URL+'/functions/v1/redeem-code',{
       method:'POST',
-      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'apikey':SUPABASE_ANON_KEY},
       body:JSON.stringify({code:code})
     });
     var data=await res.json();
     if(!res.ok)throw new Error(data.error||'Redemption failed');
-    msg.textContent='✓ Code accepted — welcome to Pro!';msg.className='up-code-msg success';
+    msg.textContent='\u2713 Code accepted \u2014 welcome to Pro!';msg.className='up-code-msg success';
     await loadSubscription();
     setTimeout(closeUpgradeModal,1800);
   }catch(e){
     msg.textContent=e.message;msg.className='up-code-msg error';
+  }finally{
+    btn.disabled=false;btn.textContent='Redeem';
   }
-  btn.disabled=false;btn.textContent='Redeem';
 }
 function handleUpgradeURLParams(){
   var p=new URLSearchParams(window.location.search);
