@@ -4,6 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Frisbee Track</title>
+<script src="https://js.stripe.com/v3/"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;600;700;800;900&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,400&family=JetBrains+Mono:wght@400;600;700&display=swap" rel="stylesheet">
@@ -70,6 +71,61 @@ input,select{font-family:inherit;outline:none}
 .save-indicator.saving{background:#fef3c7;border:1.5px solid #fbbf24;color:#92400e}
 .save-indicator.saved{background:#d1fae5;border:1.5px solid #6ee7b7;color:#065f46}
 .save-indicator.error{background:#fee2e2;border:1.5px solid #fca5a5;color:#991b1b}
+/* ── SUBSCRIPTION / UPGRADE ── */
+.bnav-lock{position:absolute;top:5px;right:calc(50% - 14px);display:none;pointer-events:none}
+.bnav-lock.show{display:block}
+.trial-banner{margin:0 0 14px;padding:9px 13px;border-radius:var(--radius-sm);background:rgba(217,119,6,0.08);border:1.5px solid rgba(217,119,6,0.22);display:flex;align-items:center;gap:9px;font-size:11px;color:#92400e;line-height:1.4}
+.trial-banner b{font-family:var(--display);font-weight:800;letter-spacing:.3px}
+.trial-banner-action{margin-left:auto;padding:5px 12px;border-radius:12px;background:#d97706;color:#fff;font-size:10px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.upgrade-overlay{position:fixed;inset:0;z-index:70;background:rgba(15,23,42,0.4);opacity:0;pointer-events:none;transition:opacity .28s}
+.upgrade-overlay.open{opacity:1;pointer-events:all}
+.upgrade-sheet{position:fixed;bottom:0;left:0;right:0;z-index:71;background:var(--sf);border-top:1.5px solid var(--bd2);border-radius:22px 22px 0 0;padding:0 16px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -12px 48px rgba(15,23,42,0.18);transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.upgrade-sheet.open{transform:translateY(0)}
+.up-handle{width:36px;height:4px;border-radius:2px;background:var(--bd2);margin:14px auto 0}
+.up-close{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bd2);background:var(--sf3);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.up-header{padding:16px 0 4px;text-align:center}
+.up-badge{display:inline-flex;align-items:center;gap:5px;padding:4px 13px;border-radius:20px;background:linear-gradient(135deg,rgba(5,150,105,0.1),rgba(2,132,199,0.1));border:1.5px solid rgba(5,150,105,0.28);font-size:10px;font-weight:800;font-family:var(--display);letter-spacing:1.5px;color:var(--green);text-transform:uppercase;margin-bottom:10px}
+.up-title{font-family:var(--display);font-size:24px;font-weight:900;letter-spacing:.3px;color:var(--t);line-height:1.1;margin-bottom:6px}
+.up-sub{font-size:12px;color:var(--t3);line-height:1.5;max-width:290px;margin:0 auto 14px}
+.up-trial-note{display:inline-flex;align-items:center;gap:6px;padding:6px 14px;border-radius:20px;background:rgba(5,150,105,0.08);border:1px solid rgba(5,150,105,0.2);font-size:11px;color:var(--green);font-weight:700;margin-bottom:18px}
+.up-features{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:18px}
+.up-feat{display:flex;align-items:flex-start;gap:8px;padding:11px 10px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd)}
+.up-feat-icon{width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:13px}
+.up-feat-text{font-size:11px;font-weight:700;color:var(--t2);line-height:1.3}
+.up-feat-text span{display:block;font-size:9px;color:var(--t4);font-weight:400;margin-top:1px}
+.up-toggle{display:flex;align-items:center;gap:0;margin-bottom:12px;border-radius:20px;background:var(--sf3);border:1px solid var(--bd);padding:3px;width:fit-content;margin-left:auto;margin-right:auto}
+.up-toggle-btn{padding:6px 22px;border-radius:17px;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;background:transparent;color:var(--t3);cursor:pointer;transition:all .18s;-webkit-tap-highlight-color:transparent}
+.up-toggle-btn.on{background:var(--sf);color:var(--t);box-shadow:var(--sh)}
+.up-save-pill{display:inline-flex;align-items:center;padding:2px 7px;border-radius:10px;background:rgba(5,150,105,0.12);border:1px solid rgba(5,150,105,0.25);font-size:9px;font-weight:800;color:var(--green);font-family:var(--display);letter-spacing:.5px;margin-left:5px;vertical-align:middle}
+.up-plans{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.up-plan{padding:14px 12px;border-radius:var(--radius);border:2px solid var(--bd2);background:var(--sf);cursor:pointer;transition:all .18s;text-align:center;position:relative;-webkit-tap-highlight-color:transparent}
+.up-plan.selected{border-color:var(--green);background:rgba(5,150,105,0.04);box-shadow:0 0 0 3px rgba(5,150,105,0.1)}
+.up-plan-label{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;font-family:var(--display);color:var(--t4);margin-bottom:6px}
+.up-plan.selected .up-plan-label{color:var(--green)}
+.up-plan-price{font-family:var(--display);font-size:28px;font-weight:900;color:var(--t);line-height:1}
+.up-plan-period{font-size:10px;color:var(--t3);margin-top:3px;line-height:1.3}
+.up-plan-check{position:absolute;top:8px;right:8px;width:16px;height:16px;border-radius:50%;background:var(--green);display:none;align-items:center;justify-content:center}
+.up-plan.selected .up-plan-check{display:flex}
+.up-cta-btn{width:100%;padding:15px;border-radius:var(--radius);background:linear-gradient(135deg,var(--green),#0284c7);color:#fff;font-family:var(--display);font-size:15px;font-weight:900;letter-spacing:.8px;border:none;cursor:pointer;transition:all .2s;margin-bottom:14px;box-shadow:0 4px 16px rgba(5,150,105,0.25);-webkit-tap-highlight-color:transparent}
+.up-cta-btn:active{transform:scale(0.98)}
+.up-cta-btn:disabled{opacity:.65;cursor:not-allowed}
+.up-divider{display:flex;align-items:center;gap:10px;margin-bottom:12px;font-size:10px;color:var(--t4);font-weight:600}
+.up-divider::before,.up-divider::after{content:'';flex:1;height:1px;background:var(--bd2)}
+.up-code-row{display:flex;gap:8px;margin-bottom:5px}
+.up-code-input{flex:1;padding:10px 12px;border-radius:var(--radius-sm);border:1.5px solid var(--bd2);background:var(--sf2);color:var(--t);font-size:13px;font-family:var(--mono);letter-spacing:2px;text-transform:uppercase;outline:none;transition:border-color .18s}
+.up-code-input:focus{border-color:var(--cyan)}
+.up-code-input::placeholder{letter-spacing:1px;font-size:11px;text-transform:none;font-family:var(--body)}
+.up-code-btn{padding:10px 16px;border-radius:var(--radius-sm);background:var(--cyan);color:#fff;font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;white-space:nowrap;transition:all .18s;-webkit-tap-highlight-color:transparent}
+.up-code-btn:disabled{opacity:.6;cursor:not-allowed}
+.up-code-msg{font-size:11px;min-height:16px;margin-top:2px}
+.up-code-msg.success{color:var(--green);font-weight:700}
+.up-code-msg.error{color:var(--red)}
+.up-terms{font-size:10px;color:var(--t4);text-align:center;margin-top:14px;line-height:1.5}
+.paywall-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;padding:56px 24px;text-align:center;gap:10px}
+.paywall-gate-icon{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(5,150,105,0.08),rgba(2,132,199,0.08));border:1.5px solid rgba(5,150,105,0.2);display:flex;align-items:center;justify-content:center;margin-bottom:4px}
+.paywall-gate-title{font-family:var(--display);font-size:18px;font-weight:800;color:var(--t);letter-spacing:.3px}
+.paywall-gate-sub{font-size:12px;color:var(--t3);line-height:1.5;max-width:240px}
+.paywall-gate-btn{margin-top:6px;padding:11px 24px;border-radius:20px;background:linear-gradient(135deg,var(--green),#0284c7);color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.25);-webkit-tap-highlight-color:transparent}
 /* ── BOTTOM NAV ── */
 .bnav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;border-top:1px solid var(--bd);display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(15,23,42,0.08)}
 .bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 4px;border:none;background:transparent;color:var(--t4);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s;min-height:56px;position:relative}
@@ -392,6 +448,11 @@ input,select{font-family:inherit;outline:none}
   <div id="ai-prescription-output"></div>
   <div class="ws-outer" id="week-strip"></div>
   <div id="week-calendar" style="margin-bottom:14px"></div>
+<div id="trial-banner" class="trial-banner" style="display:none">
+  <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="6.5" stroke="#d97706" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="#d97706" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
+  <span id="trial-banner-text"><b>7 days left</b> in your free trial</span>
+  <button class="trial-banner-action" onclick="showUpgradeModal('trial')">Upgrade</button>
+</div>
   <div class="sumrow" id="sumrow"></div>
   <div class="tbar" id="tbar"></div>
   <div class="gaugewrap" id="gaugewrap"></div>
@@ -841,6 +902,9 @@ var SUPABASE_READY=typeof SUPABASE_URL!=='undefined'&&SUPABASE_URL.indexOf('http
 if(SUPABASE_READY){try{sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);}catch(e){SUPABASE_READY=false;}}
 
 var sessions=[];
+var userSubscription=null;
+var subscriptionLoaded=false;
+var _upgradePlan='monthly';
 var DEMO_SESSIONS=[
   makeGame("AUS vs International (13 pts)",13,"international",""),
   makeTraining("Tuesday Training",[{dk:"warmup",val1:15},{dk:"c_speedbuild",val1:8},{dk:"v7v7",val1:6}],""),
@@ -876,6 +940,175 @@ async function saveSession(session){
 async function deleteSession(dbId){
   if(!currentUser||!dbId)return;
   await sb.from("sessions").delete().eq("id",dbId);
+}
+
+// ── SUBSCRIPTION ──
+async function loadSubscription(){
+  if(!currentUser||!SUPABASE_READY){subscriptionLoaded=true;updateGatedUI();return;}
+  var res=await sb.from('subscriptions').select('*').eq('user_id',currentUser.id).maybeSingle();
+  if(res.data){
+    userSubscription=res.data;
+  } else {
+    var trialEnd=new Date();trialEnd.setDate(trialEnd.getDate()+7);
+    var ins=await sb.from('subscriptions').upsert({
+      user_id:currentUser.id,tier:'free',status:'trialling',
+      trial_end:trialEnd.toISOString()
+    },{onConflict:'user_id'}).select().single();
+    if(ins.data)userSubscription=ins.data;
+  }
+  subscriptionLoaded=true;
+  updateGatedUI();
+  handleUpgradeURLParams();
+}
+function canAccess(feature){
+  if(!currentUser)return false;
+  if(!userSubscription)return false;
+  var tier=userSubscription.tier;
+  var status=userSubscription.status;
+  var trialEnd=userSubscription.trial_end;
+  var periodEnd=userSubscription.current_period_end;
+  if(tier==='beta')return true;
+  if(tier==='pro'&&status==='active'){
+    if(!periodEnd||new Date(periodEnd)>new Date())return true;
+  }
+  if(status==='trialling'&&trialEnd&&new Date(trialEnd)>new Date())return true;
+  return false;
+}
+function trialDaysRemaining(){
+  if(!userSubscription||!userSubscription.trial_end)return 0;
+  return Math.max(0,Math.ceil((new Date(userSubscription.trial_end)-new Date())/86400000));
+}
+function updateGatedUI(){
+  var hasAccess=canAccess('roadmap');
+  var lr=document.getElementById('lock-roadmap');
+  var lm=document.getElementById('lock-metrics');
+  if(lr)lr.classList.toggle('show',!hasAccess&&!!currentUser);
+  if(lm)lm.classList.toggle('show',!hasAccess&&!!currentUser);
+  var banner=document.getElementById('trial-banner');
+  if(banner){
+    var isTrialling=userSubscription&&userSubscription.status==='trialling'&&currentUser;
+    var days=trialDaysRemaining();
+    if(isTrialling&&days>0){
+      var txt=document.getElementById('trial-banner-text');
+      if(txt)txt.innerHTML='<b>'+days+' day'+(days===1?'':'s')+' left</b> in your free trial — upgrade to keep access';
+      banner.style.display='flex';
+    } else {
+      banner.style.display='none';
+    }
+  }
+}
+function showUpgradeModal(feature){
+  var subs={
+    roadmap:'Unlock your 4-week training roadmap and see exactly how to peak for your tournament.',
+    metrics:'Unlock your metrics history chart and track your load trends over time.',
+    ai_prescription:'Unlock AI-powered session prescriptions tailored to your exact load data.',
+    trial:'Keep your access to all Pro features after your trial ends.'
+  };
+  var subEl=document.getElementById('up-sub-text');
+  if(subEl)subEl.textContent=subs[feature]||subs.roadmap;
+  var trialNote=document.getElementById('up-trial-note');
+  if(trialNote){
+    var alreadyTrialled=userSubscription&&(userSubscription.status!=='trialling'||trialDaysRemaining()===0);
+    trialNote.style.display=alreadyTrialled?'none':'inline-flex';
+    var ctaBtn=document.getElementById('up-cta-btn');
+    if(ctaBtn)ctaBtn.textContent=alreadyTrialled?'Upgrade to Pro →':'Start 7-Day Free Trial';
+  }
+  var inp=document.getElementById('up-code-input');var msg=document.getElementById('up-code-msg');
+  if(inp)inp.value='';if(msg){msg.textContent='';msg.className='up-code-msg';}
+  document.getElementById('upgrade-overlay').classList.add('open');
+  document.getElementById('upgrade-sheet').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeUpgradeModal(){
+  document.getElementById('upgrade-overlay').classList.remove('open');
+  document.getElementById('upgrade-sheet').classList.remove('open');
+  document.body.style.overflow='';
+}
+function upgradeTogglePlan(plan){
+  _upgradePlan=plan;
+  document.getElementById('up-toggle-monthly').className='up-toggle-btn'+(plan==='monthly'?' on':'');
+  document.getElementById('up-toggle-annual').className='up-toggle-btn'+(plan==='annual'?' on':'');
+  upgradeSelectPlan(plan);
+}
+function upgradeSelectPlan(plan){
+  _upgradePlan=plan;
+  document.getElementById('up-plan-monthly').classList.toggle('selected',plan==='monthly');
+  document.getElementById('up-plan-annual').classList.toggle('selected',plan==='annual');
+  document.getElementById('up-toggle-monthly').className='up-toggle-btn'+(plan==='monthly'?' on':'');
+  document.getElementById('up-toggle-annual').className='up-toggle-btn'+(plan==='annual'?' on':'');
+}
+async function startCheckout(){
+  if(!currentUser){closeUpgradeModal();signIn();return;}
+  var priceId=_upgradePlan==='annual'?STRIPE_PRICE_ANNUAL:STRIPE_PRICE_MONTHLY;
+  var btn=document.getElementById('up-cta-btn');
+  btn.disabled=true;btn.textContent='Redirecting…';
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session?session.data.session.access_token:'';
+    var res=await fetch(SUPABASE_URL+'/functions/v1/create-checkout',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({price_id:priceId})
+    });
+    var data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Checkout failed');
+    window.location.href=data.url;
+  }catch(e){
+    btn.disabled=false;
+    var alreadyTrialled=userSubscription&&(userSubscription.status!=='trialling'||trialDaysRemaining()===0);
+    btn.textContent=alreadyTrialled?'Upgrade to Pro →':'Start 7-Day Free Trial';
+    var errMsg=document.getElementById('up-code-msg');
+    if(errMsg){errMsg.textContent='Checkout error: '+e.message;errMsg.className='up-code-msg error';}
+  }
+}
+async function redeemBetaCode(){
+  if(!currentUser){closeUpgradeModal();signIn();return;}
+  var inp=document.getElementById('up-code-input');
+  var msg=document.getElementById('up-code-msg');
+  var btn=document.getElementById('up-code-btn');
+  var code=(inp.value||'').trim();
+  if(!code){msg.textContent='Enter a code first.';msg.className='up-code-msg error';return;}
+  btn.disabled=true;btn.textContent='Checking…';msg.textContent='';msg.className='up-code-msg';
+  try{
+    var session=await sb.auth.getSession();
+    var token=session.data.session?session.data.session.access_token:'';
+    var res=await fetch(SUPABASE_URL+'/functions/v1/redeem-code',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','Authorization':'Bearer '+token},
+      body:JSON.stringify({code:code})
+    });
+    var data=await res.json();
+    if(!res.ok)throw new Error(data.error||'Redemption failed');
+    msg.textContent='✓ Code accepted — welcome to Pro!';msg.className='up-code-msg success';
+    await loadSubscription();
+    setTimeout(closeUpgradeModal,1800);
+  }catch(e){
+    msg.textContent=e.message;msg.className='up-code-msg error';
+  }
+  btn.disabled=false;btn.textContent='Redeem';
+}
+function handleUpgradeURLParams(){
+  var p=new URLSearchParams(window.location.search);
+  if(p.get('upgrade')==='success'){
+    setTimeout(async function(){
+      await loadSubscription();
+      showSave('saved','Pro activated ✓ Welcome aboard!');
+    },2000);
+    window.history.replaceState({},'',window.location.pathname);
+  }
+  if(p.get('upgrade')==='cancelled'){
+    window.history.replaceState({},'',window.location.pathname);
+  }
+}
+function paywallHTML(feature){
+  var titles={roadmap:'Your Training Roadmap',metrics:'Metrics History',ai_prescription:'AI Prescription'};
+  var subs={roadmap:'Your 4-week periodisation roadmap is a Pro feature.',metrics:'Your load trend charts are a Pro feature.',ai_prescription:'AI-powered session prescriptions are a Pro feature.'};
+  return "<div class='paywall-gate'>"
+    +"<div class='paywall-gate-icon'><svg width='24' height='24' viewBox='0 0 24 24' fill='none'><rect x='5' y='11' width='14' height='11' rx='2' stroke='var(--green)' stroke-width='1.5'/><path d='M8 11V7a4 4 0 1 1 8 0v4' stroke='var(--green)' stroke-width='1.5' stroke-linecap='round'/></svg></div>"
+    +"<div class='paywall-gate-title'>"+(titles[feature]||'Pro Feature')+"</div>"
+    +"<div class='paywall-gate-sub'>"+(subs[feature]||'Upgrade to Pro to unlock this feature.')+"</div>"
+    +"<button class='paywall-gate-btn' onclick='showUpgradeModal(""+feature+"")'>Upgrade to Pro →</button>"
+    +"</div>";
 }
 
 // ── AUTH ──
@@ -914,7 +1147,9 @@ if(SUPABASE_READY){
       document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
       document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
     }
+    if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();}
     loadSessions();
+    if(currentUser)loadSubscription();
   });
   sb.auth.getSession().then(async function(result){
     currentUser=result.data.session?result.data.session.user:null;
@@ -924,7 +1159,9 @@ if(SUPABASE_READY){
       document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
       document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
     }
+    if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();}
     loadSessions();
+    if(currentUser)loadSubscription();
   });
 } else {
   sessions=DEMO_SESSIONS.slice();renderAuthUI();renderAll();
@@ -1480,6 +1717,7 @@ function renderWeekCalendar(){
 
 // ── AI PRESCRIPTION ──
 async function getAIPrescription(){
+  if(!canAccess('ai_prescription')){showUpgradeModal('ai_prescription');return;}
   var btn=document.getElementById("ai-prescribe-btn");
   var output=document.getElementById("ai-prescription-output");
   btn.disabled=true;
@@ -2266,6 +2504,10 @@ function setContext(c){
   if(currentUser&&typeof setUserContext==="function")setUserContext(c);
 }
 function switchTab(name,el){
+  if((name==='roadmap'||name==='metrics')&&currentUser&&subscriptionLoaded&&!canAccess(name)){
+    showUpgradeModal(name);
+    return;
+  }
   document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
   document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});
   document.getElementById("panel-"+name).classList.add("on");
@@ -2311,6 +2553,70 @@ function switchTab(name,el){
 function renderAll(){renderDashboard();renderSessions();}
 renderAll();
 </script>
+<!-- ── UPGRADE OVERLAY ── -->
+<div class="upgrade-overlay" id="upgrade-overlay" onclick="closeUpgradeModal()"></div>
+
+<!-- ── UPGRADE SHEET ── -->
+<div class="upgrade-sheet" id="upgrade-sheet">
+  <div class="up-handle"></div>
+  <button class="up-close" onclick="closeUpgradeModal()" aria-label="Close">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
+  <div class="up-header">
+    <div class="up-badge">&#9889; Frisbee Track Pro</div>
+    <div class="up-title">Train smarter.<br>Prepare properly.</div>
+    <div class="up-sub" id="up-sub-text">Unlock your full training roadmap, AI prescription, and performance history.</div>
+    <div class="up-trial-note" id="up-trial-note">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none"><circle cx="6.5" cy="6.5" r="5.5" stroke="#059669" stroke-width="1.3"/><path d="M6.5 4v2.8l1.5 1.2" stroke="#059669" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
+      7-day free trial included
+    </div>
+  </div>
+  <div class="up-features">
+    <div class="up-feat">
+      <div class="up-feat-icon" style="background:rgba(5,150,105,0.1)">&#128197;</div>
+      <div class="up-feat-text">Training Roadmap<span>4-week periodisation tied to your tournament</span></div>
+    </div>
+    <div class="up-feat">
+      <div class="up-feat-icon" style="background:rgba(2,132,199,0.1)">&#129302;</div>
+      <div class="up-feat-text">AI Prescription<span>Personalised session advice from your data</span></div>
+    </div>
+    <div class="up-feat">
+      <div class="up-feat-icon" style="background:rgba(139,92,246,0.1)">&#128200;</div>
+      <div class="up-feat-text">Metrics History<span>Track your load trends over time</span></div>
+    </div>
+    <div class="up-feat">
+      <div class="up-feat-icon" style="background:rgba(217,119,6,0.1)">&#127919;</div>
+      <div class="up-feat-text">Chronic Load<span>Injury-risk tracking coming soon</span></div>
+    </div>
+  </div>
+  <div class="up-toggle">
+    <button class="up-toggle-btn on" id="up-toggle-monthly" onclick="upgradeTogglePlan('monthly')">Monthly</button>
+    <button class="up-toggle-btn" id="up-toggle-annual" onclick="upgradeTogglePlan('annual')">Annual<span class="up-save-pill">Save 36%</span></button>
+  </div>
+  <div class="up-plans">
+    <div class="up-plan selected" id="up-plan-monthly" onclick="upgradeSelectPlan('monthly')">
+      <div class="up-plan-check"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M2 4.5l1.8 1.8L7 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="up-plan-label">Monthly</div>
+      <div class="up-plan-price">$9</div>
+      <div class="up-plan-period">per month</div>
+    </div>
+    <div class="up-plan" id="up-plan-annual" onclick="upgradeSelectPlan('annual')">
+      <div class="up-plan-check"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M2 4.5l1.8 1.8L7 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
+      <div class="up-plan-label">Annual</div>
+      <div class="up-plan-price">$5.75</div>
+      <div class="up-plan-period">per month<br><span style="font-size:9px;color:var(--green);font-weight:700">$69 billed yearly</span></div>
+    </div>
+  </div>
+  <button class="up-cta-btn" id="up-cta-btn" onclick="startCheckout()">Start 7-Day Free Trial</button>
+  <div class="up-divider">or have a beta code?</div>
+  <div class="up-code-row">
+    <input class="up-code-input" id="up-code-input" type="text" placeholder="Enter your code" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false">
+    <button class="up-code-btn" id="up-code-btn" onclick="redeemBetaCode()">Redeem</button>
+  </div>
+  <div class="up-code-msg" id="up-code-msg"></div>
+  <div class="up-terms">Cancel anytime. No lock-in. <a href="https://dylanbennett900.github.io/dbsp" target="_blank" style="color:var(--cyan)">Terms &amp; Privacy</a></div>
+</div>
+
 <!-- ── MORE DRAWER OVERLAY ── -->
 <div class="more-overlay" id="more-overlay" onclick="closeMoreDrawer()"></div>
 
@@ -2348,11 +2654,17 @@ renderAll();
   </button>
   <button class="bnav-btn" id="bnav-roadmap" onclick="switchTab('roadmap',null)">
     <div class="bnav-pip"></div>
+    <div class="bnav-lock" id="lock-roadmap">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg>
+    </div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.2" opacity=".4"/><rect x="5" y="11" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="3" height="3" rx=".5" fill="currentColor"/></svg>
     <span class="bnav-lbl">Roadmap</span>
   </button>
   <button class="bnav-btn" id="bnav-metrics" onclick="switchTab('metrics',null)">
     <div class="bnav-pip"></div>
+    <div class="bnav-lock" id="lock-metrics">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg>
+    </div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="2,14 6,9 10,11 14,6 18,8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="2" y1="17" x2="18" y2="17" stroke="currentColor" stroke-width="1.2" opacity=".35" stroke-linecap="round"/></svg>
     <span class="bnav-lbl">Metrics</span>
   </button>
