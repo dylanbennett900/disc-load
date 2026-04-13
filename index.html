@@ -365,7 +365,7 @@ input,select{font-family:inherit;outline:none}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
-<script src="supabase-client.js"></script>
+
 </head>
 <body>
 <div class="save-indicator" id="save-indicator"></div>
@@ -896,6 +896,26 @@ function makeTraining(lbl,drillArr,date){
   return Object.assign({id:uid++,label:lbl,type:"training",src:"real",drills:drillArr,date:date||''},tot);
 }
 
+// ── SUPABASE HELPERS ──
+async function getUserContext(){
+  if(!currentUser||!sb)return'domestic';
+  var r=await sb.from('user_settings').select('value').eq('user_id',currentUser.id).eq('key','context').maybeSingle();
+  return(r.data&&r.data.value)||'domestic';
+}
+async function setUserContext(c){
+  if(!currentUser||!sb)return;
+  await sb.from('user_settings').upsert({user_id:currentUser.id,key:'context',value:c},{onConflict:'user_id,key'});
+}
+async function getTournaments(){
+  if(!currentUser||!sb)return[];
+  var r=await sb.from('tournaments').select('name,date').eq('user_id',currentUser.id).order('date',{ascending:true});
+  return r.data||[];
+}
+async function saveTournament(name,date){
+  if(!currentUser||!sb)return;
+  await sb.from('tournaments').upsert({user_id:currentUser.id,name:name,date:date},{onConflict:'user_id,date'});
+}
+
 // ── SUPABASE ──
 var sb=null,currentUser=null;
 var SUPABASE_READY=typeof SUPABASE_URL!=='undefined'&&SUPABASE_URL.indexOf('http')===0;
@@ -945,17 +965,19 @@ async function deleteSession(dbId){
 // ── SUBSCRIPTION ──
 async function loadSubscription(){
   if(!currentUser||!SUPABASE_READY){subscriptionLoaded=true;updateGatedUI();return;}
-  var res=await sb.from('subscriptions').select('*').eq('user_id',currentUser.id).maybeSingle();
-  if(res.data){
-    userSubscription=res.data;
-  } else {
-    var trialEnd=new Date();trialEnd.setDate(trialEnd.getDate()+7);
-    var ins=await sb.from('subscriptions').upsert({
-      user_id:currentUser.id,tier:'free',status:'trialling',
-      trial_end:trialEnd.toISOString()
-    },{onConflict:'user_id'}).select().single();
-    if(ins.data)userSubscription=ins.data;
-  }
+  try{
+    var res=await sb.from('subscriptions').select('*').eq('user_id',currentUser.id).maybeSingle();
+    if(res.data){
+      userSubscription=res.data;
+    } else {
+      var trialEnd=new Date();trialEnd.setDate(trialEnd.getDate()+7);
+      var ins=await sb.from('subscriptions').upsert({
+        user_id:currentUser.id,tier:'free',status:'trialling',
+        trial_end:trialEnd.toISOString()
+      },{onConflict:'user_id'}).select().single();
+      if(ins.data)userSubscription=ins.data;
+    }
+  }catch(e){console.warn('loadSubscription:',e);}
   subscriptionLoaded=true;
   updateGatedUI();
   handleUpgradeURLParams();
