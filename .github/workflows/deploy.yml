@@ -13,6 +13,9 @@ jobs:
         run: |
           echo "var SUPABASE_URL = '${{ secrets.SUPABASE_URL }}';" > config.js
           echo "var SUPABASE_ANON_KEY = '${{ secrets.SUPABASE_ANON_KEY }}';" >> config.js
+          echo "var STRIPE_PK = '${{ secrets.STRIPE_PK }}';" >> config.js
+          echo "var STRIPE_PRICE_MONTHLY = '${{ secrets.STRIPE_PRICE_MONTHLY }}';" >> config.js
+          echo "var STRIPE_PRICE_ANNUAL = '${{ secrets.STRIPE_PRICE_ANNUAL }}';" >> config.js
           cat config.js
       - name: Deploy to gh-pages
         run: |
