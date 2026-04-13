@@ -1144,9 +1144,20 @@ async function signIn(){
   await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.href}});
 }
 async function signOut(){
-  if(SUPABASE_READY)await sb.auth.signOut();
-  currentUser=null;sessions=DEMO_SESSIONS.slice();
-  renderAuthUI();renderAll();
+  if(SUPABASE_READY){
+    Promise.race([
+      sb.auth.signOut(),
+      new Promise(function(res){setTimeout(res,3000);})
+    ]).finally(function(){
+      Object.keys(localStorage).forEach(function(k){
+        if(k.startsWith('sb-')||k.indexOf('supabase')!==-1){localStorage.removeItem(k);}
+      });
+      window.location.reload();
+    });
+  } else {
+    currentUser=null;sessions=DEMO_SESSIONS.slice();
+    renderAuthUI();renderAll();
+  }
 }
 function renderAuthUI(){
   var el=document.getElementById("auth-btn");
