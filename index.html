@@ -1038,14 +1038,21 @@ async function loadSessions(){
   if(dbgSess) dbgSess.textContent='sessions: querying Supabase...';
   var result=await sb.from("sessions").select("*").order("created_at",{ascending:true});
   if(result.error){
-    // Stale/expired token — sign out silently so the app reaches a clean state
-    // rather than freezing. onAuthStateChange fires SIGNED_OUT and re-renders.
-    if(result.error.status===401||result.error.status===403||(result.error.message&&result.error.message.toLowerCase().indexOf('jwt')!==-1)){
-      if(dbgSess) dbgSess.textContent='ERROR: stale session — signing out';
-      await sb.auth.signOut();return;
-    }
     if(dbgSess) dbgSess.textContent='ERROR: '+result.error.message+' ('+result.error.code+')';
-    console.error(result.error);return;
+    console.error(result.error);
+    // Never hang on an error. Clear local auth state and render immediately.
+    // Fire signOut in the background (no await) — if the lock is stuck,
+    // awaiting signOut would freeze the app again.
+    var emsg=(result.error.message||'').toLowerCase();
+    var isAuthErr=result.error.status===401||result.error.status===403
+      ||emsg.indexOf('jwt')!==-1||emsg.indexOf('lock')!==-1||emsg.indexOf('token')!==-1;
+    if(isAuthErr){
+      currentUser=null;sessions=DEMO_SESSIONS.slice();
+      renderAuthUI();renderAll();
+      sb.auth.signOut().catch(function(){});// background cleanup, never awaited
+      return;
+    }
+    sessions=DEMO_SESSIONS.slice();renderAll();return;
   }
   var count=(result.data||[]).length;
   if(dbgSess) dbgSess.textContent='sessions: '+count+' row'+(count===1?'':'s')+' from DB'+(count===0?' — 0 rows, check RLS':'');
@@ -1251,9 +1258,16 @@ async function signIn(){
   await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.href}});
 }
 async function signOut(){
-  if(SUPABASE_READY)await sb.auth.signOut();
+  // Clear local state immediately — UI is responsive regardless of network.
   currentUser=null;sessions=DEMO_SESSIONS.slice();
   renderAuthUI();renderAll();
+  // Fire Supabase signOut in background with timeout — never block the UI on it.
+  if(SUPABASE_READY){
+    Promise.race([
+      sb.auth.signOut(),
+      new Promise(function(res){setTimeout(res,3000);})
+    ]).catch(function(){});
+  }
 }
 function renderAuthUI(){
   var el=document.getElementById("auth-btn");
@@ -1273,19 +1287,21 @@ function renderAuthUI(){
 }
 
 if(SUPABASE_READY){
-  // Single auth path via onAuthStateChange — including INITIAL_SESSION.
-  // Previously we skipped INITIAL_SESSION and ran a parallel getUser() to verify
-  // the session server-side. That caused Supabase lock contention: both calls
-  // compete for the same auth token lock and one "steals" it, leaving the other
-  // hanging indefinitely (freezing the app). We now handle INITIAL_SESSION directly
-  // and detect stale sessions via 401 errors in loadSessions() instead.
-  sb.auth.onAuthStateChange(async function(event,session){
+  // Single auth init path via onAuthStateChange (including INITIAL_SESSION).
+  // Previously: skipped INITIAL_SESSION + ran parallel getUser(). Both ops competed
+  // for the same Supabase auth storage lock → one hung → frozen app.
+  // Fix: single path, no parallel lock contention.
+  sb.auth.onAuthStateChange(function(event,session){
     currentUser=session?session.user:null;
     renderAuthUI();
+    // getUserContext is non-blocking — awaiting it before loadSessions would
+    // add another concurrent Supabase call that can also lock-contend and freeze.
     if(currentUser&&typeof getUserContext==="function"){
-      ctx=await getUserContext();
-      document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
-      document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
+      getUserContext().then(function(c){
+        ctx=c;
+        document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
+        document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
+      }).catch(function(){});
     }
     if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();}
     loadSessions();
