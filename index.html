@@ -2807,32 +2807,27 @@ renderAll();
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/disc-load/sw.js').then(function(reg){
       swReg = reg;
-
-      // Check for waiting SW (update available)
-      if(reg.waiting) showUpdateBar(reg.waiting);
-      reg.addEventListener('updatefound', function(){
-        var nw = reg.installing;
-        nw.addEventListener('statechange', function(){
-          if(nw.state === 'installed' && navigator.serviceWorker.controller){
-            showUpdateBar(nw);
-          }
-        });
-      });
+      // SW activates immediately via skipWaiting in sw.js —
+      // just listen for controllerchange and reload when safe
     }).catch(function(e){ console.warn('SW registration failed:', e); });
 
-    // Reload page when new SW takes over
+    // Auto-reload when new SW takes control — wait until app is backgrounded
     var refreshing = false;
     navigator.serviceWorker.addEventListener('controllerchange', function(){
-      if(!refreshing){ refreshing = true; window.location.reload(); }
-    });
-  }
-
-  function showUpdateBar(sw){
-    var bar = document.getElementById('pwa-update-bar');
-    if(bar) bar.classList.add('show');
-    var btn = document.getElementById('pwa-update-btn');
-    if(btn) btn.addEventListener('click', function(){
-      sw.postMessage('SKIP_WAITING');
+      if(refreshing) return;
+      refreshing = true;
+      if(document.visibilityState === 'hidden'){
+        // Already in background — reload immediately
+        window.location.reload();
+      } else {
+        // App is in foreground — reload next time user backgrounds it
+        document.addEventListener('visibilitychange', function handler(){
+          if(document.visibilityState === 'hidden'){
+            document.removeEventListener('visibilitychange', handler);
+            window.location.reload();
+          }
+        });
+      }
     });
   }
 
