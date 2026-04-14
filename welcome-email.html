@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Welcome to Frisbee Track</title>
+<!--[if mso]>
+<noscript><xml><o:OfficeDocumentSettings><o:PixelsPerInch>96</o:PixelsPerInch></o:OfficeDocumentSettings></xml></noscript>
+<![endif]-->
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@800;900&family=DM+Sans:wght@400;500;600&display=swap');
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: 0; background: #eef2f7; font-family: 'DM Sans', -apple-system, BlinkMacSystemFont, Arial, sans-serif; -webkit-text-size-adjust: 100%; }
+  a { color: inherit; }
+  .email-wrapper { background: #eef2f7; padding: 32px 16px 48px; }
+  .email-card { max-width: 560px; margin: 0 auto; background: #ffffff; border-radius: 20px; overflow: hidden; box-shadow: 0 4px 24px rgba(15,23,42,0.10), 0 1px 4px rgba(15,23,42,0.06); }
+
+  /* Header */
+  .header { background: linear-gradient(135deg, #f0fdf4 0%, #eff6ff 100%); padding: 32px 36px 28px; border-bottom: 1.5px solid rgba(5,150,105,0.12); }
+  .logo-row { display: flex; align-items: center; gap: 12px; margin-bottom: 4px; }
+  .logo-mark { width: 44px; height: 44px; border-radius: 12px; background: linear-gradient(135deg, #ecfdf5, #eff6ff); border: 1.5px solid rgba(5,150,105,0.25); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+  .logo-text { font-family: 'Barlow Condensed', 'Arial Narrow', Arial, sans-serif; font-size: 26px; font-weight: 900; letter-spacing: 3px; color: #0f172a; line-height: 1; }
+  .logo-accent { color: #059669; }
+  .logo-sub { font-size: 9px; color: #94a3b8; letter-spacing: 2.5px; text-transform: uppercase; font-weight: 500; margin-top: 2px; }
+  .header-tag { display: inline-block; margin-top: 18px; padding: 4px 13px; border-radius: 20px; background: rgba(5,150,105,0.08); border: 1.5px solid rgba(5,150,105,0.2); font-size: 11px; font-weight: 700; color: #059669; letter-spacing: 0.5px; font-family: 'Barlow Condensed', Arial, sans-serif; text-transform: uppercase; }
+
+  /* Body */
+  .body { padding: 32px 36px; }
+  .greeting { font-size: 17px; font-weight: 600; color: #0f172a; margin-bottom: 6px; }
+  .lede { font-size: 15px; font-weight: 500; color: #0f172a; margin-bottom: 16px; }
+  .why { font-size: 14px; color: #334155; line-height: 1.7; margin-bottom: 28px; padding: 16px 18px; background: #f8fafc; border-radius: 12px; border-left: 3px solid #059669; }
+
+  /* Steps */
+  .steps-label { font-size: 11px; font-weight: 700; color: #94a3b8; letter-spacing: 2px; text-transform: uppercase; margin-bottom: 14px; font-family: 'Barlow Condensed', Arial, sans-serif; }
+  .step { display: flex; gap: 14px; margin-bottom: 16px; align-items: flex-start; }
+  .step-num { width: 28px; height: 28px; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-family: 'Barlow Condensed', Arial, sans-serif; font-size: 13px; font-weight: 900; flex-shrink: 0; margin-top: 1px; }
+  .step-num.green { background: rgba(5,150,105,0.10); color: #059669; border: 1px solid rgba(5,150,105,0.22); }
+  .step-num.cyan  { background: rgba(2,132,199,0.10); color: #0284c7; border: 1px solid rgba(2,132,199,0.22); }
+  .step-num.amber { background: rgba(180,83,9,0.10);  color: #b45309; border: 1px solid rgba(180,83,9,0.22); }
+  .step-content { flex: 1; }
+  .step-title { font-size: 14px; font-weight: 700; color: #0f172a; margin-bottom: 3px; }
+  .step-tab { display: inline-block; font-size: 10px; font-weight: 700; color: #059669; background: rgba(5,150,105,0.07); border: 1px solid rgba(5,150,105,0.18); border-radius: 6px; padding: 1px 7px; margin-bottom: 5px; font-family: 'Barlow Condensed', Arial, sans-serif; letter-spacing: 0.3px; }
+  .step-tab.cyan { color: #0284c7; background: rgba(2,132,199,0.07); border-color: rgba(2,132,199,0.18); }
+  .step-tab.amber { color: #b45309; background: rgba(180,83,9,0.07); border-color: rgba(180,83,9,0.18); }
+  .step-body { font-size: 13px; color: #475569; line-height: 1.65; }
+
+  /* CTA */
+  .cta-block { margin: 28px 0 24px; text-align: center; }
+  .cta-btn { display: inline-block; padding: 14px 36px; border-radius: 50px; background: #059669; color: #ffffff !important; font-size: 14px; font-weight: 700; text-decoration: none; letter-spacing: 0.3px; box-shadow: 0 4px 16px rgba(5,150,105,0.35); font-family: 'DM Sans', Arial, sans-serif; }
+  .cta-hint { font-size: 12px; color: #94a3b8; margin-top: 10px; }
+
+  /* Divider */
+  .divider { height: 1px; background: #f1f5f9; margin: 24px 0; }
+
+  /* Fallback note */
+  .howto-note { font-size: 13px; color: #64748b; line-height: 1.6; margin-bottom: 24px; }
+  .howto-note a { color: #059669; font-weight: 600; text-decoration: none; }
+
+  /* Sign-off */
+  .signoff { font-size: 14px; color: #334155; line-height: 1.7; }
+  .signoff-name { font-family: 'Barlow Condensed', Arial, sans-serif; font-size: 17px; font-weight: 800; color: #0f172a; letter-spacing: 1px; margin-top: 12px; }
+  .signoff-sub { font-size: 11px; color: #94a3b8; letter-spacing: 0.5px; }
+
+  /* Footer */
+  .footer { background: #f8fafc; padding: 20px 36px; border-top: 1px solid #e2e8f0; text-align: center; }
+  .footer p { font-size: 11px; color: #94a3b8; line-height: 1.7; margin: 0; }
+  .footer a { color: #64748b; text-decoration: underline; }
+
+  /* Mobile */
+  @media (max-width: 480px) {
+    .email-wrapper { padding: 16px 10px 36px; }
+    .header { padding: 24px 22px 22px; }
+    .body { padding: 24px 22px; }
+    .footer { padding: 18px 22px; }
+    .logo-text { font-size: 22px; }
+  }
+</style>
+</head>
+<body>
+<div class="email-wrapper">
+  <div class="email-card">
+
+    <!-- Header -->
+    <div class="header">
+      <div class="logo-row">
+        <div class="logo-mark">
+          <svg width="26" height="26" viewBox="0 0 36 36" fill="none">
+            <defs><linearGradient id="lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#0284c7"/></linearGradient></defs>
+            <circle cx="18" cy="18" r="13" stroke="url(#lg)" stroke-width="2.5" stroke-dasharray="60 22" stroke-linecap="round" transform="rotate(-120 18 18)"/>
+            <circle cx="18" cy="18" r="6.5" stroke="url(#lg)" stroke-width="2"/>
+            <line x1="22" y1="13" x2="29" y2="7" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="29" cy="7" r="1.5" fill="#059669"/>
+          </svg>
+        </div>
+        <div>
+          <div class="logo-text">FRISBEE<span class="logo-accent"> TRACK</span></div>
+          <div class="logo-sub">Performance Monitor</div>
+        </div>
+      </div>
+      <div class="header-tag">✓ You're in</div>
+    </div>
+
+    <!-- Body -->
+    <div class="body">
+      <div class="greeting">Hi {{first_name}},</div>
+      <div class="lede">Frisbee Track is live on your account.</div>
+
+      <div class="why">
+        Most players train consistently and still arrive at tournaments underdone — not because they didn't work hard, but because they had no way of knowing whether the work matched what a tournament actually demands. This app changes that.
+      </div>
+
+      <div class="steps-label">Here's how to get started</div>
+
+      <div class="step">
+        <div class="step-num green">01</div>
+        <div class="step-content">
+          <div class="step-title">Set your tournament date</div>
+          <div><span class="step-tab">Roadmap tab</span></div>
+          <div class="step-body">Enter your next tournament. The app builds your load targets week by week automatically — moderate base, two high weeks, then a taper to arrive fresh.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num cyan">02</div>
+        <div class="step-content">
+          <div class="step-title">Log your sessions</div>
+          <div><span class="step-tab cyan">Sessions tab → + Add</span></div>
+          <div class="step-body">After each training session or game, tap + Add. Select your session type and enter what you did — GPS values are calculated for you.</div>
+        </div>
+      </div>
+
+      <div class="step">
+        <div class="step-num amber">03</div>
+        <div class="step-content">
+          <div class="step-title">Check your dashboard</div>
+          <div><span class="step-tab amber">Dashboard tab</span></div>
+          <div class="step-body">See your 8 key metrics against weekly targets. Tap <strong>Get Prescription</strong> and the AI tells you exactly what drills to do to close any gaps before the week ends.</div>
+        </div>
+      </div>
+
+      <div class="cta-block">
+        <a href="https://dylanbennett900.github.io/disc-load/" class="cta-btn">Open Frisbee Track →</a>
+        <div class="cta-hint">Add to your home screen for the best experience</div>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="howto-note">
+        Not sure where to start? The <strong>How To</strong> tab inside the app walks you through everything.
+      </div>
+
+      <div class="signoff">
+        I built this because I wanted every player to train smarter and bridge the gap between data driven high performance and your own training. Hope it helps you like GPS data helps me.
+      </div>
+      <div class="signoff-name">— DBSP</div>
+      <div class="signoff-sub">Dylan Bennett Sport Performance</div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      <p>
+        You're receiving this because you signed up to Frisbee Track.<br>
+        <a href="{{unsubscribe_url}}">Unsubscribe</a>
+      </p>
+    </div>
+
+  </div>
+</div>
+</body>
+</html>
