@@ -370,7 +370,6 @@ input,select{font-family:inherit;outline:none}
 .cal-recovery-inline{padding:6px 7px;display:flex;align-items:flex-start;gap:5px;border-top:1px solid var(--bd)}
 
 /* ── PWA INSTALL BANNER ── */
-/* PWA banner lives inside #header — no fixed positioning needed */
 #pwa-banner{display:none;align-items:center;gap:12px;padding:10px 14px;margin-top:10px;border-radius:var(--radius);background:var(--sf);border:1.5px solid rgba(5,150,105,0.25);box-shadow:0 2px 12px rgba(15,23,42,0.08)}
 #pwa-banner.show{display:flex;animation:bannerIn .3s ease}
 @keyframes bannerIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
@@ -479,7 +478,6 @@ input,select{font-family:inherit;outline:none}
       <div id="auth-btn" style="margin-left:4px"></div>
     </div>
   </div>
-  <!-- PWA install banner — expands header, no fixed positioning -->
   <div id="pwa-banner">
     <div class="pwa-icon">
       <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
@@ -496,7 +494,7 @@ input,select{font-family:inherit;outline:none}
     </div>
     <button class="pwa-install" id="pwa-install-btn">Install</button>
     <button class="pwa-dismiss" id="pwa-dismiss-btn" aria-label="Dismiss"
-      onclick="this.closest('#pwa-banner').classList.remove('show');try{localStorage.setItem('pwa-banner-dismissed',Date.now())}catch(e){}">
+      onclick="document.getElementById('pwa-banner').classList.remove('show');try{localStorage.setItem('pwa-banner-dismissed',Date.now())}catch(e){}">
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     </button>
   </div>
@@ -1261,8 +1259,13 @@ if(SUPABASE_READY){
     loadSessions();
     if(currentUser)loadSubscription();
   });
-  sb.auth.getSession().then(async function(result){
-    currentUser=result.data.session?result.data.session.user:null;
+  sb.auth.getUser().then(async function(result){
+    // getUser() verifies token with the server — no stale localStorage sessions
+    currentUser=(result.error||!result.data.user)?null:result.data.user;
+    if(result.error&&result.error.message!=='Auth session missing!'){
+      // Stale or invalid session in localStorage — clear it silently
+      sb.auth.signOut();
+    }
     renderAuthUI();
     if(currentUser&&typeof getUserContext==="function"){
       ctx=await getUserContext();
@@ -2865,6 +2868,15 @@ renderAll();
   });
 
   document.addEventListener('DOMContentLoaded', function(){
+    // Pin banner exactly below header
+    var hdr = document.getElementById('header');
+    var ban = document.getElementById('pwa-banner');
+    if(hdr && ban){
+      function _setBanTop(){ ban.style.top = (hdr.offsetHeight + 8) + 'px'; }
+      _setBanTop();
+      window.addEventListener('resize', _setBanTop);
+      if(document.fonts && document.fonts.ready){ document.fonts.ready.then(_setBanTop); }
+    }
     var installBtn = document.getElementById('pwa-install-btn');
     var dismissBtn = document.getElementById('pwa-dismiss-btn');
 
