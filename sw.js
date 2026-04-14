@@ -1,6 +1,6 @@
 // ── Frisbee Track Service Worker ──
 // Bump CACHE_VERSION on every deploy to guarantee update detection
-const CACHE_VERSION = 'ft-v2';
+const CACHE_VERSION = 'ft-v3';
 const CACHE_NAME = `frisbee-track-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [
