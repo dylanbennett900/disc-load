@@ -504,6 +504,12 @@ input,select{font-family:inherit;outline:none}
 
 <!-- ── DASHBOARD ── -->
 <div class="panel on" id="panel-dashboard">
+  <div id="debug-panel" style="background:#1e293b;color:#e2e8f0;border-radius:8px;padding:12px 14px;margin-bottom:12px;font-size:11px;font-family:monospace;line-height:1.7;display:none" onclick="this.style.display='none'">
+    <div style="font-size:9px;color:#94a3b8;margin-bottom:6px;letter-spacing:1px">DEBUG — tap to dismiss</div>
+    <div id="debug-auth">auth: checking...</div>
+    <div id="debug-sessions">sessions: waiting...</div>
+    <div id="debug-uid">user_id: —</div>
+  </div>
   <div class="action-strip">
     <button class="sr-trigger-btn" id="sr-trigger-btn" onclick="toggleSelfReport()">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:inline-block;vertical-align:-2px;flex-shrink:0"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="var(--cyan)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/></svg>
@@ -1017,15 +1023,26 @@ function showSave(state,msg){
 }
 
 async function loadSessions(){
-  if(!currentUser){sessions=DEMO_SESSIONS.slice();renderAll();return;}
+  var dbg=document.getElementById('debug-panel');
+  var dbgAuth=document.getElementById('debug-auth');
+  var dbgSess=document.getElementById('debug-sessions');
+  var dbgUid=document.getElementById('debug-uid');
+  if(dbg) dbg.style.display='block';
+  if(!currentUser){
+    if(dbgAuth) dbgAuth.textContent='auth: NOT signed in — currentUser is null';
+    if(dbgSess) dbgSess.textContent='sessions: loaded demo sessions';
+    sessions=DEMO_SESSIONS.slice();renderAll();return;
+  }
+  if(dbgAuth) dbgAuth.textContent='auth: '+currentUser.email;
+  if(dbgUid) dbgUid.textContent='user_id: '+currentUser.id;
+  if(dbgSess) dbgSess.textContent='sessions: querying Supabase...';
   var result=await sb.from("sessions").select("*").order("created_at",{ascending:true});
   if(result.error){
-    showSave("error","DB error: "+result.error.message);
-    console.error("loadSessions error:",result.error);
-    return;
+    if(dbgSess) dbgSess.textContent='ERROR: '+result.error.message+' ('+result.error.code+')';
+    console.error(result.error);return;
   }
-  var count=result.data?result.data.length:0;
-  showSave(count>0?"saved":"error", count>0?(count+" session"+(count===1?"":"s")+" loaded"):"0 sessions returned — check Supabase RLS");
+  var count=(result.data||[]).length;
+  if(dbgSess) dbgSess.textContent='sessions: '+count+' row'+(count===1?'':'s')+' from DB'+(count===0?' — 0 rows, check RLS':'');
   uid=1000;
   sessions=(result.data||[]).map(function(row){var s=row.data;s._dbId=row.id;s.id=uid++;return s;});
   renderAll();loadSettings();
