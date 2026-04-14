@@ -1247,7 +1247,11 @@ function renderAuthUI(){
 }
 
 if(SUPABASE_READY){
+  // onAuthStateChange handles real events (SIGNED_IN, SIGNED_OUT, TOKEN_REFRESHED).
+  // Skip INITIAL_SESSION — it fires from stale localStorage before server verification
+  // and is the cause of showing a signed-out user as "Dylan / Sign out".
   sb.auth.onAuthStateChange(async function(event,session){
+    if(event==='INITIAL_SESSION')return;
     currentUser=session?session.user:null;
     renderAuthUI();
     if(currentUser&&typeof getUserContext==="function"){
@@ -1259,12 +1263,12 @@ if(SUPABASE_READY){
     loadSessions();
     if(currentUser)loadSubscription();
   });
+  // getUser() verifies the session token with the server — not just localStorage.
+  // If the token is stale/expired, it returns an error and we sign out cleanly.
   sb.auth.getUser().then(async function(result){
-    // getUser() verifies token with the server — no stale localStorage sessions
     currentUser=(result.error||!result.data.user)?null:result.data.user;
     if(result.error&&result.error.message!=='Auth session missing!'){
-      // Stale or invalid session in localStorage — clear it silently
-      sb.auth.signOut();
+      sb.auth.signOut(); // clear stale localStorage session silently
     }
     renderAuthUI();
     if(currentUser&&typeof getUserContext==="function"){
