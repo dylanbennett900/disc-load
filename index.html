@@ -1038,6 +1038,12 @@ async function loadSessions(){
   if(dbgSess) dbgSess.textContent='sessions: querying Supabase...';
   var result=await sb.from("sessions").select("*").order("created_at",{ascending:true});
   if(result.error){
+    // Stale/expired token — sign out silently so the app reaches a clean state
+    // rather than freezing. onAuthStateChange fires SIGNED_OUT and re-renders.
+    if(result.error.status===401||result.error.status===403||(result.error.message&&result.error.message.toLowerCase().indexOf('jwt')!==-1)){
+      if(dbgSess) dbgSess.textContent='ERROR: stale session — signing out';
+      await sb.auth.signOut();return;
+    }
     if(dbgSess) dbgSess.textContent='ERROR: '+result.error.message+' ('+result.error.code+')';
     console.error(result.error);return;
   }
@@ -1267,28 +1273,14 @@ function renderAuthUI(){
 }
 
 if(SUPABASE_READY){
-  // Skip INITIAL_SESSION — fires from stale localStorage before server verification,
-  // causing signed-out users to appear as signed in. Real events handled normally.
+  // Single auth path via onAuthStateChange — including INITIAL_SESSION.
+  // Previously we skipped INITIAL_SESSION and ran a parallel getUser() to verify
+  // the session server-side. That caused Supabase lock contention: both calls
+  // compete for the same auth token lock and one "steals" it, leaving the other
+  // hanging indefinitely (freezing the app). We now handle INITIAL_SESSION directly
+  // and detect stale sessions via 401 errors in loadSessions() instead.
   sb.auth.onAuthStateChange(async function(event,session){
-    if(event==='INITIAL_SESSION')return;
     currentUser=session?session.user:null;
-    renderAuthUI();
-    if(currentUser&&typeof getUserContext==="function"){
-      ctx=await getUserContext();
-      document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
-      document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
-    }
-    if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();}
-    loadSessions();
-    if(currentUser)loadSubscription();
-  });
-  // getUser() verifies token with the server — not just localStorage.
-  // Stale/expired sessions return an error; sign out silently to clean up.
-  sb.auth.getUser().then(async function(result){
-    currentUser=(result.error||!result.data.user)?null:result.data.user;
-    if(result.error&&result.error.message!=='Auth session missing!'){
-      sb.auth.signOut();
-    }
     renderAuthUI();
     if(currentUser&&typeof getUserContext==="function"){
       ctx=await getUserContext();
