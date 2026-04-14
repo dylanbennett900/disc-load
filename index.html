@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Frisbee Track</title>
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#059669">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Frisbee Track">
+<link rel="apple-touch-icon" href="icon-192.png">
 <script src="https://js.stripe.com/v3/"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -362,6 +368,19 @@ input,select{font-family:inherit;outline:none}
 .cal-gym-intent{font-size:7px;color:var(--t3);line-height:1.45;margin-top:1px}
 .cal-gym-ofc{display:inline-block;margin-top:3px;font-size:7px;font-weight:800;padding:1px 6px;border-radius:10px;background:rgba(124,58,237,0.1);color:var(--purple);border:1px solid rgba(124,58,237,0.2);letter-spacing:.5px;font-family:var(--display)}
 .cal-recovery-inline{padding:6px 7px;display:flex;align-items:flex-start;gap:5px;border-top:1px solid var(--bd)}
+
+/* ── PWA INSTALL BANNER ── */
+#pwa-banner{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom) + 8px);left:12px;right:12px;z-index:200;background:#ffffff;border:1.5px solid rgba(5,150,105,0.25);border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,0.14),0 2px 6px rgba(15,23,42,0.06);padding:13px 14px;display:flex;align-items:center;gap:12px;transform:translateY(120%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
+#pwa-banner.show{transform:translateY(0);pointer-events:all}
+.pwa-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid rgba(5,150,105,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+.pwa-text{flex:1;min-width:0}
+.pwa-title{font-size:13px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.3px}
+.pwa-sub{font-size:11px;color:var(--t3);margin-top:1px;line-height:1.4}
+.pwa-install{padding:7px 14px;border-radius:20px;background:var(--green);color:#fff;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
+.pwa-dismiss{width:26px;height:26px;border-radius:50%;background:var(--sf3);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+#pwa-update-bar{position:fixed;top:0;left:0;right:0;z-index:300;background:#059669;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;transform:translateY(-100%);transition:transform .3s;padding-top:max(10px,env(safe-area-inset-top))}
+#pwa-update-bar.show{transform:translateY(0)}
+.pwa-update-btn{padding:5px 14px;border-radius:20px;background:#fff;color:#059669;font-size:11px;font-weight:800;font-family:var(--display);border:none;cursor:pointer;flex-shrink:0}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -546,6 +565,9 @@ input,select{font-family:inherit;outline:none}
 <!-- ── HOW TO ── -->
 <div class="panel" id="panel-howto">
 <div class="howto-panel">
+  <div class="howto-intro">
+    Frisbee Track tracks your training load across the <strong>4 weeks</strong> leading into a tournament. Log your sessions — the app tells you where you're at and what to do next. <strong style="color:var(--green)">No GPS device needed.</strong> Built on <strong>244 real GPS sessions</strong> and <strong>933 drill periods</strong>.
+  </div>
   <div class="how-step" style="border-top:3px solid var(--green)">
     <div class="how-step-head">
       <div class="how-num" style="background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.25)">01</div>
@@ -1141,20 +1163,9 @@ async function signIn(){
   await sb.auth.signInWithOAuth({provider:"google",options:{redirectTo:window.location.href}});
 }
 async function signOut(){
-  if(SUPABASE_READY){
-    Promise.race([
-      sb.auth.signOut(),
-      new Promise(function(res){setTimeout(res,3000);})
-    ]).finally(function(){
-      Object.keys(localStorage).forEach(function(k){
-        if(k.startsWith('sb-')||k.indexOf('supabase')!==-1){localStorage.removeItem(k);}
-      });
-      window.location.reload();
-    });
-  } else {
-    currentUser=null;sessions=DEMO_SESSIONS.slice();
-    renderAuthUI();renderAll();
-  }
+  if(SUPABASE_READY)await sb.auth.signOut();
+  currentUser=null;sessions=DEMO_SESSIONS.slice();
+  renderAuthUI();renderAll();
 }
 function renderAuthUI(){
   var el=document.getElementById("auth-btn");
@@ -2709,5 +2720,135 @@ renderAll();
     <span class="bnav-lbl">More</span>
   </button>
 </nav>
+
+<!-- ── PWA INSTALL BANNER ── -->
+<div id="pwa-banner">
+  <div class="pwa-icon">
+    <svg width="22" height="22" viewBox="0 0 36 36" fill="none">
+      <defs><linearGradient id="pwa-lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#0284c7"/></linearGradient></defs>
+      <circle cx="18" cy="18" r="13" stroke="url(#pwa-lg)" stroke-width="2.5" stroke-dasharray="60 22" stroke-linecap="round" transform="rotate(-120 18 18)"/>
+      <circle cx="18" cy="18" r="6.5" stroke="url(#pwa-lg)" stroke-width="2"/>
+      <line x1="22" y1="13" x2="29" y2="7" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>
+      <circle cx="29" cy="7" r="1.5" fill="#059669"/>
+    </svg>
+  </div>
+  <div class="pwa-text">
+    <div class="pwa-title">Add to Home Screen</div>
+    <div class="pwa-sub" id="pwa-sub-text">Get the full app experience</div>
+  </div>
+  <button class="pwa-install" id="pwa-install-btn">Install</button>
+  <button class="pwa-dismiss" id="pwa-dismiss-btn" aria-label="Dismiss">
+    <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
+</div>
+
+<!-- Update available bar -->
+<div id="pwa-update-bar">
+  <span>A new version is available</span>
+  <button class="pwa-update-btn" id="pwa-update-btn">Update now</button>
+</div>
+
+<script>
+// ── SERVICE WORKER + PWA ──
+(function(){
+  var deferredPrompt = null;
+  var swReg = null;
+
+  // Register service worker
+  if('serviceWorker' in navigator){
+    navigator.serviceWorker.register('/disc-load/sw.js').then(function(reg){
+      swReg = reg;
+
+      // Check for waiting SW (update available)
+      if(reg.waiting) showUpdateBar(reg.waiting);
+      reg.addEventListener('updatefound', function(){
+        var nw = reg.installing;
+        nw.addEventListener('statechange', function(){
+          if(nw.state === 'installed' && navigator.serviceWorker.controller){
+            showUpdateBar(nw);
+          }
+        });
+      });
+    }).catch(function(e){ console.warn('SW registration failed:', e); });
+
+    // Reload page when new SW takes over
+    var refreshing = false;
+    navigator.serviceWorker.addEventListener('controllerchange', function(){
+      if(!refreshing){ refreshing = true; window.location.reload(); }
+    });
+  }
+
+  function showUpdateBar(sw){
+    var bar = document.getElementById('pwa-update-bar');
+    if(bar) bar.classList.add('show');
+    var btn = document.getElementById('pwa-update-btn');
+    if(btn) btn.addEventListener('click', function(){
+      sw.postMessage('SKIP_WAITING');
+    });
+  }
+
+  // Install prompt — only show if not already installed and not dismissed recently
+  var DISMISS_KEY = 'pwa-banner-dismissed';
+  var dismissed = localStorage.getItem(DISMISS_KEY);
+  var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+
+  // iOS Safari: no beforeinstallprompt — show manual instruction instead
+  if(isIOS && !isStandalone && !dismissed){
+    setTimeout(function(){
+      var sub = document.getElementById('pwa-sub-text');
+      var btn = document.getElementById('pwa-install-btn');
+      if(sub) sub.textContent = 'Tap Share \u2192 Add to Home Screen';
+      if(btn){ btn.textContent = 'Got it'; btn.dataset.ios = '1'; }
+      var banner = document.getElementById('pwa-banner');
+      if(banner) banner.classList.add('show');
+    }, 3000);
+  }
+
+  // Android/Chrome: native install prompt
+  window.addEventListener('beforeinstallprompt', function(e){
+    e.preventDefault();
+    deferredPrompt = e;
+    if(!isStandalone && !dismissed){
+      setTimeout(function(){
+        var banner = document.getElementById('pwa-banner');
+        if(banner) banner.classList.add('show');
+      }, 3000);
+    }
+  });
+
+  document.addEventListener('DOMContentLoaded', function(){
+    var installBtn = document.getElementById('pwa-install-btn');
+    var dismissBtn = document.getElementById('pwa-dismiss-btn');
+
+    if(installBtn) installBtn.addEventListener('click', function(){
+      // iOS: user has read the hint, just dismiss
+      if(installBtn.dataset.ios){
+        var banner = document.getElementById('pwa-banner');
+        if(banner) banner.classList.remove('show');
+        localStorage.setItem(DISMISS_KEY, Date.now());
+        return;
+      }
+      if(!deferredPrompt) return;
+      deferredPrompt.prompt();
+      deferredPrompt.userChoice.then(function(result){
+        deferredPrompt = null;
+        var banner = document.getElementById('pwa-banner');
+        if(banner) banner.classList.remove('show');
+        if(result.outcome === 'dismissed'){
+          localStorage.setItem(DISMISS_KEY, Date.now());
+        }
+      });
+    });
+
+    if(dismissBtn) dismissBtn.addEventListener('click', function(){
+      var banner = document.getElementById('pwa-banner');
+      if(banner) banner.classList.remove('show');
+      localStorage.setItem(DISMISS_KEY, Date.now());
+    });
+  });
+})();
+</script>
+
 </body>
 </html>
