@@ -195,23 +195,23 @@ input,select{font-family:inherit;outline:none}
 @keyframes spin{to{transform:rotate(360deg)}}
 .ai-error{margin-top:12px;padding:12px 14px;border-radius:var(--radius-sm);background:#fee2e2;border:1px solid #fca5a5;font-size:12px;color:#991b1b}
 .ws-outer{margin-bottom:16px}
-.ws-row{display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;-webkit-overflow-scrolling:touch}
+.ws-row{display:flex;gap:8px;flex-wrap:wrap;}
 .ws-row::-webkit-scrollbar{display:none}
-.wk{flex-shrink:0;width:118px;border-radius:var(--radius);padding:10px 11px;border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;transition:all .18s;box-shadow:var(--sh);position:relative}
+.wk{flex:1 1 calc(50% - 4px);max-width:calc(50% - 4px);min-width:0;border-radius:var(--radius);padding:11px 13px;border:1.5px solid var(--bd);background:var(--sf);cursor:pointer;transition:all .18s;box-shadow:var(--sh);position:relative}
 .wk:active{transform:scale(0.98)}
 .wk-now-tag{position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display)}
 .wk-head{margin-bottom:6px}
 .wk-iso{font-size:13px;font-weight:800;letter-spacing:.5px;font-family:var(--display);color:var(--t)}
 .wk-dates{font-size:8px;color:var(--t3);margin-top:1px}
 .wk-band{font-size:8px;font-weight:800;letter-spacing:1px;padding:2px 7px;border-radius:20px;display:inline-block;text-transform:uppercase;margin:4px 0 6px;font-family:var(--display)}
-.wk-desc{display:none}
+.wk-desc{font-size:9px;color:var(--t3);line-height:1.4;margin-bottom:4px}
 .wk-bars{display:flex;flex-direction:column;gap:4px}
 .wk-bar-row{display:flex;align-items:center;gap:5px}
 .wk-bar-lbl{font-size:7px;color:var(--t3);width:26px;flex-shrink:0;font-family:var(--display);letter-spacing:.3px;font-weight:600}
 .wk-bar-track{flex:1;height:3px;background:var(--sf3);border-radius:2px;border:1px solid var(--bd)}
 .wk-bar-fill{height:100%;border-radius:2px;transition:width .4s cubic-bezier(.4,0,.2,1)}
 .wk-bar-pct{font-size:7px;font-family:var(--mono);width:22px;text-align:right;flex-shrink:0}
-.wk-tourn{flex-shrink:0;width:76px;border-radius:var(--radius);padding:11px 8px;border:1.5px solid rgba(161,98,7,0.25);background:linear-gradient(135deg,rgba(161,98,7,0.06),rgba(180,83,9,0.03));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;box-shadow:var(--sh)}
+.wk-tourn{flex:1 1 calc(50% - 4px);max-width:calc(50% - 4px);min-width:0;border-radius:var(--radius);padding:11px 13px;border:1.5px solid rgba(161,98,7,0.25);background:linear-gradient(135deg,rgba(161,98,7,0.06),rgba(180,83,9,0.03));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px;box-shadow:var(--sh)}
 .shd{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
 .stitle{font-size:22px;font-weight:900;letter-spacing:1px;font-family:var(--display);color:var(--t)}
 .btnadd{padding:8px 18px;border-radius:20px;border:1.5px solid var(--green);background:var(--green);color:#fff;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;transition:all .18s;box-shadow:0 2px 8px rgba(5,150,105,0.2)}
@@ -370,7 +370,7 @@ input,select{font-family:inherit;outline:none}
 .cal-recovery-inline{padding:6px 7px;display:flex;align-items:flex-start;gap:5px;border-top:1px solid var(--bd)}
 
 /* ── PWA INSTALL BANNER ── */
-#pwa-banner{position:fixed;top:calc(42px + max(12px,env(safe-area-inset-top)));left:12px;right:12px;z-index:200;background:#ffffff;border:1.5px solid rgba(5,150,105,0.25);border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,0.14),0 2px 6px rgba(15,23,42,0.06);padding:13px 14px;display:flex;align-items:center;gap:12px;transform:translateY(-120%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
+#pwa-banner{position:fixed;top:60px;left:12px;right:12px;z-index:200;background:#ffffff;border:1.5px solid rgba(5,150,105,0.25);border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,0.14),0 2px 6px rgba(15,23,42,0.06);padding:13px 14px;display:flex;align-items:center;gap:12px;transform:translateY(-120%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
 #pwa-banner.show{transform:translateY(0);pointer-events:all}
 .pwa-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid rgba(5,150,105,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .pwa-text{flex:1;min-width:0}
@@ -385,6 +385,47 @@ input,select{font-family:inherit;outline:none}
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 
+<script>
+// Generate disc icon via canvas — bypasses PNG path issues for iOS home screen
+(function(){
+  try{
+    var cv=document.createElement('canvas');
+    cv.width=192;cv.height=192;
+    var ctx=cv.getContext('2d');
+    // Rounded square bg
+    var rr=38,s=192;
+    ctx.beginPath();
+    ctx.moveTo(rr,0);ctx.lineTo(s-rr,0);ctx.quadraticCurveTo(s,0,s,rr);
+    ctx.lineTo(s,s-rr);ctx.quadraticCurveTo(s,s,s-rr,s);
+    ctx.lineTo(rr,s);ctx.quadraticCurveTo(0,s,0,s-rr);
+    ctx.lineTo(0,rr);ctx.quadraticCurveTo(0,0,rr,0);ctx.closePath();
+    var bgG=ctx.createLinearGradient(0,0,s,s);
+    bgG.addColorStop(0,'#ecfdf5');bgG.addColorStop(1,'#eff6ff');
+    ctx.fillStyle=bgG;ctx.fill();
+    // Disc gradient
+    var cx=96,cy=96;
+    var dG=ctx.createLinearGradient(cx-56,cy-56,cx+56,cy+56);
+    dG.addColorStop(0,'#059669');dG.addColorStop(1,'#0284c7');
+    // Outer dashed arc
+    ctx.save();ctx.strokeStyle=dG;ctx.lineWidth=10;
+    ctx.setLineDash([55,20]);ctx.lineDashOffset=0;
+    ctx.beginPath();ctx.arc(cx,cy,50,0,Math.PI*2);ctx.stroke();
+    ctx.restore();
+    // Inner ring
+    ctx.strokeStyle=dG;ctx.lineWidth=8;ctx.setLineDash([]);
+    ctx.beginPath();ctx.arc(cx,cy,25,0,Math.PI*2);ctx.stroke();
+    // Velocity line
+    ctx.strokeStyle='#0284c7';ctx.lineWidth=7;ctx.lineCap='round';
+    ctx.beginPath();ctx.moveTo(cx+18,cy-18);ctx.lineTo(cx+46,cy-46);ctx.stroke();
+    // Dot
+    ctx.fillStyle='#059669';
+    ctx.beginPath();ctx.arc(cx+46,cy-46,6,0,Math.PI*2);ctx.fill();
+    var dataUrl=cv.toDataURL('image/png');
+    var lnk=document.querySelector('link[rel="apple-touch-icon"]');
+    if(lnk)lnk.href=dataUrl;
+  }catch(e){}
+})();
+</script>
 </head>
 <body>
 <div class="save-indicator" id="save-indicator"></div>
@@ -2577,17 +2618,25 @@ function switchTab(name,el){
   if(name==="metrics"){renderMetricSel();drawChart();}
   if(name==="definitions")renderDefinitions();
 }
-// Swipe gesture for tabs
+// Swipe gesture for tabs (scroll-container aware)
 (function(){
-  var sx=0,sy=0;
+  var sx=0,sy=0,swipeLocked=false;
   var content=document.getElementById("content");
   content.addEventListener("touchstart",function(e){
     sx=e.touches[0].clientX;sy=e.touches[0].clientY;
+    // Lock out tab-swipe if touch starts inside a horizontally scrollable element
+    swipeLocked=false;
+    var el=e.target;
+    while(el && el!==content){
+      if(el.scrollWidth>el.clientWidth+4){swipeLocked=true;break;}
+      el=el.parentElement;
+    }
   },{passive:true});
   content.addEventListener("touchend",function(e){
+    if(swipeLocked)return;
     var dx=e.changedTouches[0].clientX-sx;
     var dy=e.changedTouches[0].clientY-sy;
-    if(Math.abs(dx)<50||Math.abs(dy)>Math.abs(dx)*0.8)return; // too small or mostly vertical
+    if(Math.abs(dx)<60||Math.abs(dy)>Math.abs(dx)*0.7)return;
     var cur=document.querySelector(".panel.on");
     if(!cur)return;
     var curName=cur.id.replace("panel-","");
@@ -2818,6 +2867,15 @@ renderAll();
   });
 
   document.addEventListener('DOMContentLoaded', function(){
+    // Pin banner exactly below header
+    var hdr = document.getElementById('header');
+    var ban = document.getElementById('pwa-banner');
+    if(hdr && ban){
+      function _setBanTop(){ ban.style.top = (hdr.offsetHeight + 8) + 'px'; }
+      _setBanTop();
+      window.addEventListener('resize', _setBanTop);
+      if(document.fonts && document.fonts.ready){ document.fonts.ready.then(_setBanTop); }
+    }
     var installBtn = document.getElementById('pwa-install-btn');
     var dismissBtn = document.getElementById('pwa-dismiss-btn');
 
