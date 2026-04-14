@@ -4,12 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
 <title>Frisbee Track</title>
-<link rel="manifest" href="manifest.json">
+<link rel="manifest" href="/disc-load/manifest.json">
 <meta name="theme-color" content="#059669">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Frisbee Track">
-<link rel="apple-touch-icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="/disc-load/icon-192.png">
 <script src="https://js.stripe.com/v3/"></script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -370,7 +370,7 @@ input,select{font-family:inherit;outline:none}
 .cal-recovery-inline{padding:6px 7px;display:flex;align-items:flex-start;gap:5px;border-top:1px solid var(--bd)}
 
 /* ── PWA INSTALL BANNER ── */
-#pwa-banner{position:fixed;bottom:calc(64px + env(safe-area-inset-bottom) + 8px);left:12px;right:12px;z-index:200;background:#ffffff;border:1.5px solid rgba(5,150,105,0.25);border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,0.14),0 2px 6px rgba(15,23,42,0.06);padding:13px 14px;display:flex;align-items:center;gap:12px;transform:translateY(120%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
+#pwa-banner{position:fixed;top:calc(42px + max(12px,env(safe-area-inset-top)));left:12px;right:12px;z-index:200;background:#ffffff;border:1.5px solid rgba(5,150,105,0.25);border-radius:16px;box-shadow:0 8px 28px rgba(15,23,42,0.14),0 2px 6px rgba(15,23,42,0.06);padding:13px 14px;display:flex;align-items:center;gap:12px;transform:translateY(-120%);transition:transform .35s cubic-bezier(.4,0,.2,1);pointer-events:none}
 #pwa-banner.show{transform:translateY(0);pointer-events:all}
 .pwa-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid rgba(5,150,105,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .pwa-text{flex:1;min-width:0}
