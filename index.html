@@ -370,15 +370,26 @@ input,select{font-family:inherit;outline:none}
 .cal-recovery-inline{padding:6px 7px;display:flex;align-items:flex-start;gap:5px;border-top:1px solid var(--bd)}
 
 /* ── PWA INSTALL BANNER ── */
-#pwa-banner{display:none;align-items:center;gap:12px;padding:10px 14px;margin-top:10px;border-radius:var(--radius);background:var(--sf);border:1.5px solid rgba(5,150,105,0.25);box-shadow:0 2px 12px rgba(15,23,42,0.08)}
-#pwa-banner.show{display:flex;animation:bannerIn .3s ease}
-@keyframes bannerIn{from{opacity:0;transform:translateY(-6px)}to{opacity:1;transform:translateY(0)}}
-.pwa-icon{width:40px;height:40px;border-radius:10px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid rgba(5,150,105,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
+/* Banner lives inside #header (sticky) — expands header in-flow, never floats over content or bottom nav */
+#pwa-banner{
+  display:none;align-items:center;gap:11px;
+  padding:9px 12px;margin-top:9px;
+  border-radius:var(--radius-sm);
+  background:linear-gradient(135deg,rgba(5,150,105,0.06),rgba(2,132,199,0.04));
+  border:1.5px solid rgba(5,150,105,0.22);
+  box-shadow:0 1px 6px rgba(5,150,105,0.08);
+  overflow:hidden;
+}
+#pwa-banner.show{display:flex;animation:pwaSlideIn .28s cubic-bezier(.4,0,.2,1)}
+@keyframes pwaSlideIn{from{opacity:0;transform:translateY(-4px)}to{opacity:1;transform:translateY(0)}}
+.pwa-icon{width:36px;height:36px;border-radius:9px;background:linear-gradient(135deg,#ecfdf5,#eff6ff);border:1.5px solid rgba(5,150,105,0.22);display:flex;align-items:center;justify-content:center;flex-shrink:0}
 .pwa-text{flex:1;min-width:0}
-.pwa-title{font-size:13px;font-weight:700;color:var(--t);font-family:var(--display);letter-spacing:.3px}
-.pwa-sub{font-size:11px;color:var(--t3);margin-top:1px;line-height:1.4}
-.pwa-install{padding:7px 14px;border-radius:20px;background:var(--green);color:#fff;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
-.pwa-dismiss{width:26px;height:26px;border-radius:50%;background:var(--sf3);border:1px solid var(--bd);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.pwa-title{font-size:12px;font-weight:800;color:var(--t);font-family:var(--display);letter-spacing:.4px;line-height:1.2}
+.pwa-sub{font-size:10px;color:var(--t3);margin-top:2px;line-height:1.35}
+.pwa-install{padding:6px 13px;border-radius:20px;background:var(--green);color:#fff;font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;flex-shrink:0;white-space:nowrap;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.pwa-install:active{background:#047857}
+.pwa-dismiss{width:24px;height:24px;border-radius:50%;background:var(--sf3);border:1px solid var(--bd2);display:flex;align-items:center;justify-content:center;flex-shrink:0;cursor:pointer;color:var(--t4);-webkit-tap-highlight-color:transparent;transition:all .15s}
+.pwa-dismiss:active{background:var(--sf2);color:var(--t2)}
 #pwa-update-bar{position:fixed;top:0;left:0;right:0;z-index:300;background:#059669;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;transform:translateY(-100%);transition:transform .3s;padding-top:max(10px,env(safe-area-inset-top))}
 #pwa-update-bar.show{transform:translateY(0)}
 .pwa-update-btn{padding:5px 14px;border-radius:20px;background:#fff;color:#059669;font-size:11px;font-weight:800;font-family:var(--display);border:none;cursor:pointer;flex-shrink:0}
@@ -493,8 +504,7 @@ input,select{font-family:inherit;outline:none}
       <div class="pwa-sub" id="pwa-sub-text">Get the full app experience</div>
     </div>
     <button class="pwa-install" id="pwa-install-btn">Install</button>
-    <button class="pwa-dismiss" id="pwa-dismiss-btn" aria-label="Dismiss"
-      onclick="document.getElementById('pwa-banner').classList.remove('show');try{localStorage.setItem('pwa-banner-dismissed',Date.now())}catch(e){}">
+    <button class="pwa-dismiss" id="pwa-dismiss-btn" aria-label="Dismiss">
       <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
     </button>
   </div>
@@ -2880,44 +2890,29 @@ renderAll();
     }
   });
 
+  function hideBanner(){
+    var banner = document.getElementById('pwa-banner');
+    if(banner) banner.classList.remove('show');
+    try{ localStorage.setItem(DISMISS_KEY, Date.now()); }catch(e){}
+  }
+
   document.addEventListener('DOMContentLoaded', function(){
-    // Pin banner exactly below header
-    var hdr = document.getElementById('header');
-    var ban = document.getElementById('pwa-banner');
-    if(hdr && ban){
-      function _setBanTop(){ ban.style.top = (hdr.offsetHeight + 8) + 'px'; }
-      _setBanTop();
-      window.addEventListener('resize', _setBanTop);
-      if(document.fonts && document.fonts.ready){ document.fonts.ready.then(_setBanTop); }
-    }
+    // Banner lives inside #header in-flow — no fixed positioning needed.
+    // It expands the sticky header naturally and can never overlap the bottom nav.
     var installBtn = document.getElementById('pwa-install-btn');
     var dismissBtn = document.getElementById('pwa-dismiss-btn');
 
     if(installBtn) installBtn.addEventListener('click', function(){
-      // iOS: user has read the hint, just dismiss
-      if(installBtn.dataset.ios){
-        var banner = document.getElementById('pwa-banner');
-        if(banner) banner.classList.remove('show');
-        localStorage.setItem(DISMISS_KEY, Date.now());
-        return;
-      }
+      if(installBtn.dataset.ios){ hideBanner(); return; }
       if(!deferredPrompt) return;
       deferredPrompt.prompt();
       deferredPrompt.userChoice.then(function(result){
         deferredPrompt = null;
-        var banner = document.getElementById('pwa-banner');
-        if(banner) banner.classList.remove('show');
-        if(result.outcome === 'dismissed'){
-          localStorage.setItem(DISMISS_KEY, Date.now());
-        }
+        hideBanner();
       });
     });
 
-    if(dismissBtn) dismissBtn.addEventListener('click', function(){
-      var banner = document.getElementById('pwa-banner');
-      if(banner) banner.classList.remove('show');
-      localStorage.setItem(DISMISS_KEY, Date.now());
-    });
+    if(dismissBtn) dismissBtn.addEventListener('click', hideBanner);
   });
 })();
 </script>
