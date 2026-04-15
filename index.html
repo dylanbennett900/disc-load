@@ -988,12 +988,12 @@ function makeTraining(lbl,drillArr,date){
 // ── SUPABASE HELPERS ──
 async function getUserContext(){
   if(!currentUser||!sb)return'domestic';
-  var r=await sb.from('user_settings').select('value').eq('user_id',currentUser.id).eq('key','context').maybeSingle();
+  var r=await sb.from('user_kv').select('value').eq('user_id',currentUser.id).eq('key','context').maybeSingle();
   return(r.data&&r.data.value)||'domestic';
 }
 async function setUserContext(c){
   if(!currentUser||!sb)return;
-  await sb.from('user_settings').upsert({user_id:currentUser.id,key:'context',value:c},{onConflict:'user_id,key'});
+  await sb.from('user_kv').upsert({user_id:currentUser.id,key:'context',value:c},{onConflict:'user_id,key'});
 }
 async function getTournaments(){
   if(!currentUser||!sb)return[];
@@ -2191,7 +2191,7 @@ async function loadSettings(){
     document.getElementById("tourn-name").value=upcoming[0].name;
   }
   try{
-    var recRes=await sb.from('user_settings').select('value').eq('user_id',currentUser.id).eq('key','recovery_states').maybeSingle();
+    var recRes=await sb.from('user_kv').select('value').eq('user_id',currentUser.id).eq('key','recovery_states').maybeSingle();
     if(recRes.data&&recRes.data.value){try{recoveryStates=JSON.parse(recRes.data.value);}catch(e){}}
   }catch(e){}
   renderSRButton();
@@ -2565,7 +2565,7 @@ function clearSRState(){
 }
 function persistRecoveryStates(){
   if(!currentUser||!SUPABASE_READY)return;
-  sb.from('user_settings').upsert({user_id:currentUser.id,key:'recovery_states',value:JSON.stringify(recoveryStates)},{onConflict:'user_id,key'});
+  sb.from('user_kv').upsert({user_id:currentUser.id,key:'recovery_states',value:JSON.stringify(recoveryStates)},{onConflict:'user_id,key'});
 }
 function setRecoveryState(dateStr,state){
   if(state===null){delete recoveryStates[dateStr];}
