@@ -2195,7 +2195,7 @@ async function loadSettings(){
     if(recRes.data&&recRes.data.value){try{recoveryStates=JSON.parse(recRes.data.value);}catch(e){}}
   }catch(e){}
   renderSRButton();
-  renderWeekStrip();renderDashboard();renderTournamentHistory();
+  renderWeekStrip();renderDashboard();renderRoadmap();renderTournamentHistory();
 }
 async function saveTournamentClick(){
   var date=document.getElementById("tourn-date").value;
