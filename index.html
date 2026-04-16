@@ -451,6 +451,46 @@ input,select{font-family:inherit;outline:none}
 .cal-ofc-btn:active .cal-gym-name{color:var(--purple)}
 .cal-gym-ofc-tap{display:inline-flex;align-items:center;gap:4px;margin-top:3px;font-size:7px;font-weight:800;padding:2px 7px;border-radius:10px;background:rgba(124,58,237,0.1);color:var(--purple);border:1px solid rgba(124,58,237,0.25);letter-spacing:.5px;font-family:var(--display);cursor:pointer}
 
+/* ── OFC ACCORDION (S&C tab) ── */
+.ofc-menu-section{margin-top:20px}
+.ofc-menu-header{display:flex;align-items:center;gap:8px;margin-bottom:12px}
+.ofc-menu-title{font-family:var(--display);font-size:16px;font-weight:900;letter-spacing:.5px;color:var(--t)}
+.ofc-menu-badge{padding:2px 9px;border-radius:20px;font-size:9px;font-weight:800;font-family:var(--display);letter-spacing:.5px;background:rgba(124,58,237,0.1);color:var(--purple);border:1px solid rgba(124,58,237,0.2)}
+.ofc-accordion{display:flex;flex-direction:column;gap:7px}
+.ofc-acc-item{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.ofc-acc-item.open{border-color:rgba(124,58,237,0.35)}
+.ofc-acc-trigger{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.ofc-acc-trigger:active{background:var(--sf3)}
+.ofc-acc-num{font-family:var(--display);font-size:9px;font-weight:800;letter-spacing:1.5px;color:var(--purple);text-transform:uppercase;flex-shrink:0;opacity:.7}
+.ofc-acc-name{font-family:var(--display);font-size:15px;font-weight:900;color:var(--t);letter-spacing:.2px;flex:1}
+.ofc-acc-chevron{flex-shrink:0;transition:transform .22s cubic-bezier(.4,0,.2,1);color:var(--t4)}
+.ofc-acc-item.open .ofc-acc-chevron{transform:rotate(180deg)}
+.ofc-acc-body{max-height:0;overflow:hidden;transition:max-height .28s cubic-bezier(.4,0,.2,1)}
+.ofc-acc-item.open .ofc-acc-body{max-height:600px}
+.ofc-acc-content{padding:0 13px 13px;border-top:1px solid var(--bd)}
+.ofc-acc-meta{display:flex;gap:14px;margin:10px 0 8px}
+.ofc-acc-meta-item{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
+.ofc-acc-meta-val{display:block;font-family:var(--display);font-size:16px;font-weight:900;color:var(--purple);letter-spacing:0;text-transform:none;margin-top:1px}
+.ofc-acc-intervals{display:flex;gap:3px;flex-wrap:wrap;align-items:center;margin-bottom:7px}
+.ofc-acc-iv-block{height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;letter-spacing:.02em;min-width:14px;padding:0 3px}
+.ofc-acc-iv-work{background:var(--purple)}
+.ofc-acc-iv-rest{background:var(--cyan)}
+.ofc-acc-total{font-size:10px;color:var(--t3);padding-top:6px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center;margin-top:6px}
+.ofc-acc-total-val{font-family:var(--display);font-size:14px;font-weight:900;color:var(--purple)}
+.ofc-acc-note{font-size:10px;color:var(--t3);line-height:1.5;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd)}
+.ofc-acc-block-title{font-family:var(--display);font-size:11px;font-weight:800;letter-spacing:.5px;color:var(--t2);text-transform:uppercase;margin:10px 0 5px}
+.ofc-acc-block-rounds{font-size:9px;color:var(--purple);font-weight:700;margin-left:6px}
+.ofc-acc-block-desc{font-size:10px;color:var(--t3);line-height:1.45;margin-bottom:7px}
+.ofc-acc-prep{background:var(--sf3);border-radius:var(--radius-sm);padding:8px 10px;margin-top:10px;margin-bottom:4px}
+.ofc-acc-prep-title{font-size:9px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);margin-bottom:6px}
+.ofc-acc-prep-item{display:flex;justify-content:space-between;align-items:baseline;font-size:10px;color:var(--t2);margin-bottom:3px;font-weight:600}
+.ofc-acc-prep-detail{font-size:9px;color:var(--t4);font-weight:400}
+.ofc-acc-prep-time{font-family:var(--display);font-size:11px;font-weight:800;color:var(--t3);flex-shrink:0}
+.ofc-acc-block{background:var(--sf3);border-radius:var(--radius-sm);padding:9px 10px;margin-bottom:7px;border:1px solid var(--bd)}
+.ofc-acc-block-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px}
+.ofc-acc-recovery-badge{display:inline-block;padding:2px 8px;border-radius:12px;background:rgba(217,119,6,0.12);color:#92400e;font-size:9px;font-weight:700;font-family:var(--display);letter-spacing:.3px;margin-top:5px}
+.ofc-acc-machines{font-size:9px;color:var(--t4);letter-spacing:.3px;padding-top:8px;border-top:1px solid var(--bd);margin-top:6px}
+
 /* ── CONDENSED WEEK CARDS ── */
 .wk-card-simple{background:var(--sf);border-radius:var(--radius);padding:11px 14px;border:1px solid var(--bd);box-shadow:var(--sh);margin-bottom:8px;position:relative}
 .wk-card-simple.current{border-color:var(--green);border-width:1.5px;box-shadow:0 0 0 2px rgba(5,150,105,0.1),var(--sh)}
@@ -685,6 +725,13 @@ input,select{font-family:inherit;outline:none}
   <div class="sc-panel-title">S&amp;C</div>
   <div class="sc-panel-sub">Your week view — gym sessions, OFC, and running load in one place.</div>
   <div id="week-calendar" style="margin-bottom:14px"></div>
+  <div class="ofc-menu-section">
+    <div class="ofc-menu-header">
+      <div class="ofc-menu-title">OFF-FEET CONDITIONING</div>
+      <div class="ofc-menu-badge">6 SESSIONS</div>
+    </div>
+    <div class="ofc-accordion" id="ofc-accordion"></div>
+  </div>
 </div>
 
 <!-- ── OFC SHEET ── -->
@@ -1748,15 +1795,20 @@ function getGymSchedule(days, band) {
     placements[day] = { session: sessionOrder[i], intent: INTENTS[sessionOrder[i]] };
   });
 
-  // OFC: High weeks — attach to gym day with lowest running acl
-  if (band === 'high') {
+  // OFC: High or Moderate weeks — attach to gym day with lowest running acl
+  // High: suggest session 1 or 3; Moderate: suggest session 2 or 4
+  if (band === 'high' || band === 'moderate') {
     var gymKeys = Object.keys(placements).map(Number);
     var minLoad = Infinity, ofcDay = gymKeys[0];
     gymKeys.forEach(function(gd) {
       var load = days[gd].sessions.reduce(function(sum, ss) { return sum + (ss.acl || 0); }, 0);
       if (load < minLoad) { minLoad = load; ofcDay = gd; }
     });
+    // Pick session suggestion based on band: high→1or3, moderate→2or4
+    var ofcSuggestions = band === 'high' ? [0, 2] : [1, 3]; // 0-indexed into OFC_SESSIONS
+    var weekSeed = days[0] ? days[0].date.getDate() : 0;
     placements[ofcDay].ofc = true;
+    placements[ofcDay].ofcSession = OFC_SESSIONS[ofcSuggestions[weekSeed % 2]];
   }
 
   return placements;
@@ -1874,7 +1926,7 @@ function renderWeekCalendar(){
         +"<div class='cal-gym-name'>"+gp.session+"</div>"
         +"<div class='cal-gym-intent'>"+gp.intent+"</div>"
         +(gp.ofc
-          ?"<div class='cal-gym-ofc-tap' onclick='openOFCSheet()'>+ OFC <svg width=\'8\' height=\'8\' viewBox=\'0 0 8 8\' fill=\'none\'><path d=\'M2 4h4M4 2l2 2-2 2\' stroke=\'currentColor\' stroke-width=\'1.2\' stroke-linecap=\'round\'/></svg></div>"
+          ?"<div class='cal-gym-ofc-tap' onclick='openOFCSheetTo(\""+(gp.ofcSession?gp.ofcSession.num:'01')+"\")'>+ OFC: "+(gp.ofcSession?gp.ofcSession.title:'Session')+" <svg width=\'8\' height=\'8\' viewBox=\'0 0 8 8\' fill=\'none\'><path d=\'M2 4h4M4 2l2 2-2 2\' stroke=\'currentColor\' stroke-width=\'1.2\' stroke-linecap=\'round\'/></svg></div>"
           :"")
         +"</div></div>";
     } else {
@@ -2036,58 +2088,213 @@ var OFC_SESSIONS = [
     intervals:Array(4).fill(null).map(function(){return [{t:'work',w:66,lbl:'3 min'},{t:'rest',w:33,lbl:'90s'}];}),
     totalMin:28,
     note:'Longer efforts build aerobic base and lactate threshold. Target a strong 7–8 RPE — not a sprint. Ideal for pool running or steady bike.'
+  },
+  {
+    num:'05', title:'HIIT Complex',
+    isAdvanced:true,
+    machines:'Ski Erg · Bike · Assault Bike · Rower',
+    prep:[{name:'Roll & Trigger',detail:'Foot · Calf · Quad · Adductor · Hams · Glutes',time:'10 min'},{name:'Mobility',detail:'Ankle · Ant & Post Hip · Lower Back',time:'5 min'}],
+    blocks:[
+      {
+        title:'Block 1 — HIIT Pyramids', rounds:'× 2 ROUNDS',
+        desc:'Climb up and down the pyramid. Push hard on work, recover fully on rest. Bars show relative effort — peak is 60 sec, base is 15 sec.',
+        pattern:'15 · 30 · 45 · 60 · 60 · 45 · 30 · 15 sec (Work = Rest each interval)',
+        recovery:'2 min recovery between rounds',
+        intervals:[
+          {t:'work',w:8,lbl:'15'},{t:'rest',w:8,lbl:''},
+          {t:'work',w:16,lbl:'30'},{t:'rest',w:16,lbl:''},
+          {t:'work',w:24,lbl:'45'},{t:'rest',w:24,lbl:''},
+          {t:'work',w:32,lbl:'60'},{t:'rest',w:32,lbl:''},
+          {t:'work',w:32,lbl:'60'},{t:'rest',w:32,lbl:''},
+          {t:'work',w:24,lbl:'45'},{t:'rest',w:24,lbl:''},
+          {t:'work',w:16,lbl:'30'},{t:'rest',w:16,lbl:''},
+          {t:'work',w:8,lbl:'15'},{t:'rest',w:8,lbl:''}
+        ]
+      },
+      {
+        title:'Block 2 — Lactate Dominate', rounds:'× 2 ROUNDS',
+        desc:'2:1 work-to-rest drives lactate accumulation. Push the 20s, recover the 10s. 8 intervals per round.',
+        pattern:'20 sec — Work · 10 sec — Rest (× 8)',
+        recovery:'2 min recovery between rounds',
+        intervals:Array(8).fill(null).reduce(function(a){a.push({t:'work',w:32,lbl:'20s'},{t:'rest',w:16,lbl:'10s'});return a;},[])
+      },
+      {
+        title:'Block 3 — Max Distance Time Trial', rounds:'1 EFFORT',
+        desc:'5 minutes continuous at sustained maximal effort. Record your distance — this is your benchmark to beat next session.',
+        pattern:'5 min — Maximal effort. Record distance.',
+        recovery:null,
+        intervals:[{t:'work',w:200,lbl:'5 min'}]
+      }
+    ],
+    note:'Select one machine and stay on it for the full session — Ski-Erg, Bike, Assault Bike, or Rower. Your legs will be under cumulative load by Block 3 — that\'s the point.',
+    totalMin:45
+  },
+  {
+    num:'06', title:'Performance Challenge',
+    isAdvanced:true,
+    machines:'Ski Erg · Bike · Assault Bike · Rower',
+    prep:[{name:'Roll & Trigger',detail:'Foot · Calf · Quad · Adductor · Hams · Glutes',time:'10 min'},{name:'Banded Mobility',detail:'Can complete same stretches without band',time:'5 min'}],
+    blocks:[
+      {
+        title:'Block 1 — Hit & Hold Challenge', rounds:'× 2 ROUNDS',
+        desc:'Record your distance on interval 1. That\'s your target for every subsequent interval. Track how much you drop off — it tells you more than the first effort alone.',
+        pattern:'30 sec — Work · 30 sec — Rest (10 intervals)',
+        recovery:'2 min recovery between rounds',
+        intervals:Array(10).fill(null).reduce(function(a){a.push({t:'work',w:22,lbl:'30s'},{t:'rest',w:22,lbl:'30s'});return a;},[])
+      },
+      {
+        title:'Block 2 — 30 Plus & Minus Pyramid', rounds:'× 2 ROUNDS',
+        desc:'Each interval: work +30 sec, rest −30 sec. Build to interval 4 — 120 sec all-out with no rest. Pace early so interval 4 is a genuine max effort.',
+        pattern:'30/90 · 60/60 · 90/30 · 120/0',
+        recovery:'2 min recovery between rounds',
+        intervals:[
+          {t:'work',w:16,lbl:'30s'},{t:'rest',w:48,lbl:'90s'},
+          {t:'work',w:32,lbl:'60s'},{t:'rest',w:32,lbl:'60s'},
+          {t:'work',w:48,lbl:'90s'},{t:'rest',w:16,lbl:'30s'},
+          {t:'work',w:64,lbl:'120s'},{t:'rest',w:4,lbl:''}
+        ]
+      }
+    ],
+    note:'Choose one machine and stay on it. The Hit & Hold is as much a mental challenge as physical — knowing your interval 1 number and fighting to hold it through rounds 8–10 is where the real work happens.',
+    totalMin:45
   }
 ];
 
 function ofcUpgrade(){closeOFCSheet();showUpgradeModal("ai_prescription");}
 function ofcEbook(){window.open("https://dylanbennett900.github.io/dbsp","_blank");}
-function openOFCSheet(){
+
+function renderOFCSessionContent(s){
+  if(!s.isAdvanced){
+    var metaHtml=s.meta.map(function(m){
+      return "<div class='ofc-acc-meta-item'><span class='ofc-acc-meta-val'>"+m.val+"</span>"+m.lbl+"</div>";
+    }).join('');
+    var ivHtml="<div class='ofc-acc-intervals'>";
+    s.intervals.forEach(function(pair){
+      (Array.isArray(pair)?pair:[pair]).forEach(function(b){
+        ivHtml+="<div class='ofc-acc-iv-block ofc-acc-iv-"+b.t+"' style='width:"+b.w+"px'>"+b.lbl+"</div>";
+      });
+    });
+    ivHtml+="</div>";
+    return "<div class='ofc-acc-meta'>"+metaHtml+"</div>"
+      +ivHtml
+      +"<div class='ofc-acc-total'><span>Total session time</span><span class='ofc-acc-total-val'>"+s.totalMin+" min</span></div>"
+      +"<div class='ofc-acc-note'>"+s.note+"</div>";
+  }
+  var html='';
+  if(s.prep&&s.prep.length){
+    html+="<div class='ofc-acc-prep'><div class='ofc-acc-prep-title'>PREP — BEFORE MACHINE WORK</div>";
+    s.prep.forEach(function(p,i){
+      html+="<div class='ofc-acc-prep-item'><span><strong>"+(i+1)+". "+p.name+"</strong><br><span class='ofc-acc-prep-detail'>"+p.detail+"</span></span><span class='ofc-acc-prep-time'>"+p.time+"</span></div>";
+    });
+    html+="</div>";
+  }
+  s.blocks.forEach(function(blk){
+    html+="<div class='ofc-acc-block'>";
+    html+="<div class='ofc-acc-block-header'><span class='ofc-acc-block-title'>"+blk.title+"</span><span class='ofc-acc-block-rounds'>"+blk.rounds+"</span></div>";
+    html+="<div class='ofc-acc-block-desc'>"+blk.desc+"</div>";
+    html+="<div class='ofc-acc-intervals'>";
+    blk.intervals.forEach(function(b){
+      html+="<div class='ofc-acc-iv-block ofc-acc-iv-"+b.t+"' style='width:"+b.w+"px'>"+b.lbl+"</div>";
+    });
+    html+="</div>";
+    if(blk.recovery)html+="<div class='ofc-acc-recovery-badge'>⏱ "+blk.recovery+"</div>";
+    html+="</div>";
+  });
+  html+="<div class='ofc-acc-note'>"+s.note+"</div>";
+  html+="<div class='ofc-acc-machines'>Machines: "+s.machines+"</div>";
+  return html;
+}
+
+function renderOFCAccordion(){
+  var acc=document.getElementById('ofc-accordion');
+  if(!acc)return;
+  var isPaid=canAccess('ai_prescription');
+  acc.innerHTML=OFC_SESSIONS.map(function(s,i){
+    var locked=!isPaid;
+    return "<div class='ofc-acc-item' id='ofc-acc-"+i+"'>"
+      +"<div class='ofc-acc-trigger' onclick='toggleOFCAccordion("+i+","+locked+")'>"
+      +"<div class='ofc-acc-num'>SESSION "+s.num+"</div>"
+      +"<div class='ofc-acc-name'>"+s.title+"</div>"
+      +(locked
+        ?"<svg class='ofc-acc-chevron' width='12' height='12' viewBox='0 0 12 12' fill='none'><rect x='3' y='2' width='6' height='4.5' rx='1' stroke='currentColor' stroke-width='1.3'/><rect x='2' y='5.5' width='8' height='5.5' rx='1.2' fill='currentColor' opacity='.25'/><rect x='2' y='5.5' width='8' height='5.5' rx='1.2' stroke='currentColor' stroke-width='1.3'/></svg>"
+        :"<svg class='ofc-acc-chevron' width='12' height='12' viewBox='0 0 12 12' fill='none'><path d='M2 4.5l4 4 4-4' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>")
+      +"</div>"
+      +"<div class='ofc-acc-body'><div class='ofc-acc-content'>"+renderOFCSessionContent(s)+"</div></div>"
+      +"</div>";
+  }).join('');
+}
+
+function toggleOFCAccordion(idx,locked){
+  if(locked){showUpgradeModal('ai_prescription');return;}
+  var item=document.getElementById('ofc-acc-'+idx);
+  if(!item)return;
+  var wasOpen=item.classList.contains('open');
+  OFC_SESSIONS.forEach(function(_,i){
+    var el=document.getElementById('ofc-acc-'+i);
+    if(el)el.classList.remove('open');
+  });
+  if(!wasOpen)item.classList.add('open');
+}
+
+function openOFCSheet(){ openOFCSheetTo(null); }
+function openOFCSheetTo(sessionNum){
   var body=document.getElementById('ofc-sheet-body');
   if(!body)return;
   if(canAccess('ai_prescription')){
-    // Paid user — show full OFC cards
     body.innerHTML="<div class='ofc-cards'>"+OFC_SESSIONS.map(function(s){
-      var metaHtml=s.meta.map(function(m){
+      var metaHtml=s.meta?s.meta.map(function(m){
         return "<div class='ofc-meta-item'><span class='ofc-meta-val'>"+m.val+"</span>"+m.lbl+"</div>";
-      }).join('');
+      }).join(''):'';
       var ivHtml="<div class='ofc-interval-row'>";
-      s.intervals.forEach(function(pair){
-        pair.forEach(function(b){
+      if(s.intervals){s.intervals.forEach(function(pair){
+        (Array.isArray(pair)?pair:[pair]).forEach(function(b){
           ivHtml+="<div class='ofc-iv-block ofc-iv-"+b.t+"' style='width:"+b.w+"px'>"+b.lbl+"</div>";
         });
-      });
+      });}
       ivHtml+="</div>";
       return "<div class='ofc-card'>"
         +"<div class='ofc-card-head'>"
         +"<div style='flex:1'><div class='ofc-card-num'>Session "+s.num+"</div>"
         +"<div class='ofc-card-title'>"+s.title+"</div></div></div>"
         +"<div class='ofc-card-body'>"
-        +"<div class='ofc-card-meta'>"+metaHtml+"</div>"
+        +(metaHtml?"<div class='ofc-card-meta'>"+metaHtml+"</div>":'')
         +ivHtml
         +"<div class='ofc-card-total'><span>Total session time</span><span class='ofc-card-total-val'>"+s.totalMin+" min</span></div>"
         +"<div class='ofc-card-note'>"+s.note+"</div>"
         +"</div></div>";
     }).join('')+"</div>";
   } else {
-    // Free user — paywall + ebook link
     body.innerHTML="<div class='ofc-free-gate'>"
       +"<div class='ofc-free-icon'>🚴</div>"
       +"<div class='ofc-free-title'>Off-Feet Conditioning</div>"
-      +"<div class='ofc-free-sub'>4 structured bike, ski erg, and pool running sessions designed to maintain your aerobic base when you can't run. Part of DBSP Pro.</div>"
-      +"<button class='ofc-free-cta' onclick='ofcUpgrade()'> Upgrade to Pro →</button>"
-      +"<button class='ofc-free-ebook' onclick='ofcEbook()'> Or download the free S&C for frisbee e-book ↗</button>"
+      +"<div class='ofc-free-sub'>6 structured bike, ski erg, and pool running sessions to maintain your aerobic base. Part of DBSP Pro.</div>"
+      +"<button class='ofc-free-cta' onclick='ofcUpgrade()'> Upgrade to Pro →</button>"
+      +"<button class='ofc-free-ebook' onclick='ofcEbook()'> Or download the free S&C for frisbee e-book ↗</button>"
       +"</div>";
   }
   document.getElementById('ofc-overlay').classList.add('open');
   document.getElementById('ofc-sheet').classList.add('open');
   document.body.style.overflow='hidden';
+  if(sessionNum){
+    setTimeout(function(){
+      var cards=document.querySelectorAll('.ofc-card');
+      cards.forEach(function(card){
+        var numEl=card.querySelector('.ofc-card-num');
+        if(numEl&&numEl.textContent.indexOf(sessionNum)>=0){
+          card.scrollIntoView({behavior:'smooth',block:'nearest'});
+          card.style.transition='border-color .3s';
+          card.style.borderColor='var(--purple)';
+        }
+      });
+    },350);
+  }
 }
 function closeOFCSheet(){
   document.getElementById('ofc-overlay').classList.remove('open');
   document.getElementById('ofc-sheet').classList.remove('open');
   document.body.style.overflow='';
 }
-// ── DASHBOARD ──
+
 function renderDashboard(){
   renderSRButton();
   var T=weekTotals(),G=weeklyTarget(),wkSess=weekSessions();
@@ -2392,7 +2599,7 @@ async function loadSettings(){
     if(recRes.data&&recRes.data.value){try{recoveryStates=JSON.parse(recRes.data.value);}catch(e){}}
   }catch(e){}
   renderSRButton();
-  renderWeekStrip();renderDashboard();renderRoadmap();renderTournamentHistory();
+  renderWeekStrip();renderDashboard();renderRoadmap();renderTournamentHistory();renderOFCAccordion();
 }
 async function saveTournamentClick(){
   var date=document.getElementById("tourn-date").value;
@@ -2862,7 +3069,7 @@ function switchTab(name,el){
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
   if(name==="metrics"){renderMetricSel();drawChart();}
-  if(name==="sc")renderWeekCalendar();
+  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();}
   if(name==="definitions")renderDefinitions();
 }
 // Swipe gesture for tabs (scroll-container aware)
