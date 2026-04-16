@@ -393,6 +393,79 @@ input,select{font-family:inherit;outline:none}
 #pwa-update-bar{position:fixed;top:0;left:0;right:0;z-index:300;background:#059669;color:#fff;padding:10px 16px;display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:600;transform:translateY(-100%);transition:transform .3s;padding-top:max(10px,env(safe-area-inset-top))}
 #pwa-update-bar.show{transform:translateY(0)}
 .pwa-update-btn{padding:5px 14px;border-radius:20px;background:#fff;color:#059669;font-size:11px;font-weight:800;font-family:var(--display);border:none;cursor:pointer;flex-shrink:0}
+
+/* ── 8-TILE SUMROW ── */
+.sumrow{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:14px}
+@media(max-width:360px){.sumrow{grid-template-columns:repeat(2,1fr)}}
+.sc{background:var(--sf);border-radius:var(--radius);padding:12px 13px;box-shadow:var(--sh);border:1px solid var(--bd)}
+.sl{font-size:8px;color:var(--t3);letter-spacing:1.2px;text-transform:uppercase;margin-bottom:4px;font-weight:600}
+.sv{font-family:var(--mono);font-size:18px;font-weight:700;line-height:1;color:var(--t)}
+.su{font-size:9px;margin-left:2px;color:var(--t4);font-family:var(--body);font-weight:400}
+
+/* ── WEEK STRIP NAMING ── */
+.wk-iso{font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:.3px;line-height:1.2}
+.wk-tourn-name{font-size:7px;color:var(--t4);letter-spacing:.3px;margin-top:0;line-height:1.3;font-weight:500}
+
+/* ── SESSION WEEK SEPARATOR ── */
+.slist-week-sep{padding:9px 2px 5px;font-size:8px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--t4);font-family:var(--display);display:flex;align-items:center;gap:8px}
+.slist-week-sep::after{content:'';flex:1;height:1px;background:var(--bd2)}
+
+/* ── OFC BOTTOM SHEET ── */
+.ofc-overlay{position:fixed;inset:0;z-index:70;background:rgba(15,23,42,0.4);opacity:0;pointer-events:none;transition:opacity .28s}
+.ofc-overlay.open{opacity:1;pointer-events:all}
+.ofc-sheet{position:fixed;bottom:0;left:0;right:0;z-index:71;background:var(--sf);border-top:1.5px solid var(--bd2);border-radius:22px 22px 0 0;padding:0 16px calc(20px + env(safe-area-inset-bottom));box-shadow:0 -12px 48px rgba(15,23,42,0.18);transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:90vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.ofc-sheet.open{transform:translateY(0)}
+.ofc-sheet-handle{width:36px;height:4px;border-radius:2px;background:var(--bd2);margin:14px auto 0}
+.ofc-sheet-header{padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between}
+.ofc-sheet-title{font-family:var(--display);font-size:18px;font-weight:900;letter-spacing:.5px;color:var(--t)}
+.ofc-sheet-close{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bd2);background:var(--sf3);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.ofc-sheet-sub{font-size:11px;color:var(--t3);margin-bottom:14px;line-height:1.5}
+.ofc-cards{display:flex;flex-direction:column;gap:10px}
+.ofc-card{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--radius);overflow:hidden;cursor:pointer;transition:all .15s;-webkit-tap-highlight-color:transparent}
+.ofc-card:active{transform:scale(0.98);border-color:var(--purple)}
+.ofc-card-head{padding:10px 13px 8px;border-bottom:1px solid var(--bd);display:flex;align-items:center;gap:10px}
+.ofc-card-num{font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:1.5px;color:var(--purple);text-transform:uppercase}
+.ofc-card-title{font-family:var(--display);font-size:17px;font-weight:900;color:var(--t);letter-spacing:.3px;flex:1}
+.ofc-card-body{padding:9px 13px}
+.ofc-card-meta{display:flex;gap:14px;margin-bottom:8px}
+.ofc-meta-item{font-size:10px;color:var(--t3);text-transform:uppercase;letter-spacing:.06em}
+.ofc-meta-val{display:block;font-family:var(--display);font-size:16px;font-weight:900;color:var(--purple);letter-spacing:0;text-transform:none;margin-top:1px}
+.ofc-interval-row{display:flex;gap:3px;flex-wrap:wrap;align-items:center;margin-bottom:7px}
+.ofc-iv-block{height:16px;border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;color:#fff;letter-spacing:.02em;min-width:14px;padding:0 3px}
+.ofc-iv-work{background:var(--purple)}
+.ofc-iv-rest{background:var(--cyan)}
+.ofc-card-total{font-size:10px;color:var(--t3);padding-top:6px;border-top:1px solid var(--bd);display:flex;justify-content:space-between;align-items:center}
+.ofc-card-total-val{font-family:var(--display);font-size:14px;font-weight:900;color:var(--purple)}
+.ofc-card-note{font-size:10px;color:var(--t3);line-height:1.45;margin-top:6px;padding-top:6px;border-top:1px solid var(--bd)}
+.ofc-free-gate{padding:28px 20px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:10px}
+.ofc-free-icon{width:48px;height:48px;border-radius:14px;background:rgba(124,58,237,0.08);border:1.5px solid rgba(124,58,237,0.2);display:flex;align-items:center;justify-content:center;font-size:22px}
+.ofc-free-title{font-family:var(--display);font-size:17px;font-weight:900;color:var(--t);letter-spacing:.3px}
+.ofc-free-sub{font-size:12px;color:var(--t3);line-height:1.5;max-width:260px}
+.ofc-free-cta{padding:11px 24px;border-radius:20px;background:linear-gradient(135deg,var(--green),#0284c7);color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.25)}
+.ofc-free-ebook{margin-top:2px;font-size:11px;color:var(--cyan);text-decoration:underline;background:transparent;border:none;cursor:pointer;font-family:var(--body)}
+
+/* ── S&C PANEL ── */
+.sc-panel-title{font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:4px;font-family:var(--display)}
+.sc-panel-sub{font-size:11px;color:var(--t3);margin-bottom:16px}
+.cal-ofc-btn{cursor:pointer;-webkit-tap-highlight-color:transparent}
+.cal-ofc-btn:active .cal-gym-name{color:var(--purple)}
+.cal-gym-ofc-tap{display:inline-flex;align-items:center;gap:4px;margin-top:3px;font-size:7px;font-weight:800;padding:2px 7px;border-radius:10px;background:rgba(124,58,237,0.1);color:var(--purple);border:1px solid rgba(124,58,237,0.25);letter-spacing:.5px;font-family:var(--display);cursor:pointer}
+
+/* ── CONDENSED WEEK CARDS ── */
+.wk-card-simple{background:var(--sf);border-radius:var(--radius);padding:11px 14px;border:1px solid var(--bd);box-shadow:var(--sh);margin-bottom:8px;position:relative}
+.wk-card-simple.current{border-color:var(--green);border-width:1.5px;box-shadow:0 0 0 2px rgba(5,150,105,0.1),var(--sh)}
+.wk-card-simple.past{opacity:0.58;background:var(--sf2)}
+.wk-simple-head{display:flex;align-items:center;gap:8px;margin-bottom:7px}
+.wk-simple-label{font-family:var(--display);font-size:14px;font-weight:900;letter-spacing:.3px;flex:1}
+.wk-simple-band{padding:2px 9px;border-radius:20px;font-size:9px;font-weight:800;font-family:var(--display);letter-spacing:.5px}
+.wk-simple-dates{font-size:10px;color:var(--t3);margin-bottom:8px}
+.wk-simple-desc{font-size:10px;color:var(--t2);margin-bottom:8px;line-height:1.45}
+.wk-metric-ticks{display:flex;flex-wrap:wrap;gap:6px}
+.wk-tick{display:flex;align-items:center;gap:3px;font-size:9px;font-weight:700;font-family:var(--mono);padding:3px 7px;border-radius:20px}
+.wk-tick.done{background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.2)}
+.wk-tick.gap{background:rgba(220,38,38,0.08);color:var(--red);border:1px solid rgba(220,38,38,0.15)}
+.wk-tick.na{background:var(--sf3);color:var(--t4);border:1px solid var(--bd)}
+.wk-tourn-card{background:rgba(161,98,7,0.06);border:1.5px solid rgba(161,98,7,0.2);border-radius:var(--radius);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh)}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -539,7 +612,6 @@ input,select{font-family:inherit;outline:none}
   </div>
   <div id="ai-prescription-output"></div>
   <div class="ws-outer" id="week-strip"></div>
-  <div id="week-calendar" style="margin-bottom:14px"></div>
 <div id="trial-banner" class="trial-banner" style="display:none">
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="6.5" stroke="#d97706" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="#d97706" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   <span id="trial-banner-text"><b>7 days left</b> in your free trial</span>
@@ -547,9 +619,9 @@ input,select{font-family:inherit;outline:none}
 </div>
   <div class="sumrow" id="sumrow"></div>
   <div class="tbar" id="tbar"></div>
-  <div class="gaugewrap" id="gaugewrap"></div>
   <div class="rectitle">WEEKLY PRESCRIPTION</div>
   <div id="recswrap"></div>
+  <div class="gaugewrap" id="gaugewrap"></div>
 </div>
 
 <!-- ── SESSIONS ── -->
@@ -608,7 +680,30 @@ input,select{font-family:inherit;outline:none}
   <div id="tournament-history"></div>
 </div>
 
-<!-- ── METRICS ── -->
+<!-- ── S&C ── -->
+<div class="panel" id="panel-sc">
+  <div class="sc-panel-title">S&amp;C</div>
+  <div class="sc-panel-sub">Your week view — gym sessions, OFC, and running load in one place.</div>
+  <div id="week-calendar" style="margin-bottom:14px"></div>
+</div>
+
+<!-- ── OFC SHEET ── -->
+<div class="ofc-overlay" id="ofc-overlay" onclick="closeOFCSheet()"></div>
+<div class="ofc-sheet" id="ofc-sheet">
+  <div class="ofc-sheet-handle"></div>
+  <div style="padding:0 2px">
+    <div class="ofc-sheet-header">
+      <div class="ofc-sheet-title">OFF-FEET CONDITIONING</div>
+      <button class="ofc-sheet-close" onclick="closeOFCSheet()">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1l-8 8" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="ofc-sheet-sub">Low-impact conditioning on bike, ski erg, or pool running. Pairs with your gym session today. Target 8–9 RPE on work intervals.</div>
+    <div id="ofc-sheet-body"></div>
+  </div>
+</div>
+
+<!-- ── METRICS (chart, moved to more drawer) ── -->
 <div class="panel" id="panel-metrics">
   <div style="font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:5px;font-family:var(--display)">METRICS</div>
   <div style="font-size:11px;color:var(--t3);margin-bottom:16px">Cumulative weekly load vs prescribed target bands.</div>
@@ -1491,13 +1586,16 @@ function renderWeekStrip(){
     });
     var onclickArgs=weekStart(wkS).getTime()+","+wkE2.getTime()+",'"+band+"','"+wn2+"'";
     var isPast=(weeksFromNow>=wo);
+    var woLabel=weeksFromNow+1;
+    var dispLabel=isPast?wn2:(woLabel===1?"1 wk to "+tournName:woLabel+" wks to "+tournName);
     html+="<div class='wk"+(isCurrent?" now":"")+(isPast?" past":"")+"' "
       +"style='"+(isPast?"opacity:0.6;":"")+(isSelected2?"border-color:"+bc+";border-width:2px;box-shadow:0 0 0 3px "+bc+"22":"")+"' "
       +"onclick='selectWeek("+onclickArgs+")'>"
       +(isCurrent?"<div class='wk-now-tag' style='background:"+bc+";color:#fff'>NOW</div>":"")
       +(isPast&&!isCurrent?"<div class='wk-past-tag'>DONE</div>":"")
-      +"<div class='wk-head'><div class='wk-iso' style='color:"+bc+"'>"+wn2+"</div>"
-      +"<div class='wk-dates'>"+fmt(wkS)+" – "+fmt(wkE2)+"</div></div>"
+      +"<div class='wk-head'><div class='wk-iso' style='color:"+bc+"'>"+dispLabel+"</div>"
+      +(isPast?"":"<div class='wk-tourn-name'>"+fmt(wkS)+" – "+fmt(wkE2)+"</div>")
+      +"</div>"
       +"<div class='wk-band' style='background:"+bc+"18;color:"+bc+"'>"+band+"</div>"
       +"<div class='wk-desc'>"+phaseDesc(band,pattern.length-i)+"</div>"
       +buildBars(wkTot,tgt2,bc,true)+"</div>";
@@ -1775,7 +1873,9 @@ function renderWeekCalendar(){
         +"<div style='flex:1;min-width:0'>"
         +"<div class='cal-gym-name'>"+gp.session+"</div>"
         +"<div class='cal-gym-intent'>"+gp.intent+"</div>"
-        +(gp.ofc?"<div class='cal-gym-ofc'>+ OFC</div>":"")
+        +(gp.ofc
+          ?"<div class='cal-gym-ofc-tap' onclick='openOFCSheet()'>+ OFC <svg width=\'8\' height=\'8\' viewBox=\'0 0 8 8\' fill=\'none\'><path d=\'M2 4h4M4 2l2 2-2 2\' stroke=\'currentColor\' stroke-width=\'1.2\' stroke-linecap=\'round\'/></svg></div>"
+          :"")
         +"</div></div>";
     } else {
       html+="<div class='cal-empty-pm'>\u2014</div>";
@@ -1906,6 +2006,85 @@ async function getAIPrescription(){
   btn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Get Prescription';
 }
 
+
+// ── OFC SHEET ──
+var OFC_SESSIONS = [
+  {
+    num:'01', title:'Equal Work & Rest',
+    meta:[{val:'1 min on',lbl:'Work'},{val:'1 min off',lbl:'Rest'},{val:'× 10',lbl:'Rounds'}],
+    intervals:Array(10).fill(null).map(function(){return [{t:'work',w:22,lbl:'W'},{t:'rest',w:22,lbl:'R'}];}),
+    totalMin:30,
+    note:'Good entry-level session. Equal work and rest teaches the body to recover quickly between efforts. Bike, ski erg, or pool running all work well.'
+  },
+  {
+    num:'02', title:'Extended Effort',
+    meta:[{val:'2 min on',lbl:'Work'},{val:'1 min off',lbl:'Rest'},{val:'× 5',lbl:'Rounds'}],
+    intervals:Array(5).fill(null).map(function(){return [{t:'work',w:44,lbl:'2m'},{t:'rest',w:22,lbl:'1m'}];}),
+    totalMin:25,
+    note:'Harder 2:1 ratio challenges aerobic capacity. Pace yourself in rounds 1–2 to finish rounds 4–5 strong.'
+  },
+  {
+    num:'03', title:'Short Sharp',
+    meta:[{val:'30 sec on',lbl:'Work'},{val:'30 sec off',lbl:'Rest'},{val:'× 12',lbl:'Rounds'}],
+    intervals:Array(12).fill(null).map(function(){return [{t:'work',w:16,lbl:'W'},{t:'rest',w:16,lbl:'R'}];}),
+    totalMin:22,
+    note:'High-intensity, short duration. Go near-maximal each effort — the 30 sec rest keeps it honest. Best on bike or ski erg.'
+  },
+  {
+    num:'04', title:'Aerobic Builder',
+    meta:[{val:'3 min on',lbl:'Work'},{val:'90 sec off',lbl:'Rest'},{val:'× 4',lbl:'Rounds'}],
+    intervals:Array(4).fill(null).map(function(){return [{t:'work',w:66,lbl:'3 min'},{t:'rest',w:33,lbl:'90s'}];}),
+    totalMin:28,
+    note:'Longer efforts build aerobic base and lactate threshold. Target a strong 7–8 RPE — not a sprint. Ideal for pool running or steady bike.'
+  }
+];
+
+function openOFCSheet(){
+  var body=document.getElementById('ofc-sheet-body');
+  if(!body)return;
+  if(canAccess('ai_prescription')){
+    // Paid user — show full OFC cards
+    body.innerHTML="<div class='ofc-cards'>"+OFC_SESSIONS.map(function(s){
+      var metaHtml=s.meta.map(function(m){
+        return "<div class='ofc-meta-item'><span class='ofc-meta-val'>"+m.val+"</span>"+m.lbl+"</div>";
+      }).join('');
+      var ivHtml="<div class='ofc-interval-row'>";
+      s.intervals.forEach(function(pair){
+        pair.forEach(function(b){
+          ivHtml+="<div class='ofc-iv-block ofc-iv-"+b.t+"' style='width:"+b.w+"px'>"+b.lbl+"</div>";
+        });
+      });
+      ivHtml+="</div>";
+      return "<div class='ofc-card'>"
+        +"<div class='ofc-card-head'>"
+        +"<div style='flex:1'><div class='ofc-card-num'>Session "+s.num+"</div>"
+        +"<div class='ofc-card-title'>"+s.title+"</div></div></div>"
+        +"<div class='ofc-card-body'>"
+        +"<div class='ofc-card-meta'>"+metaHtml+"</div>"
+        +ivHtml
+        +"<div class='ofc-card-total'><span>Total session time</span><span class='ofc-card-total-val'>"+s.totalMin+" min</span></div>"
+        +"<div class='ofc-card-note'>"+s.note+"</div>"
+        +"</div></div>";
+    }).join('')+"</div>";
+  } else {
+    // Free user — paywall + ebook link
+    body.innerHTML="<div class='ofc-free-gate'>"
+      +"<div class='ofc-free-icon'>🚴</div>"
+      +"<div class='ofc-free-title'>Off-Feet Conditioning</div>"
+      +"<div class='ofc-free-sub'>4 structured bike, ski erg, and pool running sessions designed to maintain your aerobic base when you can't run. Part of DBSP Pro.</div>"
+      +"<button class='ofc-free-cta' onclick='closeOFCSheet();showUpgradeModal("ai_prescription")'>Upgrade to Pro →</button>"
+      +"<button class='ofc-free-ebook' onclick='window.open("https://dylanbennett900.github.io/dbsp","_blank")'>Or download the free S&C for frisbee e-book ↗</button>"
+      +"</div>";
+  }
+  document.getElementById('ofc-overlay').classList.add('open');
+  document.getElementById('ofc-sheet').classList.add('open');
+  document.body.style.overflow='hidden';
+}
+function closeOFCSheet(){
+  document.getElementById('ofc-overlay').classList.remove('open');
+  document.getElementById('ofc-sheet').classList.remove('open');
+  document.body.style.overflow='';
+}
 // ── DASHBOARD ──
 function renderDashboard(){
   renderSRButton();
@@ -1926,10 +2105,11 @@ function renderDashboard(){
     sc("var(--cyan)","Sessions",wkSess.length,"")+
     sc("var(--gold)","Points",totalPts,"pts")+
     sc("var(--cyan)","Distance",(T.dist/1000).toFixed(1),"km")+
+    sc("var(--amber)","Duration",Math.round(T.dur),"min")+
     sc("var(--green)","HSR",T.hsr,"m")+
     sc("var(--amber)","VHSR",T.vhsr,"m")+
-    sc("var(--red)","Accel Load",T.acl,"AU")+
-    sc("var(--purple)","Duration",Math.round(T.dur),"min");
+    sc("var(--purple)","Accels",T.acc,"")+
+    sc("var(--red)","Accel Load",T.acl,"AU");
 
   var band=getCurrentBand();
   var bc={high:"var(--high)",moderate:"var(--moderate)",low:"var(--low)"}[band];
@@ -2007,11 +2187,28 @@ function renderDashboard(){
 function renderSessions(){
   var el=document.getElementById("slist");
   if(!sessions.length){el.innerHTML="<div class='empty'>No sessions yet.</div>";return;}
-  el.innerHTML=sessions.map(function(s){
+  // Sort: dated sessions most-recent first, undated at bottom
+  var sorted=sessions.slice().sort(function(a,b){
+    if(!a.date&&!b.date)return 0;
+    if(!a.date)return 1;
+    if(!b.date)return -1;
+    return new Date(b.date)-new Date(a.date);
+  });
+  var lastWeekKey="";
+  var parts=sorted.map(function(s){
     var ig=s.type==="game";
     var b=ig&&BM[s.lvl]?BM[s.lvl]:null;
     var badge=b?"<span class='sbadge' style='color:"+b.color+";background:"+b.color+"18'>"+b.label+"</span>":"";
     var dateBadge=s.date?"<span class='sbadge' style='color:var(--t3);background:var(--sf3)'>"+s.date+"</span>":"";
+    // Week separator
+    var sep="";
+    if(s.date){
+      var sd=new Date(s.date);
+      var wk="W"+isoWeek(sd)+" '"+String(isoYear(sd)).slice(2);
+      if(wk!==lastWeekKey){sep="<div class='slist-week-sep'>"+wk+"</div>";lastWeekKey=wk;}
+    } else if(lastWeekKey!=="undated"){
+      sep="<div class='slist-week-sep'>Undated</div>";lastWeekKey="undated";
+    }
     var pills="";
     if(!ig&&s.drills){
       pills="<div style='display:flex;flex-wrap:wrap;gap:3px;margin-top:5px'>"
@@ -2027,7 +2224,7 @@ function renderSessions(){
           return"<span class='pill'>"+lbl+" "+amt+"</span>";
         }).join("")+"</div>";
     }
-    return "<div class='si'>"
+    return sep+"<div class='si'>"
       +"<div class='sico'>"+(ig?"🏆":"🏃")+"</div>"
       +"<div class='sbody'>"
       +"<div class='sname'>"+(s.label||(ig?"Game":"Training"))+badge+dateBadge+"</div>"
@@ -2044,7 +2241,8 @@ function renderSessions(){
       +"<button class='btnedit' onclick='editSession("+s.id+")'>Edit</button>"
       +"<button class='btnx' onclick='removeSession("+s.id+")'>×</button>"
       +"</div></div>";
-  }).join("");
+  });
+  el.innerHTML=parts.join("");
 }
 
 // ── ROADMAP ──
@@ -2069,11 +2267,13 @@ function renderRoadmap(){
   var totalWeeks=Math.max(4,wo);
   var pattern=generatePeriodisation(totalWeeks);
 
-  var html="<div style='padding:13px 16px;border-radius:var(--radius);background:rgba(161,98,7,0.06);border:1.5px solid rgba(161,98,7,0.2);margin-bottom:14px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh)'>"
+  var html="<div class='wk-tourn-card'>"
     +"<span style='font-size:20px'>🏆</span>"
-    +"<div><div style='font-size:14px;font-weight:800;color:#a16207;font-family:var(--display)'>"+tournName+"</div>"
+    +"<div style='flex:1'><div style='font-size:14px;font-weight:800;color:#a16207;font-family:var(--display)'>"+tournName+"</div>"
     +"<div style='font-size:10px;color:var(--t3)'>"+tourn.toLocaleDateString("en-AU",{weekday:"long",day:"numeric",month:"long",year:"numeric"})
-    +(wo>0?" · "+wo+" week"+(wo!==1?"s":"")+" away":" · This week")+"</div></div></div>";
+    +(wo>0?" · "+wo+" week"+(wo!==1?"s":"")+" away":" · This week")+"</div></div>"
+    +(wo>0?"<span style='font-size:11px;font-weight:800;color:#a16207;font-family:var(--display)'>"+wo+"w ↓</span>":"<span style='font-size:10px;color:var(--green);font-weight:700'>This week ✓</span>")
+    +"</div>";
 
   for(var i=0;i<pattern.length;i++){
     var band=pattern[i],bc=BC[band],bg=BG[band];
@@ -2092,46 +2292,41 @@ function renderRoadmap(){
       else{var sd=new Date(s.date);inWk=sd>=wkS&&sd<=wkE;}
       if(inWk){wkAchieved.dist+=s.dist;wkAchieved.hsr+=s.hsr;wkAchieved.vhsr+=s.vhsr;wkAchieved.acc+=s.acc;wkAchieved.acl+=s.acl;}
     });
-    html+="<div class='week-card"+(isCurrent?" current":"")+(isPastWk?" past":"")+"' style='background:"+bg+";border-color:"+(isCurrent?bc:isPastWk?"var(--bd3)":"var(--bd)")+(isCurrent?";border-width:2px":"")+"'>"
-      +"<div class='week-head'>"
-      +"<span class='week-badge' style='background:"+bc+"1a;color:"+bc+"'>"+band+"</span>"
-      +(isPastWk?"<span class='week-badge' style='background:rgba(100,116,139,0.1);color:var(--t4);margin-left:2px'>&#10003; Done</span>":"")
-      +"<span class='week-label' style='color:"+(isCurrent?bc:"var(--t)")+"'>"+wn+(isCurrent?" <span style='font-size:10px'>● Now</span>":"")+"</span>"
-      +"<span class='week-date'>"+fmt(wkS)+" – "+fmt(wkE)+"</span></div>"
-      +"<div style='font-size:11px;color:var(--t2);margin-bottom:10px;line-height:1.55'>"+phaseDesc(band,pattern.length-i)+"</div>"
-      +"<div class='week-metrics'>"
-      +wmCell(bc,"Distance",tgt.dist.toLocaleString(),"m")
-      +wmCell(bc,"HSR",tgt.hsr.toLocaleString(),"m")
-      +wmCell(bc,"VHSR",tgt.vhsr.toLocaleString(),"m")
-      +wmCell(bc,"Accels",tgt.acc,"")
-      +wmCell(bc,"Hard Acc",tgt.hacc,"")
-      +wmCell(bc,"Decels",tgt.dec,"")
-      +wmCell(bc,"Accel Load",tgt.acl.toLocaleString(),"AU")
-      +"</div>";
+    // Condensed week card with tick icons
+    var tickMetrics=[
+      {k:"hsr",lbl:"HSR"},{k:"vhsr",lbl:"VHSR"},{k:"acc",lbl:"Acc"},
+      {k:"dist",lbl:"Dist"},{k:"acl",lbl:"AL"}
+    ];
+    var woNum=weeksFromNow+1;
+    var wkLabel=isCurrent?"Now · "+woNum+" wk"+(woNum===1?"":"s")+" to "+tournName
+      :isPastWk?wn
+      :woNum+" wk"+(woNum===1?"":"s")+" to "+tournName;
+    html+="<div class='wk-card-simple"+(isCurrent?" current":"")+(isPastWk?" past":"")+"'>"
+      +(isCurrent?"<div class='wk-now-tag' style='position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display);background:"+bc+";color:#fff'>NOW</div>":"")
+      +"<div class='wk-simple-head'>"
+      +"<span class='wk-simple-label' style='color:"+(isCurrent?bc:"var(--t)")+"'>"+wkLabel+"</span>"
+      +"<span class='wk-simple-band' style='background:"+bc+"1a;color:"+bc+"'>"+band+"</span>"
+      +"</div>"
+      +"<div class='wk-simple-dates'>"+fmt(wkS)+" – "+fmt(wkE)+"</div>"
+      +"<div class='wk-simple-desc'>"+phaseDesc(band,pattern.length-i)+"</div>"
+      +"<div class='wk-metric-ticks'>";
 
-    if(isCurrent){
-      var gaps=[{k:"dist",lbl:"Dist",u:"m"},{k:"hsr",lbl:"HSR",u:"m"},{k:"vhsr",lbl:"VHSR",u:"m"},{k:"acc",lbl:"Acc",u:""},{k:"acl",lbl:"AL",u:"AU"}];
-      html+="<div class='gap-row'><span style='font-size:10px;font-weight:700;color:var(--t2);margin-right:4px'>Gap:</span>";
-      gaps.forEach(function(g){
-        var gap=tgt[g.k]-T[g.k];
-        var col=gap<=0?"var(--green)":"var(--red)";
-        html+="<span class='gap-m'>"+g.lbl+" <b style='color:"+col+"'>"+(gap<=0?"✓":"+"+Math.round(gap))+g.u+"</b></span>";
-      });
-      html+="</div>";
-    }
-    html+="</div>";
-    if(isPastWk&&(wkAchieved.hsr>0||wkAchieved.dist>0)){
-      var agaps=[{k:"dist",lbl:"Dist",u:"m"},{k:"hsr",lbl:"HSR",u:"m"},{k:"vhsr",lbl:"VHSR",u:"m"},{k:"acc",lbl:"Acc",u:""},{k:"acl",lbl:"AL",u:"AU"}];
-      html+="<div class='gap-row' style='margin-top:6px'><span style='font-size:10px;font-weight:700;color:var(--t3);margin-right:4px'>Achieved:</span>";
-      agaps.forEach(function(g){
-        var pct=Math.round((wkAchieved[g.k]||0)/Math.max(tgt[g.k],1)*100);
-        var col=pct>=85?"var(--green)":pct>=50?"var(--s-moderate)":"var(--s-low)";
-        html+="<span class='gap-m'>"+g.lbl+" <b style='color:"+col+"'>"+pct+"%</b></span>";
-      });
-      html+="</div>";
-    }
+    tickMetrics.forEach(function(m){
+      if(isCurrent){
+        var gap=tgt[m.k]-T[m.k];
+        var done=gap<=0;
+        html+="<span class='wk-tick "+(done?"done":"gap")+"'>"+(done?"✓":"+")+m.lbl+"</span>";
+      } else if(isPastWk&&(wkAchieved.hsr>0||wkAchieved.dist>0)){
+        var pct=Math.round((wkAchieved[m.k]||0)/Math.max(tgt[m.k],1)*100);
+        var done=pct>=85;
+        html+="<span class='wk-tick "+(done?"done":"gap")+"'>"+(done?"✓":"~")+m.lbl+"</span>";
+      } else {
+        html+="<span class='wk-tick na'>"+Math.round(tgt[m.k]>=1000?tgt[m.k]/1000:tgt[m.k])+(tgt[m.k]>=1000?"k":"")+" "+m.lbl+"</span>";
+      }
+    });
+    html+="</div></div>";
   }
-  el.innerHTML=html;renderTournamentHistory();renderDashboard();
+  el.innerHTML=html;renderTournamentHistory();renderDashboard();renderWeekCalendar();
 }
 
 var tournamentHistory=[];
@@ -2616,8 +2811,8 @@ function renderSRPanel(){
   }
 }
 
-var MORE_TABS=['benchmarks','definitions','howto'];
-var PRIMARY_TABS=['dashboard','sessions','roadmap','metrics'];
+var MORE_TABS=['benchmarks','definitions','howto','metrics'];
+var PRIMARY_TABS=['dashboard','sessions','roadmap','sc'];
 function openMoreDrawer(){
   document.getElementById('more-drawer').classList.add('open');
   document.getElementById('more-overlay').classList.add('open');
@@ -2631,7 +2826,7 @@ function switchTabFromMore(name){
   switchTab(name,null);
 }
 // ── CONTEXT + TAB ──
-var TAB_ORDER=['dashboard','sessions','roadmap','metrics','benchmarks','definitions','howto'];
+var TAB_ORDER=['dashboard','sessions','roadmap','sc','benchmarks','definitions','howto','metrics'];
 function setContext(c){
   ctx=c;
   document.getElementById("ctx-international").className="lp"+(c==="international"?" on":"");
@@ -2665,6 +2860,7 @@ function switchTab(name,el){
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
   if(name==="metrics"){renderMetricSel();drawChart();}
+  if(name==="sc")renderWeekCalendar();
   if(name==="definitions")renderDefinitions();
 }
 // Swipe gesture for tabs (scroll-container aware)
@@ -2781,6 +2977,11 @@ renderAll();
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M9 8.5c0-1.1.9-2 2-2s2 .9 2 2c0 1-.6 1.5-1.5 2.2-.5.3-.5.8-.5 1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="15" r=".8" fill="currentColor"/></svg>
       <div class="more-tile-lbl">How To</div>
     </div>
+    <div class="more-tile" id="more-metrics" onclick="switchTabFromMore('metrics')" style="position:relative">
+      <div id="lock-metrics" class="bnav-lock"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><polyline points="2,16 6,11 10,13 14,8 20,10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="2" y1="19" x2="20" y2="19" stroke="currentColor" stroke-width="1.2" opacity=".35" stroke-linecap="round"/></svg>
+      <div class="more-tile-lbl">Metrics</div>
+    </div>
   </div>
 </div>
 
@@ -2804,13 +3005,10 @@ renderAll();
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.2" opacity=".4"/><rect x="5" y="11" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="3" height="3" rx=".5" fill="currentColor"/></svg>
     <span class="bnav-lbl">Roadmap</span>
   </button>
-  <button class="bnav-btn" id="bnav-metrics" onclick="switchTab('metrics',null)">
+  <button class="bnav-btn" id="bnav-sc" onclick="switchTab('sc',null)">
     <div class="bnav-pip"></div>
-    <div class="bnav-lock" id="lock-metrics">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg>
-    </div>
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><polyline points="2,14 6,9 10,11 14,6 18,8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="2" y1="17" x2="18" y2="17" stroke="currentColor" stroke-width="1.2" opacity=".35" stroke-linecap="round"/></svg>
-    <span class="bnav-lbl">Metrics</span>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="13" width="3" height="5" rx="1" fill="currentColor" opacity=".5"/><rect x="7" y="9" width="3" height="9" rx="1" fill="currentColor" opacity=".7"/><rect x="12" y="5" width="3" height="13" rx="1" fill="currentColor"/><path d="M2 7l4-3 4 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/></svg>
+    <span class="bnav-lbl">S&amp;C</span>
   </button>
   <button class="bnav-btn" id="bnav-more" onclick="openMoreDrawer()">
     <div class="bnav-pip" id="bnav-more-pip"></div>
