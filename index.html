@@ -2039,6 +2039,8 @@ var OFC_SESSIONS = [
   }
 ];
 
+function ofcUpgrade(){closeOFCSheet();showUpgradeModal("ai_prescription");}
+function ofcEbook(){window.open("https://dylanbennett900.github.io/dbsp","_blank");}
 function openOFCSheet(){
   var body=document.getElementById('ofc-sheet-body');
   if(!body)return;
@@ -2072,8 +2074,8 @@ function openOFCSheet(){
       +"<div class='ofc-free-icon'>🚴</div>"
       +"<div class='ofc-free-title'>Off-Feet Conditioning</div>"
       +"<div class='ofc-free-sub'>4 structured bike, ski erg, and pool running sessions designed to maintain your aerobic base when you can't run. Part of DBSP Pro.</div>"
-      +"<button class='ofc-free-cta' onclick='closeOFCSheet();showUpgradeModal("ai_prescription")'>Upgrade to Pro →</button>"
-      +"<button class='ofc-free-ebook' onclick='window.open("https://dylanbennett900.github.io/dbsp","_blank")'>Or download the free S&C for frisbee e-book ↗</button>"
+      +"<button class='ofc-free-cta' onclick='ofcUpgrade()'> Upgrade to Pro →</button>"
+      +"<button class='ofc-free-ebook' onclick='ofcEbook()'> Or download the free S&C for frisbee e-book ↗</button>"
       +"</div>";
   }
   document.getElementById('ofc-overlay').classList.add('open');
