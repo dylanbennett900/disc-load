@@ -611,7 +611,6 @@ input,select{font-family:inherit;outline:none}
     </div>
   </div>
   <div id="ai-prescription-output"></div>
-  <div class="ws-outer" id="week-strip"></div>
 <div id="trial-banner" class="trial-banner" style="display:none">
   <svg width="16" height="16" viewBox="0 0 16 16" fill="none" style="flex-shrink:0"><circle cx="8" cy="8" r="6.5" stroke="#d97706" stroke-width="1.5"/><path d="M8 5v3.5l2 1.5" stroke="#d97706" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
   <span id="trial-banner-text"><b>7 days left</b> in your free trial</span>
@@ -622,6 +621,7 @@ input,select{font-family:inherit;outline:none}
   <div class="rectitle">WEEKLY PRESCRIPTION</div>
   <div id="recswrap"></div>
   <div class="gaugewrap" id="gaugewrap"></div>
+  <div class="ws-outer" id="week-strip"></div>
 </div>
 
 <!-- ── SESSIONS ── -->
@@ -2141,7 +2141,6 @@ function renderDashboard(){
       +"<div class='gt'>/"+Math.round(G[m.key]).toLocaleString()+" "+m.unit+"</div>"
       +"<div class='gl'>"+m.label+"</div></div>";
   }).join("");
-
   var rm=[
     {key:"hsr", label:"High Speed Running",     unit:"m"},
     {key:"vhsr",label:"Very High Speed Running", unit:"m"},
@@ -2328,7 +2327,8 @@ function renderRoadmap(){
     });
     html+="</div></div>";
   }
-  el.innerHTML=html;renderTournamentHistory();renderDashboard();renderWeekCalendar();
+  el.innerHTML=html;
+  renderTournamentHistory();renderDashboard();renderWeekCalendar();
 }
 
 var tournamentHistory=[];
