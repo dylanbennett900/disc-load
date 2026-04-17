@@ -1249,10 +1249,10 @@ function trialDaysRemaining(){
   return Math.max(0,Math.ceil((new Date(userSubscription.trial_end)-new Date())/86400000));
 }
 function updateGatedUI(){
-  var hasAccess=canAccess('roadmap');
+  var hasAccess=canAccess('metrics');
   var lr=document.getElementById('lock-roadmap');
   var lm=document.getElementById('lock-metrics');
-  if(lr)lr.classList.toggle('show',!hasAccess&&!!currentUser);
+  if(lr)lr.classList.remove('show');
   if(lm)lm.classList.toggle('show',!hasAccess&&!!currentUser);
   var banner=document.getElementById('trial-banner');
   if(banner){
@@ -3044,7 +3044,7 @@ function setContext(c){
   if(currentUser&&typeof setUserContext==="function")setUserContext(c);
 }
 function switchTab(name,el){
-  if((name==='roadmap'||name==='metrics')&&currentUser&&subscriptionLoaded&&!canAccess(name)){
+  if(name==='metrics'&&currentUser&&subscriptionLoaded&&!canAccess(name)){
     showUpgradeModal(name);
     return;
   }
