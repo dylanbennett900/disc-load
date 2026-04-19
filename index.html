@@ -444,6 +444,44 @@ input,select{font-family:inherit;outline:none}
 .ofc-free-cta{padding:11px 24px;border-radius:20px;background:linear-gradient(135deg,var(--green),#0284c7);color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.25)}
 .ofc-free-ebook{margin-top:2px;font-size:11px;color:var(--cyan);text-decoration:underline;background:transparent;border:none;cursor:pointer;font-family:var(--body)}
 
+/* ── DRILL LIBRARY ── */
+.drill-lib-section{margin-top:20px}
+.drill-lib-accordion{display:flex;flex-direction:column;gap:7px}
+.drill-lib-item{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--radius);overflow:hidden;transition:border-color .2s}
+.drill-lib-item.open{border-color:rgba(0,212,255,0.35)}
+.drill-lib-trigger{display:flex;align-items:center;gap:10px;padding:10px 13px;cursor:pointer;-webkit-tap-highlight-color:transparent;user-select:none}
+.drill-lib-trigger:active{background:var(--sf3)}
+.drill-lib-tag{font-family:var(--display);font-size:8px;font-weight:800;letter-spacing:1px;text-transform:uppercase;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.drill-lib-tag-speed{background:rgba(0,232,122,0.1);color:var(--green);border:1px solid rgba(0,232,122,0.2)}
+.drill-lib-tag-accel{background:rgba(124,58,237,0.1);color:var(--purple);border:1px solid rgba(124,58,237,0.2)}
+.drill-lib-tag-mas{background:rgba(0,212,255,0.1);color:var(--cyan);border:1px solid rgba(0,212,255,0.2)}
+.drill-lib-name{font-family:var(--display);font-size:15px;font-weight:900;color:var(--t);letter-spacing:.2px;flex:1}
+.drill-lib-chevron{flex-shrink:0;transition:transform .22s cubic-bezier(.4,0,.2,1);color:var(--t4)}
+.drill-lib-item.open .drill-lib-chevron{transform:rotate(180deg)}
+.drill-lib-body{max-height:0;overflow:hidden;transition:max-height .3s cubic-bezier(.4,0,.2,1)}
+.drill-lib-item.open .drill-lib-body{max-height:500px}
+.drill-lib-content{padding:12px 13px 13px;border-top:1px solid var(--bd);display:flex;gap:12px;align-items:flex-start}
+.drill-lib-svg{flex-shrink:0;width:80px}
+.drill-lib-svg svg{width:80px;height:auto;display:block}
+.drill-lib-info{flex:1;min-width:0}
+.drill-lib-cue{font-size:12px;color:var(--t2);line-height:1.55;font-style:italic}
+.drill-lib-fullbtn{margin-top:9px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;font-family:var(--display);letter-spacing:.5px;color:var(--cyan);background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);border-radius:8px;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* ── DRILL MODAL ── */
+.drill-modal-overlay{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,0.5);opacity:0;pointer-events:none;transition:opacity .25s}
+.drill-modal-overlay.open{opacity:1;pointer-events:all}
+.drill-modal-sheet{position:fixed;bottom:0;left:0;right:0;z-index:81;background:var(--sf);border-top:1.5px solid var(--bd2);border-radius:22px 22px 0 0;padding:0 16px calc(28px + env(safe-area-inset-bottom));transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:88vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.drill-modal-sheet.open{transform:translateY(0)}
+.drill-modal-handle{width:36px;height:4px;border-radius:2px;background:var(--bd2);margin:14px auto 0}
+.drill-modal-header{padding:14px 0 10px;display:flex;align-items:center;justify-content:space-between}
+.drill-modal-title{font-family:var(--display);font-size:18px;font-weight:900;letter-spacing:.5px;color:var(--t)}
+.drill-modal-close{width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bd2);background:var(--sf3);display:flex;align-items:center;justify-content:center;cursor:pointer}
+.drill-modal-tag{display:inline-block;margin-bottom:12px}
+.drill-modal-diagram{display:flex;justify-content:center;margin-bottom:14px}
+.drill-modal-diagram svg{max-width:200px;width:100%;height:auto}
+.drill-modal-cue{font-size:13px;color:var(--t2);line-height:1.6;padding:12px 14px;background:var(--sf3);border-radius:var(--radius-sm);border-left:2.5px solid var(--cyan);font-style:italic}
+/* ── INLINE DRILL ICON ── */
+.drill-inline-btn{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin-left:4px;padding:2px 6px;border-radius:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--cyan);font-size:10px;font-weight:700;font-family:var(--display);letter-spacing:.3px;cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap}
+.drill-inline-btn:active{background:rgba(0,212,255,0.15)}
 /* ── S&C PANEL ── */
 .sc-panel-title{font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:4px;font-family:var(--display)}
 .sc-panel-sub{font-size:11px;color:var(--t3);margin-bottom:16px}
@@ -731,6 +769,30 @@ input,select{font-family:inherit;outline:none}
       <div class="ofc-menu-badge">6 SESSIONS</div>
     </div>
     <div class="ofc-accordion" id="ofc-accordion"></div>
+  </div>
+  <div class="drill-lib-section">
+    <div class="ofc-menu-header">
+      <div class="ofc-menu-title">DRILL LIBRARY</div>
+      <div class="ofc-menu-badge">8 DRILLS</div>
+    </div>
+    <div class="drill-lib-accordion" id="drill-lib-accordion"></div>
+  </div>
+</div>
+
+<!-- ── DRILL MODAL ── -->
+<div class="drill-modal-overlay" id="drill-modal-overlay" onclick="closeDrillModal()"></div>
+<div class="drill-modal-sheet" id="drill-modal-sheet">
+  <div class="drill-modal-handle"></div>
+  <div style="padding:0 2px">
+    <div class="drill-modal-header">
+      <div class="drill-modal-title" id="drill-modal-title"></div>
+      <button class="drill-modal-close" onclick="closeDrillModal()">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1l-8 8" stroke="var(--t3)" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div id="drill-modal-tag-wrap" class="drill-modal-tag"></div>
+    <div class="drill-modal-diagram" id="drill-modal-diagram"></div>
+    <div class="drill-modal-cue" id="drill-modal-cue"></div>
   </div>
 </div>
 
@@ -2050,6 +2112,7 @@ async function getAIPrescription(){
     var html=text
       .replace(/\*\*(.+?)\*\*/g,"<strong>$1</strong>")
       .split("\n\n").map(function(p){return"<p style='margin-bottom:8px'>"+p.replace(/\n/g,"<br>")+"</p>";}).join("");
+    html=injectDrillIcons(html);
     output.innerHTML="<div class='ai-result'>"+html+"</div>";
   }catch(e){
     output.innerHTML="<div class='ai-error'><strong>Prescription unavailable:</strong> "+e.message+"</div>";
@@ -2058,6 +2121,136 @@ async function getAIPrescription(){
   btn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Get Prescription';
 }
 
+
+// ── DRILL LIBRARY ──
+var DRILL_LIB = [
+  {
+    key:'c_curved', label:'Curved Sprint', cat:'speed', catLabel:'VHSR / Speed',
+    cue:'Accelerate into the curve and hold your speed around the cones.',
+    svg:'<svg viewBox="0 0 155 272" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="105" y1="24" x2="105" y2="250" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="52" y1="138" x2="105" y2="138" stroke="#334155" stroke-dasharray="2 2" stroke-width="0.6"/><text x="78" y="134" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">5m</text><text x="113" y="140" fill="#64748b" font-size="9" font-family="sans-serif">40m</text><path d="M 105,248 C 95,228 58,193 50,138 C 58,83 95,48 105,28" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab)"/><polygon points="60,175 54,186 66,186" fill="#f97316"/><polygon points="52,138 46,149 58,149" fill="#f97316"/><polygon points="60,101 54,112 66,112" fill="#f97316"/><circle cx="105" cy="250" r="5" fill="#0284c7"/><text x="113" y="254" fill="#64748b" font-size="8" font-family="sans-serif">START</text><polygon points="105,24 99,35 111,35" fill="#f97316"/><text x="88" y="18" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">FINISH</text></svg>'
+  },
+  {
+    key:'c_speedgrid', label:'Repeat Speed Grid', cat:'speed', catLabel:'VHSR / Speed',
+    cue:'Max effort every 30s — cover 30m as fast as possible.',
+    svg:'<svg viewBox="0 0 140 260" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="70" y1="38" x2="70" y2="228" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="78" y="133" fill="#64748b" font-size="9" font-family="sans-serif">30m</text><line x1="70" y1="225" x2="70" y2="43" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab2)"/><polygon points="70,24 64,35 76,35" fill="#f97316"/><text x="52" y="18" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">FINISH</text><polygon points="70,245 64,256 76,256" fill="#f97316"/><text x="52" y="252" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">START</text></svg>'
+  },
+  {
+    key:'c_boxdrill', label:'Box Drill', cat:'accel', catLabel:'Accel / COD',
+    cue:'Power in and out of every cone, turn and accelerate.',
+    svg:'<svg viewBox="0 0 195 210" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect x="30" y="20" width="136" height="148" fill="none" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.7"/><text x="98" y="16" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">10m</text><text x="24" y="98" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text><line x1="30" y1="163" x2="30" y2="26" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><line x1="34" y1="24" x2="162" y2="164" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><line x1="166" y1="163" x2="166" y2="26" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><line x1="162" y1="24" x2="34" y2="164" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><polygon points="30,20 24,31 36,31" fill="#f97316"/><polygon points="166,20 160,31 172,31" fill="#f97316"/><polygon points="30,168 24,179 36,179" fill="#f97316"/><polygon points="166,168 160,179 172,179" fill="#f97316"/><text x="26" y="200" fill="#64748b" font-size="8" font-family="sans-serif">START / FINISH</text></svg>'
+  },
+  {
+    key:'c_mungo', label:'D Strafe Mungo', cat:'accel', catLabel:'Accel / COD',
+    cue:'Keep hips square to front throughout — move like you\'re tracking an attacker.',
+    svg:'<svg viewBox="0 0 170 295" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="52" y1="275" x2="112" y2="275" stroke="#334155" stroke-width="0.7"/><text x="82" y="287" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">5m</text><line x1="52" y1="257" x2="52" y2="187" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><line x1="56" y1="181" x2="108" y2="221" stroke="#0284c7" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#dl-ab4)"/><line x1="112" y1="217" x2="112" y2="147" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><line x1="108" y1="141" x2="56" y2="181" stroke="#0284c7" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#dl-ab4)"/><line x1="52" y1="177" x2="52" y2="107" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><line x1="56" y1="101" x2="108" y2="141" stroke="#0284c7" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#dl-ab4)"/><line x1="112" y1="137" x2="112" y2="67" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><polygon points="52,261 46,272 58,272" fill="#f97316"/><polygon points="52,181 46,192 58,192" fill="#f97316"/><polygon points="52,101 46,112 58,112" fill="#f97316"/><polygon points="112,221 106,232 118,232" fill="#f97316"/><polygon points="112,141 106,152 118,152" fill="#f97316"/><polygon points="112,61 106,72 118,72" fill="#f97316"/><text x="38" y="258" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">START</text><text x="126" y="65" fill="#64748b" font-size="8" font-family="sans-serif">FINISH</text><text x="30" y="223" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text><text x="30" y="143" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text><text x="30" y="63" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text></svg>'
+  },
+  {
+    key:'c_jrun', label:'J Run', cat:'speed', catLabel:'VHSR / Speed',
+    cue:'Accelerate off the line hard and immediately lean into the J, accelerate around the cones and then extend into a sprint over 30m.',
+    svg:'<svg viewBox="0 0 148 262" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="64" y1="32" x2="64" y2="196" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="72" y="116" fill="#64748b" font-size="9" font-family="sans-serif">30m</text><path d="M 100,232 A 36,36 0 0,1 64,196" fill="none" stroke="#0284c7" stroke-width="2"/><line x1="64" y1="195" x2="64" y2="34" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab5)"/><line x1="64" y1="240" x2="100" y2="240" stroke="#94a3b8" stroke-width="0.8"/><line x1="64" y1="236" x2="64" y2="244" stroke="#94a3b8" stroke-width="0.8"/><line x1="100" y1="236" x2="100" y2="244" stroke="#94a3b8" stroke-width="0.8"/><text x="82" y="252" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">5m</text><polygon points="64,232 58,243 70,243" fill="#f97316"/><polygon points="64,196 58,207 70,207" fill="#f97316"/><circle cx="100" cy="232" r="5" fill="#0284c7"/><text x="108" y="236" fill="#64748b" font-size="8" font-family="sans-serif">START</text><polygon points="64,30 58,41 70,41" fill="#f97316"/><text x="72" y="22" fill="#64748b" font-size="8" font-family="sans-serif">FINISH</text></svg>'
+  },
+  {
+    key:'c_butterfly', label:'Butterfly Speed Effort', cat:'speed', catLabel:'VHSR / Speed',
+    cue:'Mix up the angle and curve — visualise an under cut into a butterfly cut and extend over 40m.',
+    svg:'<svg viewBox="0 0 175 278" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="138" y1="25" x2="138" y2="210" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="146" y="120" fill="#64748b" font-size="9" font-family="sans-serif">40m</text><line x1="28" y1="152" x2="72" y2="152" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab6)"/><line x1="76" y1="154" x2="76" y2="226" stroke="#0284c7" stroke-width="2"/><path d="M 76,226 C 76,265 96,265 96,226" fill="none" stroke="#0284c7" stroke-width="2"/><line x1="96" y1="224" x2="96" y2="34" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab6)"/><polygon points="28,152 22,163 34,163" fill="#f97316"/><text x="26" y="144" fill="#64748b" font-size="8" font-family="sans-serif">START</text><polygon points="76,152 70,163 82,163" fill="#f97316"/><polygon points="86,244 80,255 92,255" fill="#f97316"/><polygon points="96,30 90,41 102,41" fill="#f97316"/><text x="104" y="34" fill="#64748b" font-size="8" font-family="sans-serif">FINISH</text><text x="100" y="194" fill="#64748b" font-size="8" font-family="sans-serif">~10m</text></svg>'
+  },
+  {
+    key:'c_zdrill', label:'Z Drill', cat:'accel', catLabel:'Accel / COD',
+    cue:'Power in and out of every step with a sharp cut.',
+    svg:'<svg viewBox="0 0 120 295" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><polyline points="48,270 72,240 48,210 72,180 48,150 72,120 48,90 72,60 48,30" fill="none" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab7)"/><polygon points="48,270 42,281 54,281" fill="#f97316"/><polygon points="72,240 66,251 78,251" fill="#f97316"/><polygon points="48,210 42,221 54,221" fill="#f97316"/><polygon points="72,180 66,191 78,191" fill="#f97316"/><polygon points="48,150 42,161 54,161" fill="#f97316"/><polygon points="72,120 66,131 78,131" fill="#f97316"/><polygon points="48,90 42,101 54,101" fill="#f97316"/><polygon points="72,60 66,71 78,71" fill="#f97316"/><polygon points="48,30 42,41 54,41" fill="#f97316"/><line x1="48" y1="148" x2="72" y2="148" stroke="#475569" stroke-width="0.8"/><line x1="48" y1="144" x2="48" y2="152" stroke="#475569" stroke-width="0.8"/><line x1="72" y1="144" x2="72" y2="152" stroke="#475569" stroke-width="0.8"/><text x="60" y="142" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">2m</text><text x="38" y="278" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">START</text><text x="38" y="34" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">35m</text><text x="86" y="256" fill="#64748b" font-size="8" font-family="sans-serif">5m</text></svg>'
+  },
+  {
+    key:'m_604020', label:'60-40-20 Shuttle', cat:'mas', catLabel:'MAS / HSR',
+    cue:'Plant, turn and accelerate hard out of each cone.',
+    svg:'<svg viewBox="0 0 165 275" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#dc2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="dl-y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#ca8a04" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="dl-b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#1d4ed8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="22" y1="245" x2="148" y2="245" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="22" y1="177" x2="148" y2="177" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="22" y1="109" x2="148" y2="109" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="22" y1="41" x2="148" y2="41" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="19" y="249" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">0m</text><text x="19" y="181" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">20m</text><text x="19" y="113" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">40m</text><text x="19" y="45" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">60m</text><line x1="68" y1="241" x2="68" y2="46" stroke="#dc2626" stroke-width="2" marker-end="url(#dl-r)"/><line x1="76" y1="46" x2="76" y2="240" stroke="#dc2626" stroke-width="2" marker-end="url(#dl-r)"/><line x1="88" y1="241" x2="88" y2="114" stroke="#ca8a04" stroke-width="2" marker-end="url(#dl-y)"/><line x1="96" y1="114" x2="96" y2="240" stroke="#ca8a04" stroke-width="2" marker-end="url(#dl-y)"/><line x1="108" y1="241" x2="108" y2="182" stroke="#1d4ed8" stroke-width="2" marker-end="url(#dl-b2)"/><line x1="116" y1="182" x2="116" y2="240" stroke="#1d4ed8" stroke-width="2" marker-end="url(#dl-b2)"/><circle cx="136" cy="245" r="4" fill="#0284c7"/><text x="143" y="249" fill="#64748b" font-size="8" font-family="sans-serif">START</text></svg>'
+  }
+];
+
+var DRILL_INLINE_MAP = {
+  'Curved Sprint':'c_curved',
+  'Repeat Speed Grid':'c_speedgrid',
+  'Box Drill':'c_boxdrill',
+  'D Strafe Mungo':'c_mungo',
+  'J Run':'c_jrun',
+  'Butterfly Speed Effort':'c_butterfly',
+  'Z Drill':'c_zdrill',
+  '60-40-20 Shuttle':'m_604020',
+  'Butterfly Speed Efforts':'c_butterfly',
+  'Curved Sprints':'c_curved',
+  'Box Drills':'c_boxdrill',
+  'Z Drills':'c_zdrill',
+  'J Runs':'c_jrun'
+};
+
+function renderDrillLibrary(){
+  var acc=document.getElementById('drill-lib-accordion');
+  if(!acc)return;
+  var chevron="<svg class='drill-lib-chevron' width='12' height='12' viewBox='0 0 12 12' fill='none'><path d='M2 4.5l4 4 4-4' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>";
+  acc.innerHTML=DRILL_LIB.map(function(d,i){
+    var tagClass='drill-lib-tag drill-lib-tag-'+d.cat;
+    var thumbSvg=d.svg.replace(/viewBox="[^"]*"/, function(vb){return vb;});
+    return "<div class='drill-lib-item' id='drill-lib-"+i+"'>"
+      +"<div class='drill-lib-trigger' onclick='toggleDrillLib("+i+")'>"
+      +"<span class='"+tagClass+"'>"+d.catLabel+"</span>"
+      +"<div class='drill-lib-name'>"+d.label+"</div>"
+      +chevron
+      +"</div>"
+      +"<div class='drill-lib-body'><div class='drill-lib-content'>"
+      +"<div class='drill-lib-svg'>"+thumbSvg+"</div>"
+      +"<div class='drill-lib-info'>"
+      +"<div class='drill-lib-cue'>"+d.cue+"</div>"
+      +"<button class='drill-lib-fullbtn' onclick='event.stopPropagation();openDrillModal(\""+d.key+"\")'>"
+      +"<svg width='10' height='10' viewBox='0 0 10 10' fill='none'><rect x='1' y='1' width='8' height='8' rx='1.5' stroke='currentColor' stroke-width='1.2'/><path d='M3.5 5h3M5 3.5v3' stroke='currentColor' stroke-width='1.2' stroke-linecap='round'/></svg>"
+      +"FULL DIAGRAM"
+      +"</button>"
+      +"</div>"
+      +"</div></div>"
+      +"</div>";
+  }).join('');
+}
+
+function toggleDrillLib(idx){
+  var item=document.getElementById('drill-lib-'+idx);
+  if(!item)return;
+  var wasOpen=item.classList.contains('open');
+  DRILL_LIB.forEach(function(_,i){
+    var el=document.getElementById('drill-lib-'+i);
+    if(el)el.classList.remove('open');
+  });
+  if(!wasOpen)item.classList.add('open');
+}
+
+function openDrillModal(key){
+  var d=DRILL_LIB.find(function(x){return x.key===key;});
+  if(!d)return;
+  var tagClass='drill-lib-tag drill-lib-tag-'+d.cat;
+  document.getElementById('drill-modal-title').textContent=d.label;
+  document.getElementById('drill-modal-tag-wrap').innerHTML="<span class='"+tagClass+"'>"+d.catLabel+"</span>";
+  document.getElementById('drill-modal-diagram').innerHTML=d.svg;
+  document.getElementById('drill-modal-cue').textContent=d.cue;
+  document.getElementById('drill-modal-overlay').classList.add('open');
+  document.getElementById('drill-modal-sheet').classList.add('open');
+}
+
+function closeDrillModal(){
+  document.getElementById('drill-modal-overlay').classList.remove('open');
+  document.getElementById('drill-modal-sheet').classList.remove('open');
+}
+
+function injectDrillIcons(html){
+  var names=Object.keys(DRILL_INLINE_MAP).sort(function(a,b){return b.length-a.length;});
+  names.forEach(function(name){
+    var key=DRILL_INLINE_MAP[name];
+    var escaped=name.replace(/[-\/\\^$*+?.()|[\]{}]/g,'\\$&');
+    var re=new RegExp('(?<![\\w])('+escaped+')(?![\\w-])', 'g');
+    html=html.replace(re, function(match){
+      return match+"<button class='drill-inline-btn' onclick='openDrillModal(\""+key+"\")'>"
+        +"<svg width='8' height='8' viewBox='0 0 10 10' fill='none'><rect x='1' y='1' width='8' height='8' rx='1.5' stroke='currentColor' stroke-width='1.3'/></svg>"
+        +" diagram</button>";
+    });
+  });
+  return html;
+}
 
 // ── OFC SHEET ──
 var OFC_SESSIONS = [
@@ -2599,7 +2792,7 @@ async function loadSettings(){
     if(recRes.data&&recRes.data.value){try{recoveryStates=JSON.parse(recRes.data.value);}catch(e){}}
   }catch(e){}
   renderSRButton();
-  renderWeekStrip();renderDashboard();renderRoadmap();renderTournamentHistory();renderOFCAccordion();
+  renderWeekStrip();renderDashboard();renderRoadmap();renderTournamentHistory();renderOFCAccordion();renderDrillLibrary();
 }
 async function saveTournamentClick(){
   var date=document.getElementById("tourn-date").value;
@@ -3069,7 +3262,7 @@ function switchTab(name,el){
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
   if(name==="metrics"){renderMetricSel();drawChart();}
-  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();}
+  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();renderDrillLibrary();}
   if(name==="definitions")renderDefinitions();
 }
 // Swipe gesture for tabs (scroll-container aware)
