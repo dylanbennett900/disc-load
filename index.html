@@ -1312,9 +1312,7 @@ function trialDaysRemaining(){
 }
 function updateGatedUI(){
   var hasAccess=canAccess('metrics');
-  var lr=document.getElementById('lock-roadmap');
   var lm=document.getElementById('lock-metrics');
-  if(lr)lr.classList.remove('show');
   if(lm)lm.classList.toggle('show',!hasAccess&&!!currentUser);
   var banner=document.getElementById('trial-banner');
   if(banner){
@@ -2100,13 +2098,27 @@ async function getAIPrescription(){
   var userMsg="Week band: "+band+"\nWeeks to tournament: "+wo+"\nContext level: "+ctx+"\n\nMetrics (actual / target):\n"+metricStr+drillRules;
 
   try{
+    var sessionRes=await sb.auth.getSession();
+    var token=sessionRes.data&&sessionRes.data.session?sessionRes.data.session.access_token:'';
+    if(!token){throw new Error('Please sign in to get a prescription.');}
     var edgeFnUrl=SUPABASE_URL+"/functions/v1/ai-prescription";
     var res=await fetch(edgeFnUrl,{
       method:"POST",
-      headers:{"Content-Type":"application/json","Authorization":"Bearer "+SUPABASE_ANON_KEY},
+      headers:{"Content-Type":"application/json","Authorization":"Bearer "+token,"apikey":SUPABASE_ANON_KEY},
       body:JSON.stringify({message:userMsg,system:COACHING_BRIEF})
     });
-    if(!res.ok){var err=await res.json();throw new Error(err.error||"Edge Function error");}
+    if(!res.ok){
+      var err=await res.json();
+      // If gated server-side, prompt upgrade
+      if(res.status===403){
+        showUpgradeModal('ai_prescription');
+        output.innerHTML='';
+        btn.disabled=false;
+        btn.innerHTML='<svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg> Get Prescription';
+        return;
+      }
+      throw new Error(err.error||"Edge Function error");
+    }
     var data=await res.json();
     var text=data.text;
     var html=text
@@ -2221,6 +2233,11 @@ function toggleDrillLib(idx){
 }
 
 function openDrillModal(key){
+  // Gate drill diagrams behind Pro — show upgrade modal for free users
+  if(currentUser && subscriptionLoaded && !canAccess('ai_prescription')){
+    showUpgradeModal('ai_prescription');
+    return;
+  }
   var d=DRILL_LIB.find(function(x){return x.key===key;});
   if(!d)return;
   var tagClass='drill-lib-tag drill-lib-tag-'+d.cat;
@@ -3356,7 +3373,7 @@ renderAll();
     <button class="up-code-btn" id="up-code-btn" onclick="redeemBetaCode()">Redeem</button>
   </div>
   <div class="up-code-msg" id="up-code-msg"></div>
-  <div class="up-terms">Cancel anytime. No lock-in. <a href="https://dylanbennett900.github.io/dbsp" target="_blank" style="color:var(--cyan)">Terms &amp; Privacy</a></div>
+  <div class="up-terms">Cancel anytime. No lock-in. <a href="https://dbsportperformance.com/terms" target="_blank" style="color:var(--cyan)">Terms</a> · <a href="https://dbsportperformance.com/privacy" target="_blank" style="color:var(--cyan)">Privacy</a> · <a href="https://dbsportperformance.com/refunds" target="_blank" style="color:var(--cyan)">Refunds</a></div>
 </div>
 
 <!-- ── MORE DRAWER OVERLAY ── -->
@@ -3401,9 +3418,6 @@ renderAll();
   </button>
   <button class="bnav-btn" id="bnav-roadmap" onclick="switchTab('roadmap',null)">
     <div class="bnav-pip"></div>
-    <div class="bnav-lock" id="lock-roadmap">
-      <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg>
-    </div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.2" opacity=".4"/><rect x="5" y="11" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="3" height="3" rx=".5" fill="currentColor"/></svg>
     <span class="bnav-lbl">Roadmap</span>
   </button>
