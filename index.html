@@ -87,6 +87,26 @@ input,select{font-family:inherit;outline:none}
 .upgrade-overlay.open{opacity:1;pointer-events:all}
 .upgrade-sheet{position:fixed;bottom:0;left:0;right:0;z-index:71;background:var(--sf);border-top:1.5px solid var(--bd2);border-radius:22px 22px 0 0;padding:0 16px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -12px 48px rgba(15,23,42,0.18);transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:94vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
 .upgrade-sheet.open{transform:translateY(0)}
+/* Install modal — same bottom-sheet pattern as upgrade */
+.install-overlay{position:fixed;inset:0;z-index:72;background:rgba(15,23,42,0.4);opacity:0;pointer-events:none;transition:opacity .28s}
+.install-overlay.open{opacity:1;pointer-events:all}
+.install-sheet{position:fixed;bottom:0;left:0;right:0;z-index:73;background:var(--sf);border-top:1.5px solid var(--bd2);border-radius:22px 22px 0 0;padding:0 16px calc(28px + env(safe-area-inset-bottom));box-shadow:0 -12px 48px rgba(15,23,42,0.18);transform:translateY(100%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:92vh;overflow-y:auto;-webkit-overflow-scrolling:touch}
+.install-sheet.open{transform:translateY(0)}
+.install-header{text-align:center;padding:4px 8px 18px}
+.install-header-icon{display:inline-flex;width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,rgba(5,150,105,0.1),rgba(2,132,199,0.1));border:1.5px solid rgba(5,150,105,0.2);align-items:center;justify-content:center;margin-bottom:10px}
+.install-title{font-family:var(--display);font-size:22px;font-weight:900;color:var(--t);letter-spacing:.3px;margin-bottom:6px;line-height:1.2}
+.install-sub{font-size:13px;color:var(--t2);line-height:1.5;max-width:290px;margin:0 auto}
+.install-platform-badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;padding:4px 11px;border-radius:20px;background:rgba(2,132,199,0.08);border:1px solid rgba(2,132,199,0.2);font-family:var(--display);font-size:10px;font-weight:800;color:var(--cyan);letter-spacing:.6px;text-transform:uppercase}
+.install-steps{display:flex;flex-direction:column;gap:10px;margin:4px 4px 16px}
+.install-step{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd)}
+.install-step-num{width:26px;height:26px;border-radius:50%;background:linear-gradient(135deg,var(--green),var(--cyan));color:#fff;display:flex;align-items:center;justify-content:center;font-family:var(--display);font-weight:900;font-size:12px;flex-shrink:0;margin-top:1px}
+.install-step-text{font-size:13px;color:var(--t);line-height:1.55;flex:1}
+.install-step-text strong{color:var(--t);font-weight:700}
+.install-share-icon{display:inline-block;width:13px;height:13px;vertical-align:-2px;margin:0 1px}
+.install-cta-btn{width:100%;padding:14px;border-radius:var(--radius);background:linear-gradient(135deg,var(--green),var(--cyan));color:#fff;font-family:var(--display);font-size:14px;font-weight:900;letter-spacing:.8px;border:none;cursor:pointer;transition:all .2s;margin-bottom:8px;box-shadow:0 4px 16px rgba(5,150,105,0.25);-webkit-tap-highlight-color:transparent}
+.install-cta-btn:active{transform:scale(0.98)}
+.install-close-btn{width:100%;padding:12px;border-radius:var(--radius);background:transparent;color:var(--t3);font-family:var(--display);font-size:13px;font-weight:700;letter-spacing:.5px;border:1.5px solid var(--bd2);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.install-close-btn:active{background:var(--sf3)}
 .up-handle{width:36px;height:4px;border-radius:2px;background:var(--bd2);margin:14px auto 0}
 .up-close{position:absolute;top:14px;right:16px;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bd2);background:var(--sf3);display:flex;align-items:center;justify-content:center;cursor:pointer;-webkit-tap-highlight-color:transparent}
 .up-header{padding:16px 0 4px;text-align:center}
@@ -926,9 +946,35 @@ input,select{font-family:inherit;outline:none}
       </div>
     </div>
   </div>
+  <div class="how-step" style="border-top:3px solid var(--green)">
+    <div class="how-step-head">
+      <div class="how-num" style="background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.25)">07</div>
+      <div><div class="how-step-title">Install to Home Screen</div><div class="how-step-tab">Run Frisbee Track as an app</div></div>
+    </div>
+    <div class="how-step-body">
+      <p>Frisbee Track works best as an installed app — full screen, faster load, and it behaves like a native app. Takes 10 seconds.</p>
+      <div style="margin-top:12px;background:var(--sf3);border-radius:var(--radius-sm);border:1px solid var(--bd2);padding:13px 14px">
+        <div style="font-size:11px;font-weight:800;color:var(--t);margin-bottom:8px;font-family:var(--display);letter-spacing:.5px">📱 ON iPhone / Safari</div>
+        <ol style="margin:0;padding-left:20px;font-size:12.5px;color:var(--t2);line-height:1.65">
+          <li>Tap the <strong>Share</strong> button at the bottom of Safari (square with ↑)</li>
+          <li>Scroll down and tap <strong>Add to Home Screen</strong></li>
+          <li>Tap <strong>Add</strong> — icon appears on your home screen</li>
+        </ol>
+      </div>
+      <div style="margin-top:10px;background:var(--sf3);border-radius:var(--radius-sm);border:1px solid var(--bd2);padding:13px 14px">
+        <div style="font-size:11px;font-weight:800;color:var(--t);margin-bottom:8px;font-family:var(--display);letter-spacing:.5px">🤖 ON ANDROID / CHROME</div>
+        <ol style="margin:0;padding-left:20px;font-size:12.5px;color:var(--t2);line-height:1.65">
+          <li>Tap the <strong>menu</strong> (⋮) at the top right of Chrome</li>
+          <li>Tap <strong>Install app</strong> or <strong>Add to Home screen</strong></li>
+          <li>Confirm the install — icon appears on your home screen</li>
+        </ol>
+      </div>
+      <button onclick="openInstallModal()" style="margin-top:14px;padding:11px 20px;border-radius:20px;background:linear-gradient(135deg,var(--green),var(--cyan));color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.25);width:100%;-webkit-tap-highlight-color:transparent">Show me step by step →</button>
+    </div>
+  </div>
   <div class="how-step" style="border-top:3px solid var(--t4)">
     <div class="how-step-head">
-      <div class="how-num" style="background:var(--sf3);color:var(--t3);border:1px solid var(--bd2)">07</div>
+      <div class="how-num" style="background:var(--sf3);color:var(--t3);border:1px solid var(--bd2)">08</div>
       <div><div class="how-step-title">Benchmarks &amp; Definitions</div><div class="how-step-tab">Benchmarks + Definitions tabs</div></div>
     </div>
     <div class="how-step-body">
@@ -1276,17 +1322,11 @@ async function deleteSession(dbId){
 async function loadSubscription(){
   if(!currentUser||!SUPABASE_READY){subscriptionLoaded=true;updateGatedUI();return;}
   try{
+    // The subscription row is created automatically by a Postgres trigger
+    // on auth.users insert (handle_new_user_subscription). Clients can only
+    // read their row — not insert/update/delete — so we just fetch here.
     var res=await sb.from('subscriptions').select('*').eq('user_id',currentUser.id).maybeSingle();
-    if(res.data){
-      userSubscription=res.data;
-    } else {
-      var trialEnd=new Date();trialEnd.setDate(trialEnd.getDate()+7);
-      var ins=await sb.from('subscriptions').upsert({
-        user_id:currentUser.id,tier:'free',status:'trialling',
-        trial_end:trialEnd.toISOString()
-      },{onConflict:'user_id'}).select().single();
-      if(ins.data)userSubscription=ins.data;
-    }
+    if(res.data)userSubscription=res.data;
   }catch(e){console.warn('loadSubscription:',e);}
   subscriptionLoaded=true;
   updateGatedUI();
@@ -1486,8 +1526,13 @@ if(SUPABASE_READY){
   // for the same Supabase auth storage lock → one hung → frozen app.
   // Fix: single path, no parallel lock contention.
   sb.auth.onAuthStateChange(function(event,session){
+    var wasSignedOut = !currentUser;
     currentUser=session?session.user:null;
     renderAuthUI();
+    // Show install modal on first sign-in per device (skipped if already installed)
+    if(currentUser && wasSignedOut && typeof maybeShowInstallModalOnSignIn === 'function'){
+      maybeShowInstallModalOnSignIn();
+    }
     // getUserContext is non-blocking — awaiting it before loadSessions would
     // add another concurrent Supabase call that can also lock-contend and freeze.
     if(currentUser&&typeof getUserContext==="function"){
@@ -3312,6 +3357,69 @@ function switchTab(name,el){
 function renderAll(){renderDashboard();renderSessions();}
 renderAll();
 </script>
+<!-- ── INSTALL MODAL ── -->
+<div class="install-overlay" id="install-overlay" onclick="closeInstallModal()"></div>
+<div class="install-sheet" id="install-sheet">
+  <div class="up-handle"></div>
+  <button class="up-close" onclick="closeInstallModal()" aria-label="Close">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><path d="M2 2l8 8M10 2l-8 8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+  </button>
+  <div class="install-header">
+    <div class="install-header-icon">
+      <svg width="32" height="32" viewBox="0 0 36 36" fill="none">
+        <defs><linearGradient id="inst-lg" x1="0" y1="0" x2="1" y2="1"><stop offset="0%" stop-color="#059669"/><stop offset="100%" stop-color="#0284c7"/></linearGradient></defs>
+        <circle cx="18" cy="18" r="13" stroke="url(#inst-lg)" stroke-width="2.5" stroke-dasharray="60 22" stroke-linecap="round" transform="rotate(-120 18 18)"/>
+        <circle cx="18" cy="18" r="6.5" stroke="url(#inst-lg)" stroke-width="2"/>
+        <line x1="22" y1="13" x2="29" y2="7" stroke="#0284c7" stroke-width="2" stroke-linecap="round"/>
+        <circle cx="29" cy="7" r="1.5" fill="#059669"/>
+      </svg>
+    </div>
+    <div class="install-title">Install Frisbee Track</div>
+    <div class="install-sub">Add to your home screen for a full-screen app experience, faster load, and offline access.</div>
+    <div class="install-platform-badge" id="install-platform-badge">iPhone / Safari</div>
+  </div>
+  <div class="install-steps" id="install-steps-ios">
+    <div class="install-step">
+      <div class="install-step-num">1</div>
+      <div class="install-step-text">Tap the <strong>Share</strong> button <svg class="install-share-icon" viewBox="0 0 16 16" fill="none"><path d="M8 1v9M5 4l3-3 3 3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/><path d="M3 8v6h10V8" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg> at the bottom of Safari</div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-num">2</div>
+      <div class="install-step-text">Scroll down and tap <strong>Add to Home Screen</strong></div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-num">3</div>
+      <div class="install-step-text">Tap <strong>Add</strong> in the top right — icon appears on your home screen</div>
+    </div>
+  </div>
+  <div class="install-steps" id="install-steps-android" style="display:none">
+    <div class="install-step">
+      <div class="install-step-num">1</div>
+      <div class="install-step-text">Tap the <strong>menu</strong> (⋮) at the top right of Chrome</div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-num">2</div>
+      <div class="install-step-text">Tap <strong>Install app</strong> or <strong>Add to Home screen</strong></div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-num">3</div>
+      <div class="install-step-text">Tap <strong>Install</strong> to confirm</div>
+    </div>
+  </div>
+  <div class="install-steps" id="install-steps-other" style="display:none">
+    <div class="install-step">
+      <div class="install-step-num">1</div>
+      <div class="install-step-text">In your browser menu, look for <strong>Install app</strong> or <strong>Add to Home Screen</strong></div>
+    </div>
+    <div class="install-step">
+      <div class="install-step-num">2</div>
+      <div class="install-step-text">Tap it and confirm to add Frisbee Track to your home screen</div>
+    </div>
+  </div>
+  <button class="install-cta-btn" id="install-native-btn" style="display:none" onclick="triggerNativeInstall()">Install Now</button>
+  <button class="install-close-btn" id="install-got-it-btn" onclick="closeInstallModal()">Got it</button>
+</div>
+
 <!-- ── UPGRADE OVERLAY ── -->
 <div class="upgrade-overlay" id="upgrade-overlay" onclick="closeUpgradeModal()"></div>
 
@@ -3362,8 +3470,8 @@ renderAll();
     <div class="up-plan" id="up-plan-annual" onclick="upgradeSelectPlan('annual')">
       <div class="up-plan-check"><svg width="9" height="9" viewBox="0 0 9 9" fill="none"><path d="M2 4.5l1.8 1.8L7 3" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
       <div class="up-plan-label">Annual</div>
-      <div class="up-plan-price">$5.75</div>
-      <div class="up-plan-period">per month<br><span style="font-size:9px;color:var(--green);font-weight:700">$69 billed yearly</span></div>
+      <div class="up-plan-price">$69</div>
+      <div class="up-plan-period">per year<br><span style="font-size:9px;color:var(--green);font-weight:700">Save 36%</span></div>
     </div>
   </div>
   <button class="up-cta-btn" id="up-cta-btn" onclick="startCheckout()">Start 7-Day Free Trial</button>
@@ -3373,7 +3481,7 @@ renderAll();
     <button class="up-code-btn" id="up-code-btn" onclick="redeemBetaCode()">Redeem</button>
   </div>
   <div class="up-code-msg" id="up-code-msg"></div>
-  <div class="up-terms">Cancel anytime. No lock-in. <a href="https://dbsportperformance.com/terms" target="_blank" style="color:var(--cyan)">Terms</a> · <a href="https://dbsportperformance.com/privacy" target="_blank" style="color:var(--cyan)">Privacy</a> · <a href="https://dbsportperformance.com/refunds" target="_blank" style="color:var(--cyan)">Refunds</a></div>
+  <div class="up-terms">Cancel anytime. No lock-in. <a href="https://dbsportperformance.com/terms.html" target="_blank" style="color:var(--cyan)">Terms</a> · <a href="https://dbsportperformance.com/privacy.html" target="_blank" style="color:var(--cyan)">Privacy</a> · <a href="https://dbsportperformance.com/refunds.html" target="_blank" style="color:var(--cyan)">Refunds</a></div>
 </div>
 
 <!-- ── MORE DRAWER OVERLAY ── -->
@@ -3442,16 +3550,73 @@ renderAll();
 
 <script>
 // ── SERVICE WORKER + PWA ──
+// Global install modal state — shared between banner + modal
+var pwaDeferredPrompt = null;
+var pwaIsStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
+var pwaIsIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+var pwaIsAndroid = /android/i.test(navigator.userAgent);
+
+function openInstallModal(){
+  if(pwaIsStandalone) return; // already installed
+  var iosSteps = document.getElementById('install-steps-ios');
+  var androidSteps = document.getElementById('install-steps-android');
+  var otherSteps = document.getElementById('install-steps-other');
+  var nativeBtn = document.getElementById('install-native-btn');
+  var badge = document.getElementById('install-platform-badge');
+  if(iosSteps) iosSteps.style.display = 'none';
+  if(androidSteps) androidSteps.style.display = 'none';
+  if(otherSteps) otherSteps.style.display = 'none';
+  if(pwaIsIOS){
+    if(iosSteps) iosSteps.style.display = '';
+    if(badge) badge.textContent = 'iPhone / Safari';
+    if(nativeBtn) nativeBtn.style.display = 'none';
+  } else if(pwaIsAndroid){
+    if(androidSteps) androidSteps.style.display = '';
+    if(badge) badge.textContent = 'Android / Chrome';
+    // Only show native install button if Chrome has fired beforeinstallprompt
+    if(nativeBtn) nativeBtn.style.display = pwaDeferredPrompt ? '' : 'none';
+  } else {
+    if(otherSteps) otherSteps.style.display = '';
+    if(badge) badge.textContent = 'Your browser';
+    if(nativeBtn) nativeBtn.style.display = pwaDeferredPrompt ? '' : 'none';
+  }
+  document.getElementById('install-overlay').classList.add('open');
+  document.getElementById('install-sheet').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeInstallModal(){
+  document.getElementById('install-overlay').classList.remove('open');
+  document.getElementById('install-sheet').classList.remove('open');
+  document.body.style.overflow = '';
+  try{ localStorage.setItem('install-popup-seen', '1'); }catch(e){}
+}
+
+function triggerNativeInstall(){
+  if(!pwaDeferredPrompt){ closeInstallModal(); return; }
+  pwaDeferredPrompt.prompt();
+  pwaDeferredPrompt.userChoice.then(function(){
+    pwaDeferredPrompt = null;
+    closeInstallModal();
+  }).catch(function(){ closeInstallModal(); });
+}
+
+// Open the modal on first sign-in (once per device, skipped if already installed)
+function maybeShowInstallModalOnSignIn(){
+  if(pwaIsStandalone) return;
+  var seen = null;
+  try{ seen = localStorage.getItem('install-popup-seen'); }catch(e){}
+  if(seen) return;
+  setTimeout(openInstallModal, 1500);
+}
+
 (function(){
-  var deferredPrompt = null;
   var swReg = null;
 
   // Register service worker
   if('serviceWorker' in navigator){
     navigator.serviceWorker.register('/disc-load/sw.js').then(function(reg){
       swReg = reg;
-      // SW activates immediately via skipWaiting in sw.js —
-      // just listen for controllerchange and reload when safe
     }).catch(function(e){ console.warn('SW registration failed:', e); });
 
     // Auto-reload when new SW takes control — wait until app is backgrounded
@@ -3460,10 +3625,8 @@ renderAll();
       if(refreshing) return;
       refreshing = true;
       if(document.visibilityState === 'hidden'){
-        // Already in background — reload immediately
         window.location.reload();
       } else {
-        // App is in foreground — reload next time user backgrounds it
         document.addEventListener('visibilitychange', function handler(){
           if(document.visibilityState === 'hidden'){
             document.removeEventListener('visibilitychange', handler);
@@ -3474,19 +3637,18 @@ renderAll();
     });
   }
 
-  // Install prompt — only show if not already installed and not dismissed recently
+  // Compact inline banner (separate from the first-sign-in modal)
   var DISMISS_KEY = 'pwa-banner-dismissed';
-  var dismissed = localStorage.getItem(DISMISS_KEY);
-  var isStandalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone;
-  var isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream;
+  var dismissed = null;
+  try{ dismissed = localStorage.getItem(DISMISS_KEY); }catch(e){}
 
   // iOS Safari: no beforeinstallprompt — show manual instruction instead
-  if(isIOS && !isStandalone && !dismissed){
+  if(pwaIsIOS && !pwaIsStandalone && !dismissed){
     setTimeout(function(){
       var sub = document.getElementById('pwa-sub-text');
       var btn = document.getElementById('pwa-install-btn');
       if(sub) sub.textContent = 'Tap Share \u2192 Add to Home Screen';
-      if(btn){ btn.textContent = 'Got it'; btn.dataset.ios = '1'; }
+      if(btn){ btn.textContent = 'Show me'; btn.dataset.ios = '1'; }
       var banner = document.getElementById('pwa-banner');
       if(banner) banner.classList.add('show');
     }, 3000);
@@ -3495,8 +3657,8 @@ renderAll();
   // Android/Chrome: native install prompt
   window.addEventListener('beforeinstallprompt', function(e){
     e.preventDefault();
-    deferredPrompt = e;
-    if(!isStandalone && !dismissed){
+    pwaDeferredPrompt = e;
+    if(!pwaIsStandalone && !dismissed){
       setTimeout(function(){
         var banner = document.getElementById('pwa-banner');
         if(banner) banner.classList.add('show');
@@ -3510,24 +3672,33 @@ renderAll();
     try{ localStorage.setItem(DISMISS_KEY, Date.now()); }catch(e){}
   }
 
-  document.addEventListener('DOMContentLoaded', function(){
-    // Banner lives inside #header in-flow — no fixed positioning needed.
-    // It expands the sticky header naturally and can never overlap the bottom nav.
-    var installBtn = document.getElementById('pwa-install-btn');
-    var dismissBtn = document.getElementById('pwa-dismiss-btn');
+  // Bind button listeners IMMEDIATELY — the script is at the end of <body>
+  // so the elements already exist. Relying on DOMContentLoaded here was a bug
+  // (listener was added after the event had already fired, so never triggered).
+  var installBtn = document.getElementById('pwa-install-btn');
+  var dismissBtn = document.getElementById('pwa-dismiss-btn');
 
-    if(installBtn) installBtn.addEventListener('click', function(){
-      if(installBtn.dataset.ios){ hideBanner(); return; }
-      if(!deferredPrompt) return;
-      deferredPrompt.prompt();
-      deferredPrompt.userChoice.then(function(result){
-        deferredPrompt = null;
+  if(installBtn) installBtn.addEventListener('click', function(){
+    // iOS: open the full modal with step-by-step instructions
+    if(installBtn.dataset.ios){
+      openInstallModal();
+      hideBanner();
+      return;
+    }
+    // Android: if we have a deferred prompt, use it; otherwise open modal
+    if(pwaDeferredPrompt){
+      pwaDeferredPrompt.prompt();
+      pwaDeferredPrompt.userChoice.then(function(){
+        pwaDeferredPrompt = null;
         hideBanner();
       });
-    });
-
-    if(dismissBtn) dismissBtn.addEventListener('click', hideBanner);
+    } else {
+      openInstallModal();
+      hideBanner();
+    }
   });
+
+  if(dismissBtn) dismissBtn.addEventListener('click', hideBanner);
 })();
 </script>
 
