@@ -78,8 +78,9 @@ input,select{font-family:inherit;outline:none}
 .save-indicator.saved{background:#d1fae5;border:1.5px solid #6ee7b7;color:#065f46}
 .save-indicator.error{background:#fee2e2;border:1.5px solid #fca5a5;color:#991b1b}
 /* ── SUBSCRIPTION / UPGRADE ── */
-.bnav-lock{position:absolute;top:5px;right:calc(50% - 14px);display:none;pointer-events:none}
+.bnav-lock{position:absolute;top:5px;right:calc(50% - 14px);display:none;pointer-events:none;z-index:2}
 .bnav-lock.show{display:block}
+#lock-metrics-bnav{top:6px;right:calc(50% - 13px);background:#fff;border-radius:50%;padding:1px}
 .trial-banner{margin:0 0 14px;padding:9px 13px;border-radius:var(--radius-sm);background:rgba(217,119,6,0.08);border:1.5px solid rgba(217,119,6,0.22);display:flex;align-items:center;gap:9px;font-size:11px;color:#92400e;line-height:1.4}
 .trial-banner b{font-family:var(--display);font-weight:800;letter-spacing:.3px}
 .trial-banner-action{margin-left:auto;padding:5px 12px;border-radius:12px;background:#d97706;color:#fff;font-size:10px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;flex-shrink:0;-webkit-tap-highlight-color:transparent}
@@ -154,12 +155,12 @@ input,select{font-family:inherit;outline:none}
 .paywall-gate-btn{margin-top:6px;padding:11px 24px;border-radius:20px;background:linear-gradient(135deg,var(--green),#0284c7);color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.5px;border:none;cursor:pointer;box-shadow:0 4px 12px rgba(5,150,105,0.25);-webkit-tap-highlight-color:transparent}
 /* ── BOTTOM NAV ── */
 .bnav{position:fixed;bottom:0;left:0;right:0;z-index:60;background:#fff;border-top:1px solid var(--bd);display:flex;align-items:stretch;padding-bottom:env(safe-area-inset-bottom);box-shadow:0 -4px 20px rgba(15,23,42,0.08)}
-.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;padding:10px 4px;border:none;background:transparent;color:var(--t4);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s;min-height:56px;position:relative}
+.bnav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;padding:9px 2px;border:none;background:transparent;color:var(--t4);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:color .15s;min-height:56px;position:relative;min-width:0}
 .bnav-btn.on{color:var(--green)}
 .bnav-btn svg{flex-shrink:0;transition:transform .15s}
 .bnav-btn:active svg{transform:scale(0.88)}
-.bnav-lbl{font-size:9px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;font-family:var(--display);line-height:1}
-.bnav-pip{position:absolute;top:8px;width:4px;height:4px;border-radius:50%;background:var(--green);opacity:0;transition:opacity .2s}
+.bnav-lbl{font-size:8.5px;font-weight:700;letter-spacing:.4px;text-transform:uppercase;font-family:var(--display);line-height:1;white-space:nowrap}
+.bnav-pip{position:absolute;top:7px;width:4px;height:4px;border-radius:50%;background:var(--green);opacity:0;transition:opacity .2s}
 .bnav-btn.on .bnav-pip{opacity:1}
 /* More drawer */
 .more-drawer{position:fixed;bottom:0;left:0;right:0;z-index:55;background:var(--sf);border-top:1.5px solid var(--bd2);border-radius:20px 20px 0 0;padding:16px 16px;padding-bottom:calc(16px + env(safe-area-inset-bottom) + 56px);box-shadow:0 -8px 32px rgba(15,23,42,0.14);transform:translateY(100%);transition:transform .28s cubic-bezier(.4,0,.2,1)}
@@ -563,6 +564,53 @@ input,select{font-family:inherit;outline:none}
 .wk-tick.done{background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.2)}
 .wk-tick.gap{background:rgba(220,38,38,0.08);color:var(--red);border:1px solid rgba(220,38,38,0.15)}
 .wk-tick.na{background:var(--sf3);color:var(--t4);border:1px solid var(--bd)}
+
+/* ── ROADMAP LOCKED WEEK CARDS (free users) ── */
+.wk-card-simple.locked-current{cursor:pointer;border-width:1.5px;box-shadow:0 0 0 2px rgba(5,150,105,0.12),var(--sh)}
+.wk-card-simple.locked-future{cursor:pointer;opacity:.62;padding-top:9px;padding-bottom:9px}
+.wk-card-simple.locked-future .wk-simple-desc{display:none}
+.wk-lock-row{display:flex;align-items:center;justify-content:center;gap:8px;margin-top:10px;padding:9px 13px;border-radius:var(--radius-sm);background:linear-gradient(135deg,rgba(5,150,105,0.08),rgba(2,132,199,0.08));border:1px dashed rgba(5,150,105,0.3)}
+.wk-lock-row-text{font-size:11px;font-weight:700;color:var(--green);font-family:var(--display);letter-spacing:.3px}
+.wk-lock-mini{display:inline-flex;align-items:center;gap:4px;font-size:9px;color:var(--t4);font-family:var(--mono);font-weight:700}
+
+/* ── SPORT SCIENCE PANEL ── */
+.ss-section-title{font-size:9px;font-weight:800;letter-spacing:2px;text-transform:uppercase;color:var(--t3);margin:0 0 10px 0;font-family:var(--display)}
+.ss-acr-table{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);overflow:hidden;box-shadow:var(--sh);margin-bottom:18px}
+.ss-acr-head{display:grid;grid-template-columns:1fr 56px 56px 60px 88px;gap:0;padding:9px 11px;background:var(--sf2);border-bottom:1px solid var(--bd);font-size:8.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);font-family:var(--mono)}
+.ss-acr-head>div:not(:first-child){text-align:right}
+.ss-acr-head>div:last-child{text-align:center}
+.ss-acr-row{display:grid;grid-template-columns:1fr 56px 56px 60px 88px;gap:0;padding:11px;border-bottom:1px solid var(--bd);font-size:11px;align-items:center}
+.ss-acr-row:last-child{border-bottom:none}
+.ss-acr-name{font-family:var(--display);font-weight:800;font-size:12px;letter-spacing:.3px;display:flex;align-items:center;gap:7px}
+.ss-acr-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.ss-acr-num{text-align:right;font-family:var(--mono);font-weight:700;color:var(--t2)}
+.ss-acr-ratio{text-align:right;font-family:var(--mono);font-weight:800;font-size:13px}
+.ss-acr-zone{text-align:center;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-family:var(--display);padding:4px 7px;border-radius:10px}
+.ss-zone-detrain{background:rgba(100,116,139,0.12);color:#64748b;border:1px solid rgba(100,116,139,0.25)}
+.ss-zone-sweet{background:rgba(5,150,105,0.12);color:var(--green);border:1px solid rgba(5,150,105,0.3)}
+.ss-zone-caution{background:rgba(217,119,6,0.12);color:#d97706;border:1px solid rgba(217,119,6,0.3)}
+.ss-zone-danger{background:rgba(220,38,38,0.12);color:var(--red);border:1px solid rgba(220,38,38,0.3)}
+.ss-zone-na{background:var(--sf3);color:var(--t4);border:1px solid var(--bd)}
+.ss-acr-zonebar{display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--sf2);border-top:1px solid var(--bd);font-size:9px;color:var(--t3);font-family:var(--mono);flex-wrap:wrap;justify-content:center}
+.ss-acr-zonebar span{display:inline-flex;align-items:center;gap:4px}
+.ss-acr-zonebar i{display:inline-block;width:9px;height:9px;border-radius:50%;font-style:normal}
+.ss-chart-wrap{background:var(--sf);border:1px solid var(--bd);border-radius:var(--radius);padding:14px;box-shadow:var(--sh);margin-bottom:14px}
+.ss-chart-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;gap:10px;flex-wrap:wrap}
+.ss-chart-title{font-size:11px;font-weight:800;font-family:var(--display);letter-spacing:.5px;color:var(--t)}
+.ss-chart-sub{font-size:9px;color:var(--t4);font-family:var(--mono);margin-top:2px}
+.ss-metric-sel{display:flex;flex-wrap:wrap;gap:5px}
+.ss-ms-btn{padding:5px 10px;border-radius:14px;border:1px solid var(--bd);background:var(--sf);font-size:10px;font-weight:700;color:var(--t3);cursor:pointer;font-family:var(--display);letter-spacing:.4px;-webkit-tap-highlight-color:transparent}
+.ss-ms-btn.on{color:#fff;border-color:transparent}
+.ss-chart-legend{display:flex;gap:14px;font-size:10px;color:var(--t3);margin-top:8px;flex-wrap:wrap;font-family:var(--mono)}
+.ss-chart-legend-item{display:inline-flex;align-items:center;gap:5px}
+.ss-chart-legend-bar{display:inline-block;width:14px;height:8px;border-radius:2px}
+.ss-chart-legend-line{display:inline-block;width:14px;height:2px}
+.ss-empty{text-align:center;padding:32px 16px;color:var(--t3)}
+.ss-empty-icon{font-size:28px;margin-bottom:10px}
+.ss-empty-title{font-size:13px;font-weight:800;color:var(--t2);font-family:var(--display);letter-spacing:.3px;margin-bottom:6px}
+.ss-empty-sub{font-size:11px;line-height:1.55;max-width:280px;margin:0 auto}
+.ss-info-card{margin-top:16px;padding:12px 14px;border-radius:var(--radius-sm);background:rgba(2,132,199,0.05);border:1px solid rgba(2,132,199,0.18);font-size:10.5px;color:var(--t2);line-height:1.55}
+.ss-info-card strong{color:#0284c7;font-family:var(--display);letter-spacing:.3px}
 .wk-tourn-card{background:rgba(161,98,7,0.06);border:1.5px solid rgba(161,98,7,0.2);border-radius:var(--radius);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh)}
 </style>
 <script src="config.js"></script>
@@ -832,17 +880,11 @@ input,select{font-family:inherit;outline:none}
   </div>
 </div>
 
-<!-- ── METRICS (chart, moved to more drawer) ── -->
+<!-- ── SPORT SCIENCE (was Metrics) ── -->
 <div class="panel" id="panel-metrics">
-  <div style="font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:5px;font-family:var(--display)">METRICS</div>
-  <div style="font-size:11px;color:var(--t3);margin-bottom:16px">Cumulative weekly load vs prescribed target bands.</div>
-  <div class="metric-sel" id="metric-sel"></div>
-  <div class="chart-wrap"><canvas id="metric-chart" height="240" style="width:100%;display:block"></canvas></div>
-  <div style="font-size:10px;color:var(--t3);display:flex;gap:14px;flex-wrap:wrap">
-    <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(5,150,105,0.2);margin-right:3px"></span>High zone</span>
-    <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(217,119,6,0.18);margin-right:3px"></span>Moderate zone</span>
-    <span><span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:rgba(100,116,139,0.15);margin-right:3px"></span>Low zone</span>
-  </div>
+  <div style="font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:5px;font-family:var(--display)">SPORT SCIENCE</div>
+  <div style="font-size:11px;color:var(--t3);margin-bottom:16px">Acute vs chronic load — the strongest predictor of injury risk in elite sport.</div>
+  <div id="ss-content"></div>
 </div>
 
 <!-- ── BENCHMARKS ── -->
@@ -1352,8 +1394,10 @@ function trialDaysRemaining(){
 }
 function updateGatedUI(){
   var hasAccess=canAccess('metrics');
-  var lm=document.getElementById('lock-metrics');
+  var lm=document.getElementById('lock-metrics-bnav');
   if(lm)lm.classList.toggle('show',!hasAccess&&!!currentUser);
+  // Roadmap content gating: re-render so locked/unlocked week cards reflect current subscription
+  if(typeof renderRoadmap==='function')renderRoadmap();
   var banner=document.getElementById('trial-banner');
   if(banner){
     var isTrialling=userSubscription&&userSubscription.status==='trialling'&&currentUser;
@@ -1370,7 +1414,9 @@ function updateGatedUI(){
 function showUpgradeModal(feature){
   var subs={
     roadmap:'Unlock your 4-week training roadmap and see exactly how to peak for your tournament.',
-    metrics:'Unlock your metrics history chart and track your load trends over time.',
+    roadmap_full:'Unlock your 4-week training roadmap and see exactly how to peak for your tournament.',
+    metrics:'Unlock acute vs chronic load monitoring and track your injury risk over time.',
+    sport_science:'Unlock acute vs chronic load monitoring and track your injury risk over time.',
     ai_prescription:'Unlock AI-powered session prescriptions tailored to your exact load data.',
     trial:'Keep your access to all Pro features after your trial ends.'
   };
@@ -1476,8 +1522,14 @@ function handleUpgradeURLParams(){
   }
 }
 function paywallHTML(feature){
-  var titles={roadmap:'Your Training Roadmap',metrics:'Metrics History',ai_prescription:'AI Prescription'};
-  var subs={roadmap:'Your 4-week periodisation roadmap is a Pro feature.',metrics:'Your load trend charts are a Pro feature.',ai_prescription:'AI-powered session prescriptions are a Pro feature.'};
+  var titles={roadmap:'Your Training Roadmap',roadmap_full:'Your Training Roadmap',metrics:'Sport Science',sport_science:'Sport Science',ai_prescription:'AI Prescription'};
+  var subs={
+    roadmap:'Your 4-week periodisation roadmap is a Pro feature.',
+    roadmap_full:'Unlock your week-by-week load targets and periodisation plan leading into your tournament.',
+    metrics:'Acute vs chronic load monitoring is a Pro feature.',
+    sport_science:'Acute vs chronic load monitoring — the strongest predictor of injury risk in elite sport.',
+    ai_prescription:'AI-powered session prescriptions are a Pro feature.'
+  };
   return "<div class='paywall-gate'>"
     +"<div class='paywall-gate-icon'><svg width='24' height='24' viewBox='0 0 24 24' fill='none'><rect x='5' y='11' width='14' height='11' rx='2' stroke='var(--green)' stroke-width='1.5'/><path d='M8 11V7a4 4 0 1 1 8 0v4' stroke='var(--green)' stroke-width='1.5' stroke-linecap='round'/></svg></div>"
     +"<div class='paywall-gate-title'>"+(titles[feature]||'Pro Feature')+"</div>"
@@ -2745,9 +2797,46 @@ function renderRoadmap(){
     var wkE=new Date(wkS);wkE.setDate(wkS.getDate()+6);
     var isCurrent=(weeksFromNow===wo-1);
     var tgt=WT[ctx][band];
-    var wn="W"+isoWeek(wkS)+" '"+String(isoYear(wkS)).slice(2);
+    var wn="W"+isoWeek(wkS)+"  '"+String(isoYear(wkS)).slice(2);
 
     var isPastWk=(weeksFromNow>=wo);
+    var hasRoadmapAccess=canAccess('roadmap_full');
+    // Free users: show locked card with band label visible, targets hidden
+    if(currentUser && subscriptionLoaded && !hasRoadmapAccess && !isPastWk){
+      var bandLabel=band==='high'?(weeksFromNow===0?'Peak 1':'Peak 2'):band==='moderate'?'Build':band==='low'?'Taper':band;
+      // Better naming: walk pattern to find which Peak this is
+      if(band==='high'){
+        var peakIdx=0;
+        for(var pj=0;pj<=i;pj++)if(pattern[pj]==='high')peakIdx++;
+        bandLabel='Peak '+peakIdx;
+      }
+      var woNumF=weeksFromNow+1;
+      var wkLabelF=isCurrent?"Now · "+woNumF+" wk"+(woNumF===1?"":"s")+" to "+tournName
+        :woNumF+" wk"+(woNumF===1?"":"s")+" to "+tournName;
+      var lockCls=isCurrent?'locked-current':'locked-future';
+      html+="<div class='wk-card-simple "+lockCls+"' onclick=\"showUpgradeModal('roadmap_full')\">"
+        +(isCurrent?"<div class='wk-now-tag' style='position:absolute;top:-1px;left:50%;transform:translateX(-50%);font-size:7px;font-weight:800;padding:2px 8px;border-radius:0 0 5px 5px;letter-spacing:1px;font-family:var(--display);background:"+bc+";color:#fff'>NOW</div>":"")
+        +"<div class='wk-simple-head'>"
+        +"<span class='wk-simple-label' style='color:"+(isCurrent?bc:"var(--t)")+"'>"+wkLabelF+"</span>"
+        +"<span class='wk-simple-band' style='background:"+bc+"1a;color:"+bc+"'>"+bandLabel+"</span>"
+        +"</div>"
+        +"<div class='wk-simple-dates'>"+fmt(wkS)+" – "+fmt(wkE)+"</div>";
+      if(isCurrent){
+        html+="<div class='wk-simple-desc'>"+phaseDesc(band,pattern.length-i)+"</div>"
+          +"<div class='wk-lock-row'>"
+          +"<svg width='12' height='12' viewBox='0 0 12 12' fill='none'><rect x='2.5' y='5.5' width='7' height='5' rx='1' stroke='var(--green)' stroke-width='1.4'/><path d='M4 5.5V4a2 2 0 1 1 4 0v1.5' stroke='var(--green)' stroke-width='1.4' stroke-linecap='round'/></svg>"
+          +"<span class='wk-lock-row-text'>Unlock this week's targets →</span>"
+          +"</div>";
+      } else {
+        html+="<div class='wk-lock-mini' style='margin-top:6px'>"
+          +"<svg width='10' height='10' viewBox='0 0 12 12' fill='none'><rect x='2.5' y='5.5' width='7' height='5' rx='1' stroke='currentColor' stroke-width='1.2'/><path d='M4 5.5V4a2 2 0 1 1 4 0v1.5' stroke='currentColor' stroke-width='1.2' stroke-linecap='round'/></svg>"
+          +"Pro</div>";
+      }
+      html+="</div>";
+      continue;
+    }
+
+    // Pro user (or past week, which always shows actuals): full week card with targets and ticks
     var wkAchieved={dist:0,hsr:0,vhsr:0,acc:0,acl:0};
     sessions.forEach(function(s){
       var inWk=false;
@@ -2876,43 +2965,203 @@ async function saveSettings(){
 }
 function syncRoadmap(){renderRoadmap();renderWeekStrip();}
 
-// ── CHART ──
-var CHART_METRICS=[
-  {key:"dist",label:"Distance",  color:"#0284c7"},
-  {key:"hsr", label:"HSR",       color:"#059669"},
-  {key:"vhsr",label:"VHSR",      color:"#b45309"},
-  {key:"acc", label:"Accels",    color:"#7c3aed"},
-  {key:"acl", label:"Accel Load",color:"#dc2626"}
+// ── SPORT SCIENCE (was: cumulative chart) ──
+var SS_METRICS=[
+  {key:"dist",label:"Distance",   color:"#0284c7"},
+  {key:"hsr", label:"HSR",        color:"#059669"},
+  {key:"vhsr",label:"VHSR",       color:"#b45309"},
+  {key:"acc", label:"Accels",     color:"#7c3aed"},
+  {key:"acl", label:"Accel Load", color:"#dc2626"}
 ];
-function renderMetricSel(){
-  document.getElementById("metric-sel").innerHTML=CHART_METRICS.map(function(m){
-    return "<button class='ms-btn"+(m.key===chartMetric?" on":"")+"' style='"+(m.key===chartMetric?"background:"+m.color+";":"")+"' onclick='setChart(\""+m.key+"\")'>"+m.label+"</button>";
+
+// ACR zones (DBSP-defined: detraining <0.9, sweet 0.9–1.3, caution 1.3–1.5, danger >1.5)
+function ssZone(ratio,hasData){
+  if(!hasData||!isFinite(ratio))return{cls:"ss-zone-na",label:"—"};
+  if(ratio<0.9) return{cls:"ss-zone-detrain",label:"Detrain"};
+  if(ratio<=1.3)return{cls:"ss-zone-sweet",  label:"Sweet"};
+  if(ratio<=1.5)return{cls:"ss-zone-caution",label:"Caution"};
+  return{cls:"ss-zone-danger",label:"Danger"};
+}
+
+// Build a daily load array for a given metric ending today (most recent day at end).
+// Returns {daily:[42 days array], firstDay: Date, weeksOfData: number}
+function ssBuildDailySeries(metricKey,daysBack){
+  daysBack=daysBack||42;
+  var today=new Date();today.setHours(0,0,0,0);
+  var start=new Date(today);start.setDate(today.getDate()-(daysBack-1));
+  var daily=new Array(daysBack).fill(0);
+  var earliest=null;
+  sessions.forEach(function(s){
+    if(!s.date)return;
+    var sd=new Date(s.date);sd.setHours(0,0,0,0);
+    if(!earliest||sd<earliest)earliest=sd;
+    var diff=Math.round((sd-start)/86400000);
+    if(diff>=0&&diff<daysBack)daily[diff]+=(s[metricKey]||0);
+  });
+  var weeksOfData=earliest?Math.max(0,Math.floor((today-earliest)/(7*86400000))+1):0;
+  return{daily:daily,firstDay:start,weeksOfData:weeksOfData};
+}
+
+// EWMA chronic load. Williams et al. (2017) use lambda based on time constant N=28d:
+//   lambdaA = 2/(N+1)  with N=7  for acute  → 0.25
+//   lambdaC = 2/(N+1)  with N=28 for chronic → ~0.069
+// Returns {acute, chronic, ratio, weeksOfData}
+function ssCalcEWMA(metricKey){
+  var s=ssBuildDailySeries(metricKey,42);
+  var lambdaA=2/(7+1);   // 0.25
+  var lambdaC=2/(28+1);  // ~0.0689655
+  var ewmaA=0,ewmaC=0;
+  for(var i=0;i<s.daily.length;i++){
+    var v=s.daily[i];
+    ewmaA=v*lambdaA+ewmaA*(1-lambdaA);
+    ewmaC=v*lambdaC+ewmaC*(1-lambdaC);
+  }
+  // Convert daily EWMA to weekly-equivalent load (multiply by 7) — easier to read
+  var weeklyAcute=ewmaA*7;
+  var weeklyChronic=ewmaC*7;
+  var ratio=weeklyChronic>0?weeklyAcute/weeklyChronic:0;
+  return{acute:weeklyAcute,chronic:weeklyChronic,ratio:ratio,weeksOfData:s.weeksOfData,daily:s.daily};
+}
+
+// Build 6-week (42-day) acute & chronic series, sampled weekly for chart
+function ssBuildWeeklySeries(metricKey){
+  var s=ssBuildDailySeries(metricKey,42);
+  var lambdaA=2/(7+1),lambdaC=2/(28+1);
+  var ewmaA=0,ewmaC=0,acuteWk=[],chronicWk=[];
+  for(var i=0;i<s.daily.length;i++){
+    var v=s.daily[i];
+    ewmaA=v*lambdaA+ewmaA*(1-lambdaA);
+    ewmaC=v*lambdaC+ewmaC*(1-lambdaC);
+    // Sample every 7 days (end of each week)
+    if((i+1)%7===0){acuteWk.push(ewmaA*7);chronicWk.push(ewmaC*7);}
+  }
+  return{acute:acuteWk,chronic:chronicWk};
+}
+
+function fmtLoad(v,key){
+  if(v==null||!isFinite(v))return "—";
+  if(key==="dist")return v>=1000?(v/1000).toFixed(1)+"k":Math.round(v);
+  if(key==="hsr"||key==="vhsr")return Math.round(v);
+  if(key==="acc")return Math.round(v);
+  if(key==="acl")return Math.round(v);
+  return Math.round(v);
+}
+
+function renderSportScience(){
+  var el=document.getElementById("ss-content");
+  if(!el)return;
+
+  // Empty state — no sessions logged at all
+  if(!sessions.length){
+    el.innerHTML="<div class='ss-empty'>"
+      +"<div class='ss-empty-icon'>📊</div>"
+      +"<div class='ss-empty-title'>No data yet</div>"
+      +"<div class='ss-empty-sub'>Log your training sessions to see your acute vs chronic load and injury risk over time.</div>"
+      +"</div>";
+    return;
+  }
+
+  // Build ACR table
+  var tableRows="";
+  var anyHasFullData=false;
+  SS_METRICS.forEach(function(m){
+    var d=ssCalcEWMA(m.key);
+    var hasData=d.weeksOfData>=2&&d.chronic>0;
+    if(hasData)anyHasFullData=true;
+    var z=ssZone(d.ratio,hasData);
+    tableRows+="<div class='ss-acr-row'>"
+      +"<div class='ss-acr-name'><span class='ss-acr-dot' style='background:"+m.color+"'></span>"+m.label+"</div>"
+      +"<div class='ss-acr-num'>"+fmtLoad(d.acute,m.key)+"</div>"
+      +"<div class='ss-acr-num'>"+fmtLoad(d.chronic,m.key)+"</div>"
+      +"<div class='ss-acr-ratio' style='color:"+(hasData?(z.cls==='ss-zone-sweet'?'var(--green)':z.cls==='ss-zone-caution'?'#d97706':z.cls==='ss-zone-danger'?'var(--red)':z.cls==='ss-zone-detrain'?'#64748b':'var(--t3)'):'var(--t4)')+"'>"+(hasData?d.ratio.toFixed(2):"—")+"</div>"
+      +"<div><span class='ss-acr-zone "+z.cls+"'>"+z.label+"</span></div>"
+      +"</div>";
+  });
+
+  var anyData=SS_METRICS.some(function(m){var d=ssCalcEWMA(m.key);return d.weeksOfData>=1&&d.chronic>0;});
+  // Building-baseline notice when there's data but not yet enough for a confident ratio
+  var buildingBaseline=anyData&&!anyHasFullData;
+
+  var html="<div class='ss-section-title'>Acute : Chronic Ratio</div>"
+    +"<div class='ss-acr-table'>"
+    +"<div class='ss-acr-head'>"
+    +"<div>Metric</div><div>Acute</div><div>Chronic</div><div>A:C</div><div>Zone</div>"
+    +"</div>"
+    +tableRows
+    +(buildingBaseline?"<div style='padding:10px 13px;background:rgba(2,132,199,0.05);border-top:1px solid var(--bd);font-size:10.5px;color:var(--t2);text-align:center'>📈 Building your baseline — log <b>2+ weeks</b> to unlock your A:C ratio.</div>":"")
+    +"<div class='ss-acr-zonebar'>"
+    +"<span><i style='background:#64748b'></i>Detrain &lt;0.9</span>"
+    +"<span><i style='background:var(--green)'></i>Sweet 0.9–1.3</span>"
+    +"<span><i style='background:#d97706'></i>Caution 1.3–1.5</span>"
+    +"<span><i style='background:var(--red)'></i>Danger &gt;1.5</span>"
+    +"</div>"
+    +"</div>";
+
+  // Chart section — only show if there's any data
+  if(anyData){
+    html+="<div class='ss-section-title'>6-week trend</div>"
+      +"<div class='ss-chart-wrap'>"
+      +"<div class='ss-chart-head'>"
+      +"<div><div class='ss-chart-title'>Acute vs Chronic Load</div><div class='ss-chart-sub'>Weekly EWMA · last 6 weeks</div></div>"
+      +"<div class='ss-metric-sel' id='ss-metric-sel'></div>"
+      +"</div>"
+      +"<div style='position:relative'><canvas id='ss-chart' height='220' style='width:100%;display:block'></canvas></div>"
+      +"<div class='ss-chart-legend'>"
+      +"<span class='ss-chart-legend-item'><span class='ss-chart-legend-bar' id='ss-leg-acute'></span>Acute (7d EWMA)</span>"
+      +"<span class='ss-chart-legend-item'><span class='ss-chart-legend-line' id='ss-leg-chronic'></span>Chronic (28d EWMA)</span>"
+      +"</div>"
+      +"</div>";
+  }
+
+  // Info card
+  html+="<div class='ss-info-card'>"
+    +"<strong>How this works.</strong> Acute load is your last 7 days; chronic load is your 28-day baseline. The ratio between them — A:C — is the strongest evidence-based predictor of injury risk in elite sport. The Sweet zone (0.9–1.3) is where adaptation happens. Below that you're detraining; above 1.5 you're spiking and at elevated soft-tissue injury risk."
+    +"</div>";
+
+  el.innerHTML=html;
+
+  if(anyData){
+    renderSSMetricSel();
+    drawSSChart();
+  }
+}
+
+function renderSSMetricSel(){
+  var sel=document.getElementById("ss-metric-sel");if(!sel)return;
+  sel.innerHTML=SS_METRICS.map(function(m){
+    var on=m.key===chartMetric;
+    return "<button class='ss-ms-btn"+(on?" on":"")+"' style='"+(on?"background:"+m.color+";":"")+"' onclick='setSSChart(\""+m.key+"\")'>"+m.label+"</button>";
   }).join("");
 }
-function setChart(k){chartMetric=k;renderMetricSel();drawChart();}
-function drawChart(){
-  renderMetricSel();
-  var canvas=document.getElementById("metric-chart");
+
+function setSSChart(k){chartMetric=k;renderSSMetricSel();drawSSChart();}
+
+function drawSSChart(){
+  var canvas=document.getElementById("ss-chart");
   if(!canvas)return;
-  var W=canvas.offsetWidth||340,H=240;canvas.width=W;canvas.height=H;
+  var m=SS_METRICS.find(function(x){return x.key===chartMetric;})||SS_METRICS[0];
+  // Update legend swatches
+  var lA=document.getElementById("ss-leg-acute"),lC=document.getElementById("ss-leg-chronic");
+  if(lA)lA.style.background=m.color+"66";
+  if(lC)lC.style.background=m.color;
+
+  var s=ssBuildWeeklySeries(m.key);
+  var W=canvas.offsetWidth||340,H=220;canvas.width=W;canvas.height=H;
   var c=canvas.getContext("2d");c.clearRect(0,0,W,H);
-  var m=CHART_METRICS.find(function(x){return x.key===chartMetric;})||CHART_METRICS[0];
-  var tgts=WT[ctx],lo=tgts.low[m.key],mod=tgts.moderate[m.key],hi=tgts.high[m.key];
-  var pts=[],cum=0;
-  sessions.forEach(function(s,i){cum+=(s[m.key]||0);pts.push({i:i+1,v:cum});});
-  var maxV=Math.max(hi*1.2,cum||hi);
-  var pad={l:52,r:12,t:14,b:32};
+
+  var maxV=0;
+  for(var i=0;i<s.acute.length;i++){if(s.acute[i]>maxV)maxV=s.acute[i];if(s.chronic[i]>maxV)maxV=s.chronic[i];}
+  if(maxV===0)maxV=1;
+  maxV=maxV*1.15;
+
+  var pad={l:42,r:10,t:14,b:34};
   var cw=W-pad.l-pad.r,ch=H-pad.t-pad.b;
-  function xp(i){return pad.l+(i/Math.max(pts.length,1))*cw;}
+  var n=s.acute.length;
+  var bw=cw/Math.max(n,1)*0.62;
+  function xp(i){return pad.l+(i+0.5)*(cw/Math.max(n,1));}
   function yp(v){return pad.t+ch-(v/maxV)*ch;}
-  c.fillStyle="rgba(5,150,105,0.08)";c.fillRect(pad.l,yp(hi),cw,yp(mod)-yp(hi));
-  c.fillStyle="rgba(217,119,6,0.07)";c.fillRect(pad.l,yp(mod),cw,yp(lo)-yp(mod));
-  c.fillStyle="rgba(100,116,139,0.06)";c.fillRect(pad.l,yp(lo),cw,ch-(yp(lo)-pad.t));
-  [[hi,"#059669"],[mod,"#d97706"],[lo,"#94a3b8"]].forEach(function(pair){
-    c.strokeStyle=pair[1];c.globalAlpha=0.4;c.lineWidth=1;c.setLineDash([3,4]);
-    c.beginPath();c.moveTo(pad.l,yp(pair[0]));c.lineTo(pad.l+cw,yp(pair[0]));c.stroke();
-  });
-  c.globalAlpha=1;c.setLineDash([]);
+
+  // Gridlines
   c.strokeStyle="rgba(15,23,42,0.06)";c.lineWidth=1;
   for(var g=0;g<=4;g++){
     var gv=(maxV/4)*g,gy=yp(gv);
@@ -2921,25 +3170,38 @@ function drawChart(){
     var lbl=gv>=1000?(gv/1000).toFixed(1)+"k":Math.round(gv);
     c.fillText(lbl,pad.l-4,gy+3);
   }
-  if(!pts.length){
-    c.fillStyle="rgba(15,23,42,0.2)";c.font="12px sans-serif";c.textAlign="center";
-    c.fillText("Add sessions to see your chart",W/2,H/2);return;
+
+  // Acute bars
+  c.fillStyle=m.color+"55";
+  for(var j=0;j<n;j++){
+    var bx=xp(j)-bw/2,by=yp(s.acute[j]),bh=pad.t+ch-by;
+    if(s.acute[j]>0)c.fillRect(bx,by,bw,bh);
   }
-  c.fillStyle=m.color+"22";c.beginPath();
-  pts.forEach(function(p,i){var x=xp(p.i-.5),y=yp(p.v);if(i===0)c.moveTo(x,y);else c.lineTo(x,y);});
-  c.lineTo(xp(pts[pts.length-1].i-.5),pad.t+ch);c.lineTo(xp(0.5),pad.t+ch);c.closePath();c.fill();
+
+  // Chronic line
   c.strokeStyle=m.color;c.lineWidth=2.5;c.lineJoin="round";
-  c.shadowColor=m.color;c.shadowBlur=6;
+  c.shadowColor=m.color;c.shadowBlur=4;
   c.beginPath();
-  pts.forEach(function(p,i){var x=xp(p.i-.5),y=yp(p.v);if(i===0)c.moveTo(x,y);else c.lineTo(x,y);});
+  for(var k2=0;k2<n;k2++){
+    var x=xp(k2),y=yp(s.chronic[k2]);
+    if(k2===0)c.moveTo(x,y);else c.lineTo(x,y);
+  }
   c.stroke();c.shadowBlur=0;
-  pts.forEach(function(p){
-    var x=xp(p.i-.5),y=yp(p.v);
-    c.fillStyle=m.color;c.beginPath();c.arc(x,y,4,0,Math.PI*2);c.fill();
-    c.fillStyle="#fff";c.beginPath();c.arc(x,y,2,0,Math.PI*2);c.fill();
-  });
-  c.fillStyle="rgba(15,23,42,0.3)";c.font="9px sans-serif";c.textAlign="center";
-  pts.forEach(function(p){c.fillText("S"+p.i,xp(p.i-.5),H-pad.b+12);});
+
+  // Chronic dots
+  for(var k3=0;k3<n;k3++){
+    var dx=xp(k3),dy=yp(s.chronic[k3]);
+    c.fillStyle=m.color;c.beginPath();c.arc(dx,dy,3.5,0,Math.PI*2);c.fill();
+    c.fillStyle="#fff";c.beginPath();c.arc(dx,dy,1.6,0,Math.PI*2);c.fill();
+  }
+
+  // Week labels (e.g. -5w, -4w … now)
+  c.fillStyle="rgba(15,23,42,0.45)";c.font="9px 'Courier New',monospace";c.textAlign="center";
+  for(var k4=0;k4<n;k4++){
+    var weeksAgo=n-1-k4;
+    var lbl2=weeksAgo===0?"now":"-"+weeksAgo+"w";
+    c.fillText(lbl2,xp(k4),H-pad.b+13);
+  }
 }
 
 // ── BENCHMARKS ──
@@ -3275,8 +3537,8 @@ function renderSRPanel(){
   }
 }
 
-var MORE_TABS=['benchmarks','definitions','howto','metrics'];
-var PRIMARY_TABS=['dashboard','sessions','roadmap','sc'];
+var MORE_TABS=['benchmarks','definitions','howto'];
+var PRIMARY_TABS=['dashboard','sessions','roadmap','sc','metrics'];
 function openMoreDrawer(){
   document.getElementById('more-drawer').classList.add('open');
   document.getElementById('more-overlay').classList.add('open');
@@ -3300,7 +3562,7 @@ function setContext(c){
 }
 function switchTab(name,el){
   if(name==='metrics'&&currentUser&&subscriptionLoaded&&!canAccess(name)){
-    showUpgradeModal(name);
+    showUpgradeModal('sport_science');
     return;
   }
   document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
@@ -3323,7 +3585,7 @@ function switchTab(name,el){
   });
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
-  if(name==="metrics"){renderMetricSel();drawChart();}
+  if(name==="metrics")renderSportScience();
   if(name==="sc"){renderWeekCalendar();renderOFCAccordion();renderDrillLibrary();}
   if(name==="definitions")renderDefinitions();
 }
@@ -3504,11 +3766,6 @@ renderAll();
       <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><circle cx="11" cy="11" r="8" stroke="currentColor" stroke-width="1.5" fill="none"/><path d="M9 8.5c0-1.1.9-2 2-2s2 .9 2 2c0 1-.6 1.5-1.5 2.2-.5.3-.5.8-.5 1.3" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="11" cy="15" r=".8" fill="currentColor"/></svg>
       <div class="more-tile-lbl">How To</div>
     </div>
-    <div class="more-tile" id="more-metrics" onclick="switchTabFromMore('metrics')" style="position:relative">
-      <div id="lock-metrics" class="bnav-lock"><svg width="12" height="12" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-      <svg width="22" height="22" viewBox="0 0 22 22" fill="none"><polyline points="2,16 6,11 10,13 14,8 20,10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/><line x1="2" y1="19" x2="20" y2="19" stroke="currentColor" stroke-width="1.2" opacity=".35" stroke-linecap="round"/></svg>
-      <div class="more-tile-lbl">Metrics</div>
-    </div>
   </div>
 </div>
 
@@ -3524,7 +3781,7 @@ renderAll();
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="3" rx="1.5" fill="currentColor" opacity=".4"/><rect x="2" y="8.5" width="16" height="3" rx="1.5" fill="currentColor" opacity=".65"/><rect x="2" y="14" width="10" height="3" rx="1.5" fill="currentColor"/><circle cx="16" cy="15.5" r="3.5" fill="currentColor"/><path d="M14.5 15.5l.8.8 1.5-1.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
     <span class="bnav-lbl">Sessions</span>
   </button>
-  <button class="bnav-btn" id="bnav-roadmap" onclick="switchTab('roadmap',null)">
+  <button class="bnav-btn" id="bnav-roadmap" onclick="switchTab('roadmap',null)" style="position:relative">
     <div class="bnav-pip"></div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.2" opacity=".4"/><rect x="5" y="11" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="3" height="3" rx=".5" fill="currentColor"/></svg>
     <span class="bnav-lbl">Roadmap</span>
@@ -3533,6 +3790,12 @@ renderAll();
     <div class="bnav-pip"></div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="13" width="3" height="5" rx="1" fill="currentColor" opacity=".5"/><rect x="7" y="9" width="3" height="9" rx="1" fill="currentColor" opacity=".7"/><rect x="12" y="5" width="3" height="13" rx="1" fill="currentColor"/><path d="M2 7l4-3 4 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/></svg>
     <span class="bnav-lbl">S&amp;C</span>
+  </button>
+  <button class="bnav-btn" id="bnav-metrics" onclick="switchTab('metrics',null)" style="position:relative">
+    <div class="bnav-pip"></div>
+    <div id="lock-metrics-bnav" class="bnav-lock"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".55"/><circle cx="10" cy="10" r="1.4" fill="currentColor"/><line x1="10" y1="2.5" x2="10" y2="4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="15.5" x2="10" y2="17.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+    <span class="bnav-lbl">Sport Sci</span>
   </button>
   <button class="bnav-btn" id="bnav-more" onclick="openMoreDrawer()">
     <div class="bnav-pip" id="bnav-more-pip"></div>
