@@ -587,8 +587,10 @@ input,select{font-family:inherit;outline:none}
 .ss-acr-ratio{text-align:right;font-family:var(--mono);font-weight:800;font-size:13px}
 .ss-acr-zone{text-align:center;font-size:9px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-family:var(--display);padding:4px 7px;border-radius:10px}
 .ss-zone-detrain{background:rgba(100,116,139,0.12);color:#64748b;border:1px solid rgba(100,116,139,0.25)}
+.ss-zone-taper{background:rgba(139,92,246,0.12);color:#7c3aed;border:1px solid rgba(139,92,246,0.3)}
 .ss-zone-sweet{background:rgba(5,150,105,0.12);color:var(--green);border:1px solid rgba(5,150,105,0.3)}
-.ss-zone-caution{background:rgba(217,119,6,0.12);color:#d97706;border:1px solid rgba(217,119,6,0.3)}
+.ss-zone-build{background:rgba(2,132,199,0.12);color:#0284c7;border:1px solid rgba(2,132,199,0.3)}
+.ss-zone-high{background:rgba(217,119,6,0.12);color:#d97706;border:1px solid rgba(217,119,6,0.3)}
 .ss-zone-danger{background:rgba(220,38,38,0.12);color:var(--red);border:1px solid rgba(220,38,38,0.3)}
 .ss-zone-na{background:var(--sf3);color:var(--t4);border:1px solid var(--bd)}
 .ss-acr-zonebar{display:flex;align-items:center;gap:8px;padding:10px 13px;background:var(--sf2);border-top:1px solid var(--bd);font-size:9px;color:var(--t3);font-family:var(--mono);flex-wrap:wrap;justify-content:center}
@@ -2974,13 +2976,15 @@ var SS_METRICS=[
   {key:"acl", label:"Accel Load", color:"#dc2626"}
 ];
 
-// ACR zones (DBSP-defined: detraining <0.9, sweet 0.9–1.3, caution 1.3–1.5, danger >1.5)
+// ACR zones (DBSP-defined: <0.8 Low Load, 0.8–0.9 Taper/Recovery, 0.9–1.1 Sweet Spot, 1.1–1.3 Build, 1.3–1.5 High Load, >1.5 Spike)
 function ssZone(ratio,hasData){
   if(!hasData||!isFinite(ratio))return{cls:"ss-zone-na",label:"—"};
-  if(ratio<0.9) return{cls:"ss-zone-detrain",label:"Detrain"};
-  if(ratio<=1.3)return{cls:"ss-zone-sweet",  label:"Sweet"};
-  if(ratio<=1.5)return{cls:"ss-zone-caution",label:"Caution"};
-  return{cls:"ss-zone-danger",label:"Danger"};
+  if(ratio<0.8) return{cls:"ss-zone-detrain",label:"Low Load"};
+  if(ratio<0.9) return{cls:"ss-zone-taper",  label:"Taper/Recovery"};
+  if(ratio<=1.1)return{cls:"ss-zone-sweet",  label:"Sweet Spot"};
+  if(ratio<=1.3)return{cls:"ss-zone-build",  label:"Build"};
+  if(ratio<=1.5)return{cls:"ss-zone-high",   label:"High Load"};
+  return{cls:"ss-zone-danger",label:"Spike"};
 }
 
 // Build a daily load array for a given metric ending today (most recent day at end).
@@ -3073,7 +3077,7 @@ function renderSportScience(){
       +"<div class='ss-acr-name'><span class='ss-acr-dot' style='background:"+m.color+"'></span>"+m.label+"</div>"
       +"<div class='ss-acr-num'>"+fmtLoad(d.acute,m.key)+"</div>"
       +"<div class='ss-acr-num'>"+fmtLoad(d.chronic,m.key)+"</div>"
-      +"<div class='ss-acr-ratio' style='color:"+(hasData?(z.cls==='ss-zone-sweet'?'var(--green)':z.cls==='ss-zone-caution'?'#d97706':z.cls==='ss-zone-danger'?'var(--red)':z.cls==='ss-zone-detrain'?'#64748b':'var(--t3)'):'var(--t4)')+"'>"+(hasData?d.ratio.toFixed(2):"—")+"</div>"
+      +"<div class='ss-acr-ratio' style='color:"+(hasData?(z.cls==='ss-zone-sweet'?'var(--green)':z.cls==='ss-zone-build'?'#0284c7':z.cls==='ss-zone-high'?'#d97706':z.cls==='ss-zone-danger'?'var(--red)':z.cls==='ss-zone-taper'?'#7c3aed':z.cls==='ss-zone-detrain'?'#64748b':'var(--t3)'):'var(--t4)')+"'>"+(hasData?d.ratio.toFixed(2):"—")+"</div>"
       +"<div><span class='ss-acr-zone "+z.cls+"'>"+z.label+"</span></div>"
       +"</div>";
   });
@@ -3090,10 +3094,12 @@ function renderSportScience(){
     +tableRows
     +(buildingBaseline?"<div style='padding:10px 13px;background:rgba(2,132,199,0.05);border-top:1px solid var(--bd);font-size:10.5px;color:var(--t2);text-align:center'>📈 Building your baseline — log <b>2+ weeks</b> to unlock your A:C ratio.</div>":"")
     +"<div class='ss-acr-zonebar'>"
-    +"<span><i style='background:#64748b'></i>Detrain &lt;0.9</span>"
-    +"<span><i style='background:var(--green)'></i>Sweet 0.9–1.3</span>"
-    +"<span><i style='background:#d97706'></i>Caution 1.3–1.5</span>"
-    +"<span><i style='background:var(--red)'></i>Danger &gt;1.5</span>"
+    +"<span><i style='background:#64748b'></i>Low Load &lt;0.8</span>"
+    +"<span><i style='background:#7c3aed'></i>Taper/Recovery 0.8–0.9</span>"
+    +"<span><i style='background:var(--green)'></i>Sweet Spot 0.9–1.1</span>"
+    +"<span><i style='background:#0284c7'></i>Build 1.1–1.3</span>"
+    +"<span><i style='background:#d97706'></i>High Load 1.3–1.5</span>"
+    +"<span><i style='background:var(--red)'></i>Spike &gt;1.5</span>"
     +"</div>"
     +"</div>";
 
@@ -3115,7 +3121,7 @@ function renderSportScience(){
 
   // Info card
   html+="<div class='ss-info-card'>"
-    +"<strong>How this works.</strong> Acute load is your last 7 days; chronic load is your 28-day baseline. The ratio between them — A:C — is the strongest evidence-based predictor of injury risk in elite sport. The Sweet zone (0.9–1.3) is where adaptation happens. Below that you're detraining; above 1.5 you're spiking and at elevated soft-tissue injury risk."
+    +"<strong>How this works.</strong> Acute load is your last 7 days; chronic load is your 28-day baseline. The ratio between them — A:C — is the strongest evidence-based predictor of injury risk in elite sport. Sweet Spot (0.9–1.1) is where adaptation happens. Build (1.1–1.3) means progressive overload — productive but monitor closely. High Load (1.3–1.5) is manageable short-term if chronic load is solid. Spike (>1.5) carries elevated soft-tissue injury risk. Taper/Recovery (0.8–0.9) is intentional in competition weeks. Low Load (<0.8) means your body is losing the adaptations you&#39;ve built."
     +"</div>";
 
   el.innerHTML=html;
