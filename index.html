@@ -350,19 +350,30 @@ input,select{font-family:inherit;outline:none}
 .sr-change-btn{background:transparent;border:none;font-size:10px;color:var(--t3);text-decoration:underline;cursor:pointer;font-family:var(--body);padding:0;margin-top:2px}
 .sr-change-btn:hover{color:var(--t2)}
 .sr-confirmed{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:11px;color:var(--t2);margin-bottom:6px}
-.cal-grid{display:flex;gap:7px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;margin-bottom:8px;scroll-behavior:smooth;align-items:stretch}
-.cal-grid::-webkit-scrollbar{display:none}
-.cal-day{flex-shrink:0;width:112px;border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;display:flex;flex-direction:column}
-.cal-today{border-color:var(--green) !important;border-width:1.5px !important;box-shadow:0 0 0 2px rgba(5,150,105,0.1),var(--sh) !important}
-.cal-day-head{display:flex;align-items:center;justify-content:space-between;padding:7px 9px 5px;border-bottom:1px solid var(--bd);background:var(--sf2)}
-.cal-day-name{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:1px;color:var(--t3);font-family:var(--display)}
-.cal-today .cal-day-name{color:var(--green)}
-.cal-day-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1}
-.cal-today .cal-day-date{color:var(--green)}
-.cal-slot{border-bottom:1px solid var(--bd);flex:1;display:flex;flex-direction:column}
+/* ── WEEK CALENDAR: chip strip + detail panel ── */
+.cal-chip-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px}
+.cal-chip{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px 5px;border-radius:var(--radius-sm);background:var(--sf);border:1px solid var(--bd);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s,border-color .12s}
+.cal-chip.is-today{border-color:var(--green);border-width:1.5px;box-shadow:0 0 0 2px rgba(5,150,105,0.08)}
+.cal-chip.is-selected{background:var(--green);border-color:var(--green)}
+.cal-chip.is-today.is-selected{box-shadow:0 0 0 2px rgba(5,150,105,0.18)}
+.cal-chip-name{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-family:var(--display);line-height:1}
+.cal-chip.is-today .cal-chip-name{color:var(--green)}
+.cal-chip.is-selected .cal-chip-name{color:rgba(255,255,255,0.8)}
+.cal-chip-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1.1}
+.cal-chip.is-today .cal-chip-date{color:var(--green)}
+.cal-chip.is-selected .cal-chip-date{color:#fff}
+.cal-chip-dots{display:flex;gap:2px;height:5px;align-items:center;min-height:5px}
+.cal-chip-dot{width:4px;height:4px;border-radius:50%}
+.cal-chip.is-selected .cal-chip-dot{opacity:.85}
+/* detail panel */
+.cal-detail{border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;margin-bottom:8px}
+.cal-detail-head{display:flex;align-items:center;justify-content:space-between;padding:8px 11px 6px;border-bottom:1px solid var(--bd);background:var(--sf2)}
+.cal-detail-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);font-family:var(--display)}
+.cal-detail-date{font-size:10px;font-weight:600;color:var(--t3);font-family:var(--mono)}
+.cal-slot{border-bottom:1px solid var(--bd);display:flex;flex-direction:column}
 .cal-slot:last-child{border-bottom:none}
-.cal-slot-row{display:flex;flex:1;min-height:52px}
-.cal-slot-label{width:20px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);font-family:var(--mono);border-right:1px solid var(--bd);background:var(--sf2)}
+.cal-slot-row{display:flex;min-height:48px}
+.cal-slot-label{width:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);font-family:var(--mono);border-right:1px solid var(--bd);background:var(--sf2)}
 .cal-slot-content{flex:1;min-width:0}
 .cal-ico{display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-top:1px}
 .cal-session{padding:6px 7px;cursor:pointer;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:5px;transition:background .15s}
@@ -1612,6 +1623,7 @@ function isoWeek(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDat
 function isoYear(d){var dt=new Date(d);dt.setHours(0,0,0,0);dt.setDate(dt.getDate()+3-(dt.getDay()+6)%7);return dt.getFullYear();}
 
 var selectedWeek=null;
+var calSelectedDay=-1; // -1 = auto (today or first with content)
 function currentWeekRange(){return{start:weekStart(new Date()),end:weekEnd(new Date())};}
 function getSelectedRange(){return selectedWeek||currentWeekRange();}
 function isCurrentWeekSelected(){
@@ -1636,7 +1648,7 @@ function weekSessions(){
   return sessions.filter(function(s){return sessionInWeek(s,range);});
 }
 function selectWeek(startTs,endTs,band,wn){
-  selectedWeek={start:new Date(startTs),end:new Date(endTs),band:band,wn:wn};renderDashboard();
+  selectedWeek={start:new Date(startTs),end:new Date(endTs),band:band,wn:wn};calSelectedDay=-1;renderDashboard();
 }
 function getCurrentBand(){
   if(selectedWeek&&selectedWeek.band)return selectedWeek.band;
@@ -2013,7 +2025,8 @@ function renderWeekCalendar(){
   var el=document.getElementById("week-calendar");
   if(!el)return;
   var range=getSelectedRange(),wkStart2=range.start;
-  var dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+  var dayLetters=['M','T','W','T','F','S','S'];
+  var dayNamesFull=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
   var today=new Date();
 
   var ICO={
@@ -2024,6 +2037,7 @@ function renderWeekCalendar(){
   };
   function sIco(s){return s.type==='game'?ICO.disc:ICO.pulse;}
 
+  // Build day data
   var days=[];
   for(var d=0;d<7;d++){
     var dayDate=new Date(wkStart2);
@@ -2036,105 +2050,138 @@ function renderWeekCalendar(){
     days.push({date:dayDate,sessions:daySessions});
   }
   var undated=sessions.filter(function(s){return!s.date&&isCurrentWeekSelected();});
-
   var band=getCurrentBand();
   var gymPlacements=getGymSchedule(days,band);
   var srState=recoveryStates[srDateKey()];
   var recPlacement=(srState&&srState!=='good')?getRecoveryPlacement(days,gymPlacements):null;
-
   var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
   var hasSessions=weekSessions().length>0||undated.length>0;
 
+  // Determine which day index to show in the panel
+  // Default: today if in range, else first day with content, else 0
+  var todayIdx=-1;
+  for(var i=0;i<7;i++){if(days[i].date.toDateString()===today.toDateString()){todayIdx=i;break;}}
+  if(calSelectedDay<0){
+    // auto-select: prefer today, else first day with gym/session/recovery
+    if(todayIdx>=0){calSelectedDay=todayIdx;}
+    else{
+      var firstActive=-1;
+      for(var i=0;i<7;i++){
+        if(days[i].sessions.length||gymPlacements[i]||(recPlacement&&recPlacement.dayIdx===i)){firstActive=i;break;}
+      }
+      calSelectedDay=firstActive>=0?firstActive:0;
+    }
+  }
+
+  // ── WEEK LABEL ──
   var html="<div style='font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;"
     +"color:var(--t3);margin-bottom:8px;font-family:var(--display)'>"+wn+" \u2014 Week View</div>";
-  html+="<div class='cal-grid' id='cal-grid-inner'>";
 
+  // ── CHIP ROW ──
+  html+="<div class='cal-chip-row'>";
   days.forEach(function(day,i){
-    var isToday   = day.date.toDateString()===today.toDateString();
-    var dayDateStr= day.date.toISOString().split('T')[0];
-    var pmSessions= day.sessions;
-    var gp        = gymPlacements[i];
-    var isRecAM   = recPlacement&&recPlacement.dayIdx===i&&recPlacement.slot==='am';
-    var isRecPM   = recPlacement&&recPlacement.dayIdx===i&&recPlacement.slot==='pm';
-
-    html+="<div class='cal-day"+(isToday?" cal-today":"")+"'>";
-    html+="<div class='cal-day-head'>"
-      +"<span class='cal-day-name'>"+dayNames[i]+"</span>"
-      +"<span class='cal-day-date'>"+day.date.getDate()+"</span>"
+    var isToday=day.date.toDateString()===today.toDateString();
+    var isSel=calSelectedDay===i;
+    var cls="cal-chip"+(isToday?" is-today":"")+(isSel?" is-selected":"");
+    // Dots: green=session/game, purple=gym, cyan=recovery
+    var dots="";
+    if(day.sessions.length){
+      var hasGame=day.sessions.some(function(s){return s.type==='game';});
+      dots+="<div class='cal-chip-dot' style='background:"+(hasGame?"var(--cyan)":"var(--green)")+"'></div>";
+    }
+    if(gymPlacements[i]){dots+="<div class='cal-chip-dot' style='background:var(--green)'></div>";}
+    if(recPlacement&&recPlacement.dayIdx===i){dots+="<div class='cal-chip-dot' style='background:var(--cyan)'></div>";}
+    html+="<div class='"+cls+"' onclick='calSelectDay("+i+")'>"
+      +"<span class='cal-chip-name'>"+dayLetters[i]+"</span>"
+      +"<span class='cal-chip-date'>"+day.date.getDate()+"</span>"
+      +"<div class='cal-chip-dots'>"+dots+"</div>"
       +"</div>";
-
-    // ── AM ──
-    html+="<div class='cal-slot'><div class='cal-slot-row'>"
-      +"<div class='cal-slot-label'>AM</div>"
-      +"<div class='cal-slot-content'>";
-
-    if(isRecAM){
-      var ro=getRecoveryOption(srState,i,days,dayDateStr);
-      if(ro){
-        html+="<div class='cal-recovery'>"
-          +"<span class='cal-ico' style='color:"+ro.color+";margin-top:1px'>"+ICO.wave+"</span>"
-          +"<div style='flex:1;min-width:0'>"
-          +"<div class='cal-recovery-lbl' style='color:"+ro.color+"'>Recovery \u2014 "+ro.label+"</div>"
-          +"<div class='cal-recovery-tip'>"+ro.option+"</div>"
-          +"</div></div>";
-      }
-    } else if(gp){
-      html+="<div class='cal-gym-card'>"
-        +"<span class='cal-ico' style='color:var(--green);margin-top:1px'>"+ICO.barbell+"</span>"
-        +"<div style='flex:1;min-width:0'>"
-        +"<div class='cal-gym-name'>"+gp.session+"</div>"
-        +"<div class='cal-gym-intent'>"+gp.intent+"</div>"
-        +(gp.ofc
-          ?"<div class='cal-gym-ofc-tap' onclick='openOFCSheetTo(\""+(gp.ofcSession?gp.ofcSession.num:'01')+"\")'>+ OFC: "+(gp.ofcSession?gp.ofcSession.title:'Session')+" <svg width=\'8\' height=\'8\' viewBox=\'0 0 8 8\' fill=\'none\'><path d=\'M2 4h4M4 2l2 2-2 2\' stroke=\'currentColor\' stroke-width=\'1.2\' stroke-linecap=\'round\'/></svg></div>"
-          :"")
-        +"</div></div>";
-    } else {
-      html+="<div class='cal-empty-pm'>\u2014</div>";
-    }
-
-    html+="</div></div></div>";
-
-    // ── PM ──
-    html+="<div class='cal-slot'><div class='cal-slot-row'>"
-      +"<div class='cal-slot-label'>PM</div>"
-      +"<div class='cal-slot-content'>";
-
-    if(pmSessions.length){
-      pmSessions.forEach(function(s){
-        var ig=s.type==='game';
-        html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
-          +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+sIco(s)+"</span>"
-          +"<div class='cal-session-body'>"
-          +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
-          +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"
-          +(s.vhsr>0?" \xb7 VHSR <b>"+s.vhsr+"m</b>":"")
-          +(ig?" \xb7 <b>"+s.pts+"pts</b>":"")
-          +"</div></div></div>";
-      });
-    }
-
-    if(isRecPM){
-      var ro2=getRecoveryOption(srState,i,days,dayDateStr);
-      if(ro2){
-        html+="<div class='"+(pmSessions.length?"cal-recovery-inline":"cal-recovery")+"'>"
-          +"<span class='cal-ico' style='color:"+ro2.color+";margin-top:1px'>"+ICO.wave+"</span>"
-          +"<div style='flex:1;min-width:0'>"
-          +"<div class='cal-recovery-lbl' style='color:"+ro2.color+"'>Recovery \u2014 "+ro2.label+"</div>"
-          +"<div class='cal-recovery-tip'>"+ro2.option+"</div>"
-          +"</div></div>";
-      }
-    }
-
-    if(!pmSessions.length&&!isRecPM){
-      html+="<div class='cal-empty-pm'>\u2014</div>";
-    }
-
-    html+="</div></div></div>";
-    html+="</div>";
   });
-
   html+="</div>";
 
+  // ── DETAIL PANEL for selected day ──
+  var si=calSelectedDay;
+  var selDay=days[si];
+  var selDateStr=selDay.date.toISOString().split('T')[0];
+  var pmSessions=selDay.sessions;
+  var gp=gymPlacements[si];
+  var isRecAM=recPlacement&&recPlacement.dayIdx===si&&recPlacement.slot==='am';
+  var isRecPM=recPlacement&&recPlacement.dayIdx===si&&recPlacement.slot==='pm';
+  var isToday2=selDay.date.toDateString()===today.toDateString();
+
+  html+="<div class='cal-detail'>";
+  // Detail header
+  var headStyle=isToday2?"color:var(--green)":"";
+  html+="<div class='cal-detail-head'>"
+    +"<span class='cal-detail-title' style='"+headStyle+"'>"+dayNamesFull[si]+"</span>"
+    +"<span class='cal-detail-date' style='"+headStyle+"'>"
+    +selDay.date.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+"</span>"
+    +"</div>";
+
+  // AM slot
+  html+="<div class='cal-slot'><div class='cal-slot-row'>"
+    +"<div class='cal-slot-label'>AM</div>"
+    +"<div class='cal-slot-content'>";
+  if(isRecAM){
+    var ro=getRecoveryOption(srState,si,days,selDateStr);
+    if(ro){
+      html+="<div class='cal-recovery'>"
+        +"<span class='cal-ico' style='color:"+ro.color+";margin-top:1px'>"+ICO.wave+"</span>"
+        +"<div style='flex:1;min-width:0'>"
+        +"<div class='cal-recovery-lbl' style='color:"+ro.color+"'>Recovery \u2014 "+ro.label+"</div>"
+        +"<div class='cal-recovery-tip'>"+ro.option+"</div>"
+        +"</div></div>";
+    }
+  } else if(gp){
+    html+="<div class='cal-gym-card'>"
+      +"<span class='cal-ico' style='color:var(--green);margin-top:1px'>"+ICO.barbell+"</span>"
+      +"<div style='flex:1;min-width:0'>"
+      +"<div class='cal-gym-name'>"+gp.session+"</div>"
+      +"<div class='cal-gym-intent'>"+gp.intent+"</div>"
+      +(gp.ofc
+        ?"<div class='cal-gym-ofc-tap' onclick='openOFCSheetTo(\""+(gp.ofcSession?gp.ofcSession.num:'01')+"\")'>+ OFC: "+(gp.ofcSession?gp.ofcSession.title:'Session')+" <svg width=\'8\' height=\'8\' viewBox=\'0 0 8 8\' fill=\'none\'><path d=\'M2 4h4M4 2l2 2-2 2\' stroke=\'currentColor\' stroke-width=\'1.2\' stroke-linecap=\'round\'/></svg></div>"
+        :"")
+      +"</div></div>";
+  } else {
+    html+="<div class='cal-empty-pm'>\u2014</div>";
+  }
+  html+="</div></div></div>";
+
+  // PM slot
+  html+="<div class='cal-slot'><div class='cal-slot-row'>"
+    +"<div class='cal-slot-label'>PM</div>"
+    +"<div class='cal-slot-content'>";
+  if(pmSessions.length){
+    pmSessions.forEach(function(s){
+      var ig=s.type==='game';
+      html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
+        +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+sIco(s)+"</span>"
+        +"<div class='cal-session-body'>"
+        +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
+        +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"
+        +(s.vhsr>0?" \xb7 VHSR <b>"+s.vhsr+"m</b>":"")
+        +(ig?" \xb7 <b>"+s.pts+"pts</b>":"")
+        +"</div></div></div>";
+    });
+  }
+  if(isRecPM){
+    var ro2=getRecoveryOption(srState,si,days,selDateStr);
+    if(ro2){
+      html+="<div class='"+(pmSessions.length?"cal-recovery-inline":"cal-recovery")+"'>"
+        +"<span class='cal-ico' style='color:"+ro2.color+";margin-top:1px'>"+ICO.wave+"</span>"
+        +"<div style='flex:1;min-width:0'>"
+        +"<div class='cal-recovery-lbl' style='color:"+ro2.color+"'>Recovery \u2014 "+ro2.label+"</div>"
+        +"<div class='cal-recovery-tip'>"+ro2.option+"</div>"
+        +"</div></div>";
+    }
+  }
+  if(!pmSessions.length&&!isRecPM){
+    html+="<div class='cal-empty-pm'>\u2014</div>";
+  }
+  html+="</div></div></div>";
+  html+="</div>"; // end cal-detail
+
+  // Unscheduled sessions
   if(undated.length){
     html+="<div class='cal-unscheduled'><div class='cal-unscheduled-title'>Unscheduled this week</div>"
       +undated.map(function(s){
@@ -2155,11 +2202,11 @@ function renderWeekCalendar(){
   }
 
   el.innerHTML=html;
-  setTimeout(function(){
-    var grid=document.getElementById("cal-grid-inner");
-    if(grid){var t=grid.querySelector(".cal-today");
-      if(t)t.scrollIntoView({behavior:"smooth",block:"nearest",inline:"center"});}
-  },50);
+}
+
+function calSelectDay(idx){
+  calSelectedDay=idx;
+  renderWeekCalendar();
 }
 
 // ── AI PRESCRIPTION ──
