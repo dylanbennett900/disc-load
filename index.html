@@ -350,29 +350,32 @@ input,select{font-family:inherit;outline:none}
 .sr-change-btn{background:transparent;border:none;font-size:10px;color:var(--t3);text-decoration:underline;cursor:pointer;font-family:var(--body);padding:0;margin-top:2px}
 .sr-change-btn:hover{color:var(--t2)}
 .sr-confirmed{display:flex;align-items:center;gap:10px;padding:10px 13px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:11px;color:var(--t2);margin-bottom:6px}
-/* ── WEEK CALENDAR: chip strip + detail panel ── */
-.cal-chip-row{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-bottom:8px}
-.cal-chip{display:flex;flex-direction:column;align-items:center;gap:2px;padding:6px 2px 5px;border-radius:var(--radius-sm);background:var(--sf);border:1px solid var(--bd);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s,border-color .12s}
-.cal-chip.is-today{border-color:var(--green);border-width:1.5px;box-shadow:0 0 0 2px rgba(5,150,105,0.08)}
-.cal-chip.is-selected{background:var(--green);border-color:var(--green)}
-.cal-chip.is-today.is-selected{box-shadow:0 0 0 2px rgba(5,150,105,0.18)}
-.cal-chip-name{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-family:var(--display);line-height:1}
-.cal-chip.is-today .cal-chip-name{color:var(--green)}
-.cal-chip.is-selected .cal-chip-name{color:rgba(255,255,255,0.8)}
-.cal-chip-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1.1}
-.cal-chip.is-today .cal-chip-date{color:var(--green)}
-.cal-chip.is-selected .cal-chip-date{color:#fff}
-.cal-chip-dots{display:flex;gap:2px;height:5px;align-items:center;min-height:5px}
-.cal-chip-dot{width:4px;height:4px;border-radius:50%}
-.cal-chip.is-selected .cal-chip-dot{opacity:.85}
-/* detail panel */
-.cal-detail{border-radius:var(--radius);background:var(--sf);border:1px solid var(--bd);box-shadow:var(--sh);overflow:hidden;margin-bottom:8px}
-.cal-detail-head{display:flex;align-items:center;justify-content:space-between;padding:8px 11px 6px;border-bottom:1px solid var(--bd);background:var(--sf2)}
-.cal-detail-title{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:1.2px;color:var(--t3);font-family:var(--display)}
-.cal-detail-date{font-size:10px;font-weight:600;color:var(--t3);font-family:var(--mono)}
+/* ── WEEK CALENDAR: compact row-per-day ── */
+.cal-week{display:flex;flex-direction:column;gap:3px;margin-bottom:8px}
+.cal-row{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:var(--radius-sm);background:var(--sf);border:1px solid var(--bd);min-height:38px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .12s}
+.cal-row:active{background:var(--sf3)}
+.cal-row.is-today{border-color:var(--green);border-width:1.5px;box-shadow:0 0 0 2px rgba(5,150,105,0.08)}
+.cal-row.is-expanded{border-bottom-left-radius:0;border-bottom-right-radius:0;border-bottom-color:transparent}
+.cal-row-day{width:28px;flex-shrink:0}
+.cal-row-dayname{font-size:8px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-family:var(--display);line-height:1}
+.cal-row.is-today .cal-row-dayname{color:var(--green)}
+.cal-row-date{font-size:13px;font-weight:700;color:var(--t);font-family:var(--mono);line-height:1.1}
+.cal-row.is-today .cal-row-date{color:var(--green)}
+.cal-row-pills{display:flex;flex-wrap:wrap;gap:3px;flex:1;align-items:center}
+.cal-pill{display:inline-flex;align-items:center;gap:3px;padding:2px 6px;border-radius:10px;font-size:8px;font-weight:800;letter-spacing:.4px;font-family:var(--display);line-height:1.3;white-space:nowrap}
+.cal-pill-gym{background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.2)}
+.cal-pill-training{background:rgba(2,132,199,0.08);color:var(--cyan);border:1px solid rgba(2,132,199,0.18)}
+.cal-pill-game{background:rgba(2,132,199,0.12);color:var(--cyan);border:1px solid rgba(2,132,199,0.22)}
+.cal-pill-recovery-fatigued{background:rgba(2,132,199,0.08);color:var(--cyan);border:1px solid rgba(2,132,199,0.18)}
+.cal-pill-recovery-sore{background:rgba(217,119,6,0.08);color:var(--amber);border:1px solid rgba(217,119,6,0.2)}
+.cal-pill-recovery-both{background:rgba(124,58,237,0.08);color:var(--purple);border:1px solid rgba(124,58,237,0.18)}
+.cal-pill-rest{font-size:8px;color:var(--t4);font-family:var(--mono);padding:0;background:none;border:none}
+/* expanded detail drawer */
+.cal-expand{background:var(--sf);border:1px solid var(--bd);border-top:none;border-radius:0 0 var(--radius-sm) var(--radius-sm);overflow:hidden;margin-bottom:3px}
+.cal-expand.is-today-expand{border-color:var(--green);border-width:0 1.5px 1.5px 1.5px}
 .cal-slot{border-bottom:1px solid var(--bd);display:flex;flex-direction:column}
 .cal-slot:last-child{border-bottom:none}
-.cal-slot-row{display:flex;min-height:48px}
+.cal-slot-row{display:flex;min-height:44px}
 .cal-slot-label{width:22px;flex-shrink:0;display:flex;align-items:center;justify-content:center;font-size:6px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;color:var(--t4);font-family:var(--mono);border-right:1px solid var(--bd);background:var(--sf2)}
 .cal-slot-content{flex:1;min-width:0}
 .cal-ico{display:flex;align-items:center;justify-content:center;flex-shrink:0;padding-top:1px}
@@ -2025,15 +2028,14 @@ function renderWeekCalendar(){
   var el=document.getElementById("week-calendar");
   if(!el)return;
   var range=getSelectedRange(),wkStart2=range.start;
-  var dayLetters=['M','T','W','T','F','S','S'];
-  var dayNamesFull=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+  var dayNames=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
   var today=new Date();
 
   var ICO={
-    disc:   '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><ellipse cx="7" cy="9.5" rx="5.5" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 9.5Q3.5 4.5 7 4Q10.5 4.5 12.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>',
-    pulse:  '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><polyline points="1,7 4,7 5.5,3.5 7.5,10.5 9,7 13,7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
-    barbell:'<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.5"/><rect x="4.5" y="4.2" width="5" height="5.6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x=".5" y="5" width="2" height="4" rx=".6" fill="currentColor"/><rect x="11.5" y="5" width="2" height="4" rx=".6" fill="currentColor"/></svg>',
-    wave:   '<svg width="13" height="13" viewBox="0 0 14 14" fill="none" style="display:block"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".3"/></svg>'
+    disc:   '<svg width="11" height="11" viewBox="0 0 14 14" fill="none" style="display:block;flex-shrink:0"><ellipse cx="7" cy="9.5" rx="5.5" ry="2.2" stroke="currentColor" stroke-width="1.4"/><path d="M1.5 9.5Q3.5 4.5 7 4Q10.5 4.5 12.5 9.5" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" fill="none"/></svg>',
+    pulse:  '<svg width="11" height="11" viewBox="0 0 14 14" fill="none" style="display:block;flex-shrink:0"><polyline points="1,7 4,7 5.5,3.5 7.5,10.5 9,7 13,7" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none"/></svg>',
+    barbell:'<svg width="11" height="11" viewBox="0 0 14 14" fill="none" style="display:block;flex-shrink:0"><line x1="2" y1="7" x2="12" y2="7" stroke="currentColor" stroke-width="1.5"/><rect x="4.5" y="4.2" width="5" height="5.6" rx="1" stroke="currentColor" stroke-width="1.4"/><rect x=".5" y="5" width="2" height="4" rx=".6" fill="currentColor"/><rect x="11.5" y="5" width="2" height="4" rx=".6" fill="currentColor"/></svg>',
+    wave:   '<svg width="11" height="11" viewBox="0 0 14 14" fill="none" style="display:block;flex-shrink:0"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".3"/></svg>'
   };
   function sIco(s){return s.type==='game'?ICO.disc:ICO.pulse;}
 
@@ -2057,129 +2059,135 @@ function renderWeekCalendar(){
   var wn=selectedWeek?selectedWeek.wn:("W"+isoWeek(new Date())+" '"+String(isoYear(new Date())).slice(2));
   var hasSessions=weekSessions().length>0||undated.length>0;
 
-  // Determine which day index to show in the panel
-  // Default: today if in range, else first day with content, else 0
-  var todayIdx=-1;
-  for(var i=0;i<7;i++){if(days[i].date.toDateString()===today.toDateString()){todayIdx=i;break;}}
-  if(calSelectedDay<0){
-    // auto-select: prefer today, else first day with gym/session/recovery
-    if(todayIdx>=0){calSelectedDay=todayIdx;}
-    else{
-      var firstActive=-1;
-      for(var i=0;i<7;i++){
-        if(days[i].sessions.length||gymPlacements[i]||(recPlacement&&recPlacement.dayIdx===i)){firstActive=i;break;}
-      }
-      calSelectedDay=firstActive>=0?firstActive:0;
-    }
+  // Recovery pill class by srState
+  function recPillClass(state){
+    if(state==='fatigued')return 'cal-pill cal-pill-recovery-fatigued';
+    if(state==='sore')return 'cal-pill cal-pill-recovery-sore';
+    return 'cal-pill cal-pill-recovery-both';
   }
 
   // ── WEEK LABEL ──
   var html="<div style='font-size:10px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;"
     +"color:var(--t3);margin-bottom:8px;font-family:var(--display)'>"+wn+" \u2014 Week View</div>";
 
-  // ── CHIP ROW ──
-  html+="<div class='cal-chip-row'>";
+  // ── ROWS ──
+  html+="<div class='cal-week'>";
   days.forEach(function(day,i){
     var isToday=day.date.toDateString()===today.toDateString();
     var isSel=calSelectedDay===i;
-    var cls="cal-chip"+(isToday?" is-today":"")+(isSel?" is-selected":"");
-    // Dots: green=session/game, purple=gym, cyan=recovery
-    var dots="";
+    var gp=gymPlacements[i];
+    var isRecAM=recPlacement&&recPlacement.dayIdx===i&&recPlacement.slot==='am';
+    var isRecPM=recPlacement&&recPlacement.dayIdx===i&&recPlacement.slot==='pm';
+    var dateStr=day.date.toISOString().split('T')[0];
+
+    var rowCls="cal-row"+(isToday?" is-today":"")+(isSel?" is-expanded":"");
+    html+="<div class='"+rowCls+"' onclick='calSelectDay("+i+")'>"
+      +"<div class='cal-row-day'>"
+      +"<div class='cal-row-dayname'>"+dayNames[i]+"</div>"
+      +"<div class='cal-row-date'>"+day.date.getDate()+"</div>"
+      +"</div>"
+      +"<div class='cal-row-pills'>";
+
+    // Gym pill
+    if(gp){
+      html+="<span class='cal-pill cal-pill-gym'>"+ICO.barbell+gp.session+"</span>";
+    }
+    // Recovery AM pill
+    if(isRecAM&&srState){
+      var proto=RECOVERY_PROTOCOLS[srState];
+      if(proto)html+="<span class='"+recPillClass(srState)+"'>"+ICO.wave+proto.label+"</span>";
+    }
+    // Session pills (PM)
     if(day.sessions.length){
-      var hasGame=day.sessions.some(function(s){return s.type==='game';});
-      dots+="<div class='cal-chip-dot' style='background:"+(hasGame?"var(--cyan)":"var(--green)")+"'></div>";
+      day.sessions.forEach(function(s){
+        var ig=s.type==='game';
+        var lbl=s.label||(ig?'Game':'Training');
+        var cls=ig?'cal-pill cal-pill-game':'cal-pill cal-pill-training';
+        html+="<span class='"+cls+"'>"+sIco(s)+lbl+"</span>";
+      });
     }
-    if(gymPlacements[i]){dots+="<div class='cal-chip-dot' style='background:var(--green)'></div>";}
-    if(recPlacement&&recPlacement.dayIdx===i){dots+="<div class='cal-chip-dot' style='background:var(--cyan)'></div>";}
-    html+="<div class='"+cls+"' onclick='calSelectDay("+i+")'>"
-      +"<span class='cal-chip-name'>"+dayLetters[i]+"</span>"
-      +"<span class='cal-chip-date'>"+day.date.getDate()+"</span>"
-      +"<div class='cal-chip-dots'>"+dots+"</div>"
-      +"</div>";
+    // Recovery PM pill
+    if(isRecPM&&srState){
+      var proto=RECOVERY_PROTOCOLS[srState];
+      if(proto)html+="<span class='"+recPillClass(srState)+"'>"+ICO.wave+proto.label+"</span>";
+    }
+    // Rest indicator
+    if(!gp&&!day.sessions.length&&!isRecAM&&!isRecPM){
+      html+="<span class='cal-pill cal-pill-rest'>Rest</span>";
+    }
+
+    html+="</div></div>"; // end pills + row
+
+    // Expanded detail drawer
+    if(isSel){
+      var expandCls="cal-expand"+(isToday?" is-today-expand":"");
+      html+="<div class='"+expandCls+"'>";
+
+      // AM slot
+      html+="<div class='cal-slot'><div class='cal-slot-row'>"
+        +"<div class='cal-slot-label'>AM</div>"
+        +"<div class='cal-slot-content'>";
+      if(isRecAM){
+        var ro=getRecoveryOption(srState,i,days,dateStr);
+        if(ro){
+          html+="<div class='cal-recovery'>"
+            +"<span class='cal-ico' style='color:"+ro.color+";margin-top:1px'>"+ICO.wave+"</span>"
+            +"<div style='flex:1;min-width:0'>"
+            +"<div class='cal-recovery-lbl' style='color:"+ro.color+"'>Recovery \u2014 "+ro.label+"</div>"
+            +"<div class='cal-recovery-tip'>"+ro.option+"</div>"
+            +"</div></div>";
+        }
+      } else if(gp){
+        html+="<div class='cal-gym-card'>"
+          +"<span class='cal-ico' style='color:var(--green);margin-top:1px'>"+ICO.barbell+"</span>"
+          +"<div style='flex:1;min-width:0'>"
+          +"<div class='cal-gym-name'>"+gp.session+"</div>"
+          +"<div class='cal-gym-intent'>"+gp.intent+"</div>"
+          +(gp.ofc
+            ?"<div class='cal-gym-ofc-tap' onclick='openOFCSheetTo(\""+(gp.ofcSession?gp.ofcSession.num:'01')+"\")'>+ OFC: "+(gp.ofcSession?gp.ofcSession.title:'Session')+" <svg width=\'8\' height=\'8\' viewBox=\'0 0 8 8\' fill=\'none\'><path d=\'M2 4h4M4 2l2 2-2 2\' stroke=\'currentColor\' stroke-width=\'1.2\' stroke-linecap=\'round\'/></svg></div>"
+            :"")
+          +"</div></div>";
+      } else {
+        html+="<div class='cal-empty-pm'>\u2014</div>";
+      }
+      html+="</div></div></div>";
+
+      // PM slot
+      html+="<div class='cal-slot'><div class='cal-slot-row'>"
+        +"<div class='cal-slot-label'>PM</div>"
+        +"<div class='cal-slot-content'>";
+      if(day.sessions.length){
+        day.sessions.forEach(function(s){
+          var ig=s.type==='game';
+          html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
+            +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+sIco(s)+"</span>"
+            +"<div class='cal-session-body'>"
+            +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
+            +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"
+            +(s.vhsr>0?" \xb7 VHSR <b>"+s.vhsr+"m</b>":"")
+            +(ig?" \xb7 <b>"+s.pts+"pts</b>":"")
+            +"</div></div></div>";
+        });
+      }
+      if(isRecPM){
+        var ro2=getRecoveryOption(srState,i,days,dateStr);
+        if(ro2){
+          html+="<div class='"+(day.sessions.length?"cal-recovery-inline":"cal-recovery")+"'>"
+            +"<span class='cal-ico' style='color:"+ro2.color+";margin-top:1px'>"+ICO.wave+"</span>"
+            +"<div style='flex:1;min-width:0'>"
+            +"<div class='cal-recovery-lbl' style='color:"+ro2.color+"'>Recovery \u2014 "+ro2.label+"</div>"
+            +"<div class='cal-recovery-tip'>"+ro2.option+"</div>"
+            +"</div></div>";
+        }
+      }
+      if(!day.sessions.length&&!isRecPM){
+        html+="<div class='cal-empty-pm'>\u2014</div>";
+      }
+      html+="</div></div></div>";
+      html+="</div>"; // end cal-expand
+    }
   });
-  html+="</div>";
-
-  // ── DETAIL PANEL for selected day ──
-  var si=calSelectedDay;
-  var selDay=days[si];
-  var selDateStr=selDay.date.toISOString().split('T')[0];
-  var pmSessions=selDay.sessions;
-  var gp=gymPlacements[si];
-  var isRecAM=recPlacement&&recPlacement.dayIdx===si&&recPlacement.slot==='am';
-  var isRecPM=recPlacement&&recPlacement.dayIdx===si&&recPlacement.slot==='pm';
-  var isToday2=selDay.date.toDateString()===today.toDateString();
-
-  html+="<div class='cal-detail'>";
-  // Detail header
-  var headStyle=isToday2?"color:var(--green)":"";
-  html+="<div class='cal-detail-head'>"
-    +"<span class='cal-detail-title' style='"+headStyle+"'>"+dayNamesFull[si]+"</span>"
-    +"<span class='cal-detail-date' style='"+headStyle+"'>"
-    +selDay.date.toLocaleDateString('en-AU',{day:'numeric',month:'short'})+"</span>"
-    +"</div>";
-
-  // AM slot
-  html+="<div class='cal-slot'><div class='cal-slot-row'>"
-    +"<div class='cal-slot-label'>AM</div>"
-    +"<div class='cal-slot-content'>";
-  if(isRecAM){
-    var ro=getRecoveryOption(srState,si,days,selDateStr);
-    if(ro){
-      html+="<div class='cal-recovery'>"
-        +"<span class='cal-ico' style='color:"+ro.color+";margin-top:1px'>"+ICO.wave+"</span>"
-        +"<div style='flex:1;min-width:0'>"
-        +"<div class='cal-recovery-lbl' style='color:"+ro.color+"'>Recovery \u2014 "+ro.label+"</div>"
-        +"<div class='cal-recovery-tip'>"+ro.option+"</div>"
-        +"</div></div>";
-    }
-  } else if(gp){
-    html+="<div class='cal-gym-card'>"
-      +"<span class='cal-ico' style='color:var(--green);margin-top:1px'>"+ICO.barbell+"</span>"
-      +"<div style='flex:1;min-width:0'>"
-      +"<div class='cal-gym-name'>"+gp.session+"</div>"
-      +"<div class='cal-gym-intent'>"+gp.intent+"</div>"
-      +(gp.ofc
-        ?"<div class='cal-gym-ofc-tap' onclick='openOFCSheetTo(\""+(gp.ofcSession?gp.ofcSession.num:'01')+"\")'>+ OFC: "+(gp.ofcSession?gp.ofcSession.title:'Session')+" <svg width=\'8\' height=\'8\' viewBox=\'0 0 8 8\' fill=\'none\'><path d=\'M2 4h4M4 2l2 2-2 2\' stroke=\'currentColor\' stroke-width=\'1.2\' stroke-linecap=\'round\'/></svg></div>"
-        :"")
-      +"</div></div>";
-  } else {
-    html+="<div class='cal-empty-pm'>\u2014</div>";
-  }
-  html+="</div></div></div>";
-
-  // PM slot
-  html+="<div class='cal-slot'><div class='cal-slot-row'>"
-    +"<div class='cal-slot-label'>PM</div>"
-    +"<div class='cal-slot-content'>";
-  if(pmSessions.length){
-    pmSessions.forEach(function(s){
-      var ig=s.type==='game';
-      html+="<div class='cal-session' onclick='editSession("+s.id+")'>"
-        +"<span class='cal-ico' style='color:"+(ig?"var(--cyan)":"var(--green)")+"'>"+sIco(s)+"</span>"
-        +"<div class='cal-session-body'>"
-        +"<div class='cal-session-name'>"+(s.label||(ig?"Game":"Training"))+"</div>"
-        +"<div class='cal-session-stats'>HSR <b>"+s.hsr+"m</b>"
-        +(s.vhsr>0?" \xb7 VHSR <b>"+s.vhsr+"m</b>":"")
-        +(ig?" \xb7 <b>"+s.pts+"pts</b>":"")
-        +"</div></div></div>";
-    });
-  }
-  if(isRecPM){
-    var ro2=getRecoveryOption(srState,si,days,selDateStr);
-    if(ro2){
-      html+="<div class='"+(pmSessions.length?"cal-recovery-inline":"cal-recovery")+"'>"
-        +"<span class='cal-ico' style='color:"+ro2.color+";margin-top:1px'>"+ICO.wave+"</span>"
-        +"<div style='flex:1;min-width:0'>"
-        +"<div class='cal-recovery-lbl' style='color:"+ro2.color+"'>Recovery \u2014 "+ro2.label+"</div>"
-        +"<div class='cal-recovery-tip'>"+ro2.option+"</div>"
-        +"</div></div>";
-    }
-  }
-  if(!pmSessions.length&&!isRecPM){
-    html+="<div class='cal-empty-pm'>\u2014</div>";
-  }
-  html+="</div></div></div>";
-  html+="</div>"; // end cal-detail
+  html+="</div>"; // end cal-week
 
   // Unscheduled sessions
   if(undated.length){
@@ -2205,7 +2213,8 @@ function renderWeekCalendar(){
 }
 
 function calSelectDay(idx){
-  calSelectedDay=idx;
+  // Toggle: tap same row again to collapse
+  calSelectedDay=(calSelectedDay===idx)?-1:idx;
   renderWeekCalendar();
 }
 
