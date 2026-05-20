@@ -518,6 +518,73 @@ input,select{font-family:inherit;outline:none}
 .drill-modal-video-btn:active{background:rgba(220,38,38,0.13)}
 .drill-modal-video-btn svg{flex-shrink:0}
 .drill-lib-watchbtn{margin-top:6px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;font-family:var(--display);letter-spacing:.5px;color:#dc2626;background:rgba(220,38,38,0.07);border:1px solid rgba(220,38,38,0.2);border-radius:8px;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+
+/* ── RTR CARD ── */
+.rtr-card{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--radius);overflow:hidden;margin-bottom:16px}
+.rtr-card-header{padding:13px 14px 11px;background:linear-gradient(135deg,rgba(5,150,105,0.06),rgba(2,132,199,0.06));border-bottom:1px solid var(--bd)}
+.rtr-card-label{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:3px;font-family:var(--display)}
+.rtr-card-title{font-family:var(--display);font-size:20px;font-weight:900;letter-spacing:.5px;color:var(--t);line-height:1.1}
+.rtr-card-sub{font-size:11px;color:var(--t3);margin-top:4px;line-height:1.4}
+.rtr-phase-tabs{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--bd)}
+.rtr-phase-btn{flex:1;padding:7px 4px;border-radius:var(--radius-sm);font-family:var(--display);font-size:11px;font-weight:800;letter-spacing:.3px;border:1.5px solid var(--bd2);background:transparent;color:var(--t3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.rtr-phase-btn.on{border-color:var(--green);background:rgba(5,150,105,0.08);color:var(--green)}
+.rtr-week-tabs{display:flex;gap:5px;padding:8px 14px;border-bottom:1px solid var(--bd)}
+.rtr-week-btn{flex:1;padding:5px 2px;border-radius:var(--radius-xs);font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:.3px;border:1.5px solid var(--bd2);background:transparent;color:var(--t3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.rtr-week-btn.on{border-color:var(--cyan);background:rgba(2,132,199,0.08);color:var(--cyan)}
+.rtr-session-body{padding:12px 14px 14px}
+.rtr-section-title{font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin:10px 0 6px}
+.rtr-section-title:first-child{margin-top:0}
+.rtr-drill-row{display:flex;align-items:center;gap:8px;padding:7px 0;border-bottom:1px solid var(--bd)}
+.rtr-drill-row:last-child{border-bottom:none}
+.rtr-drill-num{font-family:var(--mono);font-size:9px;font-weight:700;color:var(--t4);width:14px;flex-shrink:0;text-align:right}
+.rtr-drill-info{flex:1;min-width:0}
+.rtr-drill-name{font-size:12px;font-weight:600;color:var(--t);line-height:1.3}
+.rtr-drill-desc{font-size:10px;color:var(--t3);margin-top:1px;line-height:1.4}
+.rtr-drill-load{font-family:var(--display);font-size:12px;font-weight:800;color:var(--cyan);flex-shrink:0;text-align:right;min-width:60px}
+.rtr-drill-actions{display:flex;gap:4px;margin-top:4px;flex-wrap:wrap}
+.rtr-drill-btn{display:inline-flex;align-items:center;gap:3px;padding:3px 7px;border-radius:6px;font-size:9px;font-weight:700;font-family:var(--display);letter-spacing:.3px;cursor:pointer;border:1px solid;-webkit-tap-highlight-color:transparent}
+.rtr-drill-btn-diag{color:var(--cyan);background:rgba(2,132,199,0.07);border-color:rgba(2,132,199,0.2)}
+.rtr-drill-btn-vid{color:#dc2626;background:rgba(220,38,38,0.07);border-color:rgba(220,38,38,0.2)}
+.rtr-drill-btn-soon{color:var(--t4);background:var(--sf3);border-color:var(--bd2);opacity:.6;cursor:default;pointer-events:none}
+.rtr-locked{padding:16px 14px;text-align:center}
+.rtr-locked-icon{font-size:24px;margin-bottom:8px}
+.rtr-locked-title{font-family:var(--display);font-size:15px;font-weight:900;color:var(--t);margin-bottom:4px}
+.rtr-locked-sub{font-size:11px;color:var(--t3);line-height:1.5;margin-bottom:12px}
+.rtr-code-input-wrap{display:flex;gap:7px;margin-top:8px}
+.rtr-code-input{flex:1;padding:9px 11px;border-radius:var(--radius-sm);border:1.5px solid var(--bd2);background:var(--sf3);font-family:var(--mono);font-size:13px;color:var(--t);letter-spacing:1px;text-transform:uppercase}
+.rtr-code-input:focus{border-color:var(--green);outline:none}
+.rtr-code-btn{padding:9px 14px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-family:var(--display);font-size:12px;font-weight:800;letter-spacing:.5px;border:none;cursor:pointer;flex-shrink:0}
+.rtr-code-error{font-size:11px;color:var(--red);margin-top:5px}
+.rtr-progress-row{display:flex;gap:4px;padding:8px 14px;border-bottom:1px solid var(--bd)}
+.rtr-prog-dot{flex:1;height:4px;border-radius:2px;background:var(--bd2)}
+.rtr-prog-dot.done{background:var(--green)}
+.rtr-prog-dot.active{background:var(--cyan)}
+
+/* ── COACH PANEL ── */
+.coach-panel-title{font-size:20px;font-weight:900;letter-spacing:1px;margin-bottom:4px;font-family:var(--display)}
+.coach-panel-sub{font-size:11px;color:var(--t3);margin-bottom:20px}
+.coach-section{margin-bottom:24px}
+.coach-section-title{font-family:var(--display);font-size:13px;font-weight:800;letter-spacing:.5px;color:var(--t2);text-transform:uppercase;margin-bottom:10px;padding-bottom:6px;border-bottom:1px solid var(--bd)}
+.coach-gen-form{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--radius);padding:13px 14px}
+.coach-gen-label{font-size:10px;font-weight:700;letter-spacing:.5px;text-transform:uppercase;color:var(--t3);margin-bottom:5px;font-family:var(--display)}
+.coach-gen-input{width:100%;padding:9px 11px;border-radius:var(--radius-sm);border:1.5px solid var(--bd2);background:var(--sf3);font-family:var(--body);font-size:13px;color:var(--t);margin-bottom:10px}
+.coach-gen-input:focus{border-color:var(--green);outline:none}
+.coach-gen-btn{width:100%;padding:11px;border-radius:var(--radius-sm);background:var(--green);color:#fff;font-family:var(--display);font-size:13px;font-weight:800;letter-spacing:.5px;border:none;cursor:pointer}
+.coach-gen-result{margin-top:12px;padding:11px 13px;background:var(--sf3);border-radius:var(--radius-sm);border:1.5px solid var(--bd2);display:none}
+.coach-gen-result.show{display:block}
+.coach-gen-result-label{font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t4);margin-bottom:5px;font-family:var(--display)}
+.coach-gen-code{font-family:var(--mono);font-size:15px;font-weight:700;color:var(--green);margin-bottom:6px;letter-spacing:1px}
+.coach-gen-link{font-size:10px;color:var(--t3);word-break:break-all;margin-bottom:8px;line-height:1.4}
+.coach-copy-btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:var(--radius-xs);background:var(--green);color:#fff;font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:.5px;border:none;cursor:pointer}
+.coach-codes-list{display:flex;flex-direction:column;gap:7px}
+.coach-code-row{background:var(--sf);border:1.5px solid var(--bd2);border-radius:var(--radius-sm);padding:10px 13px;display:flex;align-items:center;gap:10px}
+.coach-code-row.redeemed{border-color:rgba(5,150,105,0.3);background:rgba(5,150,105,0.03)}
+.coach-code-athlete{font-family:var(--display);font-size:13px;font-weight:800;color:var(--t);flex:1}
+.coach-code-code{font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:1px}
+.coach-code-status{font-family:var(--display);font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 7px;border-radius:10px;flex-shrink:0}
+.coach-code-status.pending{background:rgba(217,119,6,0.1);color:#92400e;border:1px solid rgba(217,119,6,0.2)}
+.coach-code-status.redeemed{background:rgba(5,150,105,0.1);color:var(--green);border:1px solid rgba(5,150,105,0.2)}
+.coach-empty{font-size:12px;color:var(--t4);text-align:center;padding:20px 0;font-style:italic}
 /* ── YOUTUBE POPUP ── */
 .yt-popup-overlay{position:fixed;inset:0;z-index:90;background:rgba(15,23,42,0.75);opacity:0;pointer-events:none;transition:opacity .25s}
 .yt-popup-overlay.open{opacity:1;pointer-events:all}
@@ -862,6 +929,15 @@ input,select{font-family:inherit;outline:none}
   <div class="sc-panel-title">S&amp;C</div>
   <div class="sc-panel-sub">Your week view — gym sessions, OFC, and running load in one place.</div>
   <div id="week-calendar" style="margin-bottom:14px"></div>
+  <!-- RTR CARD -->
+  <div class="rtr-card" id="rtr-card" style="display:none">
+    <div class="rtr-card-header">
+      <div class="rtr-card-label">RETURN TO RUN</div>
+      <div class="rtr-card-title">6-Week Reload Protocol</div>
+      <div class="rtr-card-sub">Linear mechanics first, then curvilinear &amp; COD. Work through each week in order.</div>
+    </div>
+    <div id="rtr-body"></div>
+  </div>
   <div class="ofc-menu-section">
     <div class="ofc-menu-header">
       <div class="ofc-menu-title">OFF-FEET CONDITIONING</div>
@@ -875,6 +951,33 @@ input,select{font-family:inherit;outline:none}
       <div class="ofc-menu-badge">9 DRILLS</div>
     </div>
     <div class="drill-lib-accordion" id="drill-lib-accordion"></div>
+  </div>
+</div>
+
+<!-- ── COACH PANEL ── -->
+<div class="panel" id="panel-coach">
+  <div class="coach-panel-title">COACH</div>
+  <div class="coach-panel-sub">Dylan Bennett — admin view</div>
+  <div class="coach-section">
+    <div class="coach-section-title">Generate RTR Code</div>
+    <div class="coach-gen-form">
+      <div class="coach-gen-label">Athlete Name</div>
+      <input class="coach-gen-input" id="coach-athlete-name" type="text" placeholder="e.g. James Smith" autocomplete="off">
+      <button class="coach-gen-btn" onclick="generateRTRCode()">GENERATE &amp; COPY LINK</button>
+      <div class="coach-gen-result" id="coach-gen-result">
+        <div class="coach-gen-result-label">Code Generated</div>
+        <div class="coach-gen-code" id="coach-gen-code"></div>
+        <div class="coach-gen-link" id="coach-gen-link"></div>
+        <button class="coach-copy-btn" onclick="copyRTRLink()">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 3V2a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          COPY LINK
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="coach-section">
+    <div class="coach-section-title">Issued Codes</div>
+    <div class="coach-codes-list" id="coach-codes-list"><div class="coach-empty">No codes issued yet</div></div>
   </div>
 </div>
 
@@ -1642,6 +1745,8 @@ if(SUPABASE_READY){
     if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();}
     loadSessions();
     if(currentUser)loadSubscription();
+    updateCoachNav();
+    if(currentUser)checkRTRAccess();
   });
 } else {
   sessions=DEMO_SESSIONS.slice();renderAuthUI();renderAll();
@@ -2444,9 +2549,8 @@ function toggleDrillLib(idx){
 }
 
 function openDrillModal(key){
-  // Gate drill diagrams behind Pro — block unauthenticated users and free tier
-  if(!currentUser){signIn();return;}
-  if(subscriptionLoaded && !canAccess('ai_prescription')){
+  // Gate drill diagrams behind Pro — show upgrade modal for free users
+  if(currentUser && subscriptionLoaded && !canAccess('ai_prescription')){
     showUpgradeModal('ai_prescription');
     return;
   }
@@ -2481,12 +2585,6 @@ function closeDrillModal(){
 }
 
 function openYTPopup(url,title){
-  // Gate videos behind Pro — block unauthenticated users and free tier
-  if(!currentUser){signIn();return;}
-  if(subscriptionLoaded && !canAccess('ai_prescription')){
-    showUpgradeModal('ai_prescription');
-    return;
-  }
   // Convert any YouTube URL to embed format
   var videoId='';
   var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
@@ -3694,7 +3792,8 @@ function renderSRPanel(){
 }
 
 var MORE_TABS=['benchmarks','definitions','howto'];
-var PRIMARY_TABS=['dashboard','sessions','roadmap','sc','metrics'];
+var PRIMARY_TABS=['dashboard','sessions','roadmap','sc','metrics','coach'];
+var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 function openMoreDrawer(){
   document.getElementById('more-drawer').classList.add('open');
   document.getElementById('more-overlay').classList.add('open');
@@ -3742,8 +3841,375 @@ function switchTab(name,el){
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
   if(name==="metrics")renderSportScience();
-  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();renderDrillLibrary();}
+  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();renderDrillLibrary();renderRTRCard();}
   if(name==="definitions")renderDefinitions();
+  if(name==="coach")renderCoachPanel();
+}
+
+// ── ADMIN / COACH VISIBILITY ──
+function updateCoachNav(){
+  var btn=document.getElementById('bnav-coach');
+  if(!btn)return;
+  btn.style.display=(currentUser&&currentUser.id===COACH_UID)?'flex':'none';
+}
+
+// ── RTR DATA ──
+var RTR_PHASES={
+  linear:{
+    label:'Phase 1 — Linear Reload',
+    weeks:[
+      {
+        label:'Week 1',
+        warmup:[
+          {name:'Inchworms → Cobra → WG', load:'3 × each side', type:'video', videoUrl:'', desc:''},
+          {name:'Switch Pogos', load:'5 × str / 5 × diag', type:'video', videoUrl:'https://www.youtube.com/watch?v=8VvQYnzhASY', desc:''},
+          {name:'Lateral Shuffle', load:'20m each side', type:'desc', desc:'Feet shoulder-width, stay low and push off outside foot. Keep hips square.'},
+          {name:'Any drilling of your choice', load:'—', type:'desc', desc:'Frisbee drilling or any movement to elevate the heart rate.'}
+        ],
+        main:[
+          {name:'A March', load:'3 × 10m', type:'video', videoUrl:'', desc:''},
+          {name:'A Switch', load:'3 × 10m', type:'video', videoUrl:'https://www.youtube.com/watch?v=N-_B2ouktG8', desc:''},
+          {name:'ASK Dribble Bleed', load:'3 × 30m', type:'video', videoUrl:'https://www.youtube.com/watch?v=olRFZioo85g', desc:''},
+          {name:'50m Straights', load:'× 10 @ 10s:20s', type:'desc', desc:'Run 50m at controlled pace, walk back recovery 20s. Focus on relaxed mechanics.'},
+          {name:'50m Swerves', load:'× 10 @ 10s:20s', type:'desc', desc:'50m with subtle lateral weave. Keep tempo consistent, not maximal.'},
+          {name:'Speed Build Up 40m', load:'80%', type:'diag', key:'c_speedgrid'},
+          {name:'Straight Mungo', load:'× 3', type:'diag', key:'c_str_mungo'},
+          {name:'50m Lane Changes', load:'—', type:'desc', desc:'Not prescribed in Week 1.'},
+          {name:'Curved Speed Effort', load:'—', type:'diag', key:'c_curved'}
+        ]
+      },
+      {
+        label:'Week 2',
+        warmup:[
+          {name:'Inchworms → Cobra → WG', load:'3 × each side', type:'video', videoUrl:'', desc:''},
+          {name:'Switch Pogos', load:'5 × str / 5 × diag', type:'video', videoUrl:'https://www.youtube.com/watch?v=8VvQYnzhASY', desc:''},
+          {name:'Lateral Shuffle', load:'20m each side', type:'desc', desc:'Feet shoulder-width, stay low and push off outside foot. Keep hips square.'},
+          {name:'Any drilling of your choice', load:'—', type:'desc', desc:'Frisbee drilling or any movement to elevate the heart rate.'}
+        ],
+        main:[
+          {name:'A March', load:'3 × 10m', type:'video', videoUrl:'', desc:''},
+          {name:'A Switch', load:'3 × 20m', type:'video', videoUrl:'https://www.youtube.com/watch?v=N-_B2ouktG8', desc:''},
+          {name:'ASK Dribble Bleed', load:'3 × 30m', type:'video', videoUrl:'https://www.youtube.com/watch?v=olRFZioo85g', desc:''},
+          {name:'50m Straights', load:'× 10 @ 10s:20s', type:'desc', desc:'Run 50m at controlled pace, walk back recovery 20s.'},
+          {name:'50m Swerves', load:'× 10 @ 10s:20s', type:'desc', desc:'50m with subtle lateral weave.'},
+          {name:'Speed Build Up 40m', load:'85%', type:'diag', key:'c_speedgrid'},
+          {name:'Straight Mungo', load:'× 3', type:'diag', key:'c_str_mungo'},
+          {name:'50m Lane Changes', load:'× 4', type:'video', videoUrl:'', desc:''},
+          {name:'Curved Speed Effort', load:'× 2', type:'diag', key:'c_curved'}
+        ]
+      },
+      {
+        label:'Week 3',
+        warmup:[
+          {name:'Inchworms → Cobra → WG', load:'3 × each side', type:'video', videoUrl:'', desc:''},
+          {name:'Switch Pogos', load:'5 × str / 5 × diag', type:'video', videoUrl:'https://www.youtube.com/watch?v=8VvQYnzhASY', desc:''},
+          {name:'Lateral Shuffle', load:'20m each side', type:'desc', desc:'Feet shoulder-width, stay low and push off outside foot. Keep hips square.'},
+          {name:'Any drilling of your choice', load:'—', type:'desc', desc:'Frisbee drilling or any movement to elevate the heart rate.'}
+        ],
+        main:[
+          {name:'A March', load:'3 × 10m', type:'video', videoUrl:'', desc:''},
+          {name:'A Switch', load:'3 × 20m', type:'video', videoUrl:'https://www.youtube.com/watch?v=N-_B2ouktG8', desc:''},
+          {name:'ASK Dribble Bleed', load:'3 × 30m', type:'video', videoUrl:'https://www.youtube.com/watch?v=olRFZioo85g', desc:''},
+          {name:'50m Straights', load:'× 10 @ 10s:20s', type:'desc', desc:'Run 50m at controlled pace, walk back recovery 20s.'},
+          {name:'50m Swerves', load:'× 10 @ 10s:20s', type:'desc', desc:'50m with subtle lateral weave.'},
+          {name:'Speed Build Up 40m', load:'90%', type:'diag', key:'c_speedgrid'},
+          {name:'Straight Mungo', load:'× 3', type:'diag', key:'c_str_mungo'},
+          {name:'50m Lane Changes', load:'× 6', type:'video', videoUrl:'', desc:''},
+          {name:'Curved Speed Effort', load:'× 4', type:'diag', key:'c_curved'}
+        ]
+      }
+    ]
+  },
+  cod:{
+    label:'Phase 2 — Curvilinear & COD',
+    weeks:[
+      {
+        label:'Week 4',
+        warmup:[
+          {name:'Inchworms → Cobra → WG', load:'3 × each side', type:'video', videoUrl:'', desc:''},
+          {name:'SL Leap', load:'3 × each side', type:'desc', desc:'Single-leg lateral leap — stick the landing and hold for 1 second before next rep.'},
+          {name:'Lateral Shuffle', load:'20m each side', type:'desc', desc:'Feet shoulder-width, stay low and push off outside foot. Keep hips square.'},
+          {name:'Any drilling of your choice', load:'—', type:'desc', desc:'Frisbee drilling or any movement to elevate the heart rate.'}
+        ],
+        main:[
+          {name:'A Switch', load:'3 × 20m', type:'video', videoUrl:'https://www.youtube.com/watch?v=N-_B2ouktG8', desc:''},
+          {name:'A Triple', load:'3 × 10m', type:'video', videoUrl:'https://www.youtube.com/watch?v=NCX2aBeZn0c', desc:''},
+          {name:'Lateral A Run', load:'2 × 10m ea', type:'video', videoUrl:'', desc:''},
+          {name:'50m Straights', load:'× 5 @ 10s:20s', type:'desc', desc:'Run 50m at controlled pace, walk back 20s.'},
+          {name:'50m Swerves', load:'× 5 @ 10s:20s', type:'desc', desc:'50m with lateral weave.'},
+          {name:'Accel 10m', load:'× 4', type:'desc', desc:'Explosive 10m acceleration from standing start. Walk back each rep.'},
+          {name:'5m Shuffle + 15m Accel', load:'× 2', type:'desc', desc:'Lateral shuffle 5m then drive hard into 15m acceleration.'},
+          {name:'J Bend Accel 20m', load:'× 2', type:'desc', desc:'Curve into the J then extend into full acceleration over 20m.'},
+          {name:'Speed Build Up 40m', load:'90%', type:'diag', key:'c_speedgrid'},
+          {name:'D Strafe Mungo', load:'× 2', type:'diag', key:'c_mungo'},
+          {name:'Box Drill', load:'× 2', type:'diag', key:'c_boxdrill'}
+        ]
+      },
+      {
+        label:'Week 5',
+        warmup:[
+          {name:'Inchworms → Cobra → WG', load:'3 × each side', type:'video', videoUrl:'', desc:''},
+          {name:'SL Leap', load:'3 × each side', type:'desc', desc:'Single-leg lateral leap — stick the landing and hold for 1 second before next rep.'},
+          {name:'Lateral Shuffle', load:'20m each side', type:'desc', desc:'Feet shoulder-width, stay low and push off outside foot. Keep hips square.'},
+          {name:'Any drilling of your choice', load:'—', type:'desc', desc:'Frisbee drilling or any movement to elevate the heart rate.'}
+        ],
+        main:[
+          {name:'A Switch', load:'3 × 20m', type:'video', videoUrl:'https://www.youtube.com/watch?v=N-_B2ouktG8', desc:''},
+          {name:'A Triple', load:'3 × 20m', type:'video', videoUrl:'https://www.youtube.com/watch?v=NCX2aBeZn0c', desc:''},
+          {name:'Lateral A Run', load:'3 × 10m ea', type:'video', videoUrl:'', desc:''},
+          {name:'50m Straights', load:'× 5 @ 10s:20s', type:'desc', desc:'Run 50m at controlled pace, walk back 20s.'},
+          {name:'50m Swerves', load:'× 5 @ 10s:20s', type:'desc', desc:'50m with lateral weave.'},
+          {name:'Accel 10m', load:'× 4', type:'desc', desc:'Explosive 10m acceleration from standing start. Walk back each rep.'},
+          {name:'5m Shuffle + 15m Accel', load:'× 4', type:'desc', desc:'Lateral shuffle 5m then drive hard into 15m acceleration.'},
+          {name:'J Bend Accel 20m', load:'× 3', type:'desc', desc:'Curve into the J then extend into full acceleration over 20m.'},
+          {name:'Speed Build Up 40m', load:'90%', type:'diag', key:'c_speedgrid'},
+          {name:'D Strafe Mungo', load:'× 3', type:'diag', key:'c_mungo'},
+          {name:'Box Drill', load:'× 3', type:'diag', key:'c_boxdrill'}
+        ]
+      },
+      {
+        label:'Week 6',
+        warmup:[
+          {name:'Inchworms → Cobra → WG', load:'3 × each side', type:'video', videoUrl:'', desc:''},
+          {name:'SL Leap', load:'3 × each side', type:'desc', desc:'Single-leg lateral leap — stick the landing and hold for 1 second before next rep.'},
+          {name:'Lateral Shuffle', load:'20m each side', type:'desc', desc:'Feet shoulder-width, stay low and push off outside foot. Keep hips square.'},
+          {name:'Any drilling of your choice', load:'—', type:'desc', desc:'Frisbee drilling or any movement to elevate the heart rate.'}
+        ],
+        main:[
+          {name:'A Switch', load:'3 × 20m', type:'video', videoUrl:'https://www.youtube.com/watch?v=N-_B2ouktG8', desc:''},
+          {name:'A Triple', load:'3 × 20m', type:'video', videoUrl:'https://www.youtube.com/watch?v=NCX2aBeZn0c', desc:''},
+          {name:'Lateral A Run', load:'3 × 10m ea', type:'video', videoUrl:'', desc:''},
+          {name:'50m Straights', load:'× 5 @ 10s:20s', type:'desc', desc:'Run 50m at controlled pace, walk back 20s.'},
+          {name:'50m Swerves', load:'× 5 @ 10s:20s', type:'desc', desc:'50m with lateral weave.'},
+          {name:'Accel 10m', load:'× 4', type:'desc', desc:'Explosive 10m acceleration from standing start. Walk back each rep.'},
+          {name:'5m Shuffle + 15m Accel', load:'× 4', type:'desc', desc:'Lateral shuffle 5m then drive hard into 15m acceleration.'},
+          {name:'J Bend Accel 20m', load:'× 4', type:'desc', desc:'Curve into the J then extend into full acceleration over 20m.'},
+          {name:'Speed Build Up 40m', load:'90%', type:'diag', key:'c_speedgrid'},
+          {name:'D Strafe Mungo', load:'× 4', type:'diag', key:'c_mungo'},
+          {name:'Box Drill', load:'× 4', type:'diag', key:'c_boxdrill'}
+        ]
+      }
+    ]
+  }
+};
+
+var rtrPhase='linear';
+var rtrWeek=0;
+var rtrAccess=false;
+
+function renderRTRCard(){
+  var card=document.getElementById('rtr-card');
+  if(!card)return;
+  // Only show if user has RTR access or is coach
+  if(!rtrAccess&&!(currentUser&&currentUser.id===COACH_UID)){
+    card.style.display='none';
+    return;
+  }
+  card.style.display='block';
+  renderRTRBody();
+}
+
+function renderRTRBody(){
+  var body=document.getElementById('rtr-body');
+  if(!body)return;
+  var phase=RTR_PHASES[rtrPhase];
+  var week=phase.weeks[rtrWeek];
+  // Progress dots
+  var dots='<div class="rtr-progress-row">';
+  ['linear','cod'].forEach(function(ph){
+    RTR_PHASES[ph].weeks.forEach(function(w,wi){
+      var isActive=(ph===rtrPhase&&wi===rtrWeek);
+      var isDone=(ph==='linear'&&rtrPhase==='cod')||
+                 (ph===rtrPhase&&wi<rtrWeek);
+      dots+='<div class="rtr-prog-dot'+(isDone?' done':isActive?' active':'')+'"></div>';
+    });
+  });
+  dots+='</div>';
+  // Phase tabs
+  var phaseTabs='<div class="rtr-phase-tabs">'
+    +'<button class="rtr-phase-btn'+(rtrPhase==='linear'?' on':'')+'" onclick="setRTRPhase(\'linear\')">Phase 1 — Linear</button>'
+    +'<button class="rtr-phase-btn'+(rtrPhase==='cod'?' on':'')+'" onclick="setRTRPhase(\'cod\')">Phase 2 — COD</button>'
+    +'</div>';
+  // Week tabs
+  var weekTabs='<div class="rtr-week-tabs">';
+  phase.weeks.forEach(function(w,i){
+    weekTabs+='<button class="rtr-week-btn'+(i===rtrWeek?' on':'')+'" onclick="setRTRWeek('+i+')">'+w.label+'</button>';
+  });
+  weekTabs+='</div>';
+  // Session content
+  var content='<div class="rtr-session-body">';
+  content+='<div class="rtr-section-title">Drilling &amp; Mechanics</div>';
+  week.warmup.forEach(function(d,i){content+=renderRTRDrillRow(d,i+1);});
+  content+='<div class="rtr-section-title" style="margin-top:14px">Main Session</div>';
+  week.main.forEach(function(d,i){
+    if(d.load!=='—')content+=renderRTRDrillRow(d,i+1);
+  });
+  content+='</div>';
+  body.innerHTML=dots+phaseTabs+weekTabs+content;
+}
+
+function renderRTRDrillRow(d,num){
+  var actions='';
+  if(d.type==='diag'&&d.key){
+    var libDrill=DRILL_LIB.find(function(x){return x.key===d.key;});
+    actions+='<button class="rtr-drill-btn rtr-drill-btn-diag" onclick="openDrillModal(\''+d.key+'\')">'
+      +'<svg width="9" height="9" viewBox="0 0 10 10" fill="none"><rect x="1" y="1" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg>DIAGRAM</button>';
+    if(libDrill&&libDrill.videoUrl){
+      actions+='<button class="rtr-drill-btn rtr-drill-btn-vid" onclick="openYTPopup(\''+libDrill.videoUrl.replace(/'/g,"\\'")+"','"+d.name.replace(/'/g,"\\'")+'\')">▶ WATCH</button>';
+    } else if(libDrill&&libDrill.videoUrl===''){
+      actions+='<button class="rtr-drill-btn rtr-drill-btn-soon">▶ SOON</button>';
+    }
+  } else if(d.type==='video'){
+    if(d.videoUrl){
+      actions+='<button class="rtr-drill-btn rtr-drill-btn-vid" onclick="openYTPopup(\''+d.videoUrl.replace(/'/g,"\\'")+'\',\''+d.name.replace(/'/g,"\\'")+'\')">▶ WATCH</button>';
+    } else {
+      actions+='<button class="rtr-drill-btn rtr-drill-btn-soon">▶ SOON</button>';
+    }
+  }
+  var desc=d.desc?'<div class="rtr-drill-desc">'+d.desc+'</div>':'';
+  var actionsHtml=actions?'<div class="rtr-drill-actions">'+actions+'</div>':'';
+  return '<div class="rtr-drill-row">'
+    +'<div class="rtr-drill-num">'+num+'</div>'
+    +'<div class="rtr-drill-info"><div class="rtr-drill-name">'+d.name+'</div>'+desc+actionsHtml+'</div>'
+    +'<div class="rtr-drill-load">'+d.load+'</div>'
+    +'</div>';
+}
+
+function setRTRPhase(ph){rtrPhase=ph;rtrWeek=0;renderRTRBody();}
+function setRTRWeek(w){rtrWeek=w;renderRTRBody();}
+
+// ── RTR ACCESS CHECK ──
+async function checkRTRAccess(){
+  if(!currentUser)return;
+  if(currentUser.id===COACH_UID){rtrAccess=true;renderRTRCard();return;}
+  try{
+    var res=await window._sb.from('user_kv')
+      .select('value').eq('user_id',currentUser.id).eq('key','rtr_access').maybeSingle();
+    if(res.data&&res.data.value){
+      rtrAccess=true;
+      renderRTRCard();
+    }
+  }catch(e){}
+  // Check URL for code on first load
+  var params=new URLSearchParams(window.location.search);
+  var urlCode=params.get('code');
+  if(urlCode&&!rtrAccess){
+    redeemRTRCode(urlCode.toUpperCase());
+  }
+}
+
+async function redeemRTRCode(code){
+  var errEl=document.getElementById('rtr-code-error');
+  try{
+    var res=await window._sb.from('rehab_codes')
+      .select('id,redeemed_at').eq('code',code).maybeSingle();
+    if(!res.data){if(errEl)errEl.textContent='Code not found.';return;}
+    if(res.data.redeemed_at&&res.data.redeemed_by!==currentUser.id){
+      if(errEl)errEl.textContent='This code has already been used.';return;
+    }
+    // Mark redeemed
+    await window._sb.from('rehab_codes').update({
+      redeemed_at:new Date().toISOString(),
+      redeemed_by:currentUser.id
+    }).eq('id',res.data.id);
+    // Store access on user_kv
+    await window._sb.from('user_kv').upsert({
+      user_id:currentUser.id,key:'rtr_access',value:'rtr',
+      updated_at:new Date().toISOString()
+    },{onConflict:'user_id,key'});
+    rtrAccess=true;
+    renderRTRCard();
+    // Clean URL
+    var url=new URL(window.location.href);
+    url.searchParams.delete('code');
+    url.searchParams.delete('rtr');
+    window.history.replaceState({},'',url.toString());
+    switchTab('sc',null);
+  }catch(e){if(errEl)errEl.textContent='Something went wrong. Try again.';}
+}
+
+function renderRTRLocked(){
+  var body=document.getElementById('rtr-body');
+  if(!body)return;
+  body.innerHTML='<div class="rtr-locked">'
+    +'<div class="rtr-locked-icon">🔒</div>'
+    +'<div class="rtr-locked-title">Enter your access code</div>'
+    +'<div class="rtr-locked-sub">Your coach will send you a personalised link or code to unlock this protocol.</div>'
+    +'<div class="rtr-code-input-wrap">'
+    +'<input class="rtr-code-input" id="rtr-code-input" type="text" placeholder="RTR-XXXXXX" maxlength="12" autocomplete="off" autocorrect="off" spellcheck="false">'
+    +'<button class="rtr-code-btn" onclick="redeemRTRCodeFromInput()">UNLOCK</button>'
+    +'</div>'
+    +'<div class="rtr-code-error" id="rtr-code-error"></div>'
+    +'</div>';
+}
+
+function redeemRTRCodeFromInput(){
+  var input=document.getElementById('rtr-code-input');
+  if(!input||!input.value.trim())return;
+  redeemRTRCode(input.value.trim().toUpperCase());
+}
+
+// ── COACH PANEL ──
+async function renderCoachPanel(){
+  var list=document.getElementById('coach-codes-list');
+  if(!list)return;
+  list.innerHTML='<div class="coach-empty">Loading...</div>';
+  try{
+    var res=await window._sb.from('rehab_codes')
+      .select('*').order('created_at',{ascending:false});
+    if(!res.data||res.data.length===0){
+      list.innerHTML='<div class="coach-empty">No codes issued yet</div>';
+      return;
+    }
+    list.innerHTML=res.data.map(function(row){
+      var redeemed=!!row.redeemed_at;
+      var statusClass=redeemed?'redeemed':'pending';
+      var statusLabel=redeemed?'REDEEMED':'PENDING';
+      var date=new Date(row.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+      return '<div class="coach-code-row'+(redeemed?' redeemed':'')+'">'
+        +'<div><div class="coach-code-athlete">'+row.athlete_name+'</div>'
+        +'<div class="coach-code-code">'+row.code+' · '+date+'</div></div>'
+        +'<div class="coach-code-status '+statusClass+'">'+statusLabel+'</div>'
+        +'</div>';
+    }).join('');
+  }catch(e){
+    list.innerHTML='<div class="coach-empty">Error loading codes</div>';
+  }
+}
+
+function generateRTRCode(){
+  var nameEl=document.getElementById('coach-athlete-name');
+  var name=(nameEl&&nameEl.value.trim())||'';
+  if(!name){nameEl&&nameEl.focus();return;}
+  // Generate code: RTR- + 6 alphanumeric chars
+  var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var code='RTR-';
+  for(var i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
+  // Save to Supabase
+  window._sb.from('rehab_codes').insert({
+    code:code,
+    athlete_name:name,
+    protocol:'rtr',
+    created_by:currentUser.id
+  }).then(function(res){
+    if(res.error){console.error(res.error);return;}
+    var link='https://dylanbennett900.github.io/disc-load/?rtr=true&code='+code;
+    document.getElementById('coach-gen-code').textContent=code;
+    document.getElementById('coach-gen-link').textContent=link;
+    var result=document.getElementById('coach-gen-result');
+    if(result)result.classList.add('show');
+    window._rtrCopyLink=link;
+    renderCoachPanel();
+  });
+}
+
+function copyRTRLink(){
+  var link=window._rtrCopyLink||'';
+  if(!link)return;
+  navigator.clipboard.writeText(link).then(function(){
+    var btn=document.querySelector('.coach-copy-btn');
+    if(btn){btn.textContent='COPIED!';setTimeout(function(){btn.innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 3V2a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> COPY LINK';},2000);}
+  });
 }
 // Swipe gesture for tabs (scroll-container aware)
 (function(){
@@ -3774,6 +4240,13 @@ function switchTab(name,el){
 })();
 function renderAll(){renderDashboard();renderSessions();}
 renderAll();
+// Deep-link: ?rtr=true switches to S&C tab on load
+(function(){
+  var params=new URLSearchParams(window.location.search);
+  if(params.get('rtr')){
+    switchTab('sc',null);
+  }
+})();
 </script>
 <!-- ── INSTALL MODAL ── -->
 <div class="install-overlay" id="install-overlay" onclick="closeInstallModal()"></div>
@@ -3957,6 +4430,11 @@ renderAll();
     <div class="bnav-pip" id="bnav-more-pip"></div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="4" cy="10" r="1.8" fill="currentColor"/><circle cx="10" cy="10" r="1.8" fill="currentColor"/><circle cx="16" cy="10" r="1.8" fill="currentColor"/></svg>
     <span class="bnav-lbl">More</span>
+  </button>
+  <button class="bnav-btn" id="bnav-coach" onclick="switchTab('coach',null)" style="display:none">
+    <div class="bnav-pip"></div>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="9" x2="14" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".5"/><line x1="6" y1="12" x2="10" y2="12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="15" cy="15" r="4" fill="var(--green)"/><path d="M13.5 15l1 1 2-2" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+    <span class="bnav-lbl">Coach</span>
   </button>
 </nav>
 
