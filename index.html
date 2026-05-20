@@ -2577,8 +2577,8 @@ function toggleDrillLib(idx){
 }
 
 function openDrillModal(key){
-  // Gate drill diagrams behind Pro — show upgrade modal for free users
-  if(currentUser && subscriptionLoaded && !canAccess('ai_prescription')){
+  // Gate drill diagrams behind Pro — allow RTR code holders through too
+  if(currentUser && subscriptionLoaded && !canAccess('ai_prescription') && !rtrAccess){
     showUpgradeModal('ai_prescription');
     return;
   }
