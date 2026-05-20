@@ -4083,7 +4083,7 @@ async function checkRTRAccess(){
   if(!currentUser)return;
   if(currentUser.id===COACH_UID){rtrAccess=true;renderRTRCard();return;}
   try{
-    var res=await window._sb.from('user_kv')
+    var res=await sb.from('user_kv')
       .select('value').eq('user_id',currentUser.id).eq('key','rtr_access').maybeSingle();
     if(res.data&&res.data.value){
       rtrAccess=true;
@@ -4101,19 +4101,19 @@ async function checkRTRAccess(){
 async function redeemRTRCode(code){
   var errEl=document.getElementById('rtr-code-error');
   try{
-    var res=await window._sb.from('rehab_codes')
+    var res=await sb.from('rehab_codes')
       .select('id,redeemed_at').eq('code',code).maybeSingle();
     if(!res.data){if(errEl)errEl.textContent='Code not found.';return;}
     if(res.data.redeemed_at&&res.data.redeemed_by!==currentUser.id){
       if(errEl)errEl.textContent='This code has already been used.';return;
     }
     // Mark redeemed
-    await window._sb.from('rehab_codes').update({
+    await sb.from('rehab_codes').update({
       redeemed_at:new Date().toISOString(),
       redeemed_by:currentUser.id
     }).eq('id',res.data.id);
     // Store access on user_kv
-    await window._sb.from('user_kv').upsert({
+    await sb.from('user_kv').upsert({
       user_id:currentUser.id,key:'rtr_access',value:'rtr',
       updated_at:new Date().toISOString()
     },{onConflict:'user_id,key'});
@@ -4155,7 +4155,7 @@ async function renderCoachPanel(){
   if(!list)return;
   list.innerHTML='<div class="coach-empty">Loading...</div>';
   try{
-    var res=await window._sb.from('rehab_codes')
+    var res=await sb.from('rehab_codes')
       .select('*').order('created_at',{ascending:false});
     if(!res.data||res.data.length===0){
       list.innerHTML='<div class="coach-empty">No codes issued yet</div>';
@@ -4186,7 +4186,7 @@ function generateRTRCode(){
   var code='RTR-';
   for(var i=0;i<6;i++)code+=chars[Math.floor(Math.random()*chars.length)];
   // Save to Supabase
-  window._sb.from('rehab_codes').insert({
+  sb.from('rehab_codes').insert({
     code:code,
     athlete_name:name,
     protocol:'rtr',
