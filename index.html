@@ -2444,8 +2444,9 @@ function toggleDrillLib(idx){
 }
 
 function openDrillModal(key){
-  // Gate drill diagrams behind Pro — show upgrade modal for free users
-  if(currentUser && subscriptionLoaded && !canAccess('ai_prescription')){
+  // Gate drill diagrams behind Pro — block unauthenticated users and free tier
+  if(!currentUser){signIn();return;}
+  if(subscriptionLoaded && !canAccess('ai_prescription')){
     showUpgradeModal('ai_prescription');
     return;
   }
@@ -2480,6 +2481,12 @@ function closeDrillModal(){
 }
 
 function openYTPopup(url,title){
+  // Gate videos behind Pro — block unauthenticated users and free tier
+  if(!currentUser){signIn();return;}
+  if(subscriptionLoaded && !canAccess('ai_prescription')){
+    showUpgradeModal('ai_prescription');
+    return;
+  }
   // Convert any YouTube URL to embed format
   var videoId='';
   var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
