@@ -3939,7 +3939,7 @@ var RTR_PHASES={
           {name:'50m Swerves', load:'× 5 @ 10s:20s', type:'desc', desc:'50m with lateral weave.'},
           {name:'Accel 10m', load:'× 4', type:'desc', desc:'Explosive 10m acceleration from standing start. Walk back each rep.'},
           {name:'5m Shuffle + 15m Accel', load:'× 2', type:'desc', desc:'Lateral shuffle 5m then drive hard into 15m acceleration.'},
-          {name:'J Bend Accel 20m', load:'× 2', type:'desc', desc:'Curve into the J then extend into full acceleration over 20m.'},
+          {name:'J Bend Accel 20m', load:'× 2', type:'diag', key:'c_jrun', videoUrl:'https://youtube.com/shorts/BvrDDL_r_Dk?si=EaNpxIxYNKEcXnJM', desc:'Curve into the J then extend into full acceleration over 20m.'},
           {name:'Speed Build Up 40m', load:'90%', type:'diag', key:'c_speedgrid'},
           {name:'D Strafe Mungo', load:'× 2', type:'diag', key:'c_mungo'},
           {name:'Box Drill', load:'× 2', type:'diag', key:'c_boxdrill'}
@@ -3961,7 +3961,7 @@ var RTR_PHASES={
           {name:'50m Swerves', load:'× 5 @ 10s:20s', type:'desc', desc:'50m with lateral weave.'},
           {name:'Accel 10m', load:'× 4', type:'desc', desc:'Explosive 10m acceleration from standing start. Walk back each rep.'},
           {name:'5m Shuffle + 15m Accel', load:'× 4', type:'desc', desc:'Lateral shuffle 5m then drive hard into 15m acceleration.'},
-          {name:'J Bend Accel 20m', load:'× 3', type:'desc', desc:'Curve into the J then extend into full acceleration over 20m.'},
+          {name:'J Bend Accel 20m', load:'× 3', type:'diag', key:'c_jrun', videoUrl:'https://youtube.com/shorts/BvrDDL_r_Dk?si=EaNpxIxYNKEcXnJM', desc:'Curve into the J then extend into full acceleration over 20m.'},
           {name:'Speed Build Up 40m', load:'90%', type:'diag', key:'c_speedgrid'},
           {name:'D Strafe Mungo', load:'× 3', type:'diag', key:'c_mungo'},
           {name:'Box Drill', load:'× 3', type:'diag', key:'c_boxdrill'}
@@ -3983,7 +3983,7 @@ var RTR_PHASES={
           {name:'50m Swerves', load:'× 5 @ 10s:20s', type:'desc', desc:'50m with lateral weave.'},
           {name:'Accel 10m', load:'× 4', type:'desc', desc:'Explosive 10m acceleration from standing start. Walk back each rep.'},
           {name:'5m Shuffle + 15m Accel', load:'× 4', type:'desc', desc:'Lateral shuffle 5m then drive hard into 15m acceleration.'},
-          {name:'J Bend Accel 20m', load:'× 4', type:'desc', desc:'Curve into the J then extend into full acceleration over 20m.'},
+          {name:'J Bend Accel 20m', load:'× 4', type:'diag', key:'c_jrun', videoUrl:'https://youtube.com/shorts/BvrDDL_r_Dk?si=EaNpxIxYNKEcXnJM', desc:'Curve into the J then extend into full acceleration over 20m.'},
           {name:'Speed Build Up 40m', load:'90%', type:'diag', key:'c_speedgrid'},
           {name:'D Strafe Mungo', load:'× 4', type:'diag', key:'c_mungo'},
           {name:'Box Drill', load:'× 4', type:'diag', key:'c_boxdrill'}
@@ -4054,9 +4054,11 @@ function renderRTRDrillRow(d,num){
     var libDrill=DRILL_LIB.find(function(x){return x.key===d.key;});
     actions+='<button class="rtr-drill-btn rtr-drill-btn-diag" onclick="openDrillModal(\''+d.key+'\')">'
       +'<svg width="9" height="9" viewBox="0 0 10 10" fill="none"><rect x="1" y="1" width="8" height="8" rx="1.5" stroke="currentColor" stroke-width="1.2"/></svg>DIAGRAM</button>';
-    if(libDrill&&libDrill.videoUrl){
-      actions+='<button class="rtr-drill-btn rtr-drill-btn-vid" onclick="openYTPopup(\''+libDrill.videoUrl.replace(/'/g,"\\'")+"','"+d.name.replace(/'/g,"\\'")+'\')">▶ WATCH</button>';
-    } else if(libDrill&&libDrill.videoUrl===''){
+    // Use drill's own videoUrl first, then fall back to DRILL_LIB
+    var vidUrl=d.videoUrl!==undefined?d.videoUrl:(libDrill?libDrill.videoUrl:undefined);
+    if(vidUrl){
+      actions+='<button class="rtr-drill-btn rtr-drill-btn-vid" onclick="openYTPopup(\''+vidUrl.replace(/'/g,"\\'")+'\',\''+d.name.replace(/'/g,"\\'")+'\')">▶ WATCH</button>';
+    } else if(vidUrl===''){
       actions+='<button class="rtr-drill-btn rtr-drill-btn-soon">▶ SOON</button>';
     }
   } else if(d.type==='video'){
