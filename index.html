@@ -513,6 +513,21 @@ input,select{font-family:inherit;outline:none}
 .drill-modal-tag{display:inline-block;margin-bottom:12px}
 .drill-modal-diagram{display:flex;justify-content:center;margin-bottom:14px}
 .drill-modal-diagram svg{max-width:200px;width:100%;height:auto}
+/* ── DRILL VIDEO BUTTON ── */
+.drill-modal-video-btn{display:flex;align-items:center;justify-content:center;gap:8px;width:100%;margin-bottom:14px;padding:11px 16px;border-radius:var(--radius-sm);background:rgba(220,38,38,0.07);border:1.5px solid rgba(220,38,38,0.2);color:#dc2626;font-family:var(--display);font-size:13px;font-weight:800;letter-spacing:.5px;cursor:pointer;-webkit-tap-highlight-color:transparent;transition:background .15s}
+.drill-modal-video-btn:active{background:rgba(220,38,38,0.13)}
+.drill-modal-video-btn svg{flex-shrink:0}
+.drill-lib-watchbtn{margin-top:6px;display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:700;font-family:var(--display);letter-spacing:.5px;color:#dc2626;background:rgba(220,38,38,0.07);border:1px solid rgba(220,38,38,0.2);border-radius:8px;padding:5px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent}
+/* ── YOUTUBE POPUP ── */
+.yt-popup-overlay{position:fixed;inset:0;z-index:90;background:rgba(15,23,42,0.75);opacity:0;pointer-events:none;transition:opacity .25s}
+.yt-popup-overlay.open{opacity:1;pointer-events:all}
+.yt-popup-box{position:fixed;top:50%;left:50%;transform:translate(-50%,-52%) scale(.96);z-index:91;width:calc(100vw - 32px);max-width:480px;background:#000;border-radius:14px;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,0.5);transition:transform .25s cubic-bezier(.4,0,.2,1),opacity .25s;opacity:0}
+.yt-popup-overlay.open .yt-popup-box{transform:translate(-50%,-50%) scale(1);opacity:1}
+.yt-popup-header{display:flex;align-items:center;justify-content:space-between;padding:10px 12px;background:#111}
+.yt-popup-title{font-family:var(--display);font-size:13px;font-weight:800;color:#fff;letter-spacing:.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:calc(100% - 36px)}
+.yt-popup-close{width:28px;height:28px;border-radius:50%;background:rgba(255,255,255,0.1);border:none;display:flex;align-items:center;justify-content:center;cursor:pointer;flex-shrink:0}
+.yt-popup-frame{position:relative;width:100%;padding-bottom:56.25%}
+.yt-popup-frame iframe{position:absolute;inset:0;width:100%;height:100%;border:none}
 .drill-modal-cue{font-size:13px;color:var(--t2);line-height:1.6;padding:12px 14px;background:var(--sf3);border-radius:var(--radius-sm);border-left:2.5px solid var(--cyan);font-style:italic}
 /* ── INLINE DRILL ICON ── */
 .drill-inline-btn{display:inline-flex;align-items:center;gap:3px;vertical-align:middle;margin-left:4px;padding:2px 6px;border-radius:6px;background:rgba(0,212,255,0.08);border:1px solid rgba(0,212,255,0.2);color:var(--cyan);font-size:10px;font-weight:700;font-family:var(--display);letter-spacing:.3px;cursor:pointer;-webkit-tap-highlight-color:transparent;white-space:nowrap}
@@ -857,7 +872,7 @@ input,select{font-family:inherit;outline:none}
   <div class="drill-lib-section">
     <div class="ofc-menu-header">
       <div class="ofc-menu-title">DRILL LIBRARY</div>
-      <div class="ofc-menu-badge">8 DRILLS</div>
+      <div class="ofc-menu-badge">9 DRILLS</div>
     </div>
     <div class="drill-lib-accordion" id="drill-lib-accordion"></div>
   </div>
@@ -875,8 +890,22 @@ input,select{font-family:inherit;outline:none}
       </button>
     </div>
     <div id="drill-modal-tag-wrap" class="drill-modal-tag"></div>
+    <div id="drill-modal-video-wrap"></div>
     <div class="drill-modal-diagram" id="drill-modal-diagram"></div>
     <div class="drill-modal-cue" id="drill-modal-cue"></div>
+  </div>
+</div>
+
+<!-- ── YOUTUBE POPUP ── -->
+<div class="yt-popup-overlay" id="yt-popup-overlay" onclick="closeYTPopup()">
+  <div class="yt-popup-box" onclick="event.stopPropagation()">
+    <div class="yt-popup-header">
+      <div class="yt-popup-title" id="yt-popup-title"></div>
+      <button class="yt-popup-close" onclick="closeYTPopup()">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><path d="M1 1l8 8M9 1l-8 8" stroke="#fff" stroke-width="1.5" stroke-linecap="round"/></svg>
+      </button>
+    </div>
+    <div class="yt-popup-frame"><iframe id="yt-popup-iframe" src="" allow="autoplay; encrypted-media" allowfullscreen></iframe></div>
   </div>
 </div>
 
@@ -2293,43 +2322,57 @@ async function getAIPrescription(){
 var DRILL_LIB = [
   {
     key:'c_curved', label:'Curved Sprint', cat:'speed', catLabel:'VHSR / Speed',
+    videoUrl:'',
     cue:'Accelerate into the curve and hold your speed around the cones.',
     svg:'<svg viewBox="0 0 155 272" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="105" y1="24" x2="105" y2="250" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="52" y1="138" x2="105" y2="138" stroke="#334155" stroke-dasharray="2 2" stroke-width="0.6"/><text x="78" y="134" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">5m</text><text x="113" y="140" fill="#64748b" font-size="9" font-family="sans-serif">40m</text><path d="M 105,248 C 95,228 58,193 50,138 C 58,83 95,48 105,28" fill="none" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab)"/><polygon points="60,175 54,186 66,186" fill="#f97316"/><polygon points="52,138 46,149 58,149" fill="#f97316"/><polygon points="60,101 54,112 66,112" fill="#f97316"/><circle cx="105" cy="250" r="5" fill="#0284c7"/><text x="113" y="254" fill="#64748b" font-size="8" font-family="sans-serif">START</text><polygon points="105,24 99,35 111,35" fill="#f97316"/><text x="88" y="18" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">FINISH</text></svg>'
   },
   {
     key:'c_speedgrid', label:'Repeat Speed Grid', cat:'speed', catLabel:'VHSR / Speed',
+    videoUrl:'',
     cue:'Max effort every 30s — cover 30m as fast as possible.',
     svg:'<svg viewBox="0 0 140 260" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="70" y1="38" x2="70" y2="228" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="78" y="133" fill="#64748b" font-size="9" font-family="sans-serif">30m</text><line x1="70" y1="225" x2="70" y2="43" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab2)"/><polygon points="70,24 64,35 76,35" fill="#f97316"/><text x="52" y="18" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">FINISH</text><polygon points="70,245 64,256 76,256" fill="#f97316"/><text x="52" y="252" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">START</text></svg>'
   },
   {
     key:'c_boxdrill', label:'Box Drill', cat:'accel', catLabel:'Accel / COD',
+    videoUrl:'https://www.youtube.com/watch?v=YOx7ieWk30s',
     cue:'Power in and out of every cone, turn and accelerate.',
     svg:'<svg viewBox="0 0 195 210" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab3" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><rect x="30" y="20" width="136" height="148" fill="none" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.7"/><text x="98" y="16" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">10m</text><text x="24" y="98" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text><line x1="30" y1="163" x2="30" y2="26" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><line x1="34" y1="24" x2="162" y2="164" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><line x1="166" y1="163" x2="166" y2="26" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><line x1="162" y1="24" x2="34" y2="164" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab3)"/><polygon points="30,20 24,31 36,31" fill="#f97316"/><polygon points="166,20 160,31 172,31" fill="#f97316"/><polygon points="30,168 24,179 36,179" fill="#f97316"/><polygon points="166,168 160,179 172,179" fill="#f97316"/><text x="26" y="200" fill="#64748b" font-size="8" font-family="sans-serif">START / FINISH</text></svg>'
   },
   {
     key:'c_mungo', label:'D Strafe Mungo', cat:'accel', catLabel:'Accel / COD',
+    videoUrl:'https://www.youtube.com/watch?v=DawlZtIZmTM',
     cue:'Keep hips square to front throughout — move like you\'re tracking an attacker.',
     svg:'<svg viewBox="0 0 170 295" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab4" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="52" y1="275" x2="112" y2="275" stroke="#334155" stroke-width="0.7"/><text x="82" y="287" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">5m</text><line x1="52" y1="257" x2="52" y2="187" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><line x1="56" y1="181" x2="108" y2="221" stroke="#0284c7" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#dl-ab4)"/><line x1="112" y1="217" x2="112" y2="147" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><line x1="108" y1="141" x2="56" y2="181" stroke="#0284c7" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#dl-ab4)"/><line x1="52" y1="177" x2="52" y2="107" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><line x1="56" y1="101" x2="108" y2="141" stroke="#0284c7" stroke-width="1.6" stroke-dasharray="5 3" marker-end="url(#dl-ab4)"/><line x1="112" y1="137" x2="112" y2="67" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab4)"/><polygon points="52,261 46,272 58,272" fill="#f97316"/><polygon points="52,181 46,192 58,192" fill="#f97316"/><polygon points="52,101 46,112 58,112" fill="#f97316"/><polygon points="112,221 106,232 118,232" fill="#f97316"/><polygon points="112,141 106,152 118,152" fill="#f97316"/><polygon points="112,61 106,72 118,72" fill="#f97316"/><text x="38" y="258" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">START</text><text x="126" y="65" fill="#64748b" font-size="8" font-family="sans-serif">FINISH</text><text x="30" y="223" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text><text x="30" y="143" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text><text x="30" y="63" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">10m</text></svg>'
   },
   {
     key:'c_jrun', label:'J Run', cat:'speed', catLabel:'VHSR / Speed',
+    videoUrl:'https://youtube.com/shorts/BvrDDL_r_Dk?si=EaNpxIxYNKEcXnJM',
     cue:'Accelerate off the line hard and immediately lean into the J, accelerate around the cones and then extend into a sprint over 30m.',
     svg:'<svg viewBox="0 0 148 262" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab5" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="64" y1="32" x2="64" y2="196" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="72" y="116" fill="#64748b" font-size="9" font-family="sans-serif">30m</text><path d="M 100,232 A 36,36 0 0,1 64,196" fill="none" stroke="#0284c7" stroke-width="2"/><line x1="64" y1="195" x2="64" y2="34" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab5)"/><line x1="64" y1="240" x2="100" y2="240" stroke="#94a3b8" stroke-width="0.8"/><line x1="64" y1="236" x2="64" y2="244" stroke="#94a3b8" stroke-width="0.8"/><line x1="100" y1="236" x2="100" y2="244" stroke="#94a3b8" stroke-width="0.8"/><text x="82" y="252" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">5m</text><polygon points="64,232 58,243 70,243" fill="#f97316"/><polygon points="64,196 58,207 70,207" fill="#f97316"/><circle cx="100" cy="232" r="5" fill="#0284c7"/><text x="108" y="236" fill="#64748b" font-size="8" font-family="sans-serif">START</text><polygon points="64,30 58,41 70,41" fill="#f97316"/><text x="72" y="22" fill="#64748b" font-size="8" font-family="sans-serif">FINISH</text></svg>'
   },
   {
     key:'c_butterfly', label:'Butterfly Speed Effort', cat:'speed', catLabel:'VHSR / Speed',
+    videoUrl:'',
     cue:'Mix up the angle and curve — visualise an under cut into a butterfly cut and extend over 40m.',
     svg:'<svg viewBox="0 0 175 278" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab6" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="138" y1="25" x2="138" y2="210" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="146" y="120" fill="#64748b" font-size="9" font-family="sans-serif">40m</text><line x1="28" y1="152" x2="72" y2="152" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab6)"/><line x1="76" y1="154" x2="76" y2="226" stroke="#0284c7" stroke-width="2"/><path d="M 76,226 C 76,265 96,265 96,226" fill="none" stroke="#0284c7" stroke-width="2"/><line x1="96" y1="224" x2="96" y2="34" stroke="#0284c7" stroke-width="2" marker-end="url(#dl-ab6)"/><polygon points="28,152 22,163 34,163" fill="#f97316"/><text x="26" y="144" fill="#64748b" font-size="8" font-family="sans-serif">START</text><polygon points="76,152 70,163 82,163" fill="#f97316"/><polygon points="86,244 80,255 92,255" fill="#f97316"/><polygon points="96,30 90,41 102,41" fill="#f97316"/><text x="104" y="34" fill="#64748b" font-size="8" font-family="sans-serif">FINISH</text><text x="100" y="194" fill="#64748b" font-size="8" font-family="sans-serif">~10m</text></svg>'
   },
   {
     key:'c_zdrill', label:'Z Drill', cat:'accel', catLabel:'Accel / COD',
+    videoUrl:'',
     cue:'Power in and out of every step with a sharp cut.',
     svg:'<svg viewBox="0 0 120 295" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-ab7" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><polyline points="48,270 72,240 48,210 72,180 48,150 72,120 48,90 72,60 48,30" fill="none" stroke="#0284c7" stroke-width="1.8" marker-end="url(#dl-ab7)"/><polygon points="48,270 42,281 54,281" fill="#f97316"/><polygon points="72,240 66,251 78,251" fill="#f97316"/><polygon points="48,210 42,221 54,221" fill="#f97316"/><polygon points="72,180 66,191 78,191" fill="#f97316"/><polygon points="48,150 42,161 54,161" fill="#f97316"/><polygon points="72,120 66,131 78,131" fill="#f97316"/><polygon points="48,90 42,101 54,101" fill="#f97316"/><polygon points="72,60 66,71 78,71" fill="#f97316"/><polygon points="48,30 42,41 54,41" fill="#f97316"/><line x1="48" y1="148" x2="72" y2="148" stroke="#475569" stroke-width="0.8"/><line x1="48" y1="144" x2="48" y2="152" stroke="#475569" stroke-width="0.8"/><line x1="72" y1="144" x2="72" y2="152" stroke="#475569" stroke-width="0.8"/><text x="60" y="142" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">2m</text><text x="38" y="278" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">START</text><text x="38" y="34" fill="#64748b" font-size="8" text-anchor="end" font-family="sans-serif">35m</text><text x="86" y="256" fill="#64748b" font-size="8" font-family="sans-serif">5m</text></svg>'
   },
   {
     key:'m_604020', label:'60-40-20 Shuttle', cat:'mas', catLabel:'MAS / HSR',
+    videoUrl:'',
     cue:'Plant, turn and accelerate hard out of each cone.',
     svg:'<svg viewBox="0 0 165 275" xmlns="http://www.w3.org/2000/svg"><defs><marker id="dl-r" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#dc2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="dl-y" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#ca8a04" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="dl-b2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#1d4ed8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><line x1="22" y1="245" x2="148" y2="245" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="22" y1="177" x2="148" y2="177" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="22" y1="109" x2="148" y2="109" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><line x1="22" y1="41" x2="148" y2="41" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.8"/><text x="19" y="249" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">0m</text><text x="19" y="181" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">20m</text><text x="19" y="113" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">40m</text><text x="19" y="45" fill="#64748b" font-size="9" text-anchor="end" font-family="sans-serif">60m</text><line x1="68" y1="241" x2="68" y2="46" stroke="#dc2626" stroke-width="2" marker-end="url(#dl-r)"/><line x1="76" y1="46" x2="76" y2="240" stroke="#dc2626" stroke-width="2" marker-end="url(#dl-r)"/><line x1="88" y1="241" x2="88" y2="114" stroke="#ca8a04" stroke-width="2" marker-end="url(#dl-y)"/><line x1="96" y1="114" x2="96" y2="240" stroke="#ca8a04" stroke-width="2" marker-end="url(#dl-y)"/><line x1="108" y1="241" x2="108" y2="182" stroke="#1d4ed8" stroke-width="2" marker-end="url(#dl-b2)"/><line x1="116" y1="182" x2="116" y2="240" stroke="#1d4ed8" stroke-width="2" marker-end="url(#dl-b2)"/><circle cx="136" cy="245" r="4" fill="#0284c7"/><text x="143" y="249" fill="#64748b" font-size="8" font-family="sans-serif">START</text></svg>'
+  },
+  {
+    key:'c_str_mungo', label:'Straight Mungo', cat:'accel', catLabel:'Accel / COD',
+    videoUrl:'',
+    cue:'Accelerate hard 10m, stop and backpedal 5m, stop, then drive forward 10m again. Repeat x3. Focus on sharp stops and explosive first steps.',
+    svg:'<svg viewBox="0 0 160 310" xmlns="http://www.w3.org/2000/svg"><defs><marker id="sm-fwd" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#0284c7" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker><marker id="sm-bk" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto"><path d="M1 1L9 5L1 9" fill="none" stroke="#dc2626" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></marker></defs><!-- vertical reference line --><line x1="80" y1="20" x2="80" y2="290" stroke="#334155" stroke-dasharray="4 3" stroke-width="0.7"/><!-- distance labels --><text x="96" y="290" fill="#64748b" font-size="8" font-family="sans-serif">START</text><text x="96" y="235" fill="#64748b" font-size="8" font-family="sans-serif">+10m</text><text x="96" y="185" fill="#64748b" font-size="8" font-family="sans-serif">-5m</text><text x="96" y="130" fill="#64748b" font-size="8" font-family="sans-serif">+10m</text><!-- bracket dimension: 10m fwd --><line x1="62" y1="285" x2="62" y2="230" stroke="#334155" stroke-width="0.6"/><line x1="58" y1="285" x2="66" y2="285" stroke="#334155" stroke-width="0.6"/><line x1="58" y1="230" x2="66" y2="230" stroke="#334155" stroke-width="0.6"/><text x="54" y="260" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">10m</text><!-- bracket dimension: 5m back --><line x1="62" y1="230" x2="62" y2="180" stroke="#334155" stroke-width="0.6"/><line x1="58" y1="180" x2="66" y2="180" stroke="#334155" stroke-width="0.6"/><text x="54" y="208" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">5m</text><!-- bracket dimension: 10m fwd again --><line x1="62" y1="180" x2="62" y2="125" stroke="#334155" stroke-width="0.6"/><line x1="58" y1="125" x2="66" y2="125" stroke="#334155" stroke-width="0.6"/><text x="54" y="155" fill="#64748b" font-size="8" text-anchor="middle" font-family="sans-serif">10m</text><!-- REP 1 --><line x1="80" y1="283" x2="80" y2="233" stroke="#0284c7" stroke-width="2" marker-end="url(#sm-fwd)"/><!-- fwd 10m --><line x1="82" y1="233" x2="82" y2="183" stroke="#dc2626" stroke-width="2" stroke-dasharray="5 3" marker-end="url(#sm-bk)"/><!-- back 5m --><line x1="78" y1="183" x2="78" y2="128" stroke="#0284c7" stroke-width="2" marker-end="url(#sm-fwd)"/><!-- fwd 10m --><polygon points="80,285 74,293 86,293" fill="#f97316"/><!-- start cone --><polygon points="80,230 74,241 86,241" fill="#f97316"/><!-- 10m cone --><polygon points="82,180 76,191 88,191" fill="#f97316"/><!-- 5m back cone --><polygon points="78,125 72,136 84,136" fill="#f97316"/><!-- top cone --><!-- repeat markers --><text x="88" y="212" fill="#dc2626" font-size="8" font-family="sans-serif" font-style="italic">back</text><text x="88" y="168" fill="#0284c7" font-size="8" font-family="sans-serif" font-style="italic">fwd</text><!-- x3 label --><text x="80" y="108" fill="#64748b" font-size="9" text-anchor="middle" font-family="sans-serif" font-weight="bold">× 3 reps</text><text x="80" y="120" fill="#64748b" font-size="7" text-anchor="middle" font-family="sans-serif">walk back recovery</text><!-- legend --><line x1="16" y1="44" x2="36" y2="44" stroke="#0284c7" stroke-width="2"/><text x="40" y="48" fill="#64748b" font-size="8" font-family="sans-serif">Accel fwd</text><line x1="16" y1="60" x2="36" y2="60" stroke="#dc2626" stroke-width="2" stroke-dasharray="5 3"/><text x="40" y="64" fill="#64748b" font-size="8" font-family="sans-serif">Backpedal</text></svg>'
   }
 ];
 
@@ -2342,6 +2385,7 @@ var DRILL_INLINE_MAP = {
   'Butterfly Speed Effort':'c_butterfly',
   'Z Drill':'c_zdrill',
   '60-40-20 Shuttle':'m_604020',
+  'Straight Mungo':'c_str_mungo',
   'Butterfly Speed Efforts':'c_butterfly',
   'Curved Sprints':'c_curved',
   'Box Drills':'c_boxdrill',
@@ -2355,7 +2399,19 @@ function renderDrillLibrary(){
   var chevron="<svg class='drill-lib-chevron' width='12' height='12' viewBox='0 0 12 12' fill='none'><path d='M2 4.5l4 4 4-4' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>";
   acc.innerHTML=DRILL_LIB.map(function(d,i){
     var tagClass='drill-lib-tag drill-lib-tag-'+d.cat;
-    var thumbSvg=d.svg.replace(/viewBox="[^"]*"/, function(vb){return vb;});
+    var thumbSvg=d.svg?d.svg.replace(/viewBox="[^"]*"/, function(vb){return vb;}):'';
+    var svgBlock=thumbSvg?"<div class='drill-lib-svg'>"+thumbSvg+"</div>":"";
+    var ytIcon="<svg width='9' height='9' viewBox='0 0 16 16' fill='none'><rect x='1' y='3' width='14' height='10' rx='2.5' fill='#dc2626'/><path d='M6.5 5.5l4 2.5-4 2.5V5.5z' fill='#fff'/></svg>";
+    var watchBtn='';
+    if(d.videoUrl){
+      watchBtn="<button class='drill-lib-watchbtn' onclick='event.stopPropagation();openYTPopup(\""+d.videoUrl.replace(/"/g,'&quot;')+"\",\""+d.label.replace(/"/g,'&quot;')+"\")'>"
+        +ytIcon+" WATCH</button>";
+    } else if(d.videoUrl===''){
+      watchBtn="<button class='drill-lib-watchbtn' style='opacity:.4;cursor:default;pointer-events:none'>"+ytIcon+" SOON</button>";
+    }
+    var diagBtn=d.svg?"<button class='drill-lib-fullbtn' onclick='event.stopPropagation();openDrillModal(\""+d.key+"\")'>"
+      +"<svg width='10' height='10' viewBox='0 0 10 10' fill='none'><rect x='1' y='1' width='8' height='8' rx='1.5' stroke='currentColor' stroke-width='1.2'/><path d='M3.5 5h3M5 3.5v3' stroke='currentColor' stroke-width='1.2' stroke-linecap='round'/></svg>"
+      +"FULL DIAGRAM</button>":'';
     return "<div class='drill-lib-item' id='drill-lib-"+i+"'>"
       +"<div class='drill-lib-trigger' onclick='toggleDrillLib("+i+")'>"
       +"<span class='"+tagClass+"'>"+d.catLabel+"</span>"
@@ -2363,13 +2419,13 @@ function renderDrillLibrary(){
       +chevron
       +"</div>"
       +"<div class='drill-lib-body'><div class='drill-lib-content'>"
-      +"<div class='drill-lib-svg'>"+thumbSvg+"</div>"
+      +svgBlock
       +"<div class='drill-lib-info'>"
       +"<div class='drill-lib-cue'>"+d.cue+"</div>"
-      +"<button class='drill-lib-fullbtn' onclick='event.stopPropagation();openDrillModal(\""+d.key+"\")'>"
-      +"<svg width='10' height='10' viewBox='0 0 10 10' fill='none'><rect x='1' y='1' width='8' height='8' rx='1.5' stroke='currentColor' stroke-width='1.2'/><path d='M3.5 5h3M5 3.5v3' stroke='currentColor' stroke-width='1.2' stroke-linecap='round'/></svg>"
-      +"FULL DIAGRAM"
-      +"</button>"
+      +"<div style='display:flex;gap:6px;flex-wrap:wrap;margin-top:9px'>"
+      +diagBtn
+      +watchBtn
+      +"</div>"
       +"</div>"
       +"</div></div>"
       +"</div>";
@@ -2398,8 +2454,22 @@ function openDrillModal(key){
   var tagClass='drill-lib-tag drill-lib-tag-'+d.cat;
   document.getElementById('drill-modal-title').textContent=d.label;
   document.getElementById('drill-modal-tag-wrap').innerHTML="<span class='"+tagClass+"'>"+d.catLabel+"</span>";
-  document.getElementById('drill-modal-diagram').innerHTML=d.svg;
+  document.getElementById('drill-modal-diagram').innerHTML=d.svg||'';
   document.getElementById('drill-modal-cue').textContent=d.cue;
+  // Video button — show if videoUrl present, placeholder coming-soon if empty string
+  var vwrap=document.getElementById('drill-modal-video-wrap');
+  if(d.videoUrl||d.videoUrl===''){
+    var ytIcon="<svg width='16' height='16' viewBox='0 0 16 16' fill='none'><rect x='1' y='3' width='14' height='10' rx='2.5' fill='#dc2626'/><path d='M6.5 5.5l4 2.5-4 2.5V5.5z' fill='#fff'/></svg>";
+    if(d.videoUrl){
+      vwrap.innerHTML="<button class='drill-modal-video-btn' onclick='openYTPopup(\""+d.videoUrl.replace(/"/g,'&quot;')+"\",\""+d.label.replace(/"/g,'&quot;')+"\")'>"
+        +ytIcon+"WATCH DRILL VIDEO</button>";
+    } else {
+      vwrap.innerHTML="<button class='drill-modal-video-btn' style='opacity:.45;cursor:default;pointer-events:none'>"
+        +ytIcon+"VIDEO COMING SOON</button>";
+    }
+  } else {
+    vwrap.innerHTML='';
+  }
   document.getElementById('drill-modal-overlay').classList.add('open');
   document.getElementById('drill-modal-sheet').classList.add('open');
 }
@@ -2407,6 +2477,23 @@ function openDrillModal(key){
 function closeDrillModal(){
   document.getElementById('drill-modal-overlay').classList.remove('open');
   document.getElementById('drill-modal-sheet').classList.remove('open');
+}
+
+function openYTPopup(url,title){
+  // Convert any YouTube URL to embed format
+  var videoId='';
+  var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+  if(m)videoId=m[1];
+  if(!videoId)return;
+  document.getElementById('yt-popup-title').textContent=title||'';
+  document.getElementById('yt-popup-iframe').src='https://www.youtube.com/embed/'+videoId+'?autoplay=1&rel=0&modestbranding=1';
+  document.getElementById('yt-popup-overlay').classList.add('open');
+}
+
+function closeYTPopup(){
+  document.getElementById('yt-popup-overlay').classList.remove('open');
+  // Stop video by clearing src
+  document.getElementById('yt-popup-iframe').src='';
 }
 
 function injectDrillIcons(html){
