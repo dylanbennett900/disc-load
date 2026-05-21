@@ -1507,6 +1507,15 @@ async function loadSessions(){
     var isAuthErr=result.error.status===401||result.error.status===403
       ||emsg.indexOf('jwt')!==-1||emsg.indexOf('lock')!==-1||emsg.indexOf('token')!==-1;
     if(isAuthErr){
+      // Retry once after a short delay — OAuth redirects can produce a transient
+      // 401 on the first DB call before the JWT is fully committed client-side.
+      // Only sign out if the retry also fails.
+      if(!loadSessions._retrying){
+        loadSessions._retrying=true;
+        setTimeout(function(){loadSessions._retrying=false;loadSessions();},1200);
+        return;
+      }
+      loadSessions._retrying=false;
       currentUser=null;sessions=DEMO_SESSIONS.slice();
       renderAuthUI();renderAll();
       sb.auth.signOut().catch(function(){});// background cleanup, never awaited
