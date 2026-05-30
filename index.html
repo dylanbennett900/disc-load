@@ -804,6 +804,37 @@ input,select{font-family:inherit;outline:none}
   </div>
 </div>
 
+<!-- ── AGE VERIFICATION MODAL ── -->
+<div class="modal-bg" id="age-verify-modal" style="display:none">
+  <div class="modal" style="max-width:400px">
+    <div style="text-align:center;margin-bottom:20px">
+      <div style="font-size:28px;margin-bottom:8px">🎯</div>
+      <div class="modal-title" style="font-size:20px;margin-bottom:6px">One quick thing</div>
+      <div style="font-size:13px;color:var(--t2);line-height:1.5">We need your date of birth to confirm you meet our age requirements.</div>
+    </div>
+    <div style="margin-bottom:18px">
+      <label style="display:block;font-size:11px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--t2);margin-bottom:8px">Date of birth</label>
+      <input type="date" id="age-verify-dob"
+        style="width:100%;padding:12px 14px;border:1.5px solid var(--bd2);border-radius:10px;font-size:15px;font-family:var(--fb);background:var(--bg);color:var(--t1);outline:none;-webkit-appearance:none"
+        max="" />
+      <div id="age-verify-error" style="display:none;margin-top:8px;font-size:12px;color:#e53e3e;line-height:1.4"></div>
+    </div>
+    <div id="age-verify-consent-wrap" style="display:none;background:var(--acc-l,#e8f0fa);border-radius:10px;padding:14px;margin-bottom:16px">
+      <label style="display:flex;align-items:flex-start;gap:10px;cursor:pointer">
+        <input type="checkbox" id="age-verify-consent" style="margin-top:3px;flex-shrink:0;accent-color:var(--acc,#1a3a5c)">
+        <span style="font-size:13px;color:var(--t1);line-height:1.5">I confirm a parent or guardian has consented to my use of Frisbee Track.</span>
+      </label>
+    </div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:16px;line-height:1.5;text-align:center">
+      By continuing you agree to our <a href="https://dbsportperformance.com/terms" target="_blank" style="color:var(--acc,#1a3a5c)">Terms of Service</a>.
+    </div>
+    <button id="age-verify-btn" onclick="submitAgeVerification()"
+      style="width:100%;padding:13px;background:var(--acc,#1a3a5c);color:#fff;border:none;border-radius:10px;font-size:15px;font-weight:600;cursor:pointer;font-family:var(--fb)">
+      Continue
+    </button>
+  </div>
+</div>
+
 <!-- ── HEADER ── -->
 <div id="header">
   <div class="htop">
@@ -1559,6 +1590,10 @@ async function loadSubscription(){
   subscriptionLoaded=true;
   updateGatedUI();
   handleUpgradeURLParams();
+  // Age verification: show modal if user hasn't completed it yet
+  if(userSubscription && !userSubscription.age_verified){
+    maybeShowAgeVerifyModal();
+  }
 }
 function canAccess(feature){
   if(!currentUser)return false;
@@ -4598,6 +4633,104 @@ function triggerNativeInstall(){
     pwaDeferredPrompt = null;
     closeInstallModal();
   }).catch(function(){ closeInstallModal(); });
+}
+
+// ── AGE VERIFICATION ──
+function maybeShowAgeVerifyModal(){
+  // Set max date on DOB input to today
+  var dobInput = document.getElementById('age-verify-dob');
+  if(dobInput){
+    var today = new Date();
+    var mm = String(today.getMonth()+1).padStart(2,'0');
+    var dd = String(today.getDate()).padStart(2,'0');
+    dobInput.max = today.getFullYear()+'-'+mm+'-'+dd;
+  }
+  var modal = document.getElementById('age-verify-modal');
+  if(modal) modal.style.display = 'flex';
+  // Watch DOB input to show/hide parental consent checkbox for 16-17s
+  if(dobInput){
+    dobInput.addEventListener('change', function(){
+      var age = calcAgeFromDOB(this.value);
+      var consentWrap = document.getElementById('age-verify-consent-wrap');
+      var err = document.getElementById('age-verify-error');
+      if(consentWrap) consentWrap.style.display = (age >= 16 && age < 18) ? 'block' : 'none';
+      if(err){ err.style.display = 'none'; err.textContent = ''; }
+    });
+  }
+}
+
+function calcAgeFromDOB(dobStr){
+  if(!dobStr) return null;
+  var today = new Date();
+  var dob = new Date(dobStr);
+  var age = today.getFullYear() - dob.getFullYear();
+  var m = today.getMonth() - dob.getMonth();
+  if(m < 0 || (m === 0 && today.getDate() < dob.getDate())) age--;
+  return age;
+}
+
+async function submitAgeVerification(){
+  var dobInput = document.getElementById('age-verify-dob');
+  var err = document.getElementById('age-verify-error');
+  var btn = document.getElementById('age-verify-btn');
+  var dob = dobInput ? dobInput.value : '';
+  var age = calcAgeFromDOB(dob);
+
+  // Clear error
+  if(err){ err.style.display = 'none'; err.textContent = ''; }
+
+  // Validate: must have a date
+  if(!dob || age === null){
+    if(err){ err.textContent = 'Please enter your date of birth.'; err.style.display = 'block'; }
+    return;
+  }
+  // Future date sanity check
+  if(age < 0){
+    if(err){ err.textContent = 'Please enter a valid date of birth.'; err.style.display = 'block'; }
+    return;
+  }
+  // Under 16 — blocked
+  if(age < 16){
+    if(err){
+      err.innerHTML = 'Sorry — Frisbee Track is for users aged 16 and over. You\'ll need to wait until you\'re 16 to sign up. <br><br>Your account has not been charged.';
+      err.style.display = 'block';
+    }
+    // Sign them out — they cannot use the service
+    if(btn){ btn.textContent = 'Sign out'; btn.onclick = function(){ sb.auth.signOut(); }; }
+    return;
+  }
+  // 16-17 — parental consent required
+  if(age < 18){
+    var consent = document.getElementById('age-verify-consent');
+    if(!consent || !consent.checked){
+      if(err){ err.textContent = 'You must confirm parental or guardian consent to continue.'; err.style.display = 'block'; }
+      return;
+    }
+  }
+
+  // All good — save to DB
+  if(btn){ btn.disabled = true; btn.textContent = 'Saving…'; }
+  try{
+    var dobDate = dob; // Already in YYYY-MM-DD format from date input
+    var res = await sb.from('subscriptions')
+      .update({
+        dob: dobDate,
+        age_verified: true,
+        parental_consent: age < 18,
+        updated_at: new Date().toISOString()
+      })
+      .eq('user_id', currentUser.id);
+    if(res.error) throw res.error;
+    // Update local copy
+    if(userSubscription){ userSubscription.age_verified = true; userSubscription.dob = dobDate; }
+    // Close modal
+    var modal = document.getElementById('age-verify-modal');
+    if(modal) modal.style.display = 'none';
+  }catch(e){
+    console.warn('age verify save failed:', e);
+    if(err){ err.textContent = 'Something went wrong saving your details. Please try again.'; err.style.display = 'block'; }
+    if(btn){ btn.disabled = false; btn.textContent = 'Continue'; }
+  }
 }
 
 // Open the modal on first sign-in (once per device, skipped if already installed)
