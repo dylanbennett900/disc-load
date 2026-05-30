@@ -45,6 +45,7 @@
   --optimal:#059669;
   --s-moderate:#d97706;
   --s-low:#94a3b8;
+  --s-high:#d97706;
   --s-overload:#dc2626;
   --sh:0 1px 3px rgba(15,23,42,0.08),0 1px 2px rgba(15,23,42,0.04);
   --sh-md:0 4px 12px rgba(15,23,42,0.10),0 2px 4px rgba(15,23,42,0.06);
@@ -1413,7 +1414,7 @@ function drillLoad(dk,val1,val2){
     return{dk:dk,inputType:'mins',durMin:val1,
       dist:Math.round(val1*d.dist_pm),hsr:Math.round(val1*d.hsr_pm),vhsr:Math.round(val1*d.vhsr_pm),
       acc:Math.round(val1*d.acc_pm),hacc:Math.round(val1*d.acc_pm*.3),
-      dec:Math.round(val1*d.acc_pm*.85),hdec:Math.round(val1*d.acc_pm*.25),
+      dec:Math.round(val1*d.acc_pm*.55),hdec:Math.round(val1*d.acc_pm*.16),
       acl:Math.round(val1*d.dist_pm*.18)};
   }
   if(COND_DRILLS[dk]){
@@ -1438,7 +1439,7 @@ function drillLoad(dk,val1,val2){
       dist:Math.round(totalDist2),hsr:Math.round(totalDist2*m.hsr_ratio),
       vhsr:Math.round(totalDist2*m.vhsr_ratio),
       acc:Math.round(totalDist2/100*m.acc_per100),hacc:Math.round(totalDist2/100*m.acc_per100*.3),
-      dec:Math.round(totalDist2/100*m.acc_per100*.85),hdec:Math.round(totalDist2/100*m.acc_per100*.25),
+      dec:Math.round(totalDist2/100*m.acc_per100*.55),hdec:Math.round(totalDist2/100*m.acc_per100*.16),
       acl:Math.round(totalDist2*.18)};
   }
   return{dk:dk,inputType:'mins',durMin:val1,dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,acl:0};
@@ -1851,10 +1852,11 @@ function weeklyTarget(){
 
 // ── STATUS ──
 function status(r){
-  if(r>=1.15)return{label:"Overload",color:"var(--s-overload)",icon:"!"};
-  if(r>=0.85)return{label:"Optimal", color:"var(--optimal)",  icon:"✓"};
-  if(r>=0.50)return{label:"Moderate",color:"var(--s-moderate)",icon:"~"};
-  return            {label:"Low",    color:"var(--s-low)",     icon:"↓"};
+  if(r>=1.50)return{label:"Very High", color:"var(--s-overload)",icon:"!"};
+  if(r>=1.15)return{label:"High Load", color:"var(--s-high)",   icon:"↑"};
+  if(r>=0.85)return{label:"Optimal",   color:"var(--optimal)",  icon:"✓"};
+  if(r>=0.50)return{label:"Moderate",  color:"var(--s-moderate)",icon:"~"};
+  return            {label:"Low",      color:"var(--s-low)",     icon:"↓"};
 }
 
 // ── TOP-UP SUGGESTIONS ──
@@ -2956,8 +2958,10 @@ function renderDashboard(){
     var ratio=T[m.key]/Math.max(G[m.key],1),st=status(ratio);
     var gap=G[m.key]-T[m.key],bw=Math.min(ratio*100,100).toFixed(1);
     var sugHtml="";
-    if(ratio>=1.15){
-      sugHtml="<div class='sug' style='color:var(--red)'>↑ Over target — ease off, focus on technical work.</div>";
+    if(ratio>=1.50){
+      sugHtml="<div class='sug' style='color:var(--s-overload)'>↑ Very high load — ease off and prioritise recovery.</div>";
+    } else if(ratio>=1.15){
+      sugHtml="<div class='sug' style='color:var(--s-high);border-color:rgba(217,119,6,0.3)'>↑ Big week — shift focus to skills and technical work.</div>";
     } else if(ratio<0.85){
       var sug=topUpSuggestion(m.key,gap);
       if(sug){
@@ -2969,7 +2973,8 @@ function renderDashboard(){
       }
     }
     var recText="";
-    if(ratio>=1.15)recText="Above target.";
+    if(ratio>=1.50)recText="Very high load — recover well.";
+    else if(ratio>=1.15)recText="Above target — good week's work.";
     else if(ratio>=0.85)recText="On track — focus on skills and execution.";
     else if(ratio>=0.5)recText="Moderate — more volume needed before week end.";
     else recText="Below target — prioritise this in your next session.";
