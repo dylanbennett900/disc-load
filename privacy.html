@@ -2,143 +2,344 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Privacy Policy · DBSP / Frisbee Track</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy | DBSP &amp; Frisbee Track</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@400;700;900&family=DM+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@700;900&family=DM+Sans:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --bg:#f4f2ee;--panel:#fff;--border:rgba(0,0,0,0.09);
-  --ink:#1a1a18;--ink2:#4a4a46;--ink3:#8a8a84;
-  --accent:#1a3a5c;--accent-m:#2d62a0;--accent-l:#e8f0fa;
-  --fd:'Barlow Condensed',sans-serif;--fb:'DM Sans',sans-serif;--fm:'IBM Plex Mono',monospace;
+  --navy:#1a3a5c;
+  --navy-deep:#0f2235;
+  --off-white:#f4f2ee;
+  --off-white2:#eceae5;
+  --cyan:#00d4ff;
+  --ink:#1a1a18;
+  --ink2:#4a4a46;
+  --ink3:#8a8a84;
+  --white:#ffffff;
+  --fd:"Barlow Condensed",sans-serif;
+  --fb:"DM Sans",sans-serif;
+  --fm:"JetBrains Mono",monospace;
+  --max:680px;
 }
-html,body{background:var(--bg);font-family:var(--fb);color:var(--ink);line-height:1.65;-webkit-font-smoothing:antialiased}
-.page{max-width:760px;margin:0 auto;padding:48px 28px 80px}
-.topbar{display:flex;align-items:center;justify-content:space-between;padding-bottom:24px;border-bottom:2px solid var(--accent);margin-bottom:40px}
-.brand{font-family:var(--fd);font-size:28px;font-weight:900;letter-spacing:.12em;color:var(--accent)}
-.brand a{color:inherit;text-decoration:none}
-.meta-label{font-family:var(--fm);font-size:10px;letter-spacing:.2em;color:var(--ink3);text-transform:uppercase}
-h1{font-family:var(--fd);font-size:44px;font-weight:900;color:var(--ink);letter-spacing:.01em;line-height:1.05;margin-bottom:10px;text-transform:uppercase}
-.effective{font-family:var(--fm);font-size:11px;color:var(--ink3);letter-spacing:.1em;text-transform:uppercase;margin-bottom:32px;padding-bottom:20px;border-bottom:1px solid var(--border)}
-h2{font-family:var(--fd);font-size:22px;font-weight:900;color:var(--accent);letter-spacing:.02em;margin-top:36px;margin-bottom:12px;text-transform:uppercase}
-h3{font-family:var(--fd);font-size:17px;font-weight:700;color:var(--ink);margin-top:20px;margin-bottom:6px}
-p{font-size:15px;color:var(--ink2);margin-bottom:14px}
-ul,ol{margin:8px 0 16px 22px;color:var(--ink2)}
-li{font-size:15px;margin-bottom:6px}
+html{scroll-behavior:smooth}
+body{font-family:var(--fb);color:var(--ink);background:var(--off-white);-webkit-font-smoothing:antialiased;line-height:1.6}
+
+header{
+  background:var(--navy);
+  padding:20px 5vw;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:8px;
+}
+.header-brand{font-family:var(--fd);font-size:18px;font-weight:900;letter-spacing:0.14em;color:var(--white);text-decoration:none}
+.header-tag{font-family:var(--fm);font-size:10px;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.4)}
+
+.hero{
+  background:var(--navy);
+  padding:40px 5vw 44px;
+  border-bottom:1px solid rgba(255,255,255,0.06);
+}
+.hero-inner{max-width:var(--max);margin:0 auto}
+.hero-label{font-family:var(--fm);font-size:10px;letter-spacing:0.2em;text-transform:uppercase;color:var(--cyan);margin-bottom:12px}
+.hero-h{font-family:var(--fd);font-size:clamp(32px,6vw,52px);font-weight:900;text-transform:uppercase;line-height:0.92;color:var(--white);margin-bottom:14px}
+.hero-meta{font-family:var(--fm);font-size:11px;letter-spacing:0.1em;color:rgba(255,255,255,0.35);text-transform:uppercase}
+
+.toc-bar{
+  background:var(--off-white2);
+  border-bottom:1px solid rgba(0,0,0,0.07);
+  padding:14px 5vw;
+}
+.toc-inner{
+  max-width:var(--max);
+  margin:0 auto;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px 16px;
+}
+.toc-item{
+  font-family:var(--fm);
+  font-size:10px;
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+  color:var(--ink3);
+  text-decoration:none;
+  transition:color 0.15s;
+}
+.toc-item:hover{color:var(--navy)}
+
+main{padding:56px 5vw}
+.main-inner{max-width:var(--max);margin:0 auto}
+
+.policy-section{margin-bottom:48px}
+.section-num{
+  font-family:var(--fm);
+  font-size:10px;
+  letter-spacing:0.18em;
+  text-transform:uppercase;
+  color:var(--cyan);
+  margin-bottom:6px;
+}
+.section-h{
+  font-family:var(--fd);
+  font-size:24px;
+  font-weight:900;
+  text-transform:uppercase;
+  color:var(--navy);
+  margin-bottom:16px;
+  line-height:1;
+}
+.policy-section p{
+  font-size:14px;
+  color:var(--ink2);
+  line-height:1.75;
+  margin-bottom:14px;
+}
+.policy-section p:last-child{margin-bottom:0}
+.policy-section ul{
+  list-style:none;
+  margin:12px 0 14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.policy-section ul li{
+  display:flex;
+  gap:10px;
+  font-size:14px;
+  color:var(--ink2);
+  line-height:1.6;
+}
+.policy-section ul li::before{
+  content:"";
+  width:4px;
+  height:4px;
+  border-radius:50%;
+  background:var(--cyan);
+  flex-shrink:0;
+  margin-top:9px;
+}
+.policy-section a{color:var(--navy);text-decoration:underline;text-decoration-color:rgba(26,58,92,0.3)}
+.policy-section a:hover{text-decoration-color:var(--navy)}
 strong{color:var(--ink);font-weight:600}
-a{color:var(--accent-m);text-decoration:underline;text-underline-offset:2px}
-a:hover{color:var(--accent)}
-.callout{background:var(--accent-l);border-left:3px solid var(--accent);padding:14px 18px;border-radius:0 6px 6px 0;margin:18px 0;font-size:14px;color:var(--accent)}
-.callout strong{color:var(--accent)}
-table{width:100%;border-collapse:collapse;margin:16px 0;font-size:14px}
-th,td{text-align:left;padding:10px 12px;border:1px solid var(--border);color:var(--ink2);vertical-align:top}
-th{background:var(--accent-l);font-family:var(--fd);font-weight:700;color:var(--accent);text-transform:uppercase;font-size:12px;letter-spacing:.05em}
-.footer{margin-top:60px;padding-top:24px;border-top:1px solid var(--border);font-size:12px;color:var(--ink3);text-align:center}
-.nav-other{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-family:var(--fm);font-size:11px;letter-spacing:.1em;text-transform:uppercase}
-.nav-other a{color:var(--ink3);text-decoration:none}
-.nav-other a:hover{color:var(--accent)}
+
+.divider{height:1px;background:rgba(0,0,0,0.07);margin:0 0 48px}
+
+.product-tag{
+  display:inline-block;
+  font-family:var(--fm);
+  font-size:9px;
+  letter-spacing:0.14em;
+  text-transform:uppercase;
+  padding:2px 8px;
+  border-radius:3px;
+  margin-right:4px;
+  margin-bottom:4px;
+}
+.tag-dbsp{background:rgba(26,58,92,0.1);color:var(--navy)}
+.tag-ft{background:rgba(0,212,255,0.12);color:#0098b8}
+
+.contact-box{
+  background:var(--navy);
+  border-radius:8px;
+  padding:24px 22px;
+  margin-top:24px;
+}
+.contact-box p{font-size:14px;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:8px}
+.contact-box p:last-child{margin-bottom:0}
+.contact-box a{color:var(--cyan);text-decoration:none}
+.contact-box strong{color:var(--white)}
+
+footer{
+  background:var(--navy-deep);
+  padding:20px 5vw;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:wrap;
+  gap:10px;
+}
+.footer-links{display:flex;gap:16px}
+.footer-links a{font-family:var(--fm);font-size:10px;letter-spacing:0.12em;text-transform:uppercase;color:rgba(255,255,255,0.4);text-decoration:none;transition:color 0.15s}
+.footer-links a:hover{color:rgba(255,255,255,0.8)}
+.footer-copy{font-family:var(--fm);font-size:10px;letter-spacing:0.1em;color:rgba(255,255,255,0.25);text-transform:uppercase}
 </style>
 </head>
 <body>
-<div class="page">
-  <div class="topbar">
-    <div class="brand"><a href="/">DBSP</a></div>
-    <div class="meta-label">Legal</div>
-  </div>
 
-  <h1>Privacy Policy</h1>
-  <div class="effective">Effective 20 April 2026</div>
+<header>
+  <a href="https://dbsportperformance.com" class="header-brand">DBSP</a>
+  <div class="header-tag">Dylan Bennett Sport Performance</div>
+</header>
 
-  <p>This Policy explains how <strong>Dylan Bennett Sport Performance (DBSP)</strong> collects, uses, stores, and discloses personal information when you use Frisbee Track and related services. We take your privacy seriously and aim to handle your information in line with the <strong>Australian Privacy Principles</strong> under the Privacy Act 1988 (Cth).</p>
-
-  <h2>1. Who we are</h2>
-  <p>Dylan Bennett, trading as Dylan Bennett Sport Performance, based in Sydney, Australia. Contact: <a href="mailto:dbsportperformance@gmail.com">dbsportperformance@gmail.com</a>.</p>
-
-  <h2>2. What we collect</h2>
-  <table>
-    <tr><th>Category</th><th>What</th><th>Why</th></tr>
-    <tr><td>Account</td><td>Your Google account email, name, and profile image</td><td>Sign-in, identifying you in the app, customer support</td></tr>
-    <tr><td>Age verification</td><td>Your date of birth</td><td>Verifying that you meet our minimum age requirement of 16 years old, as required by our Terms of Service</td></tr>
-    <tr><td>Training data</td><td>Sessions you log (type, date, drills, metrics), tournament dates, recovery check-ins, context settings</td><td>Core app functionality — calculating targets, roadmap, and prescriptions</td></tr>
-    <tr><td>Subscription</td><td>Tier, trial status, Stripe customer ID, subscription ID, billing period dates</td><td>Managing paid access</td></tr>
-    <tr><td>Payment</td><td>Handled entirely by Stripe; we do not store card numbers</td><td>Processing subscription payments</td></tr>
-    <tr><td>Technical</td><td>Device type, browser, rough location (country/city), error logs</td><td>Keeping the app running, debugging</td></tr>
-    <tr><td>Communications</td><td>Emails you send us, support requests</td><td>Responding to you</td></tr>
-  </table>
-  <p>We do not deliberately collect "sensitive information" as defined under the Privacy Act (e.g. detailed health records, biometric identifiers). Training load data is performance data and is not collected for health purposes.</p>
-
-  <h2>3. How we use your information</h2>
-  <ul>
-    <li><strong>To run the app:</strong> storing sessions, calculating loads, generating prescriptions</li>
-    <li><strong>To bill you:</strong> managing your subscription through Stripe</li>
-    <li><strong>To communicate:</strong> sending service emails (welcome, receipts, important updates) — and, only with your opt-in consent, marketing emails you can unsubscribe from at any time</li>
-    <li><strong>To improve the app:</strong> aggregate, de-identified analysis of usage patterns</li>
-    <li><strong>To comply with the law:</strong> where required to do so</li>
-  </ul>
-  <p>We do not sell your personal information. We do not share your training data with third parties for advertising or marketing purposes.</p>
-
-  <h2>4. Who we share it with</h2>
-  <p>We use third-party services ("processors") to run the app. These services act on our instructions and are bound by their own privacy commitments:</p>
-  <ul>
-    <li><strong>Supabase</strong> (database, authentication, edge functions) — stores your account and training data. <a href="https://supabase.com/privacy" target="_blank" rel="noopener">Supabase privacy</a></li>
-    <li><strong>Google</strong> (OAuth sign-in) — for authenticating you. <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Google privacy</a></li>
-    <li><strong>Google (Gemini AI)</strong> — the prescription text you request is sent to Google's Gemini API to generate a response. We do not send your name, email, or Supabase user ID — only the training-load context needed for the prescription. Gemini API inputs are not used to train Google's models per their API terms.</li>
-    <li><strong>Stripe</strong> (payments) — billing information and subscription management. <a href="https://stripe.com/privacy" target="_blank" rel="noopener">Stripe privacy</a></li>
-    <li><strong>Resend</strong> (transactional email) — sending welcome emails, receipts, and service notices. <a href="https://resend.com/legal/privacy-policy" target="_blank" rel="noopener">Resend privacy</a></li>
-    <li><strong>GitHub</strong> (hosting) — serves the app static files. Access logs are kept briefly.</li>
-  </ul>
-
-  <h2>5. Where your data is stored</h2>
-  <p>Our Supabase project is hosted in the Sydney region. Some processors (Stripe, Google, Resend) may process data in the United States or other jurisdictions. By using the service you consent to your information being processed in those countries under appropriate contractual protections.</p>
-
-  <h2>6. How long we keep it</h2>
-  <ul>
-    <li><strong>Account and training data:</strong> while your account is active, and for 30 days after you delete your account (to allow recovery of accidental deletion)</li>
-    <li><strong>Billing records:</strong> 7 years from the end of the financial year, as required by Australian tax law</li>
-    <li><strong>Email logs and system logs:</strong> typically 30–90 days</li>
-  </ul>
-
-  <h2>7. Your rights</h2>
-  <p>You can at any time:</p>
-  <ul>
-    <li><strong>Access</strong> the personal information we hold about you</li>
-    <li><strong>Correct</strong> anything that is inaccurate or out of date</li>
-    <li><strong>Delete</strong> your account and associated data (email us to request this)</li>
-    <li><strong>Export</strong> your training data (email us and we will provide it as JSON)</li>
-    <li><strong>Opt out</strong> of marketing emails via the unsubscribe link in each email</li>
-    <li><strong>Withdraw consent</strong> where processing relies on your consent</li>
-  </ul>
-  <p>To exercise any of these rights, email <a href="mailto:dbsportperformance@gmail.com">dbsportperformance@gmail.com</a>. We will respond within 30 days.</p>
-
-  <h2>8. Security</h2>
-  <p>We use industry-standard measures to protect your information: HTTPS everywhere, database-level row-level security so users can only access their own data, secure password-less authentication through Google, and payment details handled only by Stripe. No system is perfectly secure. If a data breach occurs that is likely to cause serious harm, we will notify affected users and the Office of the Australian Information Commissioner as soon as practicable, in line with the <strong>Notifiable Data Breaches</strong> scheme.</p>
-
-  <h2>9. Children and age verification</h2>
-  <p>The service is not available to users under 16. When you create an account, we collect your date of birth to verify you meet this minimum age requirement. If you are under 16, your account will be blocked and we will not retain your personal information beyond what is needed to action that block.</p>
-  <p>Users aged 16 or 17 must confirm that a parent or guardian has consented to their use of the service before they can proceed. We store a record of that consent alongside the date of birth provided.</p>
-  <p>If we become aware that we have collected personal information from a user under 16 who bypassed the age verification step, we will delete that information and close the account as soon as practicable.</p>
-
-  <h2>10. Cookies and tracking</h2>
-  <p>The app uses essential cookies and browser storage to keep you signed in and remember your preferences. We do not use third-party advertising cookies. If we add analytics in future, we will update this Policy and notify you.</p>
-
-  <h2>11. Changes to this Policy</h2>
-  <p>We may update this Policy from time to time. Material changes will be notified via email or an in-app notice. The "Effective" date at the top reflects the most recent update.</p>
-
-  <h2>12. Complaints</h2>
-  <p>If you have a privacy concern, email us first at <a href="mailto:dbsportperformance@gmail.com">dbsportperformance@gmail.com</a> and we will do our best to resolve it. If you are not satisfied with our response, you can lodge a complaint with the <strong>Office of the Australian Information Commissioner</strong> (OAIC): <a href="https://www.oaic.gov.au" target="_blank" rel="noopener">oaic.gov.au</a>.</p>
-
-  <div class="footer">
-    <div class="nav-other">
-      <a href="/terms">Terms</a>
-      <a href="/privacy">Privacy</a>
-      <a href="/refunds">Refunds</a>
-      <a href="/disclaimer">Disclaimer</a>
-    </div>
-    <p style="margin-top:16px">© DBSP · Dylan Bennett Sport Performance · Sydney, Australia</p>
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-label">Legal</div>
+    <h1 class="hero-h">Privacy Policy</h1>
+    <div class="hero-meta">Effective: 1 June 2026 &nbsp;·&nbsp; Governed by Australian law</div>
   </div>
 </div>
+
+<div class="toc-bar">
+  <div class="toc-inner">
+    <a href="#who" class="toc-item">Who we are</a>
+    <a href="#what" class="toc-item">What we collect</a>
+    <a href="#how" class="toc-item">How we use it</a>
+    <a href="#third-parties" class="toc-item">Third parties</a>
+    <a href="#retention" class="toc-item">Retention</a>
+    <a href="#rights" class="toc-item">Your rights</a>
+    <a href="#security" class="toc-item">Security</a>
+    <a href="#children" class="toc-item">Children</a>
+    <a href="#changes" class="toc-item">Changes</a>
+    <a href="#contact" class="toc-item">Contact</a>
+  </div>
+</div>
+
+<main>
+<div class="main-inner">
+
+  <div class="policy-section" id="intro">
+    <p>This Privacy Policy explains how Dylan Bennett trading as <strong>Dylan Bennett Sport Performance (DBSP)</strong> collects, uses, and protects personal information across two products:</p>
+    <ul>
+      <li><span class="product-tag tag-dbsp">DBSP</span> The coaching and content business at <strong>dbsportperformance.com</strong>, including the coaching enquiry form and free guide email capture.</li>
+      <li><span class="product-tag tag-ft">Frisbee Track</span> The GPS training load monitoring app at <strong>frisbeetrack.app</strong>, including the web app, subscription system, and AI features.</li>
+    </ul>
+    <p>By using either product you agree to this policy. If you do not agree, please do not use our services.</p>
+  </div>
+
+  <div class="divider"></div>
+
+  <div class="policy-section" id="who">
+    <div class="section-num">01</div>
+    <h2 class="section-h">Who we are</h2>
+    <p><strong>Dylan Bennett</strong>, sole trader, operating as Dylan Bennett Sport Performance (DBSP). Based in Sydney, New South Wales, Australia.</p>
+    <p>Contact: <a href="mailto:dbsportperformance@gmail.com">dbsportperformance@gmail.com</a></p>
+  </div>
+
+  <div class="policy-section" id="what">
+    <div class="section-num">02</div>
+    <h2 class="section-h">What we collect</h2>
+
+    <p><span class="product-tag tag-dbsp">DBSP site</span></p>
+    <ul>
+      <li><strong>Free guide signups:</strong> first name and email address.</li>
+      <li><strong>Coaching enquiries:</strong> full name, email address, playing level, and a description of your training goals.</li>
+    </ul>
+
+    <p style="margin-top:18px"><span class="product-tag tag-ft">Frisbee Track</span></p>
+    <ul>
+      <li><strong>Account data:</strong> name and email address via Google OAuth sign-in.</li>
+      <li><strong>Date of birth:</strong> collected at signup for age verification purposes. Users under 16 are not permitted.</li>
+      <li><strong>Training data:</strong> GPS metrics, session load data, and training history that you log in the app.</li>
+      <li><strong>Subscription and payment data:</strong> subscription tier, billing status, and payment processing handled by Stripe. We do not store card details.</li>
+      <li><strong>Promo code usage:</strong> whether a promotional code has been redeemed against your account.</li>
+      <li><strong>AI interaction data:</strong> session data submitted to the AI prescription feature for analysis. This is processed via Google Gemini and is not stored beyond your session.</li>
+    </ul>
+  </div>
+
+  <div class="policy-section" id="how">
+    <div class="section-num">03</div>
+    <h2 class="section-h">How we use your data</h2>
+    <ul>
+      <li>To deliver the free guide to your inbox.</li>
+      <li>To respond to coaching enquiries and, if we work together, to deliver your coaching program.</li>
+      <li>To provide access to Frisbee Track and manage your subscription.</li>
+      <li>To verify your age and manage parental consent where required.</li>
+      <li>To generate AI-powered training prescriptions based on your session data.</li>
+      <li>To process payments and manage billing via Stripe.</li>
+      <li>To send transactional emails (guide delivery, welcome emails, billing notifications) via Resend.</li>
+      <li>To comply with legal obligations.</li>
+    </ul>
+    <p>We do not sell your personal information to third parties. We do not use your data for advertising.</p>
+  </div>
+
+  <div class="policy-section" id="third-parties">
+    <div class="section-num">04</div>
+    <h2 class="section-h">Third-party services</h2>
+    <p>We use the following third-party services to operate our products. Each has its own privacy policy.</p>
+    <ul>
+      <li><strong>Supabase</strong> (database and authentication hosting) — <a href="https://supabase.com/privacy" target="_blank" rel="noopener">supabase.com/privacy</a></li>
+      <li><strong>Google OAuth</strong> (sign-in for Frisbee Track) — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></li>
+      <li><strong>Google Gemini</strong> (AI prescription processing) — <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">policies.google.com/privacy</a></li>
+      <li><strong>Stripe</strong> (payment processing) — <a href="https://stripe.com/privacy" target="_blank" rel="noopener">stripe.com/privacy</a></li>
+      <li><strong>Resend</strong> (transactional email delivery) — <a href="https://resend.com/privacy" target="_blank" rel="noopener">resend.com/privacy</a></li>
+    </ul>
+    <p>We share only the minimum personal information necessary for each service to function.</p>
+  </div>
+
+  <div class="policy-section" id="retention">
+    <div class="section-num">05</div>
+    <h2 class="section-h">Data retention</h2>
+    <ul>
+      <li><strong>Guide signups and coaching enquiries</strong> are retained indefinitely unless you request deletion.</li>
+      <li><strong>Frisbee Track account and training data</strong> is retained while your account is active. If you delete your account, your data is removed within 30 days.</li>
+      <li><strong>Payment records</strong> are retained as required by Australian financial record-keeping obligations (generally 5 years).</li>
+    </ul>
+  </div>
+
+  <div class="policy-section" id="rights">
+    <div class="section-num">06</div>
+    <h2 class="section-h">Your rights</h2>
+    <p>Under the Australian Privacy Act 1988, you have the right to:</p>
+    <ul>
+      <li>Access the personal information we hold about you.</li>
+      <li>Request correction of inaccurate or incomplete information.</li>
+      <li>Request deletion of your personal information (subject to legal retention requirements).</li>
+      <li>Withdraw consent where processing is based on consent (for example, unsubscribing from emails).</li>
+    </ul>
+    <p>To exercise any of these rights, email <a href="mailto:dbsportperformance@gmail.com">dbsportperformance@gmail.com</a>. We will respond within 30 days.</p>
+    <p>If you are not satisfied with our response, you may lodge a complaint with the <strong>Office of the Australian Information Commissioner (OAIC)</strong> at <a href="https://www.oaic.gov.au" target="_blank" rel="noopener">oaic.gov.au</a>.</p>
+  </div>
+
+  <div class="policy-section" id="security">
+    <div class="section-num">07</div>
+    <h2 class="section-h">Security</h2>
+    <p>We use industry-standard security measures including encrypted connections (HTTPS), JWT-based authentication, and row-level security on our database. No method of transmission over the internet is completely secure, and we cannot guarantee absolute security. We will notify you promptly in the event of a data breach that is likely to result in serious harm.</p>
+  </div>
+
+  <div class="policy-section" id="cookies">
+    <div class="section-num">08</div>
+    <h2 class="section-h">Cookies &amp; local storage</h2>
+    <p>The DBSP website does not use tracking cookies or third-party analytics. Frisbee Track uses browser local storage to maintain your session state. We do not use advertising trackers.</p>
+  </div>
+
+  <div class="policy-section" id="children">
+    <div class="section-num">09</div>
+    <h2 class="section-h">Children</h2>
+    <p>Our services are not intended for users under 16. Frisbee Track requires date-of-birth verification at signup and will not permit access to users under 16. We do not knowingly collect personal information from children under 16, and will delete any such data if discovered.</p>
+  </div>
+
+  <div class="policy-section" id="changes">
+    <div class="section-num">10</div>
+    <h2 class="section-h">Changes to this policy</h2>
+    <p>We may update this Privacy Policy from time to time. Material changes will be communicated via email or an in-app notice. The effective date at the top of this page reflects the most recent version. Continued use of our services after changes constitutes acceptance of the updated policy.</p>
+  </div>
+
+  <div class="policy-section" id="contact">
+    <div class="section-num">11</div>
+    <h2 class="section-h">Contact</h2>
+    <p>Privacy questions, access requests, or complaints:</p>
+    <div class="contact-box">
+      <p><strong>Dylan Bennett Sport Performance</strong></p>
+      <p>Sydney, New South Wales, Australia</p>
+      <p><a href="mailto:dbsportperformance@gmail.com">dbsportperformance@gmail.com</a></p>
+    </div>
+  </div>
+
+</div>
+</main>
+
+<footer>
+  <div class="footer-links">
+    <a href="https://dylanbennett900.github.io/dbsp/guide.html">Coaching</a>
+    <a href="https://dylanbennett900.github.io/disc-load">Frisbee Track</a>
+    <a href="mailto:dbsportperformance@gmail.com">Contact</a>
+  </div>
+  <div class="footer-copy">© 2026 Dylan Bennett Sport Performance</div>
+</footer>
+
 </body>
 </html>
