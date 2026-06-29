@@ -4539,7 +4539,13 @@ function dbspLogSession(){
 function initDBSPProgram(){
   var sect=document.getElementById('dbsp-program-section');
   if(!sect)return;
-  // Show only for pro/beta users (same gate as drill library)
+  // Coach always sees it
+  if(currentUser&&currentUser.id===COACH_UID){
+    sect.style.display='block';
+    renderDBSPBody();
+    return;
+  }
+  // Beta/pro users see it unlocked
   var tier=(currentUser&&currentUser.user_metadata&&currentUser.user_metadata.tier)||'free';
   var isBeta=tier==='beta'||tier==='pro';
   sect.style.display=isBeta?'block':'none';
