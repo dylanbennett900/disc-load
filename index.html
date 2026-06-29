@@ -4485,8 +4485,7 @@ function renderDBSPSession(el){
       if(d.note){out+='<div style="font-size:11px;color:var(--t3);margin-top:3px;line-height:1.4">'+d.note+'</div>';}
       out+='</div><div class="dbsp-drill-actions">';
       if(d.vid){
-        out+='<button class="dbsp-vid-btn" onclick="openYTPopup(\''+d.vid.replace(/'/g,"\\'")+'\',' +'\''+d.name.replace(/'/g,"\\'")+'\')">'
-          +'<svg width="10" height="10" viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" fill="currentColor"/></svg>DEMO</button>';
+        out+='<button class="dbsp-vid-btn" onclick="openYTPopup(this.dataset.url,this.dataset.title)" data-url="'+d.vid+'" data-title="'+d.name+'"><svg width="10" height="10" viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" fill="currentColor"/></svg>DEMO</button>';
       } else if(d.diag){
         var dl=DRILL_LIB.find(function(x){return x.key===d.diag;});
         if(dl){
