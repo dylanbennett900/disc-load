@@ -526,6 +526,36 @@ input,select{font-family:inherit;outline:none}
 .rtr-card-label{font-size:9px;font-weight:800;letter-spacing:1.5px;text-transform:uppercase;color:var(--green);margin-bottom:3px;font-family:var(--display)}
 .rtr-card-title{font-family:var(--display);font-size:20px;font-weight:900;letter-spacing:.5px;color:var(--t);line-height:1.1}
 .rtr-card-sub{font-size:11px;color:var(--t3);margin-top:4px;line-height:1.4}
+.dbsp-phase-tabs{display:flex;gap:6px;padding:0 0 10px;margin-bottom:4px}
+.dbsp-phase-btn{flex:1;padding:7px 4px;border-radius:var(--radius-sm);font-family:var(--display);font-size:11px;font-weight:800;letter-spacing:.3px;border:1.5px solid var(--bd2);background:transparent;color:var(--t3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
+.dbsp-phase-btn.on{border-color:var(--green);background:rgba(0,232,122,0.08);color:var(--green)}
+.dbsp-session-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px}
+.dbsp-session-btn{border:1.5px solid var(--bd2);border-radius:8px;background:var(--sf2);padding:12px 10px;cursor:pointer;-webkit-tap-highlight-color:transparent;text-align:left;transition:all .15s}
+.dbsp-session-btn:hover{border-color:var(--green);background:rgba(0,232,122,0.06)}
+.dbsp-session-type{font-family:var(--display);font-size:9px;font-weight:800;letter-spacing:.8px;text-transform:uppercase;margin-bottom:4px}
+.dbsp-session-type.speed{color:#6366f1}
+.dbsp-session-type.accel{color:#a855f7}
+.dbsp-session-name{font-size:12px;font-weight:700;color:var(--t);line-height:1.3}
+/* ── DBSP SESSION CARD (modal-like inline card) ── */
+.dbsp-card{background:var(--sf2);border:1px solid var(--bd2);border-radius:10px;margin-bottom:12px;overflow:hidden}
+.dbsp-card-header{padding:12px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:center;justify-content:space-between;gap:8px}
+.dbsp-card-back{border:none;background:transparent;color:var(--t3);font-family:var(--display);font-size:10px;font-weight:800;letter-spacing:.5px;cursor:pointer;padding:0;display:flex;align-items:center;gap:4px}
+.dbsp-card-title{font-family:var(--display);font-size:14px;font-weight:900;letter-spacing:.5px;color:var(--t)}
+.dbsp-card-badge{font-family:var(--display);font-size:9px;font-weight:800;letter-spacing:.5px;padding:2px 8px;border-radius:20px}
+.dbsp-card-badge.speed{background:rgba(99,102,241,0.12);color:#6366f1;border:1px solid rgba(99,102,241,0.2)}
+.dbsp-card-badge.accel{background:rgba(168,85,247,0.12);color:#a855f7;border:1px solid rgba(168,85,247,0.2)}
+.dbsp-section-label{font-family:var(--display);font-size:9px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t3);padding:9px 14px 4px;border-top:1px solid var(--bd);margin-top:2px}
+.dbsp-section-label:first-of-type{border-top:none;margin-top:0}
+.dbsp-drill-row{padding:9px 14px;border-bottom:1px solid var(--bd);display:flex;align-items:flex-start;gap:10px}
+.dbsp-drill-row:last-child{border-bottom:none}
+.dbsp-drill-name{font-size:12px;font-weight:700;color:var(--t);line-height:1.3;flex:1}
+.dbsp-drill-load{font-family:var(--mono);font-size:10px;color:var(--t3);margin-top:2px;letter-spacing:.2px}
+.dbsp-drill-actions{display:flex;align-items:center;gap:6px;flex-shrink:0;margin-top:1px}
+.dbsp-vid-btn{border:none;background:rgba(2,132,199,0.1);border-radius:4px;padding:4px 8px;font-size:9px;font-weight:800;font-family:var(--display);letter-spacing:.4px;color:var(--blue);cursor:pointer;white-space:nowrap;display:flex;align-items:center;gap:3px}
+.dbsp-coming-btn{border:none;background:var(--sf3);border-radius:4px;padding:4px 8px;font-size:9px;font-weight:700;font-family:var(--display);letter-spacing:.4px;color:var(--t4);cursor:default;white-space:nowrap}
+.dbsp-diag-btn{border:none;background:rgba(5,150,105,0.1);border-radius:4px;padding:4px 8px;font-size:9px;font-weight:800;font-family:var(--display);letter-spacing:.4px;color:var(--green);cursor:pointer;white-space:nowrap}
+.dbsp-drill-rest{font-family:var(--mono);font-size:9px;color:var(--amber);margin-top:3px;letter-spacing:.2px}
+.dbsp-log-btn{display:block;width:calc(100% - 28px);margin:10px 14px 12px;padding:11px;border-radius:7px;border:none;background:var(--green);color:#0a1f0f;font-family:var(--display);font-size:13px;font-weight:900;letter-spacing:.5px;cursor:pointer}
 .rtr-phase-tabs{display:flex;gap:6px;padding:10px 14px;border-bottom:1px solid var(--bd)}
 .rtr-phase-btn{flex:1;padding:7px 4px;border-radius:var(--radius-sm);font-family:var(--display);font-size:11px;font-weight:800;letter-spacing:.3px;border:1.5px solid var(--bd2);background:transparent;color:var(--t3);cursor:pointer;-webkit-tap-highlight-color:transparent;transition:all .15s}
 .rtr-phase-btn.on{border-color:var(--green);background:rgba(5,150,105,0.08);color:var(--green)}
@@ -988,6 +1018,19 @@ input,select{font-family:inherit;outline:none}
       <div class="rtr-card-sub">Linear mechanics first, then curvilinear &amp; COD. Work through each week in order.</div>
     </div>
     <div id="rtr-body"></div>
+  </div>
+  <div class="ofc-menu-section" id="dbsp-program-section">
+    <div class="ofc-menu-header">
+      <div class="ofc-menu-title">DBSP PROGRAM</div>
+      <div class="ofc-menu-badge" style="background:rgba(0,232,122,0.1);color:var(--green);border-color:rgba(0,232,122,0.25)">6 SESSIONS</div>
+    </div>
+    <div style="font-size:11px;color:var(--t3);margin-bottom:10px;line-height:1.5">Speed &amp; acceleration sessions from the 18-week coaching program. Select the session for today to view drills, coaching notes, and video demos.</div>
+    <div class="dbsp-phase-tabs">
+      <button class="dbsp-phase-btn on" onclick="setDBSPPhase('p1')">Phase 1</button>
+      <button class="dbsp-phase-btn" onclick="setDBSPPhase('p2')">Phase 2</button>
+      <button class="dbsp-phase-btn" onclick="setDBSPPhase('p3')">Phase 3</button>
+    </div>
+    <div id="dbsp-session-body"></div>
   </div>
   <div class="ofc-menu-section">
     <div class="ofc-menu-header">
@@ -3918,7 +3961,7 @@ function switchTab(name,el){
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
   if(name==="metrics")renderSportScience();
-  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();renderDrillLibrary();renderRTRCard();}
+  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();renderDrillLibrary();renderRTRCard();initDBSPProgram();}
   if(name==="definitions")renderDefinitions();
   if(name==="coach")renderCoachPanel();
 }
@@ -4218,6 +4261,289 @@ function renderRTRLocked(){
     +'</div>'
     +'<div class="rtr-code-error" id="rtr-code-error"></div>'
     +'</div>';
+}
+
+}
+
+// ── DBSP COACHING SESSIONS ──
+var dbspPhase='p1';
+
+var VID={
+  inchworms:'https://www.youtube.com/shorts/ao3FpDMpP8Q',
+  switchPogos:'https://www.youtube.com/watch?v=8VvQYnzhASY',
+  highGateKaraoke:'',
+  lateralShuffle:'https://www.youtube.com/shorts/fMhuzmQBDco',
+  reactiveBroadJumps:'https://www.youtube.com/shorts/LKAn-05RqOM',
+  aSwitch:'https://www.youtube.com/watch?v=N-_B2ouktG8',
+  aTriple:'https://www.youtube.com/watch?v=NCX2aBeZn0c',
+  aSwFrisbee:'https://www.youtube.com/watch?v=N-_B2ouktG8',
+  aTrFrisbee:'https://www.youtube.com/watch?v=NCX2aBeZn0c',
+  offsetFrisbee:'https://www.youtube.com/watch?v=g5slgGsG0Nk',
+  boxDrill:'https://www.youtube.com/watch?v=YOx7ieWk30s',
+  dStrafeMungo:'https://www.youtube.com/watch?v=DawlZtIZmTM',
+  jRun:'https://youtube.com/shorts/BvrDDL_r_Dk',
+  speedBuildUp:'',
+  aPistonRun:'',
+  speedBounds:'',
+  singleLegHops:'',
+  buildUpHands:'',
+  laneChanges:''
+};
+
+var DBSP_SESSIONS={
+  p1:{
+    label:'Phase 1',
+    speed:{
+      type:'speed',
+      label:'Phase 1 — Speed Day',
+      warmup:[
+        {name:'Inchworms → Cobra → WG',load:'3 × each side',rest:'Walk back',vid:VID.inchworms},
+        {name:'Switch Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',vid:VID.switchPogos},
+        {name:'High Gate Karaoke',load:'20m each side',rest:'Walk back',vid:VID.highGateKaraoke}
+      ],
+      drills:[
+        {name:'A Switch w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',vid:VID.aSwFrisbee,note:'Focus on fast switching + big shapes'},
+        {name:'A Triple w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',vid:VID.aTrFrisbee,note:'Focus on fast switching + big shapes'},
+        {name:'30m Build Up w/ hands on hips',load:'× 3',rest:'Walk back',vid:VID.buildUpHands,note:'Think light and springy'}
+      ],
+      execution:[
+        {name:'50m Flys',load:'× 3',rest:'Walk back',vid:VID.speedBuildUp,note:'Roll in + hit speed',diag:''},
+        {name:'50m Offset Hold Sprinting w/ Frisbee',load:'× 3',rest:'Walk back',vid:VID.offsetFrisbee,note:'Roll in 10m, 20m holding frisbee outstretched to your left, 20m to the right',diag:''},
+        {name:'Curved Sprint',load:'2 × each side',rest:'Walk back',vid:'',diag:'c_curved',note:'See stack for diagram'}
+      ],
+      conditioning:[
+        {name:'MAS 15on15off',load:'2 × 8',rest:'2 min',vid:'',note:'Approx 83m per rep. Mark out your distance with a cone. Push it further as fitness improves. Go every 30s.'}
+      ]
+    },
+    accel:{
+      type:'accel',
+      label:'Phase 1 — Acceleration Day',
+      warmup:[
+        {name:'Inchworms → Cobra → WG',load:'3 × each side',rest:'Walk back',vid:VID.inchworms},
+        {name:'Switch Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',vid:VID.switchPogos},
+        {name:'High Gate Karaoke',load:'20m each side',rest:'Walk back',vid:VID.highGateKaraoke}
+      ],
+      drills:[
+        {name:'2 Step Accel + 20m Cruise (hands on hips)',load:'2 × each side',rest:'Walk back',vid:VID.buildUpHands,note:'Really aggressive 2 steps'},
+        {name:'10m Accel w/ Frisbee out in front',load:'4 × 10m',rest:'Walk back',vid:VID.offsetFrisbee,note:'Focus on fast switching + projecting forward, max intent'},
+        {name:'Random Pos. Start 10m Accel',load:'× 6',rest:'Walk back',vid:'',note:'Random pivot positions, get creative on ground/wide pivot etc, max intent accel'}
+      ],
+      execution:[
+        {name:'Repeat Speed Grid',load:'2 × 4',rest:'2 min',vid:'',diag:'c_speedgrid',note:'30m max effort, go on every 30s'},
+        {name:'D Strafe Mungo',load:'× 3',rest:'Walk back',vid:VID.dStrafeMungo,note:'Keep hips square to front, see diagram'},
+        {name:'Box Drill',load:'2 × 4',rest:'2 min',vid:VID.boxDrill,note:'Go on the 30s'}
+      ],
+      conditioning:[
+        {name:'60-40-20 Shuttle',load:'× 3',rest:'1 min',vid:'',diag:'m_604020',note:'Aim for <50 secs each rep, go every 2 mins'}
+      ]
+    }
+  },
+  p2:{
+    label:'Phase 2',
+    speed:{
+      type:'speed',
+      label:'Phase 2 — Speed Day',
+      warmup:[
+        {name:'Inchworms → Cobra → WG',load:'3 × each side',rest:'Walk back',vid:VID.inchworms},
+        {name:'Switch Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',vid:VID.switchPogos},
+        {name:'High Gate Karaoke',load:'20m each side',rest:'Walk back',vid:VID.highGateKaraoke}
+      ],
+      drills:[
+        {name:'A Switch w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',vid:VID.aSwFrisbee,note:'Focus on fast switching + big shapes'},
+        {name:'A Triple w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',vid:VID.aTrFrisbee,note:'Focus on fast switching + big shapes'},
+        {name:'30m Build Up w/ hands on hips',load:'× 3',rest:'Walk back',vid:VID.buildUpHands,note:'Think light and springy'}
+      ],
+      execution:[
+        {name:'50m Flys',load:'× 3',rest:'Walk back',vid:VID.speedBuildUp,note:'Roll in + hit speed'},
+        {name:'50m Offset Hold Sprinting w/ Frisbee',load:'× 3',rest:'Walk back',vid:VID.offsetFrisbee,note:'Roll in 10m, 20m holding frisbee outstretched to your left, 20m to the right'},
+        {name:'Curved Sprint',load:'2 × each side',rest:'Walk back',vid:'',diag:'c_curved',note:'See stack for diagram'}
+      ],
+      conditioning:[
+        {name:'MAS 15on15off',load:'2 × 8',rest:'2 min',vid:'',note:'Approx 83m per rep. Mark out your distance with a cone. Push it further as fitness improves. Go every 30s.'}
+      ]
+    },
+    accel:{
+      type:'accel',
+      label:'Phase 2 — Acceleration Day',
+      warmup:[
+        {name:'Inchworms → Cobra → WG',load:'3 × each side',rest:'Walk back',vid:VID.inchworms},
+        {name:'Switch Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',vid:VID.switchPogos},
+        {name:'High Gate Karaoke',load:'20m each side',rest:'Walk back',vid:VID.highGateKaraoke}
+      ],
+      drills:[
+        {name:'5m Lateral Shuffle Out + Back + 20m Accel',load:'2 × each side',rest:'Walk back',vid:VID.lateralShuffle,note:'Shuffle 5m each way then turn and burn for 20m'},
+        {name:'10m Accel w/ Frisbee out in front',load:'4 × 10m',rest:'Walk back',vid:VID.offsetFrisbee,note:'Focus on fast switching + projecting forward'},
+        {name:'Reactive Broad Jumps',load:'2 × 6',rest:'Walk back',vid:VID.reactiveBroadJumps,note:'Repeat broad jump as far as you can 6 times, land and jump quickly each jump'}
+      ],
+      execution:[
+        {name:'Repeat Speed Grid',load:'× 4',rest:'2 min',vid:'',diag:'c_speedgrid',note:'30m max effort, go on every 30s'},
+        {name:'J Run',load:'× 3 each side',rest:'Walk back',vid:VID.jRun,note:'Accel hard around the 5m curve + 20m speed effort'},
+        {name:'D Strafe Mungo',load:'× 4',rest:'Walk back',vid:VID.dStrafeMungo,note:'Keep hips square to front, see diagram'},
+        {name:'Box Drill',load:'× 4',rest:'2 min',vid:VID.boxDrill,note:'Go on the 30s'}
+      ],
+      conditioning:[
+        {name:'60-40-20 Shuttle',load:'× 3',rest:'1 min',vid:'',diag:'m_604020',note:'Aim for <50 secs each rep, go every 2 mins'}
+      ]
+    }
+  },
+  p3:{
+    label:'Phase 3',
+    speed:{
+      type:'speed',
+      label:'Phase 3 — Speed Day',
+      warmup:[
+        {name:'Inchworms → Cobra → WG',load:'3 × each side',rest:'Walk back',vid:VID.inchworms},
+        {name:'Switch Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',vid:VID.switchPogos},
+        {name:'High Gate Karaoke',load:'20m each side',rest:'Walk back',vid:VID.highGateKaraoke}
+      ],
+      drills:[
+        {name:'A Switch w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',vid:VID.aSwFrisbee,note:'Focus on fast switching + big shapes'},
+        {name:'A Piston Run',load:'3 × 15m',rest:'Walk back',vid:VID.aPistonRun,note:'Switch speed as fast as possible'},
+        {name:'Speed Bounds',load:'3 × 20m',rest:'Walk back',vid:VID.speedBounds,note:'Aim for height and distance each hop'},
+        {name:'Single Leg Hops',load:'3 × 20m each side',rest:'Walk back',vid:VID.singleLegHops,note:'Aim for height and distance each bound'}
+      ],
+      execution:[
+        {name:'50m Flys',load:'× 3',rest:'Walk back',vid:VID.speedBuildUp,note:'Roll in + hit speed'},
+        {name:'Butterfly Speed Effort 40m',load:'2 × each side',rest:'Walk back',vid:'',diag:'c_butterfly',note:'Butterfly pattern into curved speed effort, mix up angle + curve'}
+      ],
+      conditioning:[
+        {name:'MAS 15on15off',load:'2 × 8',rest:'2 min',vid:'',note:'Approx 83m per rep. Mark out your distance with a cone. Push it further as fitness improves. Go every 30s.'}
+      ]
+    },
+    accel:{
+      type:'accel',
+      label:'Phase 3 — Acceleration Day',
+      warmup:[
+        {name:'Inchworms → Cobra → WG',load:'3 × each side',rest:'Walk back',vid:VID.inchworms},
+        {name:'Switch Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',vid:VID.switchPogos},
+        {name:'High Gate Karaoke',load:'20m each side',rest:'Walk back',vid:VID.highGateKaraoke}
+      ],
+      drills:[
+        {name:'5m Lateral Shuffle Out + Back + 20m Accel',load:'2 × each side',rest:'Walk back',vid:VID.lateralShuffle,note:'Shuffle 5m each way then turn and burn for 20m'},
+        {name:'Reactive Broad Jumps',load:'2 × 6',rest:'Walk back',vid:VID.reactiveBroadJumps,note:'Repeat broad jump as far as you can 6 times, land and jump quickly each jump'}
+      ],
+      execution:[
+        {name:'Repeat Speed Grid',load:'× 4',rest:'2 min',vid:'',diag:'c_speedgrid',note:'30m max effort, go on every 30s'},
+        {name:'Reverse D Strafe Mungo',load:'× 4',rest:'Walk back',vid:VID.dStrafeMungo,note:'Keep hips square to front, see diagram'},
+        {name:'Box Drill',load:'× 4',rest:'2 min',vid:VID.boxDrill,note:'Go on the 30s'}
+      ],
+      conditioning:[
+        {name:'60-40-20 Shuttle',load:'× 3',rest:'1 min',vid:'',diag:'m_604020',note:'Aim for <50 secs each rep, go every 2 mins'}
+      ]
+    }
+  }
+};
+
+var dbspActiveSession=null;
+
+function setDBSPPhase(ph){
+  dbspPhase=ph;
+  dbspActiveSession=null;
+  document.querySelectorAll('.dbsp-phase-btn').forEach(function(b){b.classList.toggle('on',b.getAttribute('onclick').includes("'"+ph+"'"));});
+  renderDBSPBody();
+}
+
+function renderDBSPBody(){
+  var el=document.getElementById('dbsp-session-body');
+  if(!el)return;
+  if(dbspActiveSession){
+    renderDBSPSession(el);
+  } else {
+    renderDBSPMenu(el);
+  }
+}
+
+function renderDBSPMenu(el){
+  var ph=DBSP_SESSIONS[dbspPhase];
+  el.innerHTML='<div class="dbsp-session-row">'
+    +'<button class="dbsp-session-btn" onclick="dbspActiveSession=\'speed\';renderDBSPBody()">'
+    +'<div class="dbsp-session-type speed">Speed</div>'
+    +'<div class="dbsp-session-name">'+ph.label+' Speed Day</div>'
+    +'</button>'
+    +'<button class="dbsp-session-btn" onclick="dbspActiveSession=\'accel\';renderDBSPBody()">'
+    +'<div class="dbsp-session-type accel">Accel</div>'
+    +'<div class="dbsp-session-name">'+ph.label+' Acceleration Day</div>'
+    +'</button>'
+    +'</div>';
+}
+
+function renderDBSPSession(el){
+  var s=DBSP_SESSIONS[dbspPhase][dbspActiveSession];
+  var h='<div class="dbsp-card">'
+    +'<div class="dbsp-card-header">'
+    +'<button class="dbsp-card-back" onclick="dbspActiveSession=null;renderDBSPBody()">← Back</button>'
+    +'<div class="dbsp-card-title">'+s.label+'</div>'
+    +'<div class="dbsp-card-badge '+s.type+'">'+(s.type==='speed'?'SPEED':'ACCEL')+'</div>'
+    +'</div>';
+
+  function drillRows(arr,section){
+    var out='<div class="dbsp-section-label">'+section+'</div>';
+    arr.forEach(function(d){
+      out+='<div class="dbsp-drill-row"><div style="flex:1"><div class="dbsp-drill-name">'+d.name+'</div>'
+        +'<div class="dbsp-drill-load">'+d.load+'</div>';
+      if(d.rest){out+='<div class="dbsp-drill-rest">Rest: '+d.rest+'</div>';}
+      if(d.note){out+='<div style="font-size:11px;color:var(--t3);margin-top:3px;line-height:1.4">'+d.note+'</div>';}
+      out+='</div><div class="dbsp-drill-actions">';
+      if(d.vid){
+        out+='<button class="dbsp-vid-btn" onclick="openYTPopup(\''+d.vid.replace(/'/g,"\\'")+'\',' +'\''+d.name.replace(/'/g,"\\'")+'\')">'
+          +'<svg width="10" height="10" viewBox="0 0 10 10"><polygon points="2,1 9,5 2,9" fill="currentColor"/></svg>DEMO</button>';
+      } else if(d.diag){
+        var dl=DRILL_LIB.find(function(x){return x.key===d.diag;});
+        if(dl){
+          out+='<button class="dbsp-diag-btn" onclick="openDrillModal(\''+d.diag+'\')">DIAGRAM</button>';
+        } else {
+          out+='<span class="dbsp-coming-btn">COMING SOON</span>';
+        }
+      } else {
+        out+='<span class="dbsp-coming-btn">COMING SOON</span>';
+      }
+      out+='</div></div>';
+    });
+    return out;
+  }
+
+  h+=drillRows(s.warmup,'Warm Up');
+  if(s.drills&&s.drills.length) h+=drillRows(s.drills,'Drilling & Mechanics');
+  var execLabel=s.type==='speed'?'Speed Execution':'Acceleration Execution';
+  h+=drillRows(s.execution,execLabel);
+  h+=drillRows(s.conditioning,'Conditioning');
+  h+='<button class="dbsp-log-btn" onclick="dbspLogSession()">Log this session</button>';
+  h+='</div>';
+  el.innerHTML=h;
+}
+
+function dbspLogSession(){
+  // Pre-fill a training session entry from the DBSP session and open the log form
+  var s=DBSP_SESSIONS[dbspPhase][dbspActiveSession];
+  var label=s.label;
+  // Map drills to nearest tracked drill keys for metric estimation
+  var drillMap={
+    speed:{rows:[{dk:'c_speedbuild',v1:3},{dk:'m_mas',r1:2,r2:8,dist:83}]},
+    accel:{rows:[{dk:'c_speedgrid',v1:4},{dk:'c_boxdrill',v1:4},{dk:'m_604020',v1:3}]}
+  };
+  var defaultDrills=dbspActiveSession==='speed'
+    ?[{dk:'c_speedbuild',v1:3,v2:0},{dk:'m_mas',v1:2,v2:8}]
+    :[{dk:'c_speedgrid',v1:4,v2:0},{dk:'c_boxdrill',v1:4,v2:0},{dk:'m_604020',v1:3,v2:0}];
+  // Open the training log form pre-labelled
+  if(typeof toggleForm==='function') toggleForm('training');
+  var lbl=document.getElementById('flabel-tr');
+  if(lbl) lbl.value=label;
+  // Set today's date
+  var fd=document.getElementById('fdate-tr');
+  if(fd&&!fd.value) fd.value=new Date().toISOString().slice(0,10);
+  // Scroll to form
+  var form=document.getElementById('add-form');
+  if(form) form.scrollIntoView({behavior:'smooth',block:'start'});
+}
+
+function initDBSPProgram(){
+  var sect=document.getElementById('dbsp-program-section');
+  if(!sect)return;
+  // Show only for pro/beta users (same gate as drill library)
+  var tier=(currentUser&&currentUser.user_metadata&&currentUser.user_metadata.tier)||'free';
+  var isBeta=tier==='beta'||tier==='pro';
+  sect.style.display=isBeta?'block':'none';
+  if(isBeta) renderDBSPBody();
 }
 
 function redeemRTRCodeFromInput(){
