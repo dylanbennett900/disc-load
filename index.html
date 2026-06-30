@@ -1070,8 +1070,28 @@ input,select{font-family:inherit;outline:none}
     </div>
   </div>
   <div class="coach-section">
+    <div class="coach-section-title">Generate Coaching Code</div>
+    <div class="coach-gen-form">
+      <div class="coach-gen-label">Athlete Name</div>
+      <input class="coach-gen-input" id="coach-coaching-name" type="text" placeholder="e.g. James Smith" autocomplete="off">
+      <button class="coach-gen-btn" style="background:var(--cyan);color:var(--navy-deep)" onclick="generateCoachingCode()">GENERATE &amp; COPY CODE</button>
+      <div class="coach-gen-result" id="coach-coaching-result">
+        <div class="coach-gen-result-label">Code Generated — send this to the athlete</div>
+        <div class="coach-gen-code" id="coach-coaching-code"></div>
+        <button class="coach-copy-btn" id="coach-coaching-copy-btn" onclick="copyCoachingCode()">
+          <svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 3V2a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
+          COPY CODE
+        </button>
+      </div>
+    </div>
+  </div>
+  <div class="coach-section">
     <div class="coach-section-title">Issued Codes</div>
     <div class="coach-codes-list" id="coach-codes-list"><div class="coach-empty">No codes issued yet</div></div>
+  </div>
+  <div class="coach-section">
+    <div class="coach-section-title">Coaching Codes</div>
+    <div class="coach-codes-list" id="coach-coaching-codes-list"><div class="coach-empty">No coaching codes yet</div></div>
   </div>
   <div class="coach-section">
     <div class="coach-section-title">Users</div>
@@ -4641,6 +4661,32 @@ async function renderCoachPanel(){
   }catch(e){
     if(usersList)usersList.innerHTML='<div class="coach-empty">Error loading users</div>';
   }
+
+  // Load coaching codes (promo_codes with max_uses=1 and label set)
+  try{
+    var coachList=document.getElementById('coach-coaching-codes-list');
+    if(coachList){
+      var pcRes=await sb.from('promo_codes')
+        .select('code,label,max_uses,uses,created_at')
+        .eq('max_uses',1)
+        .order('created_at',{ascending:false});
+      if(!pcRes.data||pcRes.data.length===0){
+        coachList.innerHTML='<div class="coach-empty">No coaching codes yet</div>';
+      } else {
+        coachList.innerHTML=pcRes.data.map(function(row){
+          var redeemed=row.uses>=1;
+          var statusClass=redeemed?'redeemed':'pending';
+          var statusLabel=redeemed?'REDEEMED':'UNUSED';
+          var date=new Date(row.created_at).toLocaleDateString('en-AU',{day:'numeric',month:'short'});
+          var name=row.label||'Unknown';
+          return '<div class="coach-code-row'+(redeemed?' redeemed':'')+'">'            +'<div><div class="coach-code-athlete">'+name+'</div>'            +'<div class="coach-code-code">'+row.code+' · '+date+'</div></div>'            +'<div class="coach-code-status '+statusClass+'">'+statusLabel+'</div>'            +'</div>';
+        }).join('');
+      }
+    }
+  }catch(e){
+    var coachList2=document.getElementById('coach-coaching-codes-list');
+    if(coachList2)coachList2.innerHTML='<div class="coach-empty">Error loading codes</div>';
+  }
 }
 
 function generateRTRCode(){
@@ -4666,6 +4712,47 @@ function generateRTRCode(){
     if(result)result.classList.add('show');
     window._rtrCopyLink=link;
     renderCoachPanel();
+  });
+}
+
+async function generateCoachingCode(){
+  var nameEl=document.getElementById('coach-coaching-name');
+  var name=(nameEl&&nameEl.value.trim())||'';
+  if(!name){nameEl&&nameEl.focus();return;}
+  // Generate DBSP-XXXXXXXX (8 chars, unambiguous charset)
+  var chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+  var suffix='';
+  for(var i=0;i<8;i++)suffix+=chars[Math.floor(Math.random()*chars.length)];
+  var code='DBSP-'+suffix;
+  try{
+    var res=await sb.from('promo_codes').insert({
+      code:code,
+      tier:'beta',
+      max_uses:1,
+      uses:0,
+      label:name+' - Self Serve Coaching'
+    }).select().single();
+    if(res.error){console.error(res.error);alert('Error generating code. Try again.');return;}
+    document.getElementById('coach-coaching-code').textContent=code;
+    var result=document.getElementById('coach-coaching-result');
+    if(result)result.classList.add('show');
+    window._coachingCopyCode=code;
+    if(nameEl)nameEl.value='';
+    renderCoachPanel();
+  }catch(e){console.error(e);alert('Error generating code.');}
+}
+
+function copyCoachingCode(){
+  var code=window._coachingCopyCode||'';
+  if(!code)return;
+  navigator.clipboard.writeText(code).then(function(){
+    var btn=document.getElementById('coach-coaching-copy-btn');
+    if(btn){
+      btn.textContent='COPIED!';
+      setTimeout(function(){
+        btn.innerHTML='<svg width="10" height="10" viewBox="0 0 10 10" fill="none"><rect x="1" y="3" width="6" height="6" rx="1" stroke="currentColor" stroke-width="1.2"/><path d="M3 3V2a1 1 0 011-1h4a1 1 0 011 1v4a1 1 0 01-1 1H7" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg> COPY CODE';
+      },2000);
+    }
   });
 }
 
