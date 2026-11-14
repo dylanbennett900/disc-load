@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>DBSP Client Roster</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@600;700;800;900&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{--bg:#f4f2ee;--sf:#fff;--sf2:#faf9f6;--bd:rgba(26,58,92,.1);--bd2:rgba(26,58,92,.18);--navy:#1a3a5c;--mid:#2d62a0;--t:#14212f;--t2:#3b4a5a;--t3:#6b7785;--t4:#9aa3ad;--red:#c0392b;--amber:#b7791f;--green:#2f855a;--display:'Barlow Condensed',sans-serif}
+body{background:var(--bg);color:var(--t);font:14px/1.45 'DM Sans',system-ui,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+header{background:var(--navy);color:#fff;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:10px}
+h1{font:900 22px/1 var(--display);letter-spacing:1.5px;text-transform:uppercase}
+.hsub{font-size:11px;opacity:.7;margin-top:2px}
+header .sp{flex:1}
+.btn{font:800 12px var(--display);letter-spacing:.7px;text-transform:uppercase;border-radius:6px;padding:8px 14px;border:1.5px solid var(--bd2);background:#fff;color:var(--navy);cursor:pointer;white-space:nowrap}
+.btn.p{background:var(--navy);border-color:var(--navy);color:#fff}
+header .btn{background:#fff;color:var(--navy);border-color:#fff}
+.btn.sm{padding:5px 10px;font-size:11px}
+.btn.danger{color:var(--red);border-color:rgba(192,57,43,.35)}
+main{max-width:980px;margin:0 auto;padding:16px}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:16px}
+.stat{background:#fff;border:1px solid var(--bd);border-radius:10px;padding:12px 14px}
+.stat .k{font:700 10px var(--display);letter-spacing:1.3px;text-transform:uppercase;color:var(--t3)}
+.stat .v{font:800 28px/1.1 var(--display);margin-top:3px;color:var(--navy)}
+.stat .v.red{color:var(--red)}.stat .v.amber{color:var(--amber)}
+.sect{font:800 13px var(--display);letter-spacing:1.5px;text-transform:uppercase;color:var(--navy);margin:18px 0 8px}
+.queue{background:#fff;border:1px solid var(--bd);border-radius:10px;overflow:hidden;margin-bottom:6px}
+.qrow{display:flex;align-items:center;gap:10px;padding:10px 14px;border-top:1px solid var(--bd);cursor:pointer}
+.qrow:first-child{border-top:none}
+.qrow .n{font-weight:700;flex:1}
+.qrow .d{font-size:12px;color:var(--t3)}
+.pill{font:800 11px var(--display);letter-spacing:.6px;text-transform:uppercase;padding:3px 9px;border-radius:12px;white-space:nowrap}
+.pill.red{background:rgba(192,57,43,.12);color:var(--red)}.pill.amber{background:rgba(183,121,31,.14);color:var(--amber)}.pill.green{background:rgba(47,133,90,.12);color:var(--green)}.pill.grey{background:rgba(26,58,92,.08);color:var(--t3)}
+.bar{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:18px 0 10px}
+.chip{font:800 11px var(--display);letter-spacing:.7px;text-transform:uppercase;padding:6px 12px;border-radius:6px;border:1.5px solid var(--bd2);background:#fff;color:var(--t3);cursor:pointer}
+.chip.on{background:var(--navy);border-color:var(--navy);color:#fff}
+.card{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--bd2);border-radius:10px;padding:14px;margin-bottom:10px;scroll-margin-top:80px}
+.card.red{border-left-color:var(--red)}.card.amber{border-left-color:var(--amber)}.card.green{border-left-color:var(--green)}
+.card.off{opacity:.6}
+.ctop{display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.cname{font:800 20px/1.15 var(--display);letter-spacing:.3px;color:var(--navy)}
+.cmeta{font-size:12px;color:var(--t3);margin-top:3px}
+.tag{display:inline-block;font:700 10px var(--display);letter-spacing:.8px;text-transform:uppercase;padding:2px 8px;border-radius:4px;background:rgba(45,98,160,.1);color:var(--mid);margin-right:4px}
+.ctop .sp{flex:1}
+.acts{display:flex;gap:6px;flex-wrap:wrap}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:8px;margin-top:12px}
+.cell{background:var(--sf2);border:1px solid var(--bd);border-radius:8px;padding:9px 11px}
+.cell .k{font:700 10px var(--display);letter-spacing:1.2px;text-transform:uppercase;color:var(--t4);margin-bottom:3px}
+.cell .v{font-size:13px;font-weight:600;color:var(--t2)}
+.big{font:800 18px var(--display);letter-spacing:.3px}
+.red{color:var(--red)}.amber{color:var(--amber)}.green{color:var(--green)}.muted{color:var(--t4);font-weight:500}
+.log{margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}
+.log .k{font:700 10px var(--display);letter-spacing:1.2px;text-transform:uppercase;color:var(--t4);margin-bottom:6px}
+.note{font-size:13px;color:var(--t2);padding:4px 0;display:flex;gap:8px}
+.note .dt{color:var(--t4);font-size:12px;white-space:nowrap;min-width:52px}
+.addnote{display:flex;gap:6px;margin-top:6px}
+.addnote input{flex:1;font:13px 'DM Sans',sans-serif;padding:7px 10px;border:1.5px solid var(--bd2);border-radius:6px;background:var(--sf2)}
+.goals{font-size:12.5px;color:var(--t2);margin-top:10px}
+.link{background:none;border:none;color:var(--mid);font-size:12px;font-weight:600;cursor:pointer;padding:2px 0}
+.empty,.gate{text-align:center;color:var(--t3);padding:48px 16px}
+.gate h2{font:800 22px var(--display);color:var(--navy);margin-bottom:8px;text-transform:uppercase}
+.gate p{margin-bottom:16px}
+.scrim{position:fixed;inset:0;background:rgba(20,33,47,.5);z-index:50;display:none;align-items:flex-end;justify-content:center}
+.scrim.open{display:flex}
+@media(min-width:640px){.scrim{align-items:center}}
+.sheet{background:#fff;width:100%;max-width:560px;max-height:92vh;overflow:auto;border-radius:14px 14px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))}
+@media(min-width:640px){.sheet{border-radius:14px}}
+.sheet h3{font:800 20px var(--display);text-transform:uppercase;letter-spacing:.6px;margin-bottom:12px;color:var(--navy)}
+.ssec{font:700 10px var(--display);letter-spacing:1.4px;text-transform:uppercase;color:var(--t3);margin:14px 0 6px}
+.fg{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.f{display:flex;flex-direction:column;gap:3px}
+.f.full{grid-column:1/-1}
+.f label{font-size:11px;font-weight:600;color:var(--t3)}
+.f input,.f select,.f textarea{font:14px 'DM Sans',sans-serif;padding:8px 10px;border:1.5px solid var(--bd2);border-radius:6px;background:var(--sf2);color:var(--t);width:100%}
+.f textarea{min-height:60px;resize:vertical}
+.quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
+.sheet-acts{display:flex;gap:8px;justify-content:space-between;margin-top:16px}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
+.toast.show{opacity:1}
+</style>
+</head>
+<body>
+<header>
+  <div><h1>DBSP Roster</h1><div class="hsub">Who's programmed, who's next</div></div>
+  <div class="sp"></div>
+  <button class="btn" id="addBtn" style="display:none" onclick="openEditor()">+ Client</button>
+</header>
+<main id="main"><div class="empty">Loading…</div></main>
+
+<!-- Client editor -->
+<div class="scrim" id="scrim" onclick="if(event.target===this)closeEditor()">
+  <form class="sheet" id="form" onsubmit="saveClient(event)">
+    <h3 id="formTitle">New client</h3>
+    <div class="ssec">Client</div>
+    <div class="fg">
+      <div class="f"><label>Name</label><input name="name" required></div>
+      <div class="f"><label>Team</label><input name="team" placeholder="e.g. Sunder"></div>
+      <div class="f"><label>Offer</label><select name="offer"><option value="coaching">Custom coaching</option><option value="rehab">Injury rehab</option><option value="speed">Speed sessions</option><option value="selfserve">Self-serve</option></select></div>
+      <div class="f"><label>Status</label><select name="status"><option value="active">Active</option><option value="paused">Paused</option><option value="ended">Ended</option></select></div>
+      <div class="f"><label>Started</label><input type="date" name="start_date"></div>
+      <div class="f"><label>Frisbee Track account</label><select name="app_user_id" id="appUserSel"><option value="">Not linked</option></select></div>
+    </div>
+    <div class="ssec">Program</div>
+    <div class="fg">
+      <div class="f full"><label>Programmed in TeamBuildr until</label><input type="date" name="programmed_until"></div>
+      <div class="f"><label>Current block</label><input name="block_name" placeholder="e.g. Pre-season B2"></div>
+      <div class="f"><label>Phase</label><input name="phase" placeholder="e.g. Strength-speed"></div>
+      <div class="f"><label>Block started</label><input type="date" name="block_start"></div>
+      <div class="f"><label>Block length (weeks)</label><input type="number" name="block_weeks" min="1" max="16"></div>
+    </div>
+    <div class="ssec">Season</div>
+    <div class="fg">
+      <div class="f"><label>Next tournament</label><input name="next_tournament" placeholder="e.g. Nationals"></div>
+      <div class="f"><label>Tournament date</label><input type="date" name="tournament_date"></div>
+      <div class="f full"><label>Goals</label><textarea name="goals"></textarea></div>
+    </div>
+    <div class="sheet-acts">
+      <button type="button" class="btn danger" id="delBtn" onclick="deleteClient()">Delete</button>
+      <div style="display:flex;gap:8px;margin-left:auto"><button type="button" class="btn" onclick="closeEditor()">Cancel</button><button class="btn p" type="submit">Save</button></div>
+    </div>
+  </form>
+</div>
+
+<!-- Quick "programmed until" update -->
+<div class="scrim" id="pScrim" onclick="if(event.target===this)closeProg()">
+  <div class="sheet">
+    <h3 id="pTitle">Programmed until</h3>
+    <div class="f"><label>Last date with a session in TeamBuildr</label><input type="date" id="pDate"></div>
+    <div class="quick">
+      <button class="btn sm" onclick="bump(7)">+1 wk</button><button class="btn sm" onclick="bump(14)">+2 wk</button>
+      <button class="btn sm" onclick="bump(28)">+4 wk</button><button class="btn sm" onclick="bump(42)">+6 wk</button>
+    </div>
+    <div class="f" style="margin-top:12px"><label>Note (optional)</label><input id="pNote" placeholder="e.g. Wrote pre-season B3"></div>
+    <div class="sheet-acts"><span></span><div style="display:flex;gap:8px"><button class="btn" onclick="closeProg()">Cancel</button><button class="btn p" onclick="saveProg()">Save</button></div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script src="config.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+<script>
+var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
+var OFFER_LABEL={coaching:'Custom coaching',rehab:'Injury rehab',speed:'Speed sessions',selfserve:'Self-serve'};
+var sb=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={};
+var main=document.getElementById('main');
+
+function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function today(){var d=new Date();d.setHours(0,0,0,0);return d}
+function parseD(s){if(!s)return null;var p=String(s).slice(0,10).split('-');return new Date(+p[0],+p[1]-1,+p[2])}
+function iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function daysUntil(s){var d=parseD(s);return d?Math.round((d-today())/86400000):null}
+function fmtD(s){var d=parseD(s);return d?d.toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short'}):'—'}
+function fmtShort(s){var d=parseD(s);return d?d.toLocaleDateString('en-AU',{day:'numeric',month:'short'}):'—'}
+function toast(m){var t=document.getElementById('toast');t.textContent=m;t.classList.add('show');setTimeout(function(){t.classList.remove('show')},1800)}
+
+// ── Runway: days of program left in TeamBuildr ──
+function runway(c){
+  var n=daysUntil(c.programmed_until);
+  if(n===null)return{cls:'grey',n:null,txt:'Not set',rank:-1};
+  if(n<0)return{cls:'red',n:n,txt:'Ran out '+(-n)+'d ago',rank:n};
+  if(n<7)return{cls:'red',n:n,txt:n===0?'Last session today':n+'d left',rank:n};
+  if(n<=14)return{cls:'amber',n:n,txt:n+'d left',rank:n};
+  return{cls:'green',n:n,txt:n+'d left',rank:n};
+}
+// ── Where they're up to in the block ──
+function blockPos(c){
+  var s=parseD(c.block_start);if(!s)return null;
+  var wk=Math.floor((today()-s)/(7*86400000))+1,len=+c.block_weeks||null;
+  var end=null;if(len){end=new Date(s);end.setDate(s.getDate()+len*7-1);}
+  if(wk<1)return{txt:'Starts '+fmtShort(c.block_start),end:end};
+  if(len&&wk>len)return{txt:'Block finished',end:end,over:true};
+  return{txt:'Week '+wk+(len?' of '+len:''),end:end};
+}
+
+// ── Load (same EWMA as Frisbee Track's Sport Sci tab, on HSR) ──
+function calcLoad(rows){
+  var t=today(),start=new Date(t);start.setDate(t.getDate()-41);
+  var daily=new Array(42).fill(0),wk={hsr:0,n:0},last=null;
+  rows.forEach(function(r){
+    var s=r.data||{};var d=parseD(s.date);if(!d)return;
+    if(!last||d>last)last=d;
+    var i=Math.round((d-start)/86400000);
+    if(i>=0&&i<42)daily[i]+=(+s.hsr||0);
+    if(i>=35&&i<42){wk.hsr+=(+s.hsr||0);wk.n++;}
+  });
+  var a=0,c=0,la=2/8,lc=2/29;
+  daily.forEach(function(v){a=v*la+a*(1-la);c=v*lc+c*(1-lc)});
+  return{wk:wk,ratio:c>0?a/c:null,last:last};
+}
+function zone(r){
+  if(r===null||!isFinite(r))return{cls:'muted',l:'Not enough data'};
+  if(r<0.8)return{cls:'amber',l:'Low load'};if(r<0.9)return{cls:'',l:'Taper/recovery'};
+  if(r<=1.1)return{cls:'green',l:'Sweet spot'};if(r<=1.3)return{cls:'',l:'Build'};
+  if(r<=1.5)return{cls:'amber',l:'High load'};return{cls:'red',l:'Spike'};
+}
+
+// ── Data ──
+async function load(){
+  var r=await sb.from('coach_clients').select('*').order('name');
+  if(r.error){main.innerHTML='<div class="empty">Couldn\'t load clients: '+esc(r.error.message)+'</div>';return}
+  clients=r.data||[];
+  var n=await sb.from('coach_client_notes').select('*').order('created_at',{ascending:false});
+  notes={};(n.data||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
+  var u=await sb.from('coach_users_view').select('user_id,email').order('email');
+  appUsers=u.data||[];
+  var ids=clients.map(function(c){return c.app_user_id}).filter(Boolean);
+  loads={};
+  if(ids.length){
+    var since=new Date();since.setDate(since.getDate()-60);
+    var s=await sb.from('sessions').select('user_id,data').in('user_id',ids).gte('created_at',since.toISOString());
+    var by={};(s.data||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});
+    ids.forEach(function(id){loads[id]=calcLoad(by[id]||[])});
+  }
+  render();
+}
+
+function render(){
+  var active=clients.filter(function(c){return c.status==='active'});
+  var rw=active.map(function(c){return{c:c,r:runway(c)}});
+  var red=rw.filter(function(x){return x.r.cls==='red'}).length,amber=rw.filter(function(x){return x.r.cls==='amber'}).length,unset=rw.filter(function(x){return x.r.cls==='grey'}).length;
+  var h='<div class="stats">'
+   +'<div class="stat"><div class="k">Active clients</div><div class="v">'+active.length+'</div></div>'
+   +'<div class="stat"><div class="k">Program this week</div><div class="v '+(red?'red':'')+'">'+red+'</div></div>'
+   +'<div class="stat"><div class="k">Due in 2 weeks</div><div class="v '+(amber?'amber':'')+'">'+amber+'</div></div>'
+   +'<div class="stat"><div class="k">No date set</div><div class="v">'+unset+'</div></div></div>';
+  var q=rw.filter(function(x){return x.r.cls!=='green'}).sort(function(a,b){return a.r.rank-b.r.rank});
+  if(q.length){
+    h+='<div class="sect">Needs programming</div><div class="queue">'+q.map(function(x){
+      return '<div class="qrow" onclick="jump(\''+x.c.id+'\')"><span class="n">'+esc(x.c.name)+'</span>'
+        +'<span class="d">'+(x.c.programmed_until?'to '+fmtShort(x.c.programmed_until):'')+'</span><span class="pill '+x.r.cls+'">'+x.r.txt+'</span></div>';
+    }).join('')+'</div>';
+  }
+  h+='<div class="bar">'+['active','paused','ended','all'].map(function(f){return '<button class="chip'+(filter===f?' on':'')+'" onclick="setFilter(\''+f+'\')">'+f+'</button>'}).join('')+'</div>';
+  var list=clients.filter(function(c){return filter==='all'||c.status===filter});
+  if(!list.length)h+='<div class="empty">'+(clients.length?'No '+filter+' clients.':'No clients yet. Tap <b>+ Client</b> to add your first one.')+'</div>';
+  list.forEach(function(c){h+=card(c)});
+  main.innerHTML=h;
+}
+function card(c){
+  var r=runway(c),bp=blockPos(c),L=c.app_user_id?loads[c.app_user_id]:null,t=daysUntil(c.tournament_date);
+  var ns=notes[c.id]||[],shown=expanded[c.id]?ns:ns.slice(0,2);
+  return '<div class="card '+(c.status==='active'?r.cls:'off')+'" id="c-'+c.id+'"><div class="ctop"><div>'
+    +'<div class="cname">'+esc(c.name)+'</div>'
+    +'<div class="cmeta"><span class="tag">'+esc(OFFER_LABEL[c.offer]||c.offer)+'</span>'+(c.team?esc(c.team):'')+(c.status!=='active'?' · '+esc(c.status):'')+'</div></div>'
+    +'<div class="sp"></div><div class="acts"><button class="btn sm p" onclick="openProg(\''+c.id+'\')">Programmed to…</button><button class="btn sm" onclick="openEditor(\''+c.id+'\')">Edit</button></div></div>'
+    +'<div class="grid">'
+    +'<div class="cell"><div class="k">TeamBuildr runway</div><div class="v"><span class="big '+r.cls+'">'+r.txt+'</span>'
+      +(c.programmed_until?'<br>Programmed to '+fmtD(c.programmed_until):'')+'</div></div>'
+    +'<div class="cell"><div class="k">Where they\'re up to</div><div class="v">'
+      +(c.block_name||c.phase||bp?(c.block_name?esc(c.block_name):'Current block')+(bp?' · <span class="'+(bp.over?'amber':'')+'">'+bp.txt+'</span>':'')
+        +(c.phase?'<br>'+esc(c.phase):'')+(bp&&bp.end?'<br>Block ends '+fmtShort(iso(bp.end)):''):'<span class="muted">No block set</span>')
+      +(c.next_tournament||c.tournament_date?'<br>'+esc(c.next_tournament||'Tournament')+(t!==null?' · '+(t>=0?t+'d out':'passed'):''):'')+'</div></div>'
+    +'<div class="cell"><div class="k">Frisbee Track</div><div class="v">'+loadCell(c,L)+'</div></div>'
+    +'</div>'
+    +(c.goals?'<div class="goals"><b>Goals:</b> '+esc(c.goals)+'</div>':'')
+    +'<div class="log"><div class="k">Change log</div>'
+    +(shown.length?shown.map(function(x){return '<div class="note"><span class="dt">'+fmtShort(x.created_at)+'</span><span>'+esc(x.note)+'</span></div>'}).join(''):'<div class="note muted">No notes yet</div>')
+    +(ns.length>2?'<button class="link" onclick="toggleNotes(\''+c.id+'\')">'+(expanded[c.id]?'Show less':'Show all '+ns.length)+'</button>':'')
+    +'<form class="addnote" onsubmit="addNote(event,\''+c.id+'\')"><input placeholder="Add a note, e.g. swapped RDLs for hip thrusts (hamstring)" maxlength="300"><button class="btn sm">Add</button></form></div>'
+    +'</div>';
+}
+function loadCell(c,L){
+  if(!c.app_user_id)return '<span class="muted">Not linked</span>';
+  if(!L||!L.last)return '<span class="muted">No sessions logged</span>';
+  var z=zone(L.ratio),ago=Math.round((today()-L.last)/86400000);
+  return 'Last 7d: '+L.wk.n+' session'+(L.wk.n===1?'':'s')+' · HSR '+Math.round(L.wk.hsr)+'m'
+    +'<br>Ratio '+(L.ratio!==null?L.ratio.toFixed(2):'—')+' <span class="'+z.cls+'">'+z.l+'</span>'
+    +'<br><span class="'+(ago>7?'amber':'muted')+'">Last logged '+(ago===0?'today':ago+'d ago')+'</span>';
+}
+function setFilter(f){filter=f;render()}
+function toggleNotes(id){expanded[id]=!expanded[id];render();jump(id)}
+function jump(id){if(filter!=='all'&&filter!=='active'){filter='active';render()}var el=document.getElementById('c-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+
+// ── Actions ──
+async function addNote(e,id){
+  e.preventDefault();var inp=e.target.querySelector('input'),v=inp.value.trim();if(!v)return;
+  var r=await sb.from('coach_client_notes').insert({client_id:id,note:v});
+  if(r.error){toast('Error: '+r.error.message);return}
+  toast('Note added');await load();
+}
+function openProg(id){
+  progId=id;var c=clients.find(function(x){return x.id===id});
+  document.getElementById('pTitle').textContent=c.name+' · programmed to';
+  document.getElementById('pDate').value=c.programmed_until||'';
+  document.getElementById('pNote').value='';
+  document.getElementById('pScrim').classList.add('open');
+}
+function closeProg(){document.getElementById('pScrim').classList.remove('open');progId=null}
+function bump(days){
+  var el=document.getElementById('pDate'),base=parseD(el.value),t=today();
+  if(!base||base<t)base=t;base.setDate(base.getDate()+days);el.value=iso(base);
+}
+async function saveProg(){
+  var v=document.getElementById('pDate').value||null,note=document.getElementById('pNote').value.trim();
+  var r=await sb.from('coach_clients').update({programmed_until:v}).eq('id',progId);
+  if(r.error){toast('Error: '+r.error.message);return}
+  var c=clients.find(function(x){return x.id===progId});
+  var msg=(note?note+' · ':'')+'Programmed to '+(v?fmtShort(v):'(cleared)');
+  await sb.from('coach_client_notes').insert({client_id:progId,note:msg});
+  closeProg();toast('Updated');await load();
+}
+function openEditor(id){
+  editing=id?clients.find(function(c){return c.id===id}):null;
+  var f=document.getElementById('form');f.reset();
+  document.getElementById('appUserSel').innerHTML='<option value="">Not linked</option>'+appUsers.filter(function(u){return u.user_id!==COACH_UID}).map(function(u){return '<option value="'+u.user_id+'">'+esc(u.email)+'</option>'}).join('');
+  document.getElementById('formTitle').textContent=editing?'Edit '+editing.name:'New client';
+  document.getElementById('delBtn').style.visibility=editing?'visible':'hidden';
+  if(editing)Array.prototype.forEach.call(f.elements,function(el){if(el.name&&editing[el.name]!=null)el.value=editing[el.name]});
+  document.getElementById('scrim').classList.add('open');
+}
+function closeEditor(){document.getElementById('scrim').classList.remove('open');editing=null}
+async function saveClient(e){
+  e.preventDefault();
+  var row={};
+  Array.prototype.forEach.call(e.target.elements,function(el){if(!el.name)return;var v=el.value.trim();
+    row[el.name]=v===''?null:(el.name==='block_weeks'?Number(v):v);});
+  if(!row.offer)row.offer='coaching';if(!row.status)row.status='active';
+  var r=editing?await sb.from('coach_clients').update(row).eq('id',editing.id):await sb.from('coach_clients').insert(row);
+  if(r.error){toast('Error: '+r.error.message);return}
+  closeEditor();toast('Saved');await load();
+}
+var delArmed=false;
+async function deleteClient(){
+  var b=document.getElementById('delBtn');
+  if(!delArmed){delArmed=true;b.textContent='Tap again to delete';setTimeout(function(){delArmed=false;b.textContent='Delete'},3000);return}
+  delArmed=false;b.textContent='Delete';
+  var r=await sb.from('coach_clients').delete().eq('id',editing.id);
+  if(r.error){toast('Error: '+r.error.message);return}
+  closeEditor();toast('Deleted');await load();
+}
+
+// ── Auth gate ──
+function gate(msg,btn){main.innerHTML='<div class="gate"><h2>Coach only</h2><p>'+msg+'</p>'+(btn||'')+'</div>'}
+async function signIn(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}})}
+(async function(){
+  if(typeof SUPABASE_URL==='undefined'||!window.supabase){gate('Couldn\'t connect to the database.');return}
+  sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
+  var u=(await sb.auth.getUser()).data.user;
+  if(!u){gate('Sign in with your coach account.','<button class="btn p" onclick="signIn()">Sign in with Google</button>');return}
+  if(u.id!==COACH_UID){gate('This page is only for the DBSP coach account.');return}
+  document.getElementById('addBtn').style.display='';
+  load();
+})();
+</script>
+</body>
+</html>
