@@ -4651,14 +4651,11 @@ async function renderCoachPanel(){
   // Load users via coach_users_view
   try{
     var uvRes=await sb.from('coach_users_view').select('user_id,email,joined_at,tier,status,trial_end');
-    var sesRes=await sb.from('sessions').select('user_id,created_at');
-    // Build session counts and last active per user
+    // Per-user session counts via coach-only RPC (RLS hides other users' sessions from direct reads)
+    var sesRes=await sb.rpc('coach_session_counts');
     var sesMap={};
-    (sesRes.data||[]).forEach(function(s){
-      if(!sesMap[s.user_id])sesMap[s.user_id]={count:0,last:null};
-      sesMap[s.user_id].count++;
-      if(!sesMap[s.user_id].last||s.created_at>sesMap[s.user_id].last)
-        sesMap[s.user_id].last=s.created_at;
+    (sesRes.data||[]).forEach(function(r){
+      sesMap[r.user_id]={count:Number(r.session_count)||0,last:r.last_logged};
     });
     var users=uvRes.data||[];
     // Stats
