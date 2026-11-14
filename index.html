@@ -1682,6 +1682,7 @@ function updateGatedUI(){
   if(lm)lm.classList.toggle('show',!hasAccess&&!!currentUser);
   // Roadmap content gating: re-render so locked/unlocked week cards reflect current subscription
   if(typeof renderRoadmap==='function')renderRoadmap();
+  if(typeof renderOFCAccordion==='function')renderOFCAccordion();
   var banner=document.getElementById('trial-banner');
   if(banner){
     var isTrialling=userSubscription&&userSubscription.status==='trialling'&&currentUser;
@@ -2687,7 +2688,8 @@ function toggleDrillLib(idx){
 
 function openDrillModal(key){
   // Gate drill diagrams behind Pro — allow RTR code holders through too
-  if(currentUser && subscriptionLoaded && !canAccess('ai_prescription') && !rtrAccess){
+  if(!currentUser){signIn();return;}
+  if(!canAccess('ai_prescription') && !rtrAccess){
     showUpgradeModal('ai_prescription');
     return;
   }
@@ -2722,6 +2724,8 @@ function closeDrillModal(){
 }
 
 function openYTPopup(url,title){
+  if(!currentUser){signIn();return;}
+  if(!canAccess('ai_prescription') && !rtrAccess){showUpgradeModal('ai_prescription');return;}
   // Convert any YouTube URL to embed format
   var videoId='';
   var m=url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
@@ -2913,7 +2917,7 @@ function renderOFCAccordion(){
         ?"<svg class='ofc-acc-chevron' width='12' height='12' viewBox='0 0 12 12' fill='none'><rect x='3' y='2' width='6' height='4.5' rx='1' stroke='currentColor' stroke-width='1.3'/><rect x='2' y='5.5' width='8' height='5.5' rx='1.2' fill='currentColor' opacity='.25'/><rect x='2' y='5.5' width='8' height='5.5' rx='1.2' stroke='currentColor' stroke-width='1.3'/></svg>"
         :"<svg class='ofc-acc-chevron' width='12' height='12' viewBox='0 0 12 12' fill='none'><path d='M2 4.5l4 4 4-4' stroke='currentColor' stroke-width='1.5' stroke-linecap='round' stroke-linejoin='round'/></svg>")
       +"</div>"
-      +"<div class='ofc-acc-body'><div class='ofc-acc-content'>"+renderOFCSessionContent(s)+"</div></div>"
+      +(locked?"":"<div class='ofc-acc-body'><div class='ofc-acc-content'>"+renderOFCSessionContent(s)+"</div></div>")
       +"</div>";
   }).join('');
 }
