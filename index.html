@@ -179,7 +179,16 @@ input,select{font-family:inherit;outline:none}
 /* Legacy tab refs (unused but kept for JS compat) */
 .tabs{display:none}
 .tab{display:none}
-#content{padding:16px;padding-bottom:calc(84px + env(safe-area-inset-bottom))}
+#content{padding:16px;padding-bottom:calc(140px + env(safe-area-inset-bottom))}
+.subnav{display:flex;gap:6px;margin:-4px 0 14px;overflow-x:auto;scrollbar-width:none}
+.subnav::-webkit-scrollbar{display:none}
+.subnav-btn{flex:0 0 auto;padding:7px 14px;border-radius:20px;border:1.5px solid var(--bd2);background:#fff;color:var(--t3);font-size:11px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-family:var(--display);cursor:pointer;display:inline-flex;align-items:center;gap:5px;-webkit-tap-highlight-color:transparent}
+.subnav-btn.on{background:var(--green);border-color:var(--green);color:#fff}
+.fab-log{position:fixed;right:16px;bottom:calc(68px + env(safe-area-inset-bottom));z-index:58;display:flex;align-items:center;gap:6px;padding:12px 18px;border:none;border-radius:28px;background:var(--green);color:#fff;font-size:12px;font-weight:800;letter-spacing:.6px;text-transform:uppercase;font-family:var(--display);box-shadow:0 6px 20px rgba(5,150,105,0.35);cursor:pointer;-webkit-tap-highlight-color:transparent}
+.fab-log.hide{display:none}
+.hdr-coach{display:none;align-items:center;justify-content:center;width:30px;height:30px;border-radius:50%;border:1.5px solid var(--bd2);background:#fff;color:var(--t2);cursor:pointer;margin-left:4px;padding:0}
+.hdr-coach.show{display:inline-flex}
+.hdr-coach.on{border-color:var(--green);color:var(--green)}
 .panel{display:none}.panel.on{display:block}
 .sumrow{display:grid;grid-template-columns:repeat(auto-fit,minmax(90px,1fr));gap:8px;margin-bottom:16px}
 .sc{background:var(--sf);border-radius:var(--radius);padding:13px 14px;box-shadow:var(--sh);border:1px solid var(--bd)}
@@ -884,6 +893,7 @@ input,select{font-family:inherit;outline:none}
     <div class="lvlpills">
       <button class="lp on" id="ctx-international" onclick="setContext('international')">International</button>
       <button class="lp" id="ctx-domestic" onclick="setContext('domestic')">Domestic</button>
+      <button class="hdr-coach" id="hdr-coach" onclick="switchTab('coach',null)" aria-label="Coach panel" title="Coach panel"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/><line x1="6" y1="9" x2="14" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".5"/><line x1="6" y1="12" x2="10" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
       <div id="auth-btn" style="margin-left:4px"></div>
     </div>
   </div>
@@ -909,6 +919,7 @@ input,select{font-family:inherit;outline:none}
 </div>
 
 <div id="content">
+<div class="subnav" id="subnav" style="display:none"></div>
 
 <!-- ── DASHBOARD ── -->
 <div class="panel on" id="panel-dashboard">
@@ -947,6 +958,7 @@ input,select{font-family:inherit;outline:none}
   <div id="recswrap"></div>
   <div class="gaugewrap" id="gaugewrap"></div>
   <div class="ws-outer" id="week-strip"></div>
+  <div id="week-calendar" style="margin-top:14px"></div>
 </div>
 
 <!-- ── SESSIONS ── -->
@@ -1008,8 +1020,7 @@ input,select{font-family:inherit;outline:none}
 <!-- ── S&C ── -->
 <div class="panel" id="panel-sc">
   <div class="sc-panel-title">S&amp;C</div>
-  <div class="sc-panel-sub">Your week view — gym sessions, OFC, and running load in one place.</div>
-  <div id="week-calendar" style="margin-bottom:14px"></div>
+  <div class="sc-panel-sub">Speed sessions, off-feet conditioning and return to run.</div>
   <!-- RTR CARD -->
   <div class="rtr-card" id="rtr-card" style="display:none">
     <div class="rtr-card-header">
@@ -1039,6 +1050,10 @@ input,select{font-family:inherit;outline:none}
     </div>
     <div class="ofc-accordion" id="ofc-accordion"></div>
   </div>
+</div>
+
+<!-- ── DRILLS ── -->
+<div class="panel" id="panel-drills">
   <div class="drill-lib-section">
     <div class="ofc-menu-header">
       <div class="ofc-menu-title">DRILL LIBRARY</div>
@@ -1683,6 +1698,8 @@ function updateGatedUI(){
   // Roadmap content gating: re-render so locked/unlocked week cards reflect current subscription
   if(typeof renderRoadmap==='function')renderRoadmap();
   if(typeof renderOFCAccordion==='function')renderOFCAccordion();
+  var cur=document.querySelector('.panel.on');
+  if(cur&&typeof renderSubnav==='function'){var cn=cur.id.replace('panel-','');renderSubnav(hubOf(cn),cn);}
   var banner=document.getElementById('trial-banner');
   if(banner){
     var isTrialling=userSubscription&&userSubscription.status==='trialling'&&currentUser;
@@ -3935,8 +3952,30 @@ function renderSRPanel(){
   }
 }
 
-var MORE_TABS=['benchmarks','definitions','howto'];
-var PRIMARY_TABS=['dashboard','sessions','roadmap','sc','metrics','coach'];
+var HUBS={
+  home:[{p:'dashboard',l:'Home'}],
+  train:[{p:'sessions',l:'Log'},{p:'sc',l:'S&amp;C'},{p:'drills',l:'Drills'}],
+  plan:[{p:'roadmap',l:'Roadmap'},{p:'metrics',l:'Sport Sci'}],
+  learn:[{p:'benchmarks',l:'Benchmarks'},{p:'definitions',l:'Definitions'},{p:'howto',l:'How To'}]
+};
+var HUB_LAST={home:'dashboard',train:'sessions',plan:'roadmap',learn:'benchmarks'};
+function hubOf(panel){for(var h in HUBS){for(var i=0;i<HUBS[h].length;i++){if(HUBS[h][i].p===panel)return h;}}return null;}
+function openHub(h){switchTab(HUB_LAST[h]||HUBS[h][0].p,null);}
+function renderSubnav(hub,active){
+  var el=document.getElementById('subnav');if(!el)return;
+  if(!hub||HUBS[hub].length<2){el.style.display='none';el.innerHTML='';return;}
+  var lockSvg="<svg width='10' height='10' viewBox='0 0 12 12' fill='none'><rect x='2.5' y='5.5' width='7' height='5' rx='1' stroke='currentColor' stroke-width='1.3'/><path d='M4 5.5V4a2 2 0 1 1 4 0v1.5' stroke='currentColor' stroke-width='1.3' stroke-linecap='round'/></svg>";
+  el.innerHTML=HUBS[hub].map(function(t){
+    var locked=t.p==='metrics'&&currentUser&&subscriptionLoaded&&!canAccess('metrics');
+    return "<button class='subnav-btn"+(t.p===active?" on":"")+"' onclick=\"switchTab('"+t.p+"',null)\">"+(locked?lockSvg:"")+t.l+"</button>";
+  }).join('');
+  el.style.display='flex';
+}
+function fabLogSession(){
+  switchTab('sessions',null);
+  if(!formOpen)toggleForm();
+  window.scrollTo({top:0,behavior:'smooth'});
+}
 var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 function openMoreDrawer(){
   document.getElementById('more-drawer').classList.add('open');
@@ -3951,7 +3990,7 @@ function switchTabFromMore(name){
   switchTab(name,null);
 }
 // ── CONTEXT + TAB ──
-var TAB_ORDER=['dashboard','sessions','roadmap','sc','benchmarks','definitions','howto','metrics'];
+var TAB_ORDER=['dashboard','sessions','sc','drills','roadmap','metrics','benchmarks','definitions','howto'];
 function setContext(c){
   ctx=c;
   document.getElementById("ctx-international").className="lp"+(c==="international"?" on":"");
@@ -3967,34 +4006,32 @@ function switchTab(name,el){
   document.querySelectorAll(".panel").forEach(function(p){p.classList.remove("on");});
   document.querySelectorAll(".tab").forEach(function(t){t.classList.remove("on");});
   document.getElementById("panel-"+name).classList.add("on");
-  // Update bottom nav
-  PRIMARY_TABS.forEach(function(t){
-    var btn=document.getElementById('bnav-'+t);
-    if(btn)btn.classList.toggle('on',t===name);
+  // Update bottom nav + sub-tabs
+  var hub=hubOf(name);
+  if(hub)HUB_LAST[hub]=name;
+  ['home','train','plan','learn'].forEach(function(h){
+    var btn=document.getElementById('bnav-'+h);
+    if(btn)btn.classList.toggle('on',h===hub);
   });
-  var moreActive=MORE_TABS.indexOf(name)>-1;
-  var moreBtn=document.getElementById('bnav-more');
-  if(moreBtn)moreBtn.classList.toggle('on',moreActive);
-  var morePip=document.getElementById('bnav-more-pip');
-  if(morePip)morePip.style.opacity=moreActive?'1':'0';
-  // Update more drawer tiles
-  MORE_TABS.forEach(function(t){
-    var tile=document.getElementById('more-'+t);
-    if(tile)tile.classList.toggle('on',t===name);
-  });
+  renderSubnav(hub,name);
+  var hc=document.getElementById('hdr-coach');if(hc)hc.classList.toggle('on',name==='coach');
+  var fab=document.getElementById('fab-log');if(fab)fab.classList.toggle('hide',name==='sessions'||name==='coach');
+  window.scrollTo(0,0);
   if(name==="benchmarks")renderBenchmarks();
   if(name==="roadmap")renderRoadmap();
   if(name==="metrics")renderSportScience();
-  if(name==="sc"){renderWeekCalendar();renderOFCAccordion();renderDrillLibrary();renderRTRCard();initDBSPProgram();}
+  if(name==="sc"){renderOFCAccordion();renderRTRCard();initDBSPProgram();}
+  if(name==="drills")renderDrillLibrary();
+  if(name==="dashboard")renderWeekCalendar();
   if(name==="definitions")renderDefinitions();
   if(name==="coach")renderCoachPanel();
 }
 
 // ── ADMIN / COACH VISIBILITY ──
 function updateCoachNav(){
-  var btn=document.getElementById('bnav-coach');
+  var btn=document.getElementById('hdr-coach');
   if(!btn)return;
-  btn.style.display=(currentUser&&currentUser.id===COACH_UID)?'flex':'none';
+  btn.classList.toggle('show',!!(currentUser&&currentUser.id===COACH_UID));
 }
 
 // ── RTR DATA ──
@@ -4957,43 +4994,30 @@ renderAll();
 
 <!-- ── BOTTOM NAV ── -->
 <nav class="bnav" id="bnav">
-  <button class="bnav-btn on" id="bnav-dashboard" onclick="switchTab('dashboard',null)">
+  <button class="bnav-btn on" id="bnav-home" onclick="openHub('home')">
     <div class="bnav-pip"></div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="2" width="7" height="7" rx="1.5" fill="currentColor"/><rect x="11" y="2" width="7" height="7" rx="1.5" fill="currentColor" opacity=".5"/><rect x="2" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="7" height="7" rx="1.5" fill="currentColor" opacity=".5"/></svg>
     <span class="bnav-lbl">Home</span>
   </button>
-  <button class="bnav-btn" id="bnav-sessions" onclick="switchTab('sessions',null)">
-    <div class="bnav-pip"></div>
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="3" width="16" height="3" rx="1.5" fill="currentColor" opacity=".4"/><rect x="2" y="8.5" width="16" height="3" rx="1.5" fill="currentColor" opacity=".65"/><rect x="2" y="14" width="10" height="3" rx="1.5" fill="currentColor"/><circle cx="16" cy="15.5" r="3.5" fill="currentColor"/><path d="M14.5 15.5l.8.8 1.5-1.5" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <span class="bnav-lbl">Sessions</span>
-  </button>
-  <button class="bnav-btn" id="bnav-roadmap" onclick="switchTab('roadmap',null)" style="position:relative">
-    <div class="bnav-pip"></div>
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.2" opacity=".4"/><rect x="5" y="11" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="3" height="3" rx=".5" fill="currentColor"/></svg>
-    <span class="bnav-lbl">Roadmap</span>
-  </button>
-  <button class="bnav-btn" id="bnav-sc" onclick="switchTab('sc',null)">
+  <button class="bnav-btn" id="bnav-train" onclick="openHub('train')">
     <div class="bnav-pip"></div>
     <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="13" width="3" height="5" rx="1" fill="currentColor" opacity=".5"/><rect x="7" y="9" width="3" height="9" rx="1" fill="currentColor" opacity=".7"/><rect x="12" y="5" width="3" height="13" rx="1" fill="currentColor"/><path d="M2 7l4-3 4 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" fill="none" opacity=".5"/></svg>
-    <span class="bnav-lbl">S&amp;C</span>
+    <span class="bnav-lbl">Train</span>
   </button>
-  <button class="bnav-btn" id="bnav-metrics" onclick="switchTab('metrics',null)" style="position:relative">
+  <button class="bnav-btn" id="bnav-plan" onclick="openHub('plan')">
     <div class="bnav-pip"></div>
-    <div id="lock-metrics-bnav" class="bnav-lock"><svg width="11" height="11" viewBox="0 0 12 12" fill="none"><rect x="2.5" y="5.5" width="7" height="5" rx="1" stroke="#94a3b8" stroke-width="1.2"/><path d="M4 5.5V4a2 2 0 1 1 4 0v1.5" stroke="#94a3b8" stroke-width="1.2" stroke-linecap="round"/></svg></div>
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="7.5" stroke="currentColor" stroke-width="1.5" fill="none"/><circle cx="10" cy="10" r="4" stroke="currentColor" stroke-width="1.2" fill="none" opacity=".55"/><circle cx="10" cy="10" r="1.4" fill="currentColor"/><line x1="10" y1="2.5" x2="10" y2="4.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><line x1="10" y1="15.5" x2="10" y2="17.5" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/></svg>
-    <span class="bnav-lbl">Sport Sci</span>
+    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="13" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="2" x2="6" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="14" y1="2" x2="14" y2="6" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="2" y1="9" x2="18" y2="9" stroke="currentColor" stroke-width="1.2" opacity=".4"/><rect x="5" y="11" width="3" height="3" rx=".5" fill="currentColor" opacity=".5"/><rect x="11" y="11" width="3" height="3" rx=".5" fill="currentColor"/></svg>
+    <span class="bnav-lbl">Plan</span>
   </button>
-  <button class="bnav-btn" id="bnav-more" onclick="openMoreDrawer()">
-    <div class="bnav-pip" id="bnav-more-pip"></div>
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="4" cy="10" r="1.8" fill="currentColor"/><circle cx="10" cy="10" r="1.8" fill="currentColor"/><circle cx="16" cy="10" r="1.8" fill="currentColor"/></svg>
-    <span class="bnav-lbl">More</span>
-  </button>
-  <button class="bnav-btn" id="bnav-coach" onclick="switchTab('coach',null)" style="display:none">
+  <button class="bnav-btn" id="bnav-learn" onclick="openHub('learn')">
     <div class="bnav-pip"></div>
-    <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="6" y1="9" x2="14" y2="9" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" opacity=".5"/><line x1="6" y1="12" x2="10" y2="12" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/><circle cx="15" cy="15" r="4" fill="var(--green)"/><path d="M13.5 15l1 1 2-2" stroke="white" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
-    <span class="bnav-lbl">Coach</span>
+    <svg width="20" height="20" viewBox="0 0 22 22" fill="none"><rect x="4" y="3" width="14" height="16" rx="2" stroke="currentColor" stroke-width="1.5" fill="none"/><line x1="7" y1="8" x2="15" y2="8" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="11" x2="15" y2="11" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><line x1="7" y1="14" x2="11" y2="14" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/></svg>
+    <span class="bnav-lbl">Learn</span>
   </button>
 </nav>
+
+<!-- ── LOG SESSION BUTTON ── -->
+<button class="fab-log" id="fab-log" onclick="fabLogSession()" aria-label="Log a session"><svg width="14" height="14" viewBox="0 0 14 14" fill="none"><path d="M7 2v10M2 7h10" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>Log session</button>
 
 <!-- ── PWA INSTALL BANNER ── -->
 <!-- Update available bar -->
