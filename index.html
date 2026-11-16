@@ -1680,7 +1680,7 @@ function canAccess(feature){
   var status=userSubscription.status;
   var trialEnd=userSubscription.trial_end;
   var periodEnd=userSubscription.current_period_end;
-  if(tier==='beta')return true;
+  if(tier==='beta')return !periodEnd||new Date(periodEnd)>new Date();
   if(tier==='pro'&&status==='active'){
     if(!periodEnd||new Date(periodEnd)>new Date())return true;
   }
@@ -1698,6 +1698,7 @@ function updateGatedUI(){
   // Roadmap content gating: re-render so locked/unlocked week cards reflect current subscription
   if(typeof renderRoadmap==='function')renderRoadmap();
   if(typeof renderOFCAccordion==='function')renderOFCAccordion();
+  if(typeof initDBSPProgram==='function')initDBSPProgram();
   var cur=document.querySelector('.panel.on');
   if(cur&&typeof renderSubnav==='function'){var cn=cur.id.replace('panel-','');renderSubnav(hubOf(cn),cn);}
   var banner=document.getElementById('trial-banner');
@@ -4603,9 +4604,9 @@ function initDBSPProgram(){
     renderDBSPBody();
     return;
   }
-  // Beta/pro users see it unlocked
-  var tier=(currentUser&&currentUser.user_metadata&&currentUser.user_metadata.tier)||'free';
-  var isBeta=tier==='beta'||tier==='pro';
+  // Team-code (beta) and Pro users see it unlocked. Uses the subscription row,
+  // which is where team codes set the tier (user_metadata never has it).
+  var isBeta=canAccess('ai_prescription');
   sect.style.display=isBeta?'block':'none';
   if(isBeta) renderDBSPBody();
 }
