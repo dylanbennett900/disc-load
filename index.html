@@ -4594,7 +4594,7 @@ function dbspBuildLog(s){
   var rows=[{dk:'warmup',val1:10,txt:'Warm up · 10 min'},{dk:'drilling',val1:s.type==='speed'?8:10,txt:'Drilling & mechanics · '+(s.type==='speed'?8:10)+' min'}];
   ['drills','execution','conditioning'].forEach(function(sec){(s[sec]||[]).forEach(function(d){
     var k=dbspLogKey(d.name);if(!k)return;var reps=dbspParseReps(d.load);if(!reps)return;
-    if(k==='m_mas')rows.push({dk:k,val1:reps,val2:dbspMasDist(d),mas:true,txt:d.name});
+    if(k==='m_mas')rows.push({dk:k,val1:reps,val2:dbspMasDist(d),mas:true,on:!/outside/i.test(d.note||''),txt:d.name});
     else rows.push({dk:k,val1:reps,txt:d.name+' · '+reps+' reps'});
   });});
   return rows;
@@ -4610,7 +4610,7 @@ function dbspLogSession(){
     +"<div style='font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;font-weight:700'>What gets logged</div>";
   _dbspLogRows.forEach(function(r,i){
     if(r.mas){
-      h+="<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap'><span style='flex:1;min-width:140px'>"+escHtml(r.txt)+" · "+r.val1+" reps at</span>"
+      h+="<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap'><label style='flex:1;min-width:140px;display:flex;gap:8px;align-items:center'><input type='checkbox' id='dbsp-mas-on' "+(r.on?'checked':'')+" onchange='dbspLogPreview()' style='width:18px;height:18px;accent-color:var(--green)'>"+escHtml(r.txt)+" · "+r.val1+" reps at</label>"
         +"<input type='number' id='dbsp-mas-dist' min='30' max='150' value='"+r.val2+"' oninput='dbspLogPreview()' style='width:70px;padding:6px 8px;border-radius:7px;border:1.5px solid var(--green);background:var(--sf2);font-size:14px;font-weight:700;text-align:center'><span>m per rep</span></div>";
     } else h+="<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px'>"+escHtml(r.txt)+"</div>";
   });
@@ -4627,7 +4627,8 @@ function dbspLogSession(){
 }
 function dbspLogRowsFinal(){
   var dEl=document.getElementById('dbsp-mas-dist');var dist=dEl?Math.max(30,Math.min(150,parseInt(dEl.value)||0)):0;
-  return _dbspLogRows.map(function(r){return{dk:r.dk,val1:r.val1,val2:r.mas?(dist||r.val2):r.val2};});
+  var on=document.getElementById('dbsp-mas-on');var masOn=on?on.checked:true;
+  return _dbspLogRows.filter(function(r){return !r.mas||masOn}).map(function(r){return{dk:r.dk,val1:r.val1,val2:r.mas?(dist||r.val2):r.val2};});
 }
 function dbspLogPreview(){
   var el=document.getElementById('dbsp-log-prev');if(!el||!_dbspLogRows)return;
