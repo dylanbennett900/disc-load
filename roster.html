@@ -87,6 +87,7 @@ main{max-width:980px;margin:0 auto;padding:16px}
   <div><h1>DBSP Roster</h1><div class="hsub">Who's programmed, who's next</div></div>
   <div class="sp"></div>
   <button class="btn" id="addBtn" style="display:none" onclick="openEditor()">+ Client</button>
+  <button class="btn" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="lock()" title="Forget passphrase on this device">Lock</button>
 </header>
 <main id="main"><div class="empty">Loading…</div></main>
 
@@ -140,11 +141,10 @@ main{max-width:980px;margin:0 auto;padding:16px}
 <div class="toast" id="toast"></div>
 
 <script src="config.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <script>
 var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 var OFFER_LABEL={coaching:'Custom coaching',rehab:'Injury rehab',speed:'Speed sessions',selfserve:'Self-serve'};
-var sb=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={};
+var KEY_STORE='dbsp_roster_key',rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={};
 var main=document.getElementById('main');
 
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -197,23 +197,25 @@ function zone(r){
   if(r<=1.5)return{cls:'amber',l:'High load'};return{cls:'red',l:'Spike'};
 }
 
+// ── API (passphrase-protected edge function) ──
+async function api(action,payload){
+  var res=await fetch(SUPABASE_URL+'/functions/v1/roster-api',{method:'POST',
+    headers:{'Content-Type':'application/json','x-roster-key':rkey,'apikey':SUPABASE_ANON_KEY},
+    body:JSON.stringify(Object.assign({action:action},payload||{}))});
+  var j={};try{j=await res.json()}catch(e){}
+  if(res.status===401){forget();throw new Error('Wrong passphrase')}
+  if(!res.ok)throw new Error(j.error||('Error '+res.status));
+  return j;
+}
 // ── Data ──
 async function load(){
-  var r=await sb.from('coach_clients').select('*').order('name');
-  if(r.error){main.innerHTML='<div class="empty">Couldn\'t load clients: '+esc(r.error.message)+'</div>';return}
-  clients=r.data||[];
-  var n=await sb.from('coach_client_notes').select('*').order('created_at',{ascending:false});
-  notes={};(n.data||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
-  var u=await sb.from('coach_users_view').select('user_id,email').order('email');
-  appUsers=u.data||[];
-  var ids=clients.map(function(c){return c.app_user_id}).filter(Boolean);
-  loads={};
-  if(ids.length){
-    var since=new Date();since.setDate(since.getDate()-60);
-    var s=await sb.from('sessions').select('user_id,data').in('user_id',ids).gte('created_at',since.toISOString());
-    var by={};(s.data||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});
-    ids.forEach(function(id){loads[id]=calcLoad(by[id]||[])});
-  }
+  var d;
+  try{d=await api('list')}catch(e){if(rkey)main.innerHTML='<div class="empty">Couldn\'t load clients: '+esc(e.message)+'</div>';return}
+  clients=d.clients||[];appUsers=d.users||[];
+  notes={};(d.notes||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
+  var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});
+  loads={};clients.forEach(function(c){if(c.app_user_id)loads[c.app_user_id]=calcLoad(by[c.app_user_id]||[])});
+  document.getElementById('addBtn').style.display='';
   render();
 }
 
@@ -277,8 +279,7 @@ function jump(id){if(filter!=='all'&&filter!=='active'){filter='active';render()
 // ── Actions ──
 async function addNote(e,id){
   e.preventDefault();var inp=e.target.querySelector('input'),v=inp.value.trim();if(!v)return;
-  var r=await sb.from('coach_client_notes').insert({client_id:id,note:v});
-  if(r.error){toast('Error: '+r.error.message);return}
+  try{await api('note',{id:id,note:v})}catch(err){toast(err.message);return}
   toast('Note added');await load();
 }
 function openProg(id){
@@ -295,17 +296,16 @@ function bump(days){
 }
 async function saveProg(){
   var v=document.getElementById('pDate').value||null,note=document.getElementById('pNote').value.trim();
-  var r=await sb.from('coach_clients').update({programmed_until:v}).eq('id',progId);
-  if(r.error){toast('Error: '+r.error.message);return}
-  var c=clients.find(function(x){return x.id===progId});
-  var msg=(note?note+' · ':'')+'Programmed to '+(v?fmtShort(v):'(cleared)');
-  await sb.from('coach_client_notes').insert({client_id:progId,note:msg});
+  try{
+    await api('save',{id:progId,client:{programmed_until:v}});
+    await api('note',{id:progId,note:(note?note+' · ':'')+'Programmed to '+(v?fmtShort(v):'(cleared)')});
+  }catch(err){toast(err.message);return}
   closeProg();toast('Updated');await load();
 }
 function openEditor(id){
   editing=id?clients.find(function(c){return c.id===id}):null;
   var f=document.getElementById('form');f.reset();
-  document.getElementById('appUserSel').innerHTML='<option value="">Not linked</option>'+appUsers.filter(function(u){return u.user_id!==COACH_UID}).map(function(u){return '<option value="'+u.user_id+'">'+esc(u.email)+'</option>'}).join('');
+  document.getElementById('appUserSel').innerHTML='<option value="">Not linked</option>'+appUsers.map(function(u){return '<option value="'+u.user_id+'">'+esc(u.email)+'</option>'}).join('');
   document.getElementById('formTitle').textContent=editing?'Edit '+editing.name:'New client';
   document.getElementById('delBtn').style.visibility=editing?'visible':'hidden';
   if(editing)Array.prototype.forEach.call(f.elements,function(el){if(el.name&&editing[el.name]!=null)el.value=editing[el.name]});
@@ -318,8 +318,7 @@ async function saveClient(e){
   Array.prototype.forEach.call(e.target.elements,function(el){if(!el.name)return;var v=el.value.trim();
     row[el.name]=v===''?null:(el.name==='block_weeks'?Number(v):v);});
   if(!row.offer)row.offer='coaching';if(!row.status)row.status='active';
-  var r=editing?await sb.from('coach_clients').update(row).eq('id',editing.id):await sb.from('coach_clients').insert(row);
-  if(r.error){toast('Error: '+r.error.message);return}
+  try{await api('save',{id:editing?editing.id:null,client:row})}catch(err){toast(err.message);return}
   closeEditor();toast('Saved');await load();
 }
 var delArmed=false;
@@ -327,22 +326,29 @@ async function deleteClient(){
   var b=document.getElementById('delBtn');
   if(!delArmed){delArmed=true;b.textContent='Tap again to delete';setTimeout(function(){delArmed=false;b.textContent='Delete'},3000);return}
   delArmed=false;b.textContent='Delete';
-  var r=await sb.from('coach_clients').delete().eq('id',editing.id);
-  if(r.error){toast('Error: '+r.error.message);return}
+  try{await api('delete',{id:editing.id})}catch(err){toast(err.message);return}
   closeEditor();toast('Deleted');await load();
 }
 
-// ── Auth gate ──
-function gate(msg,btn){main.innerHTML='<div class="gate"><h2>Coach only</h2><p>'+msg+'</p>'+(btn||'')+'</div>'}
-async function signIn(){await sb.auth.signInWithOAuth({provider:'google',options:{redirectTo:window.location.href}})}
-(async function(){
-  if(typeof SUPABASE_URL==='undefined'||!window.supabase){gate('Couldn\'t connect to the database.');return}
-  sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-  var u=(await sb.auth.getUser()).data.user;
-  if(!u){gate('Sign in with your coach account.','<button class="btn p" onclick="signIn()">Sign in with Google</button>');return}
-  if(u.id!==COACH_UID){gate('This page is only for the DBSP coach account.');return}
-  document.getElementById('addBtn').style.display='';
+// ── Passphrase gate ──
+function forget(){try{localStorage.removeItem(KEY_STORE)}catch(e){}rkey=null;document.getElementById('addBtn').style.display='none';showGate('That passphrase didn\'t work. Try again.')}
+function showGate(msg){
+  main.innerHTML='<div class="gate"><h2>DBSP Roster</h2><p>'+(msg||'Enter your roster passphrase. This device will remember it.')+'</p>'
+    +'<form onsubmit="unlock(event)" style="max-width:320px;margin:0 auto;display:flex;gap:8px"><input id="pp" type="password" autocomplete="current-password" placeholder="Passphrase" style="flex:1;font:15px DM Sans,sans-serif;padding:10px 12px;border:1.5px solid var(--bd2);border-radius:6px"><button class="btn p">Unlock</button></form></div>';
+  setTimeout(function(){var el=document.getElementById('pp');if(el)el.focus()},50);
+}
+async function unlock(e){
+  e.preventDefault();var v=document.getElementById('pp').value.trim();if(!v)return;
+  rkey=v;main.innerHTML='<div class="empty">Checking…</div>';
+  try{await api('ping')}catch(err){return}
+  try{localStorage.setItem(KEY_STORE,v)}catch(e){}
   load();
+}
+function lock(){try{localStorage.removeItem(KEY_STORE)}catch(e){}rkey=null;document.getElementById('addBtn').style.display='none';showGate()}
+(function(){
+  if(typeof SUPABASE_URL==='undefined'){main.innerHTML='<div class="empty">Couldn\'t connect to the database.</div>';return}
+  try{rkey=localStorage.getItem(KEY_STORE)}catch(e){}
+  if(rkey)load();else showGate();
 })();
 </script>
 </body>
