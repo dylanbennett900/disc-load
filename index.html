@@ -4494,6 +4494,159 @@ var DBSP_SESSIONS={
   }
 };
 
+
+// ── ROGUE 2026 F&C PROGRAM (from Rogue Field Cond 2026 P1–P3) ──
+// Videos/diagrams are filled in at render time from matching drill names in DBSP_SESSIONS / DRILL_LIB.
+var ROGUE_COND_NOTE='1 × per week outside of Rogue training. Approx ~78m per rep, push the distance further if you can. Go every 30s.';
+function _rWarm(pogo){return[
+  {name:'Inchworms → Cobra → WG',load:'3 × each side',rest:'Walk back',note:'Mobilise'},
+  pogo==='switch'?{name:'Switch Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',note:'Fast contacts, high and springy'}
+                 :{name:'DL Pogos (straight + diag)',load:'5 × str / 5 × diag',rest:'Walk back',note:'Fast contacts'},
+  {name:'High Gate Karaoke',load:'20m each side',rest:'Walk back',note:'Crossover high'}];}
+var _rMAS=[{name:'MAS 15on15off',load:'2 × 8',rest:'2 min',note:ROGUE_COND_NOTE}];
+var _rSpeedExec=[
+  {name:'50m Flys',load:'× 3',rest:'Walk back',note:'Roll in + hit speed'},
+  {name:'50m Offset Hold Sprinting w/ Frisbee',load:'× 3',rest:'Walk back',note:'Roll in 10m, 20m holding frisbee outstretched to your left, 20m to the right'},
+  {name:'Curved Sprint',load:'2 × each side',rest:'Walk back',note:'See diagram'}];
+var ROGUE_SESSIONS={
+  p1:{label:'Phase 1',
+    speed:{type:'speed',label:'Phase 1 — Speed Day',warmup:_rWarm('dl'),
+      drills:[{name:'A Switch w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',note:'Focus on fast switching + big shapes'},
+              {name:'A Triple w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',note:'Focus on fast switching + big shapes'},
+              {name:'30m Build Up w/ hands on hips',load:'× 3',rest:'Walk back',note:'Think light and springy'}],
+      execution:_rSpeedExec,conditioning:_rMAS},
+    accel:{type:'accel',label:'Phase 1 — Acceleration Day',warmup:_rWarm('switch'),
+      drills:[{name:'2 Step Accel + 20m Cruise (hands on hips)',load:'2 × each side',rest:'Walk back',note:'Really aggressive 2 steps'},
+              {name:'10m Accel w/ Frisbee out in front',load:'3 × 10m',rest:'Walk back',note:'Focus on fast switching + projecting forward'},
+              {name:'Random Pos. Start 10m Accel',load:'× 6',rest:'Walk back',note:'Random pivot positions, get creative on ground/wide pivot etc, max intent accel'}],
+      execution:[{name:'Repeat Speed Grid',load:'2 × 4',rest:'2 min',note:'30m max effort, go on every 30s'},
+                 {name:'D Strafe Mungo',load:'× 3',rest:'Walk back',note:'Keep hips square to front, see diagram'},
+                 {name:'Box Drill',load:'2 × 4',rest:'2 min',note:'Go on the 45s'}],
+      conditioning:_rMAS}},
+  p2:{label:'Phase 2',
+    speed:{type:'speed',label:'Phase 2 — Speed Day',warmup:_rWarm('dl'),
+      drills:[{name:'A Switch w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',note:'Focus on fast switching + big shapes'},
+              {name:'A Triple w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',note:'Focus on fast switching + big shapes'},
+              {name:'30m Build Up w/ hands on hips',load:'× 3',rest:'Walk back',note:'Think light and springy'}],
+      execution:_rSpeedExec,conditioning:_rMAS},
+    accel:{type:'accel',label:'Phase 2 — Acceleration Day',warmup:_rWarm('switch'),
+      drills:[{name:'5m Lateral Shuffle Out + Back + 20m Accel',load:'2 × each side',rest:'Walk back',note:'Shuffle 5m each way then turn and burn for 20m'},
+              {name:'10m Accel w/ Frisbee out in front',load:'4 × 10m',rest:'Walk back',note:'Focus on fast switching + projecting forward'},
+              {name:'Reactive Broad Jumps',load:'2 × 6',rest:'Walk back',note:'Repeat broad jump as far as you can 6 times, land and jump quickly each jump'}],
+      execution:[{name:'J Run',load:'× 3 each side',rest:'Walk back',note:'Accel hard around the 5m curve + 20m speed effort'},
+                 {name:'D Strafe Mungo',load:'× 4',rest:'Walk back',note:'Keep hips square to front, see diagram'},
+                 {name:'Box Drill',load:'× 4',rest:'2 min',note:'Go on the 45s'}],
+      conditioning:_rMAS}},
+  p3:{label:'Phase 3',
+    speed:{type:'speed',label:'Phase 3 — Speed Day',warmup:_rWarm('dl'),
+      drills:[{name:'A Switch w/ Frisbee overhead',load:'3 × 10m',rest:'Walk back',note:'Focus on fast switching + big shapes'},
+              {name:'Speed Bounds',load:'3 × 20m',rest:'Walk back',note:'Aim for height and distance each bound'},
+              {name:'Single Leg Hops',load:'3 × 20m',rest:'Walk back',note:'Aim for height and distance each hop'}],
+      execution:_rSpeedExec,conditioning:_rMAS},
+    accel:{type:'accel',label:'Phase 3 — Acceleration Day',warmup:_rWarm('switch'),
+      drills:[{name:'5m Lateral Shuffle Out + Back + 20m Accel',load:'2 × each side',rest:'Walk back',note:'Shuffle 5m each way then turn and burn for 20m'},
+              {name:'Random Pos. Start 10m Accel',load:'× 4',rest:'Walk back',note:'eg lying down, kneeling, lunging, pivoting etc, the more random the better'},
+              {name:'Reactive Broad Jumps',load:'2 × 6',rest:'Walk back',note:'Repeat broad jump as far as you can 6 times, land and jump quickly each jump'}],
+      execution:[{name:'J Run',load:'× 3 each side',rest:'Walk back',note:'Accel hard around the 5m curve + 20m speed effort'},
+                 {name:'D Strafe Mungo',load:'× 4',rest:'Walk back',note:'Keep hips square to front, see diagram'},
+                 {name:'Box Drill',load:'× 4',rest:'2 min',note:'Go on the 45s'}],
+      conditioning:_rMAS}}
+};
+var TEAM_PROGRAMS={sunder:{label:'Sunder 2026',sessions:DBSP_SESSIONS},rogue:{label:'Rogue 2026',sessions:ROGUE_SESSIONS}};
+var dbspCoachTeam='sunder';
+function dbspTeamKey(){
+  if(currentUser&&currentUser.id===COACH_UID)return dbspCoachTeam;
+  var k=userSubscription&&userSubscription.team_key;
+  return (k&&TEAM_PROGRAMS[k])?k:null;
+}
+function dbspProgram(){var k=dbspTeamKey();return k?TEAM_PROGRAMS[k].sessions:DBSP_SESSIONS;}
+// Fill missing video/diagram links by drill name from the DBSP program
+var _DBSP_MEDIA=null;
+function dbspMedia(d){
+  if(!_DBSP_MEDIA){_DBSP_MEDIA={};Object.keys(DBSP_SESSIONS).forEach(function(ph){['speed','accel'].forEach(function(t){var x=DBSP_SESSIONS[ph][t];
+    ['warmup','drills','execution','conditioning'].forEach(function(sec){(x[sec]||[]).forEach(function(i){
+      var k=i.name.toLowerCase();if(!_DBSP_MEDIA[k])_DBSP_MEDIA[k]={vid:i.vid||'',diag:i.diag||''};
+      else{if(!_DBSP_MEDIA[k].vid&&i.vid)_DBSP_MEDIA[k].vid=i.vid;if(!_DBSP_MEDIA[k].diag&&i.diag)_DBSP_MEDIA[k].diag=i.diag;}});});});});}
+  var m=_DBSP_MEDIA[d.name.toLowerCase()]||{};
+  var vid=d.vid||m.vid||'',diag=d.diag||m.diag||'';
+  if(!vid&&!diag){var lk=dbspLogKey(d.name);if(lk&&DRILL_LIB.find(function(x){return x.key===lk}))diag=lk;}
+  return{vid:vid,diag:diag};
+}
+
+// ── ONE-PRESS LOGGING ──
+var DBSP_LOG_MAP=[
+  [/butterfly/i,'c_butterfly'],[/build up|fly|flys/i,'c_speedbuild'],[/offset/i,'c_offset'],[/curved/i,'c_curved'],
+  [/speed grid/i,'c_speedgrid'],[/mungo/i,'c_mungo'],[/box drill/i,'c_boxdrill'],[/j run/i,'c_jrun'],[/n drill/i,'c_ndrill'],
+  [/z drill/i,'c_zdrill'],[/60-40-20/i,'m_604020'],[/mas/i,'m_mas'],[/short accel/i,'c_shortaccel'],[/ground shuttle/i,'c_shuttles']
+];
+function dbspLogKey(name){for(var i=0;i<DBSP_LOG_MAP.length;i++){if(DBSP_LOG_MAP[i][0].test(name))return DBSP_LOG_MAP[i][1];}return null;}
+function dbspParseReps(load){
+  var L=String(load||'').replace(/×/g,'x');
+  var m=L.match(/(\d+)\s*x\s*(\d+)(?![\dm])/i);if(m)return +m[1]*+m[2];
+  m=L.match(/(\d+)\s*x\s*each side/i);if(m)return +m[1]*2;
+  m=L.match(/x\s*(\d+)\s*each side/i);if(m)return +m[1]*2;
+  m=L.match(/x\s*(\d+)/i);if(m)return +m[1];
+  m=L.match(/(\d+)\s*x/i);if(m)return +m[1];
+  return 0;
+}
+function dbspMasDist(d){var m=String(d.note||'').match(/(?:~|approx\.?\s*)\s*(\d+)\s*m/i);return m?+m[1]:80;}
+function dbspBuildLog(s){
+  var rows=[{dk:'warmup',val1:10,txt:'Warm up · 10 min'},{dk:'drilling',val1:s.type==='speed'?8:10,txt:'Drilling & mechanics · '+(s.type==='speed'?8:10)+' min'}];
+  ['drills','execution','conditioning'].forEach(function(sec){(s[sec]||[]).forEach(function(d){
+    var k=dbspLogKey(d.name);if(!k)return;var reps=dbspParseReps(d.load);if(!reps)return;
+    if(k==='m_mas')rows.push({dk:k,val1:reps,val2:dbspMasDist(d),mas:true,txt:d.name});
+    else rows.push({dk:k,val1:reps,txt:d.name+' · '+reps+' reps'});
+  });});
+  return rows;
+}
+var _dbspLogRows=null;
+function dbspLogSession(){
+  var s=dbspProgram()[dbspPhase][dbspActiveSession];
+  _dbspLogRows=dbspBuildLog(s);
+  var today=new Date();var iso=today.getFullYear()+'-'+String(today.getMonth()+1).padStart(2,'0')+'-'+String(today.getDate()).padStart(2,'0');
+  var h="<div style='font-family:var(--display);font-size:18px;font-weight:800;margin-bottom:4px'>Log "+escHtml(s.label)+"</div>"
+    +"<div style='font-size:12px;color:var(--t3);margin-bottom:12px'>Adds the whole session to your log in one go.</div>"
+    +"<div class='ff' style='margin-bottom:12px'><label>Date</label><input type='date' id='dbsp-log-date' value='"+iso+"' style='width:100%;padding:8px 10px;border-radius:7px;border:1.5px solid var(--bd2);background:var(--sf2);color:var(--t);font-size:13px'></div>"
+    +"<div style='font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin-bottom:6px;font-weight:700'>What gets logged</div>";
+  _dbspLogRows.forEach(function(r,i){
+    if(r.mas){
+      h+="<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap'><span style='flex:1;min-width:140px'>"+escHtml(r.txt)+" · "+r.val1+" reps at</span>"
+        +"<input type='number' id='dbsp-mas-dist' min='30' max='150' value='"+r.val2+"' oninput='dbspLogPreview()' style='width:70px;padding:6px 8px;border-radius:7px;border:1.5px solid var(--green);background:var(--sf2);font-size:14px;font-weight:700;text-align:center'><span>m per rep</span></div>";
+    } else h+="<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px'>"+escHtml(r.txt)+"</div>";
+  });
+  h+="<div id='dbsp-log-prev' style='margin-top:10px;padding:9px 12px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:11px;color:var(--t2)'></div>"
+    +"<div style='display:flex;gap:8px;justify-content:flex-end;margin-top:14px'>"
+    +"<button onclick='closeDBSPLog()' style='padding:9px 16px;border-radius:8px;border:1.5px solid var(--bd2);background:transparent;color:var(--t2);font-weight:700'>Cancel</button>"
+    +"<button onclick='confirmDBSPLog()' style='padding:9px 16px;border-radius:8px;border:none;background:var(--green);color:#fff;font-weight:800'>Log session</button></div>";
+  var m=document.getElementById('dbsp-log-modal');
+  if(!m){m=document.createElement('div');m.id='dbsp-log-modal';
+    m.style.cssText='position:fixed;inset:0;background:rgba(15,23,42,.45);z-index:300;display:flex;align-items:flex-end;justify-content:center';
+    m.onclick=function(e){if(e.target===m)closeDBSPLog();};document.body.appendChild(m);}
+  m.innerHTML="<div style='background:#fff;width:100%;max-width:520px;max-height:90vh;overflow:auto;border-radius:16px 16px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom))'>"+h+"</div>";
+  m.style.display='flex';dbspLogPreview();
+}
+function dbspLogRowsFinal(){
+  var dEl=document.getElementById('dbsp-mas-dist');var dist=dEl?Math.max(30,Math.min(150,parseInt(dEl.value)||0)):0;
+  return _dbspLogRows.map(function(r){return{dk:r.dk,val1:r.val1,val2:r.mas?(dist||r.val2):r.val2};});
+}
+function dbspLogPreview(){
+  var el=document.getElementById('dbsp-log-prev');if(!el||!_dbspLogRows)return;
+  var t={dist:0,hsr:0,vhsr:0,dur:0};
+  dbspLogRowsFinal().forEach(function(r){var l=drillLoad(r.dk,r.val1,r.val2);t.dist+=l.dist;t.hsr+=l.hsr;t.vhsr+=l.vhsr;t.dur+=l.durMin;});
+  el.innerHTML='Estimated load: <b>'+Math.round(t.dist)+'m</b> total · <b>'+Math.round(t.hsr)+'m</b> HSR · <b>'+Math.round(t.vhsr)+'m</b> VHSR · ~'+Math.round(t.dur)+' min';
+}
+function closeDBSPLog(){var m=document.getElementById('dbsp-log-modal');if(m)m.style.display='none';_dbspLogRows=null;}
+async function confirmDBSPLog(){
+  if(!_dbspLogRows)return;
+  var s=dbspProgram()[dbspPhase][dbspActiveSession];
+  var date=(document.getElementById('dbsp-log-date')||{}).value||'';
+  var rows=dbspLogRowsFinal();
+  var newSession=makeTraining(s.label,rows,date);
+  sessions.push(newSession);closeDBSPLog();renderAll();
+  if(typeof showSave==='function')showSave('saved','Session logged ✓');
+  await saveSession(newSession);
+}
+
 var dbspActiveSession=null;
 
 function setDBSPPhase(ph){
@@ -4514,8 +4667,12 @@ function renderDBSPBody(){
 }
 
 function renderDBSPMenu(el){
-  var ph=DBSP_SESSIONS[dbspPhase];
-  el.innerHTML='<div class="dbsp-session-row">'
+  var ph=dbspProgram()[dbspPhase],tk=dbspTeamKey(),isCoach=currentUser&&currentUser.id===COACH_UID;
+  var top=isCoach
+    ?'<div style="display:flex;gap:6px;margin-bottom:10px;align-items:center"><span style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:.8px;text-transform:uppercase">Viewing</span>'
+      +Object.keys(TEAM_PROGRAMS).map(function(k){return '<button class="dbsp-phase-btn'+(k===tk?' on':'')+'" style="flex:0 0 auto;padding:5px 10px" onclick="dbspCoachTeam=\''+k+'\';renderDBSPBody()">'+TEAM_PROGRAMS[k].label+'</button>'}).join('')+'</div>'
+    :(tk?'<div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px">'+TEAM_PROGRAMS[tk].label+' program</div>':'');
+  el.innerHTML=top+'<div class="dbsp-session-row">'
     +'<button class="dbsp-session-btn" onclick="dbspActiveSession=\'speed\';renderDBSPBody()">'
     +'<div class="dbsp-session-type speed">Speed</div>'
     +'<div class="dbsp-session-name">'+ph.label+' Speed Day</div>'
@@ -4528,7 +4685,7 @@ function renderDBSPMenu(el){
 }
 
 function renderDBSPSession(el){
-  var s=DBSP_SESSIONS[dbspPhase][dbspActiveSession];
+  var s=dbspProgram()[dbspPhase][dbspActiveSession];
   var h='<div class="dbsp-card">'
     +'<div class="dbsp-card-header">'
     +'<button class="dbsp-card-back" onclick="dbspActiveSession=null;renderDBSPBody()">← Back</button>'
@@ -4538,7 +4695,8 @@ function renderDBSPSession(el){
 
   function drillRows(arr,section){
     var out='<div class="dbsp-section-label">'+section+'</div>';
-    arr.forEach(function(d){
+    arr.forEach(function(d0){
+      var md=dbspMedia(d0),d=Object.assign({},d0,{vid:md.vid,diag:md.diag});
       out+='<div class="dbsp-drill-row"><div style="flex:1"><div class="dbsp-drill-name">'+d.name+'</div>'
         +'<div class="dbsp-drill-load">'+d.load+'</div>';
       if(d.rest){out+='<div class="dbsp-drill-rest">Rest: '+d.rest+'</div>';}
@@ -4569,30 +4727,6 @@ function renderDBSPSession(el){
   h+='<button class="dbsp-log-btn" onclick="dbspLogSession()">Log this session</button>';
   h+='</div>';
   el.innerHTML=h;
-}
-
-function dbspLogSession(){
-  // Pre-fill a training session entry from the DBSP session and open the log form
-  var s=DBSP_SESSIONS[dbspPhase][dbspActiveSession];
-  var label=s.label;
-  // Map drills to nearest tracked drill keys for metric estimation
-  var drillMap={
-    speed:{rows:[{dk:'c_speedbuild',v1:3},{dk:'m_mas',r1:2,r2:8,dist:83}]},
-    accel:{rows:[{dk:'c_speedgrid',v1:4},{dk:'c_boxdrill',v1:4},{dk:'m_604020',v1:3}]}
-  };
-  var defaultDrills=dbspActiveSession==='speed'
-    ?[{dk:'c_speedbuild',v1:3,v2:0},{dk:'m_mas',v1:2,v2:8}]
-    :[{dk:'c_speedgrid',v1:4,v2:0},{dk:'c_boxdrill',v1:4,v2:0},{dk:'m_604020',v1:3,v2:0}];
-  // Open the training log form pre-labelled
-  if(typeof toggleForm==='function') toggleForm('training');
-  var lbl=document.getElementById('flabel-tr');
-  if(lbl) lbl.value=label;
-  // Set today's date
-  var fd=document.getElementById('fdate-tr');
-  if(fd&&!fd.value) fd.value=new Date().toISOString().slice(0,10);
-  // Scroll to form
-  var form=document.getElementById('add-form');
-  if(form) form.scrollIntoView({behavior:'smooth',block:'start'});
 }
 
 function initDBSPProgram(){
