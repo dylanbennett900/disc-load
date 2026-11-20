@@ -107,6 +107,40 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
 .quickadd{display:flex;gap:6px;margin:14px 0 4px}
 .quickadd input{flex:1;min-width:0;font:14px 'DM Sans',sans-serif;padding:9px 11px;border:1.5px solid var(--bd2);border-radius:6px;background:#fff}
 .quickadd select{font:13px 'DM Sans',sans-serif;padding:8px;border:1.5px solid var(--bd2);border-radius:6px;background:#fff;max-width:36%;min-width:0}
+.ft{margin-top:12px;background:var(--navy-deep);color:#fff;border-radius:10px;padding:14px;}
+.ft-h{display:flex;justify-content:space-between;align-items:flex-start;gap:10px}
+.ft-ratio{flex-shrink:0}
+.ft-eb{font:500 9.5px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--cyan)}
+.ft-t{font:900 20px/1.1 var(--display);text-transform:uppercase;margin-top:3px}
+.ft-t em{font-style:italic;color:var(--cyan)}
+.ft-sub{font:500 10px var(--mono);letter-spacing:.06em;color:rgba(255,255,255,.55);margin-top:4px;text-transform:uppercase}
+.ft-ratio{text-align:right}
+.ft-ratio .n{font:900 30px/1 var(--display)}
+.ft-ratio .l{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.55);margin-top:2px}
+.ft-flags{display:flex;flex-direction:column;gap:5px;margin-top:12px}
+.ft-flag{font-size:12.5px;padding:6px 9px;border-radius:6px;background:rgba(255,255,255,.06);border-left:3px solid var(--cyan)}
+.ft-flag.red{border-left-color:#ff6b5e}.ft-flag.amber{border-left-color:#ffb400}.ft-flag.ok{border-left-color:var(--green-br)}
+.ft-sec{font:500 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:14px 0 7px;display:flex;justify-content:space-between}
+.ft-row{display:grid;grid-template-columns:42px 1fr 112px;gap:8px;align-items:center;margin-bottom:6px;font:500 11px var(--mono)}
+.ft-row .k{color:rgba(255,255,255,.7);letter-spacing:.06em}
+.ft-row .v{text-align:right;color:rgba(255,255,255,.85)}
+.ft-row .v b{color:#fff}
+.ft-bar{height:8px;background:rgba(255,255,255,.1);border-radius:4px;position:relative;overflow:hidden}
+.ft-bar i{position:absolute;left:0;top:0;bottom:0;border-radius:4px;background:var(--cyan)}
+.ft-bar i.done{background:var(--green-br)}.ft-bar i.over{background:#ffb400}
+.ft-bar s{position:absolute;top:0;bottom:0;width:2px;background:rgba(255,255,255,.55)}
+.ft-trend{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;align-items:end;height:92px;position:relative}
+.ft-trend .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:3px}
+.ft-trend .b{width:100%;max-width:34px;border-radius:4px 4px 0 0;background:rgba(0,212,255,.55)}
+.ft-trend .b.cur{background:var(--cyan)}.ft-trend .b.hi{background:#ffb400}
+.ft-trend .p{font:500 9.5px var(--mono);color:rgba(255,255,255,.75)}
+.ft-trend .line{position:absolute;left:0;right:0;border-top:1px dashed rgba(255,255,255,.4)}
+.ft-wk{display:grid;grid-template-columns:repeat(6,1fr);gap:6px;margin-top:4px;font:500 9px var(--mono);color:rgba(255,255,255,.45);text-align:center;text-transform:uppercase}
+.ft-sess{font-size:12.5px;display:grid;grid-template-columns:52px 1fr auto;gap:8px;padding:6px 0;border-top:1px solid rgba(255,255,255,.08)}
+.ft-sess .d{font:500 10.5px var(--mono);color:rgba(255,255,255,.5)}
+.ft-sess .m{font:500 10.5px var(--mono);color:rgba(255,255,255,.75);text-align:right;white-space:nowrap}
+.ft-more{background:none;border:none;color:var(--cyan);font:500 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:8px 0 0}
+.ft-empty{font-size:13px;color:rgba(255,255,255,.6);margin-top:8px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy-deep);color:var(--cyan);padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
 .toast.show{opacity:1}
 </style>
@@ -198,7 +232,7 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
 <script>
 var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 var OFFER_LABEL={coaching:'Custom coaching',rehab:'Injury rehab',speed:'Speed sessions',selfserve:'Self-serve'};
-var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={},todos=[],tFilter='open',tEditing=null;
+var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={},todos=[],tFilter='open',tEditing=null,athletes={},sessBy={},ftOpen={};
 var main=document.getElementById('main');
 
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -268,7 +302,7 @@ async function load(){
   clients=d.clients||[];appUsers=d.users||[];
   notes={};(d.notes||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
   teamMembers=d.teamMembers||{};teamCodes=d.teamCodes||[];todos=d.todos||[];
-  var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});
+  var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});sessBy=by;athletes=d.athletes||{};
   loads={};
   clients.forEach(function(c){if(c.app_user_id)loads[c.app_user_id]=calcLoad(by[c.app_user_id]||[])});
   Object.keys(teamMembers).forEach(function(k){teamMembers[k].forEach(function(id){if(!loads[id])loads[id]=calcLoad(by[id]||[])})});
@@ -302,6 +336,15 @@ function render(){
         +'<span class="d">'+(x.c.programmed_until?'to '+fmtShort(x.c.programmed_until):'')+'</span><span class="pill '+x.r.cls+'">'+x.r.txt+'</span></div>';
     }).join('')+'</div>';
   }
+  if(!isTeam){
+    var fl=active.filter(function(c){return c.app_user_id}).map(function(c){return{c:c,a:ftAnalyse(c)}}).filter(function(x){return x.a.flags.some(function(f){return f.cls!=='ok'})});
+    if(fl.length){
+      h+='<div class="sect">Frisbee Track flags</div><div class="queue">'+fl.map(function(x){
+        var top=x.a.flags.filter(function(f){return f.cls!=='ok'})[0];
+        return '<div class="qrow" onclick="jump(\''+x.c.id+'\')"><span class="n">'+esc(x.c.name)+'</span><span class="d">'+esc(top.t)+'</span><span class="pill '+(top.cls==='red'?'red':'amber')+'">'+x.a.flags.filter(function(f){return f.cls!=='ok'}).length+'</span></div>';
+      }).join('')+'</div>';
+    }
+  }
   h+='<div class="bar">'+['active','paused','ended','all'].map(function(f){return '<button class="chip'+(filter===f?' on':'')+'" onclick="setFilter(\''+f+'\')">'+f+'</button>'}).join('')+'</div>';
   var list=all.filter(function(c){return filter==='all'||c.status===filter});
   if(!list.length)h+='<div class="empty">'+(all.length?'No '+filter+' '+noun+'s.':'No '+noun+'s yet. Tap <b>+ '+(isTeam?'Team':'Client')+'</b> to add your first one.')+'</div>';
@@ -325,8 +368,9 @@ function card(c){
       +(c.block_name||c.phase||bp?(c.block_name?esc(c.block_name):'Current block')+(bp?' · <span class="'+(bp.over?'amber':'')+'">'+bp.txt+'</span>':'')
         +(c.phase?'<br>'+esc(c.phase):'')+(bp&&bp.end?'<br>Block ends '+fmtShort(iso(bp.end)):''):'<span class="muted">No block set</span>')
       +(c.next_tournament||c.tournament_date?'<br>'+esc(c.next_tournament||'Tournament')+(t!==null?' · '+(t>=0?t+'d out':'passed'):''):'')+'</div></div>'
-    +'<div class="cell"><div class="k">Frisbee Track'+(kindOf(c)==='team'?' squad':'')+'</div><div class="v">'+(kindOf(c)==='team'?teamLoadCell(c):loadCell(c,L))+'</div></div>'
+    +(kindOf(c)==='team'?'<div class="cell"><div class="k">Frisbee Track squad</div><div class="v">'+teamLoadCell(c)+'</div></div>':'')
     +'</div>'
+    +(kindOf(c)==='client'?ftPanel(c):'')
     +(c.goals?'<div class="goals"><b>Goals:</b> '+esc(c.goals)+'</div>':'')
     +'<div class="log"><div class="k">Change log</div>'
     +(shown.length?shown.map(function(x){return '<div class="note"><span class="dt">'+fmtShort(x.created_at)+'</span><span>'+esc(x.note)+'</span></div>'}).join(''):'<div class="note muted">No notes yet</div>')
@@ -354,6 +398,88 @@ function loadCell(c,L){
   return 'Last 7d: '+L.wk.n+' session'+(L.wk.n===1?'':'s')+' · HSR '+Math.round(L.wk.hsr)+'m'
     +'<br>Ratio '+(L.ratio!==null?L.ratio.toFixed(2):'—')+' <span class="'+z.cls+'">'+z.l+'</span>'
     +'<br><span class="'+(ago>7?'amber':'muted')+'">Last logged '+(ago===0?'today':ago+'d ago')+'</span>';
+}
+// ── Frisbee Track client dashboard (mirrors the app's targets + periodisation) ──
+var FT_WT={
+  international:{low:{dist:13888,hsr:2860,vhsr:700,acc:154,hacc:42,dec:95,hdec:38},moderate:{dist:16864,hsr:3473,vhsr:850,acc:187,hacc:51,dec:116,hdec:47},high:{dist:19840,hsr:4085,vhsr:1000,acc:220,hacc:60,dec:136,hdec:55},maintenance:{dist:17856,hsr:3677,vhsr:900,acc:198,hacc:54,dec:122,hdec:50}},
+  domestic:{low:{dist:10801,hsr:2405,vhsr:455,acc:129,hacc:21,dec:79,hdec:24},moderate:{dist:13116,hsr:2921,vhsr:553,acc:156,hacc:26,dec:95,hdec:29},high:{dist:15431,hsr:3436,vhsr:650,acc:184,hacc:31,dec:112,hdec:34},maintenance:{dist:13888,hsr:3092,vhsr:585,acc:166,hacc:28,dec:101,hdec:31}}
+};
+var FT_METRICS=[['dist','Dist','m'],['hsr','HSR','m'],['vhsr','VHSR','m'],['acc','Acc',''],['hacc','H.Acc',''],['dec','Dec','']];
+var BAND_LABEL={low:'Low',moderate:'Build',high:'Peak',maintenance:'Maintain'};
+function bandName(b,wo){return b==='low'&&wo!==null&&wo<=1?'Taper':(BAND_LABEL[b]||b)}
+function wkStart(d){var x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x}
+function isoWk(d){var x=new Date(d);x.setHours(0,0,0,0);x.setDate(x.getDate()+3-(x.getDay()+6)%7);var w1=new Date(x.getFullYear(),0,4);return 1+Math.round(((x-w1)/86400000-3+(w1.getDay()+6)%7)/7)}
+function periodise(n){
+  if(n<=0)return[];var P={1:['low'],2:['moderate','low'],3:['moderate','high','low'],4:['moderate','high','high','low'],5:['moderate','moderate','high','high','low'],6:['low','moderate','moderate','high','high','low'],7:['low','moderate','moderate','high','high','high','low'],8:['low','moderate','moderate','high','high','high','high','low'],9:['low','moderate','high','high','moderate','high','high','high','low'],10:['low','moderate','high','high','high','low','moderate','high','high','low'],11:['low','moderate','high','high','high','low','moderate','high','high','high','low']};
+  if(P[n])return P[n];var base=['low','moderate','high','high','high','low','moderate','high','high','high','high','low'],pre=[];for(var i=0;i<n-12;i++)pre.push('moderate');return pre.concat(base);
+}
+function bandFor(ws,tourn){
+  if(!tourn)return['moderate','high','high','low'][isoWk(ws)%4];
+  var wo=Math.ceil((parseD(tourn)-ws)/(7*86400000));
+  if(wo<=0)return'low';return periodise(wo)[0];
+}
+function num(v){return +v||0}
+function ftAnalyse(c){
+  var uid=c.app_user_id,A=athletes[uid]||{},ctx=A.context==='domestic'?'domestic':'international';
+  var tourn=A.tournament&&A.tournament.date?A.tournament:(c.tournament_date&&daysUntil(c.tournament_date)>=0?{name:c.next_tournament||'Tournament',date:c.tournament_date}:null);
+  var S=(sessBy[uid]||[]).map(function(r){var x=r.data||{};return{date:x.date,d:parseD(x.date),label:x.label||'',type:x.type||'',dist:num(x.dist),hsr:num(x.hsr),vhsr:num(x.vhsr),acc:num(x.acc),hacc:num(x.hacc),dec:num(x.dec),hdec:num(x.hdec),dur:num(x.dur)}}).filter(function(x){return x.d}).sort(function(a,b){return b.d-a.d});
+  var t=today(),ws0=wkStart(t),weeks=[];
+  for(var i=5;i>=0;i--){
+    var ws=new Date(ws0);ws.setDate(ws.getDate()-7*i);var we=new Date(ws);we.setDate(we.getDate()+7);
+    var band=bandFor(ws,tourn?tourn.date:null),tg=FT_WT[ctx][band];
+    var tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,n:0};
+    S.forEach(function(x){if(x.d>=ws&&x.d<we){FT_METRICS.forEach(function(m){tot[m[0]]+=x[m[0]]});tot.n++}});
+    weeks.push({ws:ws,band:band,tg:tg,tot:tot});
+  }
+  var cur=weeks[5],last=S[0]||null,ago=last?Math.round((t-last.d)/86400000):null;
+  // EWMA acute:chronic on HSR and VHSR (same constants as the app)
+  function ewma(k){var start=new Date(t);start.setDate(t.getDate()-41);var daily=new Array(42).fill(0);
+    S.forEach(function(x){var i=Math.round((x.d-start)/86400000);if(i>=0&&i<42)daily[i]+=x[k]});
+    var a=0,ch=0;daily.forEach(function(v){a=v*(2/8)+a*(6/8);ch=v*(2/29)+ch*(27/29)});return ch>0?a/ch:null}
+  var rH=ewma('hsr'),rV=ewma('vhsr');
+  var lastTop=S.filter(function(x){return x.vhsr>=50})[0],topAgo=lastTop?Math.round((t-lastTop.d)/86400000):null;
+  var dow=(t.getDay()+6)%7,flags=[];
+  if(!S.length)flags.push({cls:'amber',t:'No sessions logged yet'});
+  else{
+    if(ago>=7)flags.push({cls:ago>=14?'red':'amber',t:'Nothing logged in '+ago+' days'});
+    if(topAgo===null||topAgo>=10)flags.push({cls:'amber',t:topAgo===null?'No top speed exposure logged':'No top speed exposure in '+topAgo+' days'});
+    if(rH!==null&&rH>1.5)flags.push({cls:'red',t:'HSR spike (ratio '+rH.toFixed(2)+')'});
+    else if(rH!==null&&rH<0.8&&ago!==null&&ago<7)flags.push({cls:'amber',t:'HSR load dropping (ratio '+rH.toFixed(2)+')'});
+    if(cur.band==='low'&&cur.tot.hsr>cur.tg.hsr)flags.push({cls:'amber',t:'Over HSR target in a taper week'});
+    else if(dow>=3&&cur.band!=='low'&&cur.tot.hsr<cur.tg.hsr*0.4)flags.push({cls:'amber',t:'HSR well behind for the week ('+Math.round(cur.tot.hsr/cur.tg.hsr*100)+'%)'});
+    if(!flags.length)flags.push({cls:'ok',t:'On track. Nothing to flag.'});
+  }
+  return{ctx:ctx,tourn:tourn,weeks:weeks,cur:cur,S:S,last:last,ago:ago,rH:rH,rV:rV,flags:flags,dow:dow};
+}
+function ftPanel(c){
+  if(!c.app_user_id)return '<div class="ft"><div class="ft-eb">Frisbee Track</div><div class="ft-empty">Not linked. Edit the client and pick their Frisbee Track account to see their load here.</div></div>';
+  var a=ftAnalyse(c),cur=a.cur,z=zone(a.rH),wo=a.tourn?Math.ceil((parseD(a.tourn.date)-wkStart(today()))/(7*86400000)):null;
+  var zc=z.cls==='red'?'#ff6b5e':z.cls==='amber'?'#ffb400':z.cls==='green'?'var(--green-br)':'#fff';
+  var h='<div class="ft"><div class="ft-h"><div><div class="ft-eb">Frisbee Track · '+(a.ctx==='domestic'?'Domestic':'International')+' targets</div>'
+    +'<div class="ft-t">'+esc(bandName(cur.band,wo))+' <em>week</em></div>'
+    +'<div class="ft-sub">'+(a.tourn?esc(a.tourn.name)+' · '+(wo<=0?'this week':wo+' wk'+(wo===1?'':'s')+' out'):'No tournament set · rolling cycle')
+    +(a.last?' · last log '+(a.ago===0?'today':a.ago+'d ago'):'')+'</div></div>'
+    +'<div class="ft-ratio"><div class="n" style="color:'+zc+'">'+(a.rH!==null?a.rH.toFixed(2):'—')+'</div><div class="l">HSR ratio · '+esc(z.l)+'</div>'
+    +(a.rV!==null?'<div class="l">VHSR '+a.rV.toFixed(2)+'</div>':'')+'</div></div>';
+  h+='<div class="ft-flags">'+a.flags.map(function(f){return '<div class="ft-flag '+f.cls+'">'+esc(f.t)+'</div>'}).join('')+'</div>';
+  if(!a.S.length)return h+'</div>';
+  var pace=Math.min(1,(a.dow+1)/7);
+  h+='<div class="ft-sec"><span>This week vs target</span><span>'+cur.tot.n+' session'+(cur.tot.n===1?'':'s')+'</span></div>';
+  FT_METRICS.forEach(function(m){
+    var v=cur.tot[m[0]],g=cur.tg[m[0]],pc=g?v/g:0,cls=pc>1.15?'over':pc>=0.9?'done':'';
+    h+='<div class="ft-row"><span class="k">'+m[1]+'</span><div class="ft-bar"><i class="'+cls+'" style="width:'+Math.min(100,pc*100).toFixed(0)+'%"></i><s style="left:'+(pace*100).toFixed(0)+'%" title="Where they should be by today"></s></div>'
+      +'<span class="v"><b>'+Math.round(v).toLocaleString()+'</b> / '+Math.round(g).toLocaleString()+m[2]+'</span></div>';
+  });
+  if(ftOpen[c.id]){
+    var mx=Math.max(1.3,Math.max.apply(null,a.weeks.map(function(w){return w.tg.hsr?w.tot.hsr/w.tg.hsr:0})));
+    h+='<div class="ft-sec"><span>6-week HSR vs target</span><span>dashed = 100%</span></div><div class="ft-trend"><div class="line" style="bottom:'+(100/mx).toFixed(1)+'%"></div>'
+      +a.weeks.map(function(w,i){var pc=w.tg.hsr?w.tot.hsr/w.tg.hsr:0;return '<div class="col"><span class="p">'+Math.round(pc*100)+'%</span><div class="b'+(i===5?' cur':'')+(pc>1.15?' hi':'')+'" style="height:'+Math.max(2,pc/mx*78).toFixed(0)+'%"></div></div>'}).join('')+'</div>'
+      +'<div class="ft-wk">'+a.weeks.map(function(w,i){return '<span>'+(i===5?'Now':fmtShort(iso(w.ws)).replace(/ /,'&nbsp;'))+'<br>'+esc(bandName(w.band,a.tourn?Math.ceil((parseD(a.tourn.date)-w.ws)/(7*86400000)):null).slice(0,5))+'</span>'}).join('')+'</div>';
+    h+='<div class="ft-sec"><span>Recent sessions</span><span>Dist · HSR · VHSR</span></div>'
+      +a.S.slice(0,5).map(function(x){return '<div class="ft-sess"><span class="d">'+fmtShort(x.date)+'</span><span>'+esc(x.label||x.type||'Session')+'</span><span class="m">'+Math.round(x.dist).toLocaleString()+' · '+Math.round(x.hsr)+' · '+Math.round(x.vhsr)+'</span></div>'}).join('');
+  }
+  h+='<button class="ft-more" onclick="ftOpen[\''+c.id+'\']=!ftOpen[\''+c.id+'\'];render();jump(\''+c.id+'\')">'+(ftOpen[c.id]?'Hide trend + sessions':'Show trend + sessions')+'</button>';
+  return h+'</div>';
 }
 function setFilter(f){filter=f;render()}
 function toggleNotes(id){expanded[id]=!expanded[id];render();jump(id)}
