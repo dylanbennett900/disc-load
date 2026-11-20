@@ -90,18 +90,31 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
 .f textarea{min-height:60px;resize:vertical}
 .quick{display:flex;gap:6px;flex-wrap:wrap;margin-top:8px}
 .sheet-acts{display:flex;gap:8px;justify-content:space-between;margin-top:16px}
+.td{background:#fff;border:1px solid var(--bd);border-left:4px solid var(--green);border-radius:10px;padding:11px 13px;margin-bottom:8px;display:flex;gap:10px;align-items:flex-start}
+.td[data-s=later]{border-left-color:var(--amber)}.td[data-s=done]{border-left-color:var(--t4);opacity:.6}.td[data-s=dropped]{border-left-color:var(--red);opacity:.45}
+.td[data-s=done] .tt,.td[data-s=dropped] .tt{text-decoration:line-through}
+.tick{flex-shrink:0;width:24px;height:24px;border-radius:50%;border:2px solid var(--bd2);background:#fff;cursor:pointer;margin-top:1px;font:800 13px/1 var(--display);color:#fff}
+.td[data-s=done] .tick{background:var(--green);border-color:var(--green)}
+.td .bd{flex:1;min-width:0;cursor:pointer}
+.tt{font-weight:700;color:var(--t)}
+.tdet{font-size:12.5px;color:var(--t3);margin-top:3px}
+.tmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center}
+.tmeta a{font-size:12px;color:var(--mid)}
+.quickadd{display:flex;gap:6px;margin:14px 0 4px}
+.quickadd input{flex:1;font:14px 'DM Sans',sans-serif;padding:9px 11px;border:1.5px solid var(--bd2);border-radius:6px;background:#fff}
+.quickadd select{font:13px 'DM Sans',sans-serif;padding:8px;border:1.5px solid var(--bd2);border-radius:6px;background:#fff;max-width:40%}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy);color:#fff;padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
 .toast.show{opacity:1}
 </style>
 </head>
 <body>
 <header>
-  <div><h1>DBSP Roster</h1><div class="hsub">Who's programmed, who's next</div></div>
+  <div><h1>DBSP Roster</h1><div class="hsub">Clients, teams and to-dos</div></div>
   <div class="sp"></div>
-  <button class="btn" id="addBtn" style="display:none" onclick="openEditor()">+ Client</button>
+  <button class="btn" id="addBtn" style="display:none" onclick="onAdd()">+ Client</button>
   <button class="btn" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.4)" onclick="lock()" title="Forget passphrase on this device">Lock</button>
 </header>
-<nav class="tabs" id="tabs" style="display:none"><button class="tab" data-t="client" onclick="setTab('client')">Clients</button><button class="tab" data-t="team" onclick="setTab('team')">Teams</button></nav>
+<nav class="tabs" id="tabs" style="display:none"><button class="tab" data-t="client" onclick="setTab('client')">Clients</button><button class="tab" data-t="team" onclick="setTab('team')">Teams</button><button class="tab" data-t="todo" onclick="setTab('todo')">To-dos</button></nav>
 <main id="main"><div class="empty">Loading…</div></main>
 
 <!-- Client editor -->
@@ -156,13 +169,32 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
     <div class="sheet-acts"><span></span><div style="display:flex;gap:8px"><button class="btn" onclick="closeProg()">Cancel</button><button class="btn p" onclick="saveProg()">Save</button></div></div>
   </div>
 </div>
+<!-- To-do editor -->
+<div class="scrim" id="tScrim" onclick="if(event.target===this)closeTodo()">
+  <form class="sheet" id="tForm" onsubmit="saveTodo(event)">
+    <h3 id="tTitle">New to-do</h3>
+    <div class="fg">
+      <div class="f full"><label>To-do</label><input name="title" required maxlength="200"></div>
+      <div class="f"><label>Section</label><input name="section" list="secList" placeholder="e.g. Coaching + leads"><datalist id="secList"></datalist></div>
+      <div class="f"><label>Status</label><select name="status"><option value="open">Open</option><option value="later">Later</option><option value="done">Done</option><option value="dropped">Dropped</option></select></div>
+      <div class="f"><label>Due (optional)</label><input type="date" name="due_date"></div>
+      <div class="f"><label>Needs checking?</label><select name="needs_check"><option value="false">No</option><option value="true">Yes, may already be done</option></select></div>
+      <div class="f full"><label>Details</label><textarea name="detail"></textarea></div>
+      <div class="f full"><label>Link (optional)</label><input name="link" type="url" placeholder="e.g. the Claude chat it came from"></div>
+    </div>
+    <div class="sheet-acts">
+      <button type="button" class="btn danger" id="tDel" onclick="deleteTodo()">Delete</button>
+      <div style="display:flex;gap:8px;margin-left:auto"><button type="button" class="btn" onclick="closeTodo()">Cancel</button><button class="btn p" type="submit">Save</button></div>
+    </div>
+  </form>
+</div>
 <div class="toast" id="toast"></div>
 
 <script src="config.js"></script>
 <script>
 var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 var OFFER_LABEL={coaching:'Custom coaching',rehab:'Injury rehab',speed:'Speed sessions',selfserve:'Self-serve'};
-var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={};
+var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={},todos=[],tFilter='open',tEditing=null;
 var main=document.getElementById('main');
 
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -231,7 +263,7 @@ async function load(){
   try{d=await api('list')}catch(e){if(rkey)main.innerHTML='<div class="empty">Couldn\'t load clients: '+esc(e.message)+'</div>';return}
   clients=d.clients||[];appUsers=d.users||[];
   notes={};(d.notes||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
-  teamMembers=d.teamMembers||{};teamCodes=d.teamCodes||[];
+  teamMembers=d.teamMembers||{};teamCodes=d.teamCodes||[];todos=d.todos||[];
   var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});
   loads={};
   clients.forEach(function(c){if(c.app_user_id)loads[c.app_user_id]=calcLoad(by[c.app_user_id]||[])});
@@ -245,6 +277,7 @@ async function load(){
 function kindOf(c){return c.kind||'client'}
 function setTab(t){tab=t;try{localStorage.setItem('dbsp_roster_tab',t)}catch(e){}render();window.scrollTo(0,0)}
 function render(){
+  if(tab==='todo')return renderTodos();
   var isTeam=tab==='team',noun=isTeam?'team':'client';
   document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t===tab)});
   document.getElementById('addBtn').textContent=isTeam?'+ Team':'+ Client';
@@ -321,6 +354,83 @@ function loadCell(c,L){
 function setFilter(f){filter=f;render()}
 function toggleNotes(id){expanded[id]=!expanded[id];render();jump(id)}
 function jump(id){if(filter!=='all'&&filter!=='active'){filter='active';render()}var el=document.getElementById('c-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
+
+// ── To-dos ──
+var SECTION_ORDER=['Coaching + leads','DBSP website + funnel','Frisbee Track app'];
+function onAdd(){if(tab==='todo')openTodo();else openEditor()}
+function sections(){var s=SECTION_ORDER.slice();todos.forEach(function(t){if(t.section&&s.indexOf(t.section)<0)s.push(t.section)});return s}
+function renderTodos(){
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t==='todo')});
+  document.getElementById('addBtn').textContent='+ To-do';
+  var hdr=document.querySelector('header');if(hdr)document.documentElement.style.setProperty('--hdrh',hdr.offsetHeight+'px');
+  var cnt=function(s){return todos.filter(function(t){return t.status===s}).length};
+  var overdue=todos.filter(function(t){var n=daysUntil(t.due_date);return t.status==='open'&&n!==null&&n<0}).length;
+  var h='<div class="stats">'
+   +'<div class="stat"><div class="k">Open</div><div class="v">'+cnt('open')+'</div></div>'
+   +'<div class="stat"><div class="k">Overdue</div><div class="v '+(overdue?'red':'')+'">'+overdue+'</div></div>'
+   +'<div class="stat"><div class="k">Later</div><div class="v">'+cnt('later')+'</div></div>'
+   +'<div class="stat"><div class="k">Done</div><div class="v">'+cnt('done')+'</div></div></div>';
+  var secs=sections();
+  h+='<form class="quickadd" onsubmit="quickAdd(event)"><input id="qaT" placeholder="Add a to-do…" maxlength="200"><select id="qaS">'
+    +secs.map(function(s){return '<option>'+esc(s)+'</option>'}).join('')+'</select><button class="btn p">Add</button></form>';
+  h+='<div class="bar">'+['open','later','done','all'].map(function(f){return '<button class="chip'+(tFilter===f?' on':'')+'" onclick="setTFilter(\''+f+'\')">'+f+'</button>'}).join('')+'</div>';
+  var list=todos.filter(function(t){return tFilter==='all'||t.status===tFilter||(tFilter==='done'&&t.status==='dropped')});
+  if(!list.length)h+='<div class="empty">Nothing '+(tFilter==='all'?'here':tFilter)+'.</div>';
+  secs.forEach(function(s){
+    var items=list.filter(function(t){return (t.section||'Other')===s});if(!items.length)return;
+    items.sort(function(a,b){var da=a.due_date||'9999',db=b.due_date||'9999';return da<db?-1:da>db?1:(a.sort-b.sort)});
+    h+='<div class="sect">'+esc(s)+' <span class="muted" style="font-weight:600">· '+items.length+'</span></div>';
+    items.forEach(function(t){h+=todoRow(t)});
+  });
+  main.innerHTML=h;
+}
+function todoRow(t){
+  var n=daysUntil(t.due_date),due='';
+  if(t.due_date){var cls=t.status!=='open'?'grey':n<0?'red':n<=3?'amber':'grey';due='<span class="pill '+cls+'">'+(n<0&&t.status==='open'?'Overdue · ':'Due ')+fmtShort(t.due_date)+'</span>'}
+  return '<div class="td" data-s="'+t.status+'"><button class="tick" title="Mark done" onclick="toggleDone(\''+t.id+'\')">'+(t.status==='done'?'✓':'')+'</button>'
+    +'<div class="bd" onclick="openTodo(\''+t.id+'\')"><div class="tt">'+esc(t.title)+'</div>'
+    +(t.detail?'<div class="tdet">'+esc(t.detail)+'</div>':'')
+    +'<div class="tmeta">'+due+(t.needs_check?'<span class="pill amber">Check</span>':'')+(t.status==='later'?'<span class="pill grey">Later</span>':'')+(t.status==='dropped'?'<span class="pill grey">Dropped</span>':'')
+    +(t.link?'<a href="'+esc(t.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Source</a>':'')+'</div></div></div>';
+}
+function setTFilter(f){tFilter=f;renderTodos()}
+async function quickAdd(e){
+  e.preventDefault();var v=document.getElementById('qaT').value.trim();if(!v)return;
+  try{await api('todo_save',{todo:{title:v,section:document.getElementById('qaS').value,status:'open'}})}catch(err){toast(err.message);return}
+  toast('Added');await load();
+}
+async function toggleDone(id){
+  var t=todos.find(function(x){return x.id===id});if(!t)return;
+  var s=t.status==='done'?'open':'done';t.status=s;renderTodos();
+  try{await api('todo_save',{id:id,todo:{status:s}})}catch(err){toast(err.message);await load();return}
+  toast(s==='done'?'Done':'Reopened');
+}
+function openTodo(id){
+  tEditing=id?todos.find(function(t){return t.id===id}):null;
+  var f=document.getElementById('tForm');f.reset();
+  document.getElementById('secList').innerHTML=sections().map(function(s){return '<option value="'+esc(s)+'">'}).join('');
+  document.getElementById('tTitle').textContent=tEditing?'Edit to-do':'New to-do';
+  document.getElementById('tDel').style.visibility=tEditing?'visible':'hidden';
+  if(tEditing)Array.prototype.forEach.call(f.elements,function(el){if(el.name&&tEditing[el.name]!=null)el.value=String(tEditing[el.name])});
+  else f.elements.section.value='Coaching + leads';
+  document.getElementById('tScrim').classList.add('open');
+}
+function closeTodo(){document.getElementById('tScrim').classList.remove('open');tEditing=null}
+async function saveTodo(e){
+  e.preventDefault();var row={};
+  Array.prototype.forEach.call(e.target.elements,function(el){if(!el.name)return;var v=el.value.trim();row[el.name]=v===''?null:v});
+  row.needs_check=row.needs_check==='true';if(!row.section)row.section='Coaching + leads';if(!row.status)row.status='open';
+  try{await api('todo_save',{id:tEditing?tEditing.id:null,todo:row})}catch(err){toast(err.message);return}
+  closeTodo();toast('Saved');await load();
+}
+var tDelArmed=false;
+async function deleteTodo(){
+  var b=document.getElementById('tDel');
+  if(!tDelArmed){tDelArmed=true;b.textContent='Tap again to delete';setTimeout(function(){tDelArmed=false;b.textContent='Delete'},3000);return}
+  tDelArmed=false;b.textContent='Delete';
+  try{await api('todo_delete',{id:tEditing.id})}catch(err){toast(err.message);return}
+  closeTodo();toast('Deleted');await load();
+}
 
 // ── Actions ──
 async function addNote(e,id){
