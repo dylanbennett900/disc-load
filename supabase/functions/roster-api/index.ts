@@ -69,12 +69,30 @@ Deno.serve(async (req) => {
       Object.values(teamMembers).forEach((arr) => arr.forEach((id) => ids.add(id)));
       let sessions: unknown[] = [];
       if (ids.size) {
-        const since = new Date(Date.now() - 60 * 864e5).toISOString();
+        const since = new Date(Date.now() - 75 * 864e5).toISOString();
         const s = await db.from('sessions').select('user_id,data').in('user_id', [...ids]).gte('created_at', since);
         if (s.error) throw s.error;
         sessions = s.data || [];
       }
-      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label })), todos: td.data || [] });
+      // Per-athlete Frisbee Track context: competition level + upcoming tournament
+      const athletes: Record<string, { context?: string; tournament?: { name: string; date: string } | null }> = {};
+      if (ids.size) {
+        const idl = [...ids];
+        const today = new Date().toISOString().slice(0, 10);
+        const [kv, us, tr] = await Promise.all([
+          db.from('user_kv').select('user_id,value').eq('key', 'context').in('user_id', idl),
+          db.from('user_settings').select('user_id,tournament_date,tournament_name').in('user_id', idl),
+          db.from('tournaments').select('user_id,name,date').in('user_id', idl).gte('date', today).order('date'),
+        ]);
+        for (const id of idl) athletes[id] = { context: undefined, tournament: null };
+        (kv.data || []).forEach((r: any) => { athletes[r.user_id].context = r.value; });
+        (tr.data || []).forEach((r: any) => { if (!athletes[r.user_id].tournament) athletes[r.user_id].tournament = { name: r.name, date: r.date }; });
+        (us.data || []).forEach((r: any) => {
+          if (!athletes[r.user_id].tournament && r.tournament_date && r.tournament_date >= today)
+            athletes[r.user_id].tournament = { name: r.tournament_name || 'Tournament', date: r.tournament_date };
+        });
+      }
+      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label })), todos: td.data || [], athletes });
     }
     if (action === 'save') {
       const row = pick(body.client || {});
