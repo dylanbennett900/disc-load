@@ -4158,7 +4158,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var FT_BUILD='21 Nov 14:10';
+var FT_BUILD='21 Nov 14:08';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -5920,6 +5920,29 @@ function maybeShowInstallModalOnSignIn(){
     navigator.serviceWorker.register('/disc-load/sw.js').then(function(reg){
       swReg = reg;
     }).catch(function(e){ console.warn('SW registration failed:', e); });
+
+    // Version check: when the app opens or comes back to the foreground, compare our build with the live one.
+    // Home screen apps on iPhone resume a frozen page, so without this they can sit on an old version.
+    var _updBanner=false;
+    function checkForUpdate(){
+      if(_updBanner||typeof FT_BUILD==='undefined')return;
+      fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
+        var m=t&&t.match(/var FT_BUILD='21 Nov 14:08']+)'/);
+        if(!m||m[1]===FT_BUILD)return;
+        if(swReg)swReg.update().catch(function(){});
+        _updBanner=true;
+        var b=document.createElement('button');
+        b.textContent='New version available · Tap to update';
+        b.style.cssText='position:fixed;left:50%;top:calc(10px + env(safe-area-inset-top));transform:translateX(-50%);z-index:400;background:#059669;color:#fff;border:none;border-radius:20px;padding:11px 18px;font:800 13px var(--display,sans-serif);letter-spacing:.5px;box-shadow:0 6px 20px rgba(15,23,42,.25);cursor:pointer';
+        b.onclick=function(){b.textContent='Updating…';
+          var go=function(){window.location.replace('/disc-load/?v='+Date.now())};
+          if('caches' in window){caches.keys().then(function(ks){return Promise.all(ks.map(function(k){return caches.delete(k)}))}).then(go,go);}else go();};
+        document.body.appendChild(b);
+      }).catch(function(){});
+    }
+    setTimeout(checkForUpdate,3000);
+    document.addEventListener('visibilitychange',function(){if(document.visibilityState==='visible')checkForUpdate();});
+    setInterval(checkForUpdate,5*60*1000);
 
     // Auto-reload when new SW takes control — wait until app is backgrounded
     var refreshing = false;
