@@ -811,6 +811,8 @@ body:has(#panel-dashboard.v2-on.on) #fab-log{display:none!important}
 .hw-pill.done{background:rgba(5,150,105,.1);border-color:rgba(5,150,105,.35);color:var(--green)}
 .hw-pill.missed{color:var(--t4);text-decoration:line-through;border-style:dashed}
 .hw-pill.extra{background:rgba(2,132,199,.08);border-color:rgba(2,132,199,.3);color:var(--cyan)}
+.hw-daybtn{background:transparent;padding:0;border:none;font-family:inherit;cursor:pointer}
+button.hw-pill{cursor:pointer;font-family:inherit}
 .hw-pill.rest{border:none;color:var(--t4);padding-left:0;font-weight:600}
 .hv2-log{width:100%;margin-top:14px;min-height:54px;border-radius:14px;background:var(--green);color:#fff;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:8px}
 /* Daily check-in + athlete profile */
@@ -4361,10 +4363,10 @@ function weekStatus(){
   return{cls:'ok',t:'On track this week',s:''};
 }
 function fcPlanSentence(){
-  var today=new Date(),ws=weekStart(today),parts=[];
+  var today=new Date(),ws=weekStart(today),parts=[],fm0=fcWeekMatch(today);
   for(var i=0;i<7;i++){var d=new Date(ws);d.setDate(ws.getDate()+i);var it=itemsFor(d),iso=hv2Iso(d);
     ['fcs','fca'].forEach(function(k){if(it.indexOf(k)<0)return;
-      var name=k==='fcs'?'Speed':'Acceleration',done=sessOn(iso).some(function(s){return new RegExp(k==='fcs'?'Speed Day':'Acceleration Day').test(s.label||'')});
+      var name=k==='fcs'?'Speed':'Acceleration',done=!!fm0.done[iso+':'+k];
       var diff=Math.round((d-new Date(hv2Iso(today)+'T00:00:00'))/86400000);
       var when=done?'done':diff===0?'today':diff===1?'tomorrow':diff<0?'missed ('+WK_DAYS[i]+')':WK_DAYS_LONG[i];
       parts.push(name+' '+when);});}
@@ -4400,9 +4402,9 @@ function renderHomeV2(){
     .concat(items.filter(function(k){return k==='tourn'}))
     .concat(gymLate?items.filter(function(k){return /^(fbp|lbp|lbs|gd2)$/.test(k)}):[]);
   ordered.forEach(function(k){
-    if(k==='fcs'||k==='fca'){var fs=fcSessionFor(k),done=todaySess.some(function(s){return fs&&s.label===fs.label||new RegExp(k==='fcs'?'Speed Day':'Acceleration Day').test(s.label||'')});
+    if(k==='fcs'||k==='fca'){var fat=fcWeekMatch(now).done[iso+':'+k],done=!!fat;
       var taper=!!taperWeekFor(now);
-      jobs.push({t:'F&amp;C: '+(k==='fcs'?'Speed Day':'Acceleration Day')+(taper?' (taper)':''),sub:(taper?'2–3 build-ups + 4 box drills. Short and sharp, no conditioning':'Phase '+myFcPhase().slice(1))+(items.some(function(x){return x==='fbp'||x==='lbp'||x==='lbs'})?' · do this first':''),done:done,tap:"openFcSession('"+k+"')",act:'Open',actFn:"openFcSession('"+k+"')"});}
+      jobs.push({t:'F&amp;C: '+(k==='fcs'?'Speed Day':'Acceleration Day')+(taper?' (taper)':''),sub:(fat&&fat!==iso?'Done '+WK_DAYS_LONG[hv2Dow(new Date(fat+'T12:00:00'))]+'. Nice work':taper?'2–3 build-ups + 4 box drills. Short and sharp, no conditioning':'Phase '+myFcPhase().slice(1))+(items.some(function(x){return x==='fbp'||x==='lbp'||x==='lbs'})?' · do this first':''),done:done,tap:"openFcSession('"+k+"')",act:'Open',actFn:"openFcSession('"+k+"')"});}
     else if(k==='tourn'){var gl=todaySess.filter(function(s){return s.type==='game'}).length,ti=tournInfo();
       jobs.push({t:'Tournament: '+ciEsc(ti?ti.name:'game day'),sub:gl?gl+' game'+(gl>1?'s':'')+' logged':'Log each game as you go',done:false,act:'Log game',actFn:"logGameFor('"+iso+"')"});}
     else if(k==='team'){var tdone=todaySess.some(function(s){return !isFcLabel(s.label)});
@@ -4422,32 +4424,53 @@ function renderHomeV2(){
   el.innerHTML=h;
 }
 // Week at a glance: planned items (template/overrides) vs what's been logged
+// Match logged F&C sessions to planned F&C slots across the whole week (shuffle forward: done on another day still counts)
+function fcWeekMatch(anyDate){
+  var ws=weekStart(anyDate),slots=[],logs=[],res={},used={};
+  for(var i=0;i<7;i++){var d=new Date(ws);d.setDate(ws.getDate()+i);var iso=hv2Iso(d);
+    itemsFor(d).forEach(function(k){if(k==='fcs'||k==='fca')slots.push({k:k,iso:iso})});
+    sessOn(iso).forEach(function(s,j){var k=/Speed Day/.test(s.label||'')?'fcs':/Acceleration Day/.test(s.label||'')?'fca':null;if(k)logs.push({k:k,iso:iso,id:iso+'#'+j+'#'+(s.id||'')})});}
+  // same-day matches first, then nearest other day in the week
+  slots.forEach(function(sl){var m=logs.find(function(l){return !used[l.id]&&l.k===sl.k&&l.iso===sl.iso});if(m){used[m.id]=1;res[sl.iso+':'+sl.k]=m.iso;}});
+  slots.forEach(function(sl){if(res[sl.iso+':'+sl.k])return;var m=logs.find(function(l){return !used[l.id]&&l.k===sl.k});if(m){used[m.id]=1;res[sl.iso+':'+sl.k]=m.iso;}});
+  return{done:res,used:used,logs:logs};
+}
 function itemDone(k,iso){
+  if(k==='fcs'||k==='fca')return !!fcWeekMatch(new Date(iso+'T12:00:00')).done[iso+':'+k];
   var ss=sessOn(iso);
-  if(k==='fcs')return ss.some(function(s){return /Speed Day/.test(s.label||'')});
-  if(k==='fca')return ss.some(function(s){return /Acceleration Day/.test(s.label||'')});
   if(k==='team')return ss.some(function(s){return !isFcLabel(s.label)});
   if(k==='tourn')return ss.some(function(s){return s.type==='game'});
   return !!gymDone[iso+':'+k];
 }
 var HW_SHORT={fcs:'F&C Speed',fca:'F&C Accel',fbp:'FB Power',lbp:'LB Power',lbs:'LB Strength',gd2:'GD-2 Power Up',team:'Team',tourn:'Tournament'};
+function hwGymTap(iso,k,ev){if(ev)ev.stopPropagation();toggleGymDone(iso,k);}
 function renderWeekGlance(){
-  var now=new Date(),ws=weekStart(now),todayIso=hv2Iso(now),planned=0,done=0,h='<div class="hw-week">';
+  var now=new Date(),ws=weekStart(now),todayIso=hv2Iso(now),planned=0,done=0,fm=fcWeekMatch(now),h='<div class="hw-week">';
   for(var i=0;i<7;i++){
-    var d=new Date(ws);d.setDate(ws.getDate()+i);var iso=hv2Iso(d),items=itemsFor(d),past=iso<todayIso,isToday=iso===todayIso;
-    var pills=items.map(function(k){var ok=itemDone(k,iso);planned++;if(ok)done++;
-      var cls=ok?'done':past?'missed':'';return '<span class="hw-pill '+cls+'">'+(ok?'✓ ':'')+HW_SHORT[k]+'</span>'});
-    // logged sessions that weren't in the plan (games, extra sessions)
-    var fcPlanned=items.indexOf('fcs')>=0||items.indexOf('fca')>=0,teamPlanned=items.indexOf('team')>=0;
-    var extras=sessOn(iso).filter(function(s){if(isFcLabel(s.label))return !(/Speed Day/.test(s.label)&&items.indexOf('fcs')>=0)&&!(/Acceleration Day/.test(s.label)&&items.indexOf('fca')>=0);return !teamPlanned});
+    var d=new Date(ws);d.setDate(ws.getDate()+i);var iso=hv2Iso(d),items=itemsFor(d),past=iso<todayIso,isToday=iso===todayIso,future=iso>todayIso;
+    var pills=items.map(function(k){
+      var ok,note='';
+      if(k==='fcs'||k==='fca'){var at=fm.done[iso+':'+k];ok=!!at;if(at&&at!==iso)note=' ('+WK_DAYS[hv2Dow(new Date(at+'T12:00:00'))]+')';}
+      else ok=itemDone(k,iso);
+      planned++;if(ok)done++;
+      var cls=ok?'done':past?'missed':'',lbl=(ok?'✓ ':'')+HW_SHORT[k]+note;
+      if(/^(fbp|lbp|lbs|gd2)$/.test(k)&&!future)return '<button class="hw-pill '+cls+'" onclick="hwGymTap(\''+iso+'\',\''+k+'\',event)" aria-label="'+(ok?'Untick ':'Tick ')+WK_ITEMS[k]+'">'+lbl+'</button>';
+      return '<span class="hw-pill '+cls+'">'+lbl+'</span>';
+    });
+    // logged sessions that weren't in the plan (games, extra sessions); F&C already counted elsewhere in the week is not extra
+    var teamPlanned=items.indexOf('team')>=0||items.indexOf('tourn')>=0;
+    var extras=sessOn(iso).filter(function(s,j){
+      if(isFcLabel(s.label)){var lid=iso+'#'+j+'#'+(s.id||'');return !fm.used[lid];}
+      return !teamPlanned;});
     var games=extras.filter(function(s){return s.type==='game'});
     if(games.length)pills.push('<span class="hw-pill extra">'+(games.length>1?games.length+' games':'Game')+'</span>');
     extras.filter(function(s){return s.type!=='game'}).forEach(function(s){pills.push('<span class="hw-pill extra">'+ciEsc((s.label||'Session').replace(/^Phase \d — /,'F&C '))+'</span>')});
     if(!pills.length)pills.push('<span class="hw-pill rest">Rest</span>');
-    var tap=past?'':' onclick="openWeekSheet(\''+iso+'\')" aria-label="Change '+WK_DAYS_LONG[i]+'"';
-    h+='<'+(past?'div':'button')+' class="hw-row'+(isToday?' today':'')+(past?' past':'')+'"'+tap+'><div class="hw-day"><div class="hw-dn">'+WK_DAYS[i]+'</div><div class="hw-dd">'+d.getDate()+'</div></div><div class="hw-pills">'+pills.join('')+'</div></'+(past?'div':'button')+'>';
+    var dayCell='<div class="hw-day"><div class="hw-dn">'+WK_DAYS[i]+'</div><div class="hw-dd">'+d.getDate()+'</div></div>';
+    if(!past)dayCell='<button class="hw-daybtn" onclick="openWeekSheet(\''+iso+'\')" aria-label="Change '+WK_DAYS_LONG[i]+'">'+dayCell+'</button>';
+    h+='<div class="hw-row'+(isToday?' today':'')+(past?' past':'')+'">'+dayCell+'<div class="hw-pills">'+pills.join('')+'</div></div>';
   }
-  h+='</div>';
+  h+='</div><div class="ci-msg" style="text-align:left;margin-top:6px">Tap a gym session to tick it off. Tap a day to change it.</div>';
   return '<div class="hw-head"><span class="hw-t">This week</span><span class="hw-c">'+done+' of '+planned+' done</span></div>'+h;
 }
 function setHomeMode(m){try{localStorage.setItem('ft-home',m)}catch(e){}applyHomeMode();if(m==='new')maybePromptWeek();}
