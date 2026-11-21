@@ -1007,6 +1007,16 @@ input,select{font-family:inherit;outline:none}
     <div class="tbtns">
       <button class="tbtn on" id="tb-game" onclick="setType('game')">🏆 Game</button>
       <button class="tbtn" id="tb-training" onclick="setType('training')">🏃 Training</button>
+      <button class="tbtn" id="tb-fc" onclick="setType('fc')" style="display:none">⚡ F&amp;C</button>
+    </div>
+    <div id="fw-fc" style="display:none">
+      <div id="fc-prog" style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px"></div>
+      <div class="dbsp-phase-tabs" id="fc-phase"></div>
+      <div class="dbsp-phase-tabs" id="fc-sess" style="margin-top:6px"></div>
+      <div class="fgrid" style="margin-top:10px"><div class="ff"><label>Date</label><input type="date" id="fdate-fc"></div></div>
+      <div style="font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin:4px 0 6px;font-weight:700">What gets logged</div>
+      <div id="fc-rows"></div>
+      <div id="fc-prev" style="margin-top:10px;padding:9px 12px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:11px;color:var(--t2)"></div>
     </div>
     <div id="fw-game">
       <div class="fgrid">
@@ -3719,7 +3729,42 @@ function setType(t){
   document.getElementById("tb-training").className="tbtn"+(t==="training"?" on":"");
   document.getElementById("fw-game").style.display=t==="game"?"block":"none";
   document.getElementById("fw-training").style.display=t==="training"?"block":"none";
+  var fb=document.getElementById("tb-fc");if(fb)fb.className="tbtn"+(t==="fc"?" on":"");
+  var fw=document.getElementById("fw-fc");if(fw)fw.style.display=t==="fc"?"block":"none";
   if(t==="training"&&!document.getElementById("drill-rows").children.length)addDrillRow();
+  if(t==="fc"){if(!fcPhase)fcPhase=dbspPhase||'p1';var de=document.getElementById("fdate-fc");if(de&&!de.value)de.value=srDateKey();renderFCForm();}
+}
+// ── F&C session logging from the Log Session form ──
+var fcPhase=null,fcSess='speed',_fcRows=null;
+function fcAccess(){return (currentUser&&currentUser.id===COACH_UID)||(typeof canAccess==='function'&&canAccess('ai_prescription'));}
+function updateFCButton(){var b=document.getElementById('tb-fc');if(!b)return;var ok=fcAccess();b.style.display=ok?'':'none';if(!ok&&sType==='fc')setType('training');}
+function renderFCForm(){
+  var prog=dbspProgram(),tk=dbspTeamKey(),isCoach=currentUser&&currentUser.id===COACH_UID;
+  document.getElementById('fc-prog').innerHTML=isCoach
+    ?'Program: '+Object.keys(TEAM_PROGRAMS).map(function(k){return '<button class="dbsp-phase-btn'+(k===tk?' on':'')+'" style="flex:0 0 auto;padding:4px 9px;margin-left:4px" onclick="dbspCoachTeam=\''+k+'\';renderFCForm();if(typeof renderDBSPBody===\'function\')renderDBSPBody()">'+TEAM_PROGRAMS[k].label+'</button>'}).join('')
+    :(tk?TEAM_PROGRAMS[tk].label+' program':'');
+  document.getElementById('fc-phase').innerHTML=['p1','p2','p3'].map(function(p,i){return '<button class="dbsp-phase-btn'+(fcPhase===p?' on':'')+'" onclick="fcPhase=\''+p+'\';renderFCForm()">Phase '+(i+1)+'</button>'}).join('');
+  document.getElementById('fc-sess').innerHTML=[['speed','Speed Day'],['accel','Acceleration Day']].map(function(o){return '<button class="dbsp-phase-btn'+(fcSess===o[0]?' on':'')+'" onclick="fcSess=\''+o[0]+'\';renderFCForm()">'+o[1]+'</button>'}).join('');
+  var sess=prog[fcPhase]&&prog[fcPhase][fcSess];
+  if(!sess){document.getElementById('fc-rows').innerHTML='';return;}
+  _fcRows=dbspBuildLog(sess);
+  document.getElementById('fc-rows').innerHTML=_fcRows.map(function(r){
+    if(r.mas)return "<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px;display:flex;align-items:center;gap:8px;flex-wrap:wrap'><label style='flex:1;min-width:140px;display:flex;gap:8px;align-items:center'><input type='checkbox' id='fc-mas-on' "+(r.on?'checked':'')+" onchange='fcPreview()'>"+escHtml(r.txt)+" · "+r.val1+" reps</label>"
+      +"<input type='number' id='fc-mas-dist' min='30' max='150' value='"+r.val2+"' oninput='fcPreview()' style='width:70px;padding:6px 8px;border-radius:7px;border:1.5px solid var(--bd2);background:var(--sf2);font-size:14px;font-weight:700;text-align:center'><span style='font-size:12px'>m per rep</span></div>";
+    return "<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px'>"+escHtml(r.txt)+"</div>";
+  }).join('');
+  fcPreview();
+}
+function fcRowsFinal(){
+  if(!_fcRows)return[];
+  var dEl=document.getElementById('fc-mas-dist');var dist=dEl?Math.max(30,Math.min(150,parseInt(dEl.value)||0)):0;
+  var on=document.getElementById('fc-mas-on');var masOn=on?on.checked:true;
+  return _fcRows.filter(function(r){return !r.mas||masOn}).map(function(r){return{dk:r.dk,val1:r.val1,val2:r.mas?(dist||r.val2):r.val2};});
+}
+function fcPreview(){
+  var el=document.getElementById('fc-prev');if(!el)return;var t={dist:0,hsr:0,vhsr:0,dur:0};
+  fcRowsFinal().forEach(function(r){var l=drillLoad(r.dk,r.val1,r.val2);t.dist+=l.dist;t.hsr+=l.hsr;t.vhsr+=l.vhsr;t.dur+=l.durMin;});
+  el.innerHTML='Estimated load: <b>'+Math.round(t.dist)+'m</b> total · <b>'+Math.round(t.hsr)+'m</b> HSR · <b>'+Math.round(t.vhsr)+'m</b> VHSR · ~'+Math.round(t.dur)+' min';
 }
 function drillInputHtml(dk){
   var t=getDrillType(dk);
@@ -3775,6 +3820,10 @@ async function addSession(){
     var date=document.getElementById("fdate-game").value;
     newSession=makeGame(lbl||(BM[lvl].label+" ("+pts+"pts)"),pts,lvl,date);
     document.getElementById("flabel").value="";document.getElementById("fdate-game").value="";
+  } else if(sType==="fc"){
+    var fs=dbspProgram()[fcPhase]&&dbspProgram()[fcPhase][fcSess];var fr=fcRowsFinal();
+    if(!fs||!fr.length)return;
+    newSession=makeTraining(fs.label,fr,document.getElementById("fdate-fc").value);
   } else {
     var lbl2=document.getElementById("flabel-tr").value.trim();
     var date2=document.getElementById("fdate-tr").value;
@@ -4706,12 +4755,12 @@ var ROGUE_SESSIONS={
                  {name:'Box Drill',load:'× 4',rest:'2 min',note:'Go on the 45s'}],
       conditioning:_rMAS}}
 };
-var TEAM_PROGRAMS={sunder:{label:'Sunder 2026',sessions:DBSP_SESSIONS},rogue:{label:'Rogue 2026',sessions:ROGUE_SESSIONS}};
+var TEAM_PROGRAMS={dbsp:{label:'DBSP',sessions:DBSP_SESSIONS},sunder:{label:'Sunder 2026',sessions:DBSP_SESSIONS},rogue:{label:'Rogue 2026',sessions:ROGUE_SESSIONS}};
 var dbspCoachTeam='sunder';
 function dbspTeamKey(){
   if(currentUser&&currentUser.id===COACH_UID)return dbspCoachTeam;
   var k=userSubscription&&userSubscription.team_key;
-  return (k&&TEAM_PROGRAMS[k])?k:null;
+  return (k&&TEAM_PROGRAMS[k])?k:'dbsp'; // 1-on-1 clients and Pro users without a team see the DBSP program
 }
 function dbspProgram(){var k=dbspTeamKey();return k?TEAM_PROGRAMS[k].sessions:DBSP_SESSIONS;}
 // Fill missing video/diagram links by drill name from the DBSP program
@@ -4890,12 +4939,14 @@ function initDBSPProgram(){
   // Coach always sees it
   if(currentUser&&currentUser.id===COACH_UID){
     sect.style.display='block';
+    updateFCButton();
     renderDBSPBody();
     return;
   }
   // Team-code (beta) and Pro users see it unlocked. Uses the subscription row,
   // which is where team codes set the tier (user_metadata never has it).
   var isBeta=canAccess('ai_prescription');
+  updateFCButton();
   sect.style.display=isBeta?'block':'none';
   if(isBeta) renderDBSPBody();
 }
