@@ -1713,6 +1713,7 @@ async function loadSubscription(){
   subscriptionLoaded=true;
   updateGatedUI();
   handleUpgradeURLParams();
+  handleTeamLink();
   // Age verification: show modal if user hasn't completed it yet
   if(userSubscription && !userSubscription.age_verified){
     maybeShowAgeVerifyModal();
@@ -1856,6 +1857,37 @@ async function redeemBetaCode(){
     btn.disabled=false;btn.textContent='Redeem';
   }
 }
+// ── One-tap team link: .../disc-load/?team=ROGUE27 → sign in → joined ──
+var _teamLinkBusy=false;
+function teamLinkCode(){
+  var c=new URLSearchParams(window.location.search).get('team');
+  if(c){try{localStorage.setItem('pending-team',c.toUpperCase())}catch(e){}}
+  var st=null;try{st=localStorage.getItem('pending-team')}catch(e){}
+  return st;
+}
+function clearTeamLink(){
+  try{localStorage.removeItem('pending-team')}catch(e){}
+  var u=new URL(window.location.href);if(u.searchParams.has('team')){u.searchParams.delete('team');window.history.replaceState({},'',u.toString());}
+}
+async function handleTeamLink(){
+  var code=teamLinkCode();if(!code||_teamLinkBusy)return;
+  if(!currentUser){showSave('saved','Sign in with Google to join your team');setTimeout(function(){if(!currentUser)signIn()},1200);return;}
+  if(userSubscription&&userSubscription.team_key){clearTeamLink();return;}
+  _teamLinkBusy=true;
+  try{
+    var sess=await sb.auth.getSession();var token=sess.data&&sess.data.session?sess.data.session.access_token:'';
+    if(!token)throw new Error('Not signed in');
+    var res=await fetch(SUPABASE_URL+'/functions/v1/redeem-code',{method:'POST',headers:{'Content-Type':'application/json','Authorization':'Bearer '+token,'apikey':SUPABASE_ANON_KEY},body:JSON.stringify({code:code})});
+    var data={};try{data=await res.json()}catch(e){}
+    clearTeamLink();
+    if(!res.ok){showSave('error',data.error||'Team code didn\'t work');return;}
+    await loadSubscription();
+    var tk=userSubscription&&userSubscription.team_key;
+    showSave('saved','Welcome to '+(tk&&TEAM_PROGRAMS[tk]?TEAM_PROGRAMS[tk].label.replace(/ \d{4}$/,''):'the team')+' ✓');
+    if(!athleteProfile)setTimeout(function(){maybePromptProfile(true)},900);
+  }catch(e){showSave('error',e.message)}
+  finally{_teamLinkBusy=false}
+}
 function handleUpgradeURLParams(){
   var p=new URLSearchParams(window.location.search);
   if(p.get('upgrade')==='success'){
@@ -1941,7 +1973,7 @@ if(SUPABASE_READY){
         document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
       }).catch(function(){});
     }
-    if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();}
+    if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();handleTeamLink();}
     loadSessions();
     if(currentUser)loadSubscription();
     updateCoachNav();
@@ -4116,7 +4148,8 @@ async function loadProfile(){
   try{var r=await sb.from('athlete_profiles').select('display_name,jersey,position').eq('user_id',currentUser.id).maybeSingle();athleteProfile=r.data||null;pfLoaded=!r.error;}catch(e){}
   renderAuthUI();
 }
-function maybePromptProfile(force){
+function maybePromptProfile(force,_n){
+  if(currentUser&&!pfLoaded&&(_n||0)<15){setTimeout(function(){maybePromptProfile(force,(_n||0)+1)},1000);return;}
   if(!currentUser||!pfLoaded||athleteProfile)return;
   var k='pf-skip-'+currentUser.id,skipped=null;try{skipped=localStorage.getItem(k)}catch(e){}
   if(skipped&&!force)return;
