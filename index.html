@@ -4172,7 +4172,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var FT_BUILD='21 Nov 18:49';
+var FT_BUILD='21 Nov 19:09';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -4184,9 +4184,12 @@ function newHomeOn(){
   if(!currentUser)return false;
   var pref=null;try{pref=localStorage.getItem('ft-home')}catch(e){}
   if(pref==='classic')return false;
-  return currentUser.id===COACH_UID||betaHome;
+  return true; // live for every signed-in user (21 Nov 2026)
 }
-function newHomeEligible(){return !!currentUser&&(currentUser.id===COACH_UID||betaHome)}
+function newHomeEligible(){return !!currentUser}
+// F&C and gym sessions only show for people on a DBSP program (team code, coaching client, Pro); everyone else gets team training, check-ins and recovery
+function programItemsOn(){return typeof fcAccess==='function'&&fcAccess()}
+function visibleItems(arr){return programItemsOn()?arr:(arr||[]).filter(function(k){return k==='team'||k==='tourn'})}
 function myFcPhase(){return myFcPhaseKv||teamFcPhase||'p1'}
 async function loadWeekStuff(){
   if(!currentUser||!SUPABASE_READY)return;
@@ -4264,7 +4267,8 @@ function taperWeekFor(date){
   var ws=weekStart(date),tw=weekStart(new Date(t.date+'T12:00:00'));
   return ws.getTime()===tw.getTime()?taperWeek(weekTpl?weekTpl.team:[1,3],t.date):null;
 }
-function itemsFor(date){
+function itemsFor(date){return visibleItems(itemsForRaw(date))}
+function itemsForRaw(date){
   var iso=hv2Iso(date);
   if(weekOv[iso])return weekOv[iso];
   var tw=taperWeekFor(date);if(tw)return tw[hv2Dow(date)];
@@ -4298,22 +4302,24 @@ function wkPickDay(i){wkEditDay=wkEditDay===i?-1:i;renderWeekSheet();}
 function wkToggleItem(i,k){var arr=wkOvDate?wkDraft.day:wkDraft.days[i];if(k==='rest'){arr.length=0;}else{var j=arr.indexOf(k);if(j>=0)arr.splice(j,1);else arr.push(k);}
   var sorted=WK_ORDER.filter(function(x){return arr.indexOf(x)>=0});if(wkOvDate)wkDraft.day=sorted;else wkDraft.days[i]=sorted;renderWeekSheet();}
 function wkLine(items){
+  items=visibleItems(items);
   if(!items.length)return '<span style="color:var(--t3)">Rest</span>';
   return items.map(function(k){return k==='team'?'<span style="color:var(--cyan);font-weight:700">Team training</span>':'<b>'+WK_ITEMS[k]+'</b>'}).join(' <span style="color:var(--t3)">then</span> ');
 }
 function wkChips(i,items){
-  return '<div class="ci-chips" style="padding:4px 0 10px 54px">'+"<button class='ci-chip sm"+(!items.length?" on":"")+"' onclick='wkToggleItem("+i+",\"rest\")'>Rest</button>"+WK_ORDER.map(function(k){return "<button class='ci-chip sm"+(items.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem("+i+",\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>';
+  var opts=WK_ORDER.filter(function(k){return visibleItems([k]).length});
+  return '<div class="ci-chips" style="padding:4px 0 10px 54px">'+"<button class='ci-chip sm"+(!items.length?" on":"")+"' onclick='wkToggleItem("+i+",\"rest\")'>Rest</button>"+opts.map(function(k){return "<button class='ci-chip sm"+(items.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem("+i+",\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>';
 }
 function renderWeekSheet(){
   var s=document.getElementById('wk-sheet');if(!s)return;var d=wkDraft,h='';
   if(wkOvDate){
     var dt=new Date(wkOvDate+'T12:00:00');
     h+='<div class="pf-title">Change '+WK_DAYS_LONG[hv2Dow(dt)]+'</div><div class="pf-sub">Just this date. Your usual week stays the same.</div>'
-      +'<div class="ci-chips">'+"<button class='ci-chip"+(!d.day.length?" on":"")+"' onclick='wkToggleItem(0,\"rest\")'>Rest</button>"+WK_ORDER.map(function(k){return "<button class='ci-chip"+(d.day.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem(0,\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>'
+      +'<div class="ci-chips">'+"<button class='ci-chip"+(!d.day.length?" on":"")+"' onclick='wkToggleItem(0,\"rest\")'>Rest</button>"+WK_ORDER.filter(function(k){return visibleItems([k]).length}).map(function(k){return "<button class='ci-chip"+(d.day.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem(0,\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>'
       +'<div class="pf-acts"><button class="pf-skip" onclick="resetDayOverride()">Back to usual</button><button class="pf-save" onclick="saveWeekSheet()">Save</button></div>';
     s.innerHTML=h;return;
   }
-  h+='<div class="pf-title">Set up your week</div><div class="pf-sub">Tell us when your team trains. We\'ll fit your F&amp;C and gym around it. Tap any day to change it.</div>'
+  h+='<div class="pf-title">Set up your week</div><div class="pf-sub">'+(programItemsOn()?'Tell us when your team trains. We\'ll fit your F&amp;C and gym around it. Tap any day to change it.':'Tell us when your team trains so your week and check-ins line up.')+'</div>'
     +'<span class="pf-lbl">Team training</span><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px">'
     +WK_DAYS.map(function(n,i){var on=d.team.indexOf(i)>=0;return "<button class='ci-chip"+(on?" on":"")+"' style='padding:10px 0;border-radius:10px' onclick='wkToggleTeam("+i+")'>"+n+"</button>"}).join('')+'</div>'
     +'<span class="pf-lbl">Gym usually</span><div class="ci-chips">'
@@ -4323,7 +4329,7 @@ function renderWeekSheet(){
     h+="<button onclick='wkPickDay("+i+")' style='display:grid;grid-template-columns:44px 1fr;gap:10px;width:100%;text-align:left;background:transparent;padding:10px 0;border-bottom:"+(i<6?"1px solid var(--bd)":"none")+";font-size:13px;color:var(--t)'><span style='font-weight:700;color:var(--t3)'>"+WK_DAYS[i]+"</span><span>"+wkLine(items)+"</span></button>";
     if(wkEditDay===i)h+=wkChips(i,items);
   });
-  h+='</div><div class="ci-msg" style="text-align:left">Speed comes before acceleration, no F&amp;C on team days, and lower body strength goes last in the week.</div>'
+  h+='</div>'+(programItemsOn()?'<div class="ci-msg" style="text-align:left">Speed comes before acceleration, no F&amp;C on team days, and lower body strength goes last in the week.</div>':'')
     +'<div class="pf-acts"><button class="pf-skip" onclick="closeWeekSheet(true)">'+(weekTpl?'Cancel':'Later')+'</button><button class="pf-save" onclick="saveWeekSheet()">Looks good</button></div>';
   s.innerHTML=h;
 }
@@ -5375,7 +5381,7 @@ function initDBSPProgram(){
   // Team-code (beta) and Pro users see it unlocked. Uses the subscription row,
   // which is where team codes set the tier (user_metadata never has it).
   var isBeta=canAccess('ai_prescription');
-  updateFCButton();
+  updateFCButton();if(typeof renderHomeV2==='function')renderHomeV2();
   sect.style.display=isBeta?'block':'none';
   if(isBeta) renderDBSPBody();
 }
@@ -5981,7 +5987,7 @@ function maybeShowInstallModalOnSignIn(){
     function checkForUpdate(){
       if(_updBanner||typeof FT_BUILD==='undefined')return;
       fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-        var m=t&&t.match(/var FT_BUILD='21 Nov 18:49']+)'/);
+        var m=t&&t.match(/var FT_BUILD='21 Nov 19:09']+)'/);
         if(!m||m[1]===FT_BUILD)return;
         if(swReg)swReg.update().catch(function(){});
         _updBanner=true;
