@@ -296,7 +296,7 @@ table.sq tr.xp td{padding:0 0 10px;background:transparent}
 <script>
 var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 var OFFER_LABEL={coaching:'Custom coaching',rehab:'Injury rehab',speed:'Speed sessions',selfserve:'Self-serve'};
-var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={},todos=[],tFilter='open',tEditing=null,athletes={},sessBy={},ftOpen={},profiles={},ciBy={};
+var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={},todos=[],tFilter='open',tEditing=null,athletes={},sessBy={},ftOpen={},profiles={},ciBy={},teamSettings={},clientPhases={};
 var main=document.getElementById('main');
 
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -366,7 +366,7 @@ async function load(){
   clients=d.clients||[];appUsers=d.users||[];
   notes={};(d.notes||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
   teamMembers=d.teamMembers||{};teamCodes=d.teamCodes||[];todos=d.todos||[];
-  var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});sessBy=by;athletes=d.athletes||{};profiles=d.profiles||{};ciBy={};(d.checkins||[]).forEach(function(x){(ciBy[x.user_id]=ciBy[x.user_id]||[]).push(x)});
+  var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});sessBy=by;athletes=d.athletes||{};profiles=d.profiles||{};teamSettings=d.teamSettings||{};clientPhases=d.clientPhases||{};ciBy={};(d.checkins||[]).forEach(function(x){(ciBy[x.user_id]=ciBy[x.user_id]||[]).push(x)});
   loads={};
   clients.forEach(function(c){if(c.app_user_id)loads[c.app_user_id]=calcLoad(by[c.app_user_id]||[])});
   Object.keys(teamMembers).forEach(function(k){teamMembers[k].forEach(function(id){if(!loads[id])loads[id]=calcLoad(by[id]||[])})});
@@ -433,6 +433,7 @@ function card(c){
         +(c.phase?'<br>'+esc(c.phase):'')+(bp&&bp.end?'<br>Block ends '+fmtShort(iso(bp.end)):''):'<span class="muted">No block set</span>')
       +(c.next_tournament||c.tournament_date?'<br>'+esc(c.next_tournament||'Tournament')+(t!==null?' · '+(t>=0?t+'d out':'passed'):''):'')+'</div></div>'
     +(kindOf(c)==='team'?'<div class="cell"><div class="k">Frisbee Track squad</div><div class="v">'+teamLoadCell(c)+'</div></div>':'')
+    +phaseCell(c)
     +'</div>'
     +(kindOf(c)==='client'?ftPanel(c):'')
     +(c.goals?'<div class="goals"><b>Goals:</b> '+esc(c.goals)+'</div>':'')
@@ -441,6 +442,19 @@ function card(c){
     +(ns.length>2?'<button class="link" onclick="toggleNotes(\''+c.id+'\')">'+(expanded[c.id]?'Show less':'Show all '+ns.length)+'</button>':'')
     +'<form class="addnote" onsubmit="addNote(event,\''+c.id+'\')"><input placeholder="Add a note, e.g. swapped RDLs for hip thrusts (hamstring)" maxlength="300"><button class="btn sm">Add</button></form></div>'
     +'</div>';
+}
+function teamKeyOf(c){var t=teamCodes.find(function(x){return c.team_code&&String(x.code).toUpperCase()===String(c.team_code).toUpperCase()});return t&&t.team_key||null}
+function phaseChips(cur,onclickArg){return [['p1','Phase 1'],['p2','Phase 2'],['p3','Phase 3']].map(function(o){return '<button class="chip'+(cur===o[0]?' on':'')+'" style="padding:5px 9px;margin:2px 4px 0 0" onclick="setFcPhase('+onclickArg+',\''+o[0]+'\')">'+o[1]+'</button>'}).join('')}
+async function setFcPhase(kind,key,ph){
+  try{await api('fc_phase',kind==='team'?{team_key:key,fc_phase:ph}:{user_id:key,fc_phase:ph})}catch(err){toast(err.message);return}
+  toast('F&C phase set');await load();
+}
+function phaseCell(c){
+  if(kindOf(c)==='team'){var tk=teamKeyOf(c);if(!tk)return '';
+    return '<div class="cell"><div class="k">F&amp;C phase · whole team</div><div class="v">'+phaseChips(teamSettings[tk]||'p1','\'team\',\''+tk+'\'')+'</div></div>';}
+  if(!c.app_user_id)return '';
+  var cur=clientPhases[c.app_user_id]||'p1';
+  return '<div class="cell"><div class="k">F&amp;C phase (DBSP program)</div><div class="v">'+phaseChips(cur,'\'client\',\''+c.app_user_id+'\'')+'</div></div>';
 }
 function teamLoadCell(c){
   if(!c.team_code)return '<span class="muted">No team code linked</span>';
