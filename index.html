@@ -772,6 +772,7 @@ input,select{font-family:inherit;outline:none}
 /* New home (beta): Today's jobs */
 #panel-dashboard.v2-on > *:not(#home-v2):not(#self-report-panel){display:none!important}
 body:has(#panel-dashboard.v2-on.on) #fab-log{display:none!important}
+#panel-load #sr-trigger-btn{display:none!important}
 .hv2-head{padding:4px 2px 0}
 .hv2-eb{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3)}
 .hv2-h1{margin:4px 0 0;font-family:var(--display);font-weight:900;font-size:38px;line-height:1;text-transform:uppercase;color:var(--t)}
@@ -816,6 +817,16 @@ body:has(#panel-dashboard.v2-on.on) #fab-log{display:none!important}
 .hw-daybtn{background:transparent;padding:0;border:none;font-family:inherit;cursor:pointer}
 button.hw-pill{cursor:pointer;font-family:inherit}
 .hw-pill.rest{border:none;color:var(--t4);padding-left:0;font-weight:600}
+.hv2-bars{display:flex;flex-direction:column;gap:7px;margin-top:10px}
+.hv2-bar{display:grid;grid-template-columns:52px 1fr;gap:10px;align-items:center;font-family:var(--mono);font-size:10.5px;letter-spacing:.06em;color:#cbd5e1;text-transform:uppercase}
+.hv2-track{position:relative;height:9px;border-radius:5px;background:rgba(255,255,255,.12);overflow:visible}
+.hv2-track i{position:absolute;left:0;top:0;bottom:0;border-radius:5px;background:#34d399}
+.hv2-track i.lo{background:#fbbf24}.hv2-track i.hi{background:#f87171}
+.hv2-track s{position:absolute;top:-3px;bottom:-3px;width:2px;background:#fff;border-radius:1px}
+.hv2-topup{margin-top:10px;font-size:13px;font-weight:700;color:#fde68a}
+.hv2-sacts{display:flex;gap:10px;align-items:center;margin-top:12px;flex-wrap:wrap}
+.hv2-rx{background:#fff;color:#0f172a;border-radius:10px;padding:10px 14px;font-weight:800;font-size:13px;min-height:44px}
+.hv2-load{background:transparent;color:#7dd3fc;font-weight:700;font-size:13px;padding:10px 4px;min-height:44px}
 .hv2-log{width:100%;margin-top:14px;min-height:54px;border-radius:14px;background:var(--green);color:#fff;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:8px}
 /* Daily check-in + athlete profile */
 .ci-sec{font-size:9.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);font-family:var(--display);margin:14px 0 7px}
@@ -1046,6 +1057,7 @@ button.hw-pill{cursor:pointer;font-family:inherit}
 </div>
 
 <!-- ── SESSIONS ── -->
+<div class="panel" id="panel-load"></div>
 <div class="panel" id="panel-sessions">
   <div class="shd">
     <div class="stitle">SESSIONS</div>
@@ -4160,7 +4172,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var FT_BUILD='21 Nov 18:39';
+var FT_BUILD='21 Nov 18:49';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -4355,15 +4367,22 @@ function jobRow(j){
     +(j.act&&!j.done?(j.href?'<a class="hj-act" href="'+j.href+'" target="_blank" rel="noopener">'+j.act+'</a>':'<button class="hj-act" onclick="'+j.actFn+'">'+j.act+'</button>'):'')+'</div>';
 }
 function weekStatus(){
-  var ws=weekStart(new Date()),we=weekEnd(new Date());
+  var now=new Date(),ws=weekStart(now),we=weekEnd(now);
   var wk=sessions.filter(function(s){if(!s.date)return false;var d=new Date(s.date+'T12:00:00');return d>=ws&&d<=we});
-  var hsr=wk.reduce(function(a,s){return a+(s.hsr||0)},0);
   var G=(WT[ctx]||WT.international)[getCurrentBand()]||WT.international.moderate;
-  var pace=(hv2Dow(new Date())+1)/7,pc=G.hsr?hsr/G.hsr:0;
-  if(!wk.length)return{cls:'mid',t:'Nothing logged yet this week',s:''};
-  if(pc>pace*1.25&&pc>0.5)return{cls:'hi',t:'Running load is high',s:'Ease off. You\'re well ahead for this point in the week.'};
-  if(pc<pace*0.7)return{cls:'mid',t:'Behind on running load',s:'Get the planned F&C done to catch up.'};
-  return{cls:'ok',t:'On track this week',s:''};
+  var pace=(hv2Dow(now)+1)/7,tot={hsr:0,vhsr:0,acc:0};
+  wk.forEach(function(s){tot.hsr+=s.hsr||0;tot.vhsr+=s.vhsr||0;tot.acc+=s.acc||0});
+  var bars=[['hsr','HSR'],['vhsr','VHSR'],['acc','Accels']].map(function(m){var pc=G[m[0]]?tot[m[0]]/G[m[0]]:0;return{k:m[0],l:m[1],pc:pc,gap:Math.max(0,(G[m[0]]||0)-tot[m[0]]),behind:pc<pace*0.8}});
+  var out={bars:bars,pace:pace,topup:null};
+  if(!wk.length){out.cls='mid';out.t='Nothing logged yet this week';out.s='';return out;}
+  var hsrPc=bars[0].pc;
+  if(hsrPc>pace*1.25&&hsrPc>0.5){out.cls='hi';out.t='Running load is high';out.s='Ease off. You\'re well ahead for this point in the week.';return out;}
+  // biggest gap vs where they should be by today, primary metrics only
+  var worst=bars.filter(function(b){return b.behind}).sort(function(a,b){return (a.pc/pace)-(b.pc/pace)})[0];
+  if(!worst){out.cls='ok';out.t='On track this week';out.s='';return out;}
+  out.cls='mid';out.t={hsr:'Behind on running load',vhsr:'Behind on top speed',acc:'Behind on accels'}[worst.k];out.s='';
+  if(!taperWeekFor(now)){var tu=topUpSuggestion(worst.k,worst.gap);if(tu)out.topup='Top-up: '+tu.text;}
+  return out;
 }
 function fcPlanSentence(){
   var today=new Date(),ws=weekStart(today),parts=[],fm0=fcWeekMatch(today);
@@ -4423,7 +4442,11 @@ function renderHomeV2(){
     +'<div class="hv2-card">'+jobs.map(jobRow).join('<div class="hj-sep"></div>')+'</div>'
     +'<div class="hv2-links"><button class="sr-change-btn" onclick="openWeekSheet(\''+iso+'\')">Change today</button><button class="sr-change-btn" onclick="openWeekSheet()">Edit my week</button></div>'
     +renderWeekGlance()
-    +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div><div class="hv2-st">'+st.t+'</div><div class="hv2-ss">'+[st.s,plan,(weeksOut!==null?(weeksOut===0?ciEsc(tName)+' this week. Stay sharp, stay fresh.':ciEsc(tName)+' in '+weeksOut+' week'+(weeksOut===1?'':'s')+'.'):'')].filter(Boolean).join(' ')+'</div></div></div>'
+    +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div style="flex:1;min-width:0"><div class="hv2-st">'+st.t+'</div>'
+      +'<div class="hv2-bars">'+st.bars.map(function(b){return '<div class="hv2-bar"><span>'+b.l+'</span><div class="hv2-track"><i class="'+(b.pc>1.15?'hi':b.behind?'lo':'')+'" style="width:'+Math.min(100,b.pc*100).toFixed(0)+'%"></i><s style="left:'+(st.pace*100).toFixed(0)+'%"></s></div></div>'}).join('')+'</div>'
+      +(st.topup?'<div class="hv2-topup">'+ciEsc(st.topup)+'</div>':'')
+      +'<div class="hv2-ss">'+[st.s,plan,(weeksOut!==null?(weeksOut===0?ciEsc(tName)+' this week. Stay sharp, stay fresh.':ciEsc(tName)+' in '+weeksOut+' week'+(weeksOut===1?'':'s')+'.'):'')].filter(Boolean).join(' ')+'</div>'
+      +'<div class="hv2-sacts"><button class="hv2-rx" onclick="homePrescription()">Get Prescription</button><button class="hv2-load" onclick="switchTab(\'load\',null)">See load →</button></div></div></div>'
     +'<button class="hv2-log" onclick="fabLogSession()">'+hv2Svg('<path d="M12 5v14M5 12h14"></path>')+' Log session</button>'
     +'<div style="text-align:center;margin-top:10px"><button class="sr-change-btn" onclick="setHomeMode(\'classic\')">Switch to classic home</button></div>'
     +'<div style="text-align:center;margin-top:6px;font-size:10px;color:var(--t4);font-family:var(--mono)">Version '+FT_BUILD+'</div>';
@@ -4493,11 +4516,25 @@ function renderWeekGlance(){
   return '<div class="hw-head"><span class="hw-t">This week</span><span class="hw-c">'+done+' of '+planned+' done</span></div>'+h;
 }
 function setHomeMode(m){try{localStorage.setItem('ft-home',m)}catch(e){}applyHomeMode();if(m==='new')maybePromptWeek();}
+var _classicOrder=null;
 function applyHomeMode(){
-  var p=document.getElementById('panel-dashboard');if(!p)return;
-  p.classList.toggle('v2-on',newHomeOn());
+  var p=document.getElementById('panel-dashboard'),L=document.getElementById('panel-load');if(!p)return;
+  var on=newHomeOn();
+  if(!_classicOrder)_classicOrder=Array.prototype.slice.call(p.children);
+  if(on&&L){
+    // classic dashboard (GPS metrics, targets, calendar) moves to Train > Load
+    _classicOrder.forEach(function(n){if(n.id!=='home-v2'&&n.id!=='self-report-panel')L.appendChild(n)});
+    HUBS.train=[{p:'sessions',l:'Log'},{p:'load',l:'Load'},{p:'sc',l:'S&amp;C'},{p:'drills',l:'Drills'}];
+  }else{
+    _classicOrder.forEach(function(n){p.appendChild(n)});
+    HUBS.train=[{p:'sessions',l:'Log'},{p:'sc',l:'S&amp;C'},{p:'drills',l:'Drills'}];
+    if(L&&L.classList.contains('on'))switchTab('dashboard',null);
+  }
+  p.classList.toggle('v2-on',on);
+  var cur=document.querySelector('.panel.on');if(cur){var nm=cur.id.replace('panel-','');renderSubnav(hubOf(nm),nm);}
   renderHomeV2();
 }
+function homePrescription(){switchTab('load',null);setTimeout(function(){if(typeof getAIPrescription==='function')getAIPrescription();var el=document.getElementById('ai-prescription-output');if(el)el.scrollIntoView({behavior:'smooth',block:'start'});},100);}
 
 // ── ATHLETE PROFILE (name / jersey / position) ──
 var athleteProfile=null,pfPos=null,pfLoaded=false;
@@ -4586,7 +4623,7 @@ function switchTabFromMore(name){
   switchTab(name,null);
 }
 // ── CONTEXT + TAB ──
-var TAB_ORDER=['dashboard','sessions','sc','drills','roadmap','metrics','benchmarks','definitions','howto'];
+var TAB_ORDER=['dashboard','sessions','load','sc','drills','roadmap','metrics','benchmarks','definitions','howto'];
 function setContext(c){
   ctx=c;
   document.getElementById("ctx-international").className="lp"+(c==="international"?" on":"");
@@ -5944,7 +5981,7 @@ function maybeShowInstallModalOnSignIn(){
     function checkForUpdate(){
       if(_updBanner||typeof FT_BUILD==='undefined')return;
       fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-        var m=t&&t.match(/var FT_BUILD='21 Nov 18:39']+)'/);
+        var m=t&&t.match(/var FT_BUILD='21 Nov 18:49']+)'/);
         if(!m||m[1]===FT_BUILD)return;
         if(swReg)swReg.update().catch(function(){});
         _updBanner=true;
