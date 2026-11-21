@@ -130,9 +130,19 @@ Deno.serve(async (req) => {
       if (typeof row.team_code === 'string') row.team_code = (row.team_code as string).toUpperCase();
       if (!body.id && !row.name) return json({ error: 'Name required' }, 400);
       const r = body.id
-        ? await db.from('coach_clients').update(row).eq('id', body.id)
-        : await db.from('coach_clients').insert({ offer: 'coaching', status: 'active', kind: 'client', ...row });
+        ? await db.from('coach_clients').update(row).eq('id', body.id).select().single()
+        : await db.from('coach_clients').insert({ offer: 'coaching', status: 'active', kind: 'client', ...row }).select().single();
       if (r.error) throw r.error;
+      // Team cards push their tournament to every player on that team (drives the taper week in the app)
+      const saved: any = r.data;
+      if (saved && saved.kind === 'team' && saved.team_code) {
+        const pcode = await db.from('promo_codes').select('team_key').eq('code', String(saved.team_code).toUpperCase()).maybeSingle();
+        const tk = pcode.data?.team_key;
+        if (tk) {
+          const u = await db.from('team_settings').upsert({ team_key: tk, tourn_date: saved.tournament_date || null, tourn_name: saved.next_tournament || null, updated_at: new Date().toISOString() }, { onConflict: 'team_key' });
+          if (u.error) throw u.error;
+        }
+      }
       return json({ ok: true });
     }
     if (action === 'delete') {

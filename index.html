@@ -4156,11 +4156,11 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',team:'Team training'};
-var WK_ORDER=['fcs','fca','fbp','lbp','lbs','team'];
+var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
+var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
 var WK_DAYS_LONG=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
-var weekTpl=null,weekOv={},gymDone={},myFcPhaseKv=null,teamFcPhase=null,betaHome=false,wkDraft=null,wkEditDay=-1,wkOvDate=null;
+var weekTpl=null,weekOv={},gymDone={},myFcPhaseKv=null,teamFcPhase=null,teamTourn=null,betaHome=false,wkDraft=null,wkEditDay=-1,wkOvDate=null;
 function hv2Iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
 function hv2Dow(d){return (d.getDay()+6)%7}
 function newHomeOn(){
@@ -4186,7 +4186,11 @@ async function loadWeekStuff(){
       }catch(e){}
     });
     var tk=typeof dbspTeamKey==='function'?dbspTeamKey():null;
-    if(tk){var ts=await sb.from('team_settings').select('fc_phase').eq('team_key',tk).maybeSingle();teamFcPhase=ts.data&&ts.data.fc_phase||null;}
+    if(tk){var ts=await sb.from('team_settings').select('fc_phase,tourn_date,tourn_name').eq('team_key',tk).maybeSingle();teamFcPhase=ts.data&&ts.data.fc_phase||null;
+      teamTourn=ts.data&&ts.data.tourn_date?{date:ts.data.tourn_date,name:ts.data.tourn_name||'Tournament'}:null;
+      // Team tournament from the Hub fills the player's tournament if they haven't set their own (drives the build/peak/taper bands)
+      var tdEl=document.getElementById('tourn-date'),tnEl=document.getElementById('tourn-name');
+      if(teamTourn&&tdEl&&!tdEl.value&&teamTourn.date>=hv2Iso(new Date())){tdEl.value=teamTourn.date;if(tnEl&&!tnEl.value)tnEl.value=teamTourn.name;}}
   }catch(e){}
   if(['p1','p2','p3'].indexOf(myFcPhase())>=0){dbspPhase=myFcPhase();fcPhase=myFcPhase();
     document.querySelectorAll('.dbsp-phase-btn').forEach(function(b){var oc=b.getAttribute('onclick')||'';if(oc.indexOf('setDBSPPhase')>=0)b.classList.toggle('on',oc.indexOf("'"+dbspPhase+"'")>=0);});}
@@ -4221,9 +4225,32 @@ function genWeek(team){
   }
   return days.map(function(x){return WK_ORDER.filter(function(k){return x.indexOf(k)>=0})});
 }
+// Tournament (taper) week: team date from the Hub wins for team players, else the player's own
+function tournInfo(){
+  var today=hv2Iso(new Date());
+  if(teamTourn&&teamTourn.date>=today)return teamTourn;
+  var el=document.getElementById('tourn-date');if(el&&el.value&&el.value>=today)return{date:el.value,name:(document.getElementById('tourn-name')||{}).value||'Tournament'};
+  return null;
+}
+function taperWeek(team,tIso){
+  var T={};(team||[]).forEach(function(i){T[i]=1});
+  var td=hv2Dow(new Date(tIso+'T12:00:00')),days=[[],[],[],[],[],[],[]];
+  days[td].push('tourn');if(td===5)days[6].push('tourn');
+  for(var i=0;i<td;i++)if(T[i])days[i].push('team');
+  if(td-2>=0)days[td-2].push('gd2');
+  var sp=-1;for(var j=0;j<td-2;j++){if(!T[j]){sp=j;break;}}
+  if(sp>=0)days[sp].push('fcs','fbp');else{for(var k=0;k<td-2;k++){if(days[k].indexOf('gd2')<0){days[k].push('fbp');break;}}}
+  return days.map(function(x){return WK_ORDER.filter(function(k){return x.indexOf(k)>=0})});
+}
+function taperWeekFor(date){
+  var t=tournInfo();if(!t)return null;
+  var ws=weekStart(date),tw=weekStart(new Date(t.date+'T12:00:00'));
+  return ws.getTime()===tw.getTime()?taperWeek(weekTpl?weekTpl.team:[1,3],t.date):null;
+}
 function itemsFor(date){
   var iso=hv2Iso(date);
   if(weekOv[iso])return weekOv[iso];
+  var tw=taperWeekFor(date);if(tw)return tw[hv2Dow(date)];
   var tpl=weekTpl||{days:genWeek([1,3])};
   return (tpl.days&&tpl.days[hv2Dow(date)])||[];
 }
@@ -4310,6 +4337,7 @@ function toggleGymDone(iso,k){var key=iso+':'+k;if(gymDone[key])delete gymDone[k
 function openFcSession(k){dbspPhase=myFcPhase();dbspActiveSession=k==='fcs'?'speed':'accel';switchTab('sc',null);if(typeof renderDBSPBody==='function')renderDBSPBody();
   setTimeout(function(){var el=document.getElementById('dbsp-program-section');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},150);}
 function logFcFromHome(k){fabLogSession();setType('fc');fcPhase=myFcPhase();fcSess=k==='fcs'?'speed':'accel';renderFCForm();}
+function logGameFor(iso){fabLogSession();setType('game');var el=document.getElementById('fdate-game');if(el)el.value=iso;}
 function logTrainingFor(iso){fabLogSession();setType('training');var el=document.getElementById('fdate-tr');if(el)el.value=iso;var lb=document.getElementById('flabel-tr');if(lb&&!lb.value)lb.value='Team training';}
 function openCheckinFromHome(){if(!srPanelOpen)toggleSelfReport();setTimeout(function(){var el=document.getElementById('self-report-panel');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},50);}
 function hv2Svg(path,col){return '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+(col||'#fff')+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'+path+'</svg>'}
@@ -4350,6 +4378,8 @@ function renderHomeV2(){
   var tEl=document.getElementById('tourn-date'),tName=(document.getElementById('tourn-name')||{}).value||'Tournament',weeksOut=null;
   if(tEl&&tEl.value){var wo=Math.ceil((new Date(tEl.value)-weekStart(now))/(7*86400000));if(wo>=0)weeksOut=wo;}
   if(band==='low'&&weeksOut!==null&&weeksOut<=1)bandLbl='Taper week';
+  if(taperWeekFor(now))bandLbl='Tournament week';
+  var ti0=tournInfo();if(ti0){tName=ti0.name;weeksOut=Math.max(0,Math.round((weekStart(new Date(ti0.date+'T12:00:00'))-weekStart(now))/(7*86400000)));}
   var jobs=[];
   // carry-over: last night's team training not logged
   var y=new Date(now);y.setDate(now.getDate()-1);var yIso=hv2Iso(y);
@@ -4365,16 +4395,20 @@ function renderHomeV2(){
   // display order: F&C, then gym (morning, or straight after the run), team training, then evening gym
   var gymLate=weekTpl&&weekTpl.gym==='pm'&&!hasFc;
   var ordered=items.filter(function(k){return k==='fcs'||k==='fca'})
-    .concat(gymLate?[]:items.filter(function(k){return /^(fbp|lbp|lbs)$/.test(k)}))
+    .concat(gymLate?[]:items.filter(function(k){return /^(fbp|lbp|lbs|gd2)$/.test(k)}))
     .concat(items.filter(function(k){return k==='team'}))
-    .concat(gymLate?items.filter(function(k){return /^(fbp|lbp|lbs)$/.test(k)}):[]);
+    .concat(items.filter(function(k){return k==='tourn'}))
+    .concat(gymLate?items.filter(function(k){return /^(fbp|lbp|lbs|gd2)$/.test(k)}):[]);
   ordered.forEach(function(k){
     if(k==='fcs'||k==='fca'){var fs=fcSessionFor(k),done=todaySess.some(function(s){return fs&&s.label===fs.label||new RegExp(k==='fcs'?'Speed Day':'Acceleration Day').test(s.label||'')});
-      jobs.push({t:'F&amp;C: '+(k==='fcs'?'Speed Day':'Acceleration Day'),sub:'Phase '+myFcPhase().slice(1)+(items.some(function(x){return x==='fbp'||x==='lbp'||x==='lbs'})?' · do this first':''),done:done,tap:"openFcSession('"+k+"')",act:'Open',actFn:"openFcSession('"+k+"')"});}
+      var taper=!!taperWeekFor(now);
+      jobs.push({t:'F&amp;C: '+(k==='fcs'?'Speed Day':'Acceleration Day')+(taper?' (taper)':''),sub:(taper?'2–3 build-ups + 4 box drills. Short and sharp, no conditioning':'Phase '+myFcPhase().slice(1))+(items.some(function(x){return x==='fbp'||x==='lbp'||x==='lbs'})?' · do this first':''),done:done,tap:"openFcSession('"+k+"')",act:'Open',actFn:"openFcSession('"+k+"')"});}
+    else if(k==='tourn'){var gl=todaySess.filter(function(s){return s.type==='game'}).length,ti=tournInfo();
+      jobs.push({t:'Tournament: '+ciEsc(ti?ti.name:'game day'),sub:gl?gl+' game'+(gl>1?'s':'')+' logged':'Log each game as you go',done:false,act:'Log game',actFn:"logGameFor('"+iso+"')"});}
     else if(k==='team'){var tdone=todaySess.some(function(s){return !isFcLabel(s.label)});
       jobs.push({t:'Team training tonight',sub:tdone?'Logged':'Log it when you\'re done',done:tdone,act:'Log',actFn:"logTrainingFor('"+iso+"')"});}
     else{var gk=iso+':'+k,gd=!!gymDone[gk];
-      jobs.push({t:WK_ITEMS[k],sub:(hasFc?'After your run':(weekTpl&&weekTpl.gym==='pm'?'Evening':'Morning'))+' · in TeamBuildr',done:gd,manual:"toggleGymDone('"+iso+"','"+k+"')",act:'Open',href:'https://app.teambuildr.com/'});}
+      jobs.push({t:WK_ITEMS[k],sub:(k==='gd2'?'Activation only. Protect the legs':hasFc?'After your run':(weekTpl&&weekTpl.gym==='pm'?'Evening':'Morning'))+' · in TeamBuildr',done:gd,manual:"toggleGymDone('"+iso+"','"+k+"')",act:'Open',href:'https://app.teambuildr.com/'});}
   });
   var st=weekStatus(),plan=fcPlanSentence();
   var h='<div class="hv2-head"><div class="hv2-eb">'+WK_DAYS_LONG[dow]+(bandLbl?' · '+bandLbl:'')+'</div><h1 class="hv2-h1">'+(items.length?'Today\'s jobs':'Rest day')+'</h1>'
@@ -4382,7 +4416,7 @@ function renderHomeV2(){
     +'<div class="hv2-card">'+jobs.map(jobRow).join('<div class="hj-sep"></div>')+'</div>'
     +'<div class="hv2-links"><button class="sr-change-btn" onclick="openWeekSheet(\''+iso+'\')">Change today</button><button class="sr-change-btn" onclick="openWeekSheet()">Edit my week</button></div>'
     +renderWeekGlance()
-    +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div><div class="hv2-st">'+st.t+'</div><div class="hv2-ss">'+[st.s,plan,(weeksOut!==null?ciEsc(tName)+' in '+weeksOut+' week'+(weeksOut===1?'':'s')+'.':'')].filter(Boolean).join(' ')+'</div></div></div>'
+    +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div><div class="hv2-st">'+st.t+'</div><div class="hv2-ss">'+[st.s,plan,(weeksOut!==null?(weeksOut===0?ciEsc(tName)+' this week. Stay sharp, stay fresh.':ciEsc(tName)+' in '+weeksOut+' week'+(weeksOut===1?'':'s')+'.'):'')].filter(Boolean).join(' ')+'</div></div></div>'
     +'<button class="hv2-log" onclick="fabLogSession()">'+hv2Svg('<path d="M12 5v14M5 12h14"></path>')+' Log session</button>'
     +'<div style="text-align:center;margin-top:10px"><button class="sr-change-btn" onclick="setHomeMode(\'classic\')">Switch to classic home</button></div>';
   el.innerHTML=h;
@@ -4393,9 +4427,10 @@ function itemDone(k,iso){
   if(k==='fcs')return ss.some(function(s){return /Speed Day/.test(s.label||'')});
   if(k==='fca')return ss.some(function(s){return /Acceleration Day/.test(s.label||'')});
   if(k==='team')return ss.some(function(s){return !isFcLabel(s.label)});
+  if(k==='tourn')return ss.some(function(s){return s.type==='game'});
   return !!gymDone[iso+':'+k];
 }
-var HW_SHORT={fcs:'F&C Speed',fca:'F&C Accel',fbp:'FB Power',lbp:'LB Power',lbs:'LB Strength',team:'Team'};
+var HW_SHORT={fcs:'F&C Speed',fca:'F&C Accel',fbp:'FB Power',lbp:'LB Power',lbs:'LB Strength',gd2:'GD-2 Power Up',team:'Team',tourn:'Tournament'};
 function renderWeekGlance(){
   var now=new Date(),ws=weekStart(now),todayIso=hv2Iso(now),planned=0,done=0,h='<div class="hw-week">';
   for(var i=0;i<7;i++){
