@@ -985,8 +985,7 @@ button.hw-pill{cursor:pointer;font-family:inherit}
       <div class="lsub">Performance Monitor</div>
     </div>
     <div class="lvlpills">
-      <button class="lp on" id="ctx-international" onclick="setContext('international')">International</button>
-      <button class="lp" id="ctx-domestic" onclick="setContext('domestic')">Domestic</button>
+      <button class="lp on" id="hdr-upgrade" onclick="showUpgradeModal('header')">Upgrade / Code</button>
       <button class="hdr-coach" id="hdr-coach" onclick="switchTab('coach',null)" aria-label="Coach panel" title="Coach panel"><svg width="16" height="16" viewBox="0 0 20 20" fill="none"><rect x="2" y="4" width="16" height="12" rx="2" stroke="currentColor" stroke-width="1.6" fill="none"/><line x1="6" y1="9" x2="14" y2="9" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" opacity=".5"/><line x1="6" y1="12" x2="10" y2="12" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/></svg></button>
       <div id="auth-btn" style="margin-left:4px"></div>
     </div>
@@ -1827,7 +1826,8 @@ function showUpgradeModal(feature){
     metrics:'Unlock acute vs chronic load monitoring and track your injury risk over time.',
     sport_science:'Unlock acute vs chronic load monitoring and track your injury risk over time.',
     ai_prescription:'Unlock AI-powered session prescriptions tailored to your exact load data.',
-    trial:'Keep your access to all Pro features after your trial ends.'
+    trial:'Keep your access to all Pro features after your trial ends.',
+    header:'Go Pro, or enter the team or coach code you were given below.'
   };
   var subEl=document.getElementById('up-sub-text');
   if(subEl)subEl.textContent=subs[feature]||subs.roadmap;
@@ -1996,11 +1996,7 @@ if(SUPABASE_READY){
     // getUserContext is non-blocking — awaiting it before loadSessions would
     // add another concurrent Supabase call that can also lock-contend and freeze.
     if(currentUser&&typeof getUserContext==="function"){
-      getUserContext().then(function(c){
-        ctx=c;
-        document.getElementById("ctx-international").className="lp"+(ctx==="international"?" on":"");
-        document.getElementById("ctx-domestic").className="lp"+(ctx==="domestic"?" on":"");
-      }).catch(function(){});
+      ctx='international'; // everyone uses international targets (Nov 2026); level toggle removed
     }
     if(!currentUser){userSubscription=null;subscriptionLoaded=true;updateGatedUI();}
     loadSessions();
@@ -4631,9 +4627,7 @@ function switchTabFromMore(name){
 // ── CONTEXT + TAB ──
 var TAB_ORDER=['dashboard','sessions','load','sc','drills','roadmap','metrics','benchmarks','definitions','howto'];
 function setContext(c){
-  ctx=c;
-  document.getElementById("ctx-international").className="lp"+(c==="international"?" on":"");
-  document.getElementById("ctx-domestic").className="lp"+(c==="domestic"?" on":"");
+  ctx='international';
   renderAll();
   if(currentUser&&typeof setUserContext==="function")setUserContext(c);
 }
@@ -5746,7 +5740,7 @@ renderAll();
     </div>
   </div>
   <button class="up-cta-btn" id="up-cta-btn" onclick="startCheckout()">Start 7-Day Free Trial</button>
-  <div class="up-divider">or have a beta code?</div>
+  <div class="up-divider">or have a team or coach code?</div>
   <div class="up-code-row">
     <input class="up-code-input" id="up-code-input" type="text" placeholder="Enter your code" maxlength="20" autocomplete="off" autocorrect="off" spellcheck="false">
     <button class="up-code-btn" id="up-code-btn" onclick="redeemBetaCode()">Redeem</button>

@@ -498,7 +498,7 @@ function bandFor(ws,tourn){
 }
 function num(v){return +v||0}
 function ftAnalyse(c){
-  var uid=c.app_user_id,A=athletes[uid]||{},ctx=A.context==='domestic'?'domestic':'international';
+  var uid=c.app_user_id,A=athletes[uid]||{},ctx='international'; // everyone on international targets (Nov 2026)
   var tourn=A.tournament&&A.tournament.date?A.tournament:(c.tournament_date&&daysUntil(c.tournament_date)>=0?{name:c.next_tournament||'Tournament',date:c.tournament_date}:null);
   var S=(sessBy[uid]||[]).map(function(r){var x=r.data||{};return{date:x.date,d:parseD(x.date),label:x.label||'',type:x.type||'',dist:num(x.dist),hsr:num(x.hsr),vhsr:num(x.vhsr),acc:num(x.acc),hacc:num(x.hacc),dec:num(x.dec),hdec:num(x.hdec),dur:num(x.dur)}}).filter(function(x){return x.d}).sort(function(a,b){return b.d-a.d});
   var t=today(),ws0=wkStart(t),weeks=[];
