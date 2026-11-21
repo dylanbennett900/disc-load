@@ -1,5 +1,5 @@
 // ── Frisbee Track Service Worker ──
-const CACHE_VERSION = 'ft-v3';
+const CACHE_VERSION = 'ft-v4';
 const CACHE_NAME = `frisbee-track-${CACHE_VERSION}`;
 
 const STATIC_ASSETS = [
@@ -51,7 +51,8 @@ self.addEventListener('fetch', function(e) {
   // Means every deployment is live immediately, no version bumping needed.
   if (e.request.mode === 'navigate') {
     e.respondWith(
-      fetch(e.request).then(function(response) {
+      // no-store: skip the browser's HTTP cache so new deploys show on the next open
+      fetch(e.request, { cache: 'no-store' }).then(function(response) {
         var clone = response.clone();
         caches.open(CACHE_NAME).then(function(cache) { cache.put(e.request, clone); });
         return response;
