@@ -809,7 +809,9 @@ body:has(#panel-dashboard.v2-on.on) #fab-log{display:none!important}
 .hw-pills{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-width:0}
 .hw-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700;line-height:1.3;white-space:nowrap;border:1.5px solid var(--bd2);color:var(--t2);background:var(--sf)}
 .hw-pill.done{background:rgba(5,150,105,.1);border-color:rgba(5,150,105,.35);color:var(--green)}
-.hw-pill.missed{color:var(--t4);text-decoration:line-through;border-style:dashed}
+.hw-pill.todo{color:var(--t2)}
+.hw-pill.rec{background:rgba(124,58,237,.07);border-color:rgba(124,58,237,.3);color:#6d28d9}
+.hw-pill.rec.done{background:rgba(5,150,105,.1);border-color:rgba(5,150,105,.35);color:var(--green)}
 .hw-pill.extra{background:rgba(2,132,199,.08);border-color:rgba(2,132,199,.3);color:var(--cyan)}
 .hw-daybtn{background:transparent;padding:0;border:none;font-family:inherit;cursor:pointer}
 button.hw-pill{cursor:pointer;font-family:inherit}
@@ -4369,7 +4371,7 @@ function fcPlanSentence(){
     ['fcs','fca'].forEach(function(k){if(it.indexOf(k)<0)return;
       var name=k==='fcs'?'Speed':'Acceleration',done=!!fm0.done[iso+':'+k];
       var diff=Math.round((d-new Date(hv2Iso(today)+'T00:00:00'))/86400000);
-      var when=done?'done':diff===0?'today':diff===1?'tomorrow':diff<0?'missed ('+WK_DAYS[i]+')':WK_DAYS_LONG[i];
+      var when=done?'done':diff===0?'today':diff===1?'tomorrow':diff<0?'not done yet ('+WK_DAYS[i]+')':WK_DAYS_LONG[i];
       parts.push(name+' '+when);});}
   return parts.length?parts.join(', ')+'.':'';
 }
@@ -4413,6 +4415,8 @@ function renderHomeV2(){
     else{var gk=iso+':'+k,gd=!!gymDone[gk];
       jobs.push({t:WK_ITEMS[k],sub:(k==='gd2'?'Activation only. Protect the legs':hasFc?'After your run':(weekTpl&&weekTpl.gym==='pm'?'Evening':'Morning'))+' · in TeamBuildr',done:gd,manual:"toggleGymDone('"+iso+"','"+k+"')",act:'Open',href:'https://app.teambuildr.com/'});}
   });
+  var rp0=recoveryPlan();
+  if(rp0&&rp0.iso===iso)jobs.push({t:'Recovery: '+ciEsc(rp0.txt),sub:'Because you checked in '+({fatigued:'fatigued',sore:'sore',both:'fatigued and sore'})[rp0.feeling],done:rp0.done,manual:"toggleGymDone('"+iso+"','rec')"});
   var st=weekStatus(),plan=fcPlanSentence();
   var h='<div class="hv2-head"><div class="hv2-eb">'+WK_DAYS_LONG[dow]+(bandLbl?' · '+bandLbl:'')+'</div><h1 class="hv2-h1">'+(items.length?'Today\'s jobs':'Rest day')+'</h1>'
     +(!items.length?'<div class="hv2-sub">Do nothing and recover. That\'s the job.</div>':'')+'</div>'
@@ -4445,9 +4449,21 @@ function itemDone(k,iso){
   return !!gymDone[iso+':'+k];
 }
 var HW_SHORT={fcs:'F&C Speed',fca:'F&C Accel',fbp:'FB Power',lbp:'LB Power',lbs:'LB Strength',gd2:'GD-2 Power Up',team:'Team',tourn:'Tournament'};
+// Recovery from the check-in: today's (or yesterday's if not checked in yet) feeling sets the protocol;
+// it lands on the next rest day this week (today counts), else today. Rest days stay passive: cold/contrast/sleep, no flush runs.
+var REC_PICK={fatigued:'5–10 min cold exposure',sore:'8–12 min cold exposure',both:'Contrast: 2 min hot → 2 min cold ×4'};
+function recoveryPlan(){
+  var now=new Date(),t=ciToday(),y=new Date(now);y.setDate(now.getDate()-1);
+  var ci=t||checkins[hv2Iso(y)]||null;
+  if(!ci||!REC_PICK[ci.feeling])return null;
+  var ws=weekStart(now),todayIso=hv2Iso(now),slot=todayIso;
+  for(var i=0;i<7;i++){var d=new Date(ws);d.setDate(ws.getDate()+i);var iso=hv2Iso(d);
+    if(iso<todayIso)continue;if(!itemsFor(d).length){slot=iso;break;}}
+  return{iso:slot,feeling:ci.feeling,txt:REC_PICK[ci.feeling],done:!!gymDone[slot+':rec']};
+}
 function hwGymTap(iso,k,ev){if(ev)ev.stopPropagation();toggleGymDone(iso,k);}
 function renderWeekGlance(){
-  var now=new Date(),ws=weekStart(now),todayIso=hv2Iso(now),planned=0,done=0,fm=fcWeekMatch(now),h='<div class="hw-week">';
+  var now=new Date(),ws=weekStart(now),todayIso=hv2Iso(now),planned=0,done=0,fm=fcWeekMatch(now),rp=recoveryPlan(),h='<div class="hw-week">';
   for(var i=0;i<7;i++){
     var d=new Date(ws);d.setDate(ws.getDate()+i);var iso=hv2Iso(d),items=itemsFor(d),past=iso<todayIso,isToday=iso===todayIso,future=iso>todayIso;
     var pills=items.map(function(k){
@@ -4455,7 +4471,7 @@ function renderWeekGlance(){
       if(k==='fcs'||k==='fca'){var at=fm.done[iso+':'+k];ok=!!at;if(at&&at!==iso)note=' ('+WK_DAYS[hv2Dow(new Date(at+'T12:00:00'))]+')';}
       else ok=itemDone(k,iso);
       planned++;if(ok)done++;
-      var cls=ok?'done':past?'missed':'',lbl=(ok?'✓ ':'')+HW_SHORT[k]+note;
+      var cls=ok?'done':'todo',lbl=(ok?'✓ ':'○ ')+HW_SHORT[k]+note;
       if(/^(fbp|lbp|lbs|gd2)$/.test(k)&&!future)return '<button class="hw-pill '+cls+'" onclick="hwGymTap(\''+iso+'\',\''+k+'\',event)" aria-label="'+(ok?'Untick ':'Tick ')+WK_ITEMS[k]+'">'+lbl+'</button>';
       return '<span class="hw-pill '+cls+'">'+lbl+'</span>';
     });
@@ -4468,11 +4484,12 @@ function renderWeekGlance(){
     if(games.length)pills.push('<span class="hw-pill extra">'+(games.length>1?games.length+' games':'Game')+'</span>');
     extras.filter(function(s){return s.type!=='game'}).forEach(function(s){pills.push('<span class="hw-pill extra">'+ciEsc((s.label||'Session').replace(/^Phase \d — /,'F&C '))+'</span>')});
     if(!pills.length)pills.push('<span class="hw-pill rest">Rest</span>');
+    if(rp&&rp.iso===iso)pills.push(iso<=todayIso?'<button class="hw-pill rec'+(rp.done?' done':'')+'" onclick="hwGymTap(\''+iso+'\',\'rec\',event)">'+(rp.done?'✓ ':'○ ')+ciEsc(rp.txt)+'</button>':'<span class="hw-pill rec">○ '+ciEsc(rp.txt)+'</span>');
     var dayCell='<div class="hw-day"><div class="hw-dn">'+WK_DAYS[i]+'</div><div class="hw-dd">'+d.getDate()+'</div></div>';
     if(!past)dayCell='<button class="hw-daybtn" onclick="openWeekSheet(\''+iso+'\')" aria-label="Change '+WK_DAYS_LONG[i]+'">'+dayCell+'</button>';
     h+='<div class="hw-row'+(isToday?' today':'')+(past?' past':'')+'">'+dayCell+'<div class="hw-pills">'+pills.join('')+'</div></div>';
   }
-  h+='</div><div class="ci-msg" style="text-align:left;margin-top:6px">Tap a gym session to tick it off. Tap a day to change it.</div>';
+  h+='</div><div class="ci-msg" style="text-align:left;margin-top:6px">Tap a gym or recovery session to tick it off. Tap a day to change it.</div>';
   return '<div class="hw-head"><span class="hw-t">This week</span><span class="hw-c">'+done+' of '+planned+' done</span></div>'+h;
 }
 function setHomeMode(m){try{localStorage.setItem('ft-home',m)}catch(e){}applyHomeMode();if(m==='new')maybePromptWeek();}
