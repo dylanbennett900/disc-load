@@ -53,7 +53,7 @@ Deno.serve(async (req) => {
       ]);
       if (c.error) throw c.error;
       const list = await db.auth.admin.listUsers({ perPage: 1000 });
-      const users = (list.data?.users || []).filter((x) => x.id !== COACH_UID).map((x) => ({ user_id: x.id, email: x.email }));
+      const users = (list.data?.users || []).filter((x) => x.id !== COACH_UID).map((x) => ({ user_id: x.id, email: x.email, name: (x.user_metadata as any)?.full_name || (x.user_metadata as any)?.name || null }));
       const rows = c.data || [];
       // Team members = users who redeemed the team's code
       const codes = pc.data || [];
