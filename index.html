@@ -4158,6 +4158,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
+var FT_BUILD='21 Nov 14:10';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -4420,7 +4421,8 @@ function renderHomeV2(){
     +renderWeekGlance()
     +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div><div class="hv2-st">'+st.t+'</div><div class="hv2-ss">'+[st.s,plan,(weeksOut!==null?(weeksOut===0?ciEsc(tName)+' this week. Stay sharp, stay fresh.':ciEsc(tName)+' in '+weeksOut+' week'+(weeksOut===1?'':'s')+'.'):'')].filter(Boolean).join(' ')+'</div></div></div>'
     +'<button class="hv2-log" onclick="fabLogSession()">'+hv2Svg('<path d="M12 5v14M5 12h14"></path>')+' Log session</button>'
-    +'<div style="text-align:center;margin-top:10px"><button class="sr-change-btn" onclick="setHomeMode(\'classic\')">Switch to classic home</button></div>';
+    +'<div style="text-align:center;margin-top:10px"><button class="sr-change-btn" onclick="setHomeMode(\'classic\')">Switch to classic home</button></div>'
+    +'<div style="text-align:center;margin-top:6px;font-size:10px;color:var(--t4);font-family:var(--mono)">Version '+FT_BUILD+'</div>';
   el.innerHTML=h;
 }
 // Week at a glance: planned items (template/overrides) vs what's been logged
