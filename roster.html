@@ -141,6 +141,55 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
 .ft-sess .m{font:500 10.5px var(--mono);color:rgba(255,255,255,.75);text-align:right;white-space:nowrap}
 .ft-more{background:none;border:none;color:var(--cyan);font:500 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;padding:8px 0 0}
 .ft-empty{font-size:13px;color:rgba(255,255,255,.6);margin-top:8px}
+.tdash{position:fixed;inset:0;z-index:40;background:var(--bg);overflow:auto;display:none;-webkit-overflow-scrolling:touch}
+.tdash.open{display:block}
+.td-top{background:var(--navy-deep);color:#fff;padding:14px 16px;padding-top:max(14px,env(safe-area-inset-top));position:sticky;top:0;z-index:2;display:flex;align-items:center;gap:10px}
+.td-top .sp{flex:1}
+.td-main{max-width:1100px;margin:0 auto;padding:16px}
+.td-hero{background:var(--navy-deep);color:#fff;border-radius:12px;padding:16px;margin-bottom:12px}
+.td-hero .t{font:900 34px/1 var(--display);text-transform:uppercase}
+.td-hero .t em{font-style:italic;color:var(--cyan)}
+.td-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-top:14px}
+.td-kpi{background:rgba(255,255,255,.06);border-radius:8px;padding:10px 12px}
+.td-kpi .k{font:500 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.55)}
+.td-kpi .v{font:900 28px/1.1 var(--display);color:var(--cyan);margin-top:2px}
+.td-kpi .v small{font-size:15px;color:rgba(255,255,255,.5)}
+.td-grid{display:grid;grid-template-columns:1fr;gap:12px}
+@media(min-width:900px){.td-grid{grid-template-columns:1.3fr 1fr}}
+.td-card{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:14px}
+.td-card h4{font:500 10px var(--mono);letter-spacing:.14em;text-transform:uppercase;color:var(--navy);margin-bottom:10px;display:flex;justify-content:space-between;gap:8px;flex-wrap:wrap}
+.td-card h4 span{color:var(--t3)}
+.hb{display:grid;grid-template-columns:96px 1fr 44px;gap:8px;align-items:center;margin-bottom:6px;font-size:12.5px}
+.hb .n{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-weight:600}
+.hb .v{font:700 11px var(--mono);text-align:right}
+.hb .bar{height:12px;background:var(--bg2);border-radius:6px;position:relative;overflow:hidden}
+.hb .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:6px;background:var(--cyan)}
+.hb .bar i.done{background:var(--green-br)}.hb .bar i.over{background:#ffb400}.hb .bar i.none{background:transparent}
+.hb .bar s{position:absolute;top:-2px;bottom:-2px;width:2px;background:var(--navy-deep)}
+.hb .bar u{position:absolute;top:0;bottom:0;width:1px;background:rgba(15,34,53,.25)}
+.vt{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;align-items:end;height:150px;position:relative;margin-top:6px}
+.vt .col{display:flex;flex-direction:column;align-items:center;justify-content:flex-end;height:100%;gap:4px;position:relative}
+.vt .b{width:100%;max-width:46px;background:var(--navy);border-radius:5px 5px 0 0;position:relative}
+.vt .b.cur{background:var(--cyan)}
+.vt .rg{position:absolute;width:2px;background:rgba(15,34,53,.35);left:50%;transform:translateX(-50%)}
+.vt .p{font:700 11px var(--mono);color:var(--navy-deep)}
+.vt .line{position:absolute;left:0;right:0;border-top:1.5px dashed var(--cyan-dk)}
+.vt-l{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:6px;font:500 9.5px var(--mono);color:var(--t3);text-align:center;text-transform:uppercase}
+.mchips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+.tbl-wrap{overflow-x:auto;margin:0 -14px;padding:0 14px}
+table.sq{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+table.sq th{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);text-align:right;padding:6px 6px;border-bottom:1.5px solid var(--bd2);cursor:pointer;white-space:nowrap}
+table.sq th:first-child,table.sq td:first-child{text-align:left}
+table.sq td{padding:9px 6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
+table.sq td.nm{font-weight:700;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+table.sq tr.pl{cursor:pointer}
+table.sq tr.pl:hover td,table.sq tr.pl.on td{background:rgba(0,212,255,.08)}
+table.sq td.fl{text-align:left;white-space:normal;font-size:12px;color:var(--t2);min-width:160px}
+.pc{font:700 11.5px var(--mono)}
+.pc.lo{color:var(--t3)}.pc.ok{color:var(--green)}.pc.hi{color:#b07800}
+.dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;background:var(--green-br)}
+.dot.amber{background:#ffb400}.dot.red{background:#ff6b5e}.dot.grey{background:var(--t4)}
+table.sq tr.xp td{padding:0 0 10px;background:transparent}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy-deep);color:var(--cyan);padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
 .toast.show{opacity:1}
 </style>
@@ -226,6 +275,7 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
     </div>
   </form>
 </div>
+<div id="tdash" class="tdash"></div>
 <div class="toast" id="toast"></div>
 
 <script src="config.js"></script>
@@ -309,7 +359,7 @@ async function load(){
   document.getElementById('addBtn').style.display='';
   document.getElementById('tabs').style.display='flex';
   try{tab=localStorage.getItem('dbsp_roster_tab')||'client'}catch(e){}
-  render();
+  render();if(tdashId)renderTeamDash();
 }
 
 function kindOf(c){return c.kind||'client'}
@@ -360,7 +410,7 @@ function card(c){
         ?'<span class="tag">Team</span>'+[c.team,c.squad_size?c.squad_size+' players':'',c.contact?'Contact: '+c.contact:''].filter(Boolean).map(esc).join(' · ')
         :'<span class="tag">'+esc(OFFER_LABEL[c.offer]||c.offer)+'</span>'+(c.team?esc(c.team):''))
       +(c.status!=='active'?' · '+esc(c.status):'')+'</div></div>'
-    +'<div class="sp"></div><div class="acts"><button class="btn sm p" onclick="openProg(\''+c.id+'\')">Programmed to…</button><button class="btn sm" onclick="openEditor(\''+c.id+'\')">Edit</button></div></div>'
+    +'<div class="sp"></div><div class="acts">'+(kindOf(c)==='team'?'<button class="btn sm p" onclick="openTeam(\''+c.id+'\')">Squad dashboard</button>':'')+'<button class="btn sm'+(kindOf(c)==='team'?'':' p')+'" onclick="openProg(\''+c.id+'\')">Programmed to…</button><button class="btn sm" onclick="openEditor(\''+c.id+'\')">Edit</button></div></div>'
     +'<div class="grid">'
     +'<div class="cell"><div class="k">TeamBuildr runway</div><div class="v"><span class="big '+r.cls+'">'+r.txt+'</span>'
       +(c.programmed_until?'<br>Programmed to '+fmtD(c.programmed_until):'')+'</div></div>'
@@ -445,7 +495,7 @@ function ftAnalyse(c){
     if(topAgo===null||topAgo>=10)flags.push({cls:'amber',t:topAgo===null?'No top speed exposure logged':'No top speed exposure in '+topAgo+' days'});
     if(rH!==null&&rH>1.5)flags.push({cls:'red',t:'HSR spike (ratio '+rH.toFixed(2)+')'});
     else if(rH!==null&&rH<0.8&&ago!==null&&ago<7)flags.push({cls:'amber',t:'HSR load dropping (ratio '+rH.toFixed(2)+')'});
-    if(cur.band==='low'&&cur.tot.hsr>cur.tg.hsr)flags.push({cls:'amber',t:'Over HSR target in a taper week'});
+    if(cur.band==='low'&&cur.tot.hsr>cur.tg.hsr)flags.push({cls:'amber',t:'Over HSR target in a '+(tourn&&Math.ceil((parseD(tourn.date)-wkStart(t))/(7*86400000))<=1?'taper':'low')+' week'});
     else if(dow>=3&&cur.band!=='low'&&cur.tot.hsr<cur.tg.hsr*0.4)flags.push({cls:'amber',t:'HSR well behind for the week ('+Math.round(cur.tot.hsr/cur.tg.hsr*100)+'%)'});
     if(!flags.length)flags.push({cls:'ok',t:'On track. Nothing to flag.'});
   }
@@ -478,9 +528,83 @@ function ftPanel(c){
     h+='<div class="ft-sec"><span>Recent sessions</span><span>Dist · HSR · VHSR</span></div>'
       +a.S.slice(0,5).map(function(x){return '<div class="ft-sess"><span class="d">'+fmtShort(x.date)+'</span><span>'+esc(x.label||x.type||'Session')+'</span><span class="m">'+Math.round(x.dist).toLocaleString()+' · '+Math.round(x.hsr)+' · '+Math.round(x.vhsr)+'</span></div>'}).join('');
   }
-  h+='<button class="ft-more" onclick="ftOpen[\''+c.id+'\']=!ftOpen[\''+c.id+'\'];render();jump(\''+c.id+'\')">'+(ftOpen[c.id]?'Hide trend + sessions':'Show trend + sessions')+'</button>';
+  h+='<button class="ft-more" onclick="event.stopPropagation();ftToggle(\''+c.id+'\')">'+(ftOpen[c.id]?'Hide trend + sessions':'Show trend + sessions')+'</button>';
   return h+'</div>';
 }
+// ── Team squad dashboard ──
+var tdashId=null,tdMetric='hsr',tdSort='attention',tdSel=null;
+function playerName(uid){var u=appUsers.find(function(x){return x.user_id===uid});if(!u)return'Player';if(u.name)return u.name;return(u.email||'Player').split('@')[0]}
+function openTeam(id){tdashId=id;tdSel=null;renderTeamDash();document.getElementById('tdash').classList.add('open');document.getElementById('tdash').scrollTop=0;document.body.style.overflow='hidden'}
+function closeTeam(){tdashId=null;document.getElementById('tdash').classList.remove('open');document.body.style.overflow=''}
+function tdSet(k,v){if(k==='m')tdMetric=v;else tdSort=v;renderTeamDash()}
+function tdToggle(uid){tdSel=tdSel===uid?null:uid;renderTeamDash();if(tdSel){var el=document.getElementById('tdSel');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}}
+function pcCls(p){return p===null?'lo':p>1.15?'hi':p>=0.9?'ok':'lo'}
+function pcTxt(p){return p===null?'—':Math.round(p*100)+'%'}
+function renderTeamDash(){
+  var c=clients.find(function(x){return x.id===tdashId});if(!c){closeTeam();return}
+  var ids=c.team_code?(teamMembers[String(c.team_code).toUpperCase()]||[]):[];
+  var P=ids.map(function(uid){var pc={id:'p-'+uid,app_user_id:uid,tournament_date:c.tournament_date,next_tournament:c.next_tournament};var a=ftAnalyse(pc);
+    var real=a.flags.filter(function(f){return f.cls!=='ok'});
+    var pct=function(k,w){w=w||a.cur;return w.tg[k]?w.tot[k]/w.tg[k]:null};
+    return{uid:uid,pc:pc,a:a,name:playerName(uid),flags:real,sev:real.reduce(function(s,f){return s+(f.cls==='red'?3:1)},0),pct:pct}});
+  var mLbl={dist:'Distance',hsr:'HSR',vhsr:'VHSR',acc:'Accels',hacc:'High accels',dec:'Decels'};
+  var logged=P.filter(function(p){return p.a.cur.tot.n>0}).length,flagged=P.filter(function(p){return p.flags.length}).length;
+  var rs=P.map(function(p){return p.a.rH}).filter(function(r){return r!==null&&isFinite(r)});
+  var avgR=rs.length?rs.reduce(function(a,b){return a+b},0)/rs.length:null,z=zone(avgR);
+  var dow=(today().getDay()+6)%7,pace=(dow+1)/7;
+  var sorted=P.slice().sort(function(x,y){
+    if(tdSort==='name')return x.name.localeCompare(y.name);
+    if(tdSort==='metric')return(y.pct(tdMetric)||0)-(x.pct(tdMetric)||0);
+    if(tdSort==='ratio')return(y.a.rH||0)-(x.a.rH||0);
+    return y.sev-x.sev||(x.pct('hsr')||0)-(y.pct('hsr')||0)});
+  var band=P.length?P[0].a.cur.band:bandFor(wkStart(today()),c.tournament_date||null);
+  var wo=c.tournament_date?Math.ceil((parseD(c.tournament_date)-wkStart(today()))/(7*86400000)):null;
+  var h='<div class="td-top"><button class="btn sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.3)" onclick="closeTeam()">← Back</button><div class="sp"></div><span class="hsub" style="margin:0">'+esc(c.team_code||'No code')+'</span></div>'
+   +'<div class="td-main"><div class="td-hero"><div class="ft-eb">Squad dashboard · '+esc(c.team||'Frisbee Track')+'</div>'
+   +'<div class="t" style="margin-top:4px">'+esc(c.name)+' <em>'+esc(bandName(band,wo))+' week</em></div>'
+   +'<div class="ft-sub">'+(c.tournament_date?esc(c.next_tournament||'Tournament')+' · '+(wo<=0?'this week':wo+' wks out'):'No team tournament set (edit the team to add one)')+' · week starts Mon</div>'
+   +'<div class="td-kpis">'
+   +'<div class="td-kpi"><div class="k">On app</div><div class="v">'+P.length+(c.squad_size?'<small> / '+c.squad_size+'</small>':'')+'</div></div>'
+   +'<div class="td-kpi"><div class="k">Logged this wk</div><div class="v">'+logged+'<small> / '+P.length+'</small></div></div>'
+   +'<div class="td-kpi"><div class="k">Avg HSR ratio</div><div class="v" style="color:'+(z.cls==='red'?'#ff6b5e':z.cls==='amber'?'#ffb400':z.cls==='green'?'var(--green-br)':'var(--cyan)')+'">'+(avgR!==null?avgR.toFixed(2):'—')+'</div></div>'
+   +'<div class="td-kpi"><div class="k">Flagged</div><div class="v" style="color:'+(flagged?'#ffb400':'var(--green-br)')+'">'+flagged+'</div></div>'
+   +'</div></div>';
+  if(!c.team_code){h+='<div class="td-card"><div class="empty">No team code linked. Edit the team and pick its Frisbee Track code.</div></div></div>';document.getElementById('tdash').innerHTML=h;return}
+  if(!P.length){h+='<div class="td-card"><div class="empty">Nobody has signed up with <b>'+esc(c.team_code)+'</b> yet. Players appear here as soon as they redeem the code in Frisbee Track.</div></div></div>';document.getElementById('tdash').innerHTML=h;return}
+  h+='<div class="mchips">'+['dist','hsr','vhsr','acc','hacc','dec'].map(function(k){return '<button class="chip'+(tdMetric===k?' on':'')+'" onclick="tdSet(\'m\',\''+k+'\')">'+mLbl[k]+'</button>'}).join('')+'</div>';
+  // Chart 1: week to date per player
+  var c1=P.slice().sort(function(x,y){return(y.pct(tdMetric)||0)-(x.pct(tdMetric)||0)});
+  h+='<div class="td-grid"><div class="td-card"><h4>This week · '+mLbl[tdMetric]+' vs target <span>| = expected by today · faint line = 100%</span></h4>'
+    +c1.map(function(p){var v=p.pct(tdMetric),w=v===null?0:Math.min(150,v*100)/1.5;var cls=v===null||!p.a.cur.tot.n?'none':v>1.15?'over':v>=0.9?'done':'';
+      return '<div class="hb"><span class="n">'+esc(p.name)+'</span><div class="bar"><u style="left:66.7%"></u><i class="'+cls+'" style="width:'+w.toFixed(1)+'%"></i><s style="left:'+(pace*100/1.5).toFixed(1)+'%"></s></div><span class="v '+(v>1.15?'amber':'')+'">'+(p.a.cur.tot.n?pcTxt(v):'—')+'</span></div>'}).join('')
+    +'</div>';
+  // Chart 2: 6-week squad trend
+  var wk=[0,1,2,3,4,5].map(function(i){var vals=P.map(function(p){var w=p.a.weeks[i];return w.tg[tdMetric]&&w.tot.n?w.tot[tdMetric]/w.tg[tdMetric]:null}).filter(function(v){return v!==null});
+    var avg=vals.length?vals.reduce(function(a,b){return a+b},0)/vals.length:null;return{ws:P[0].a.weeks[i].ws,band:P[0].a.weeks[i].band,avg:avg,min:vals.length?Math.min.apply(null,vals):null,max:vals.length?Math.max.apply(null,vals):null,n:vals.length}});
+  var mx=Math.max(1.3,Math.max.apply(null,wk.map(function(w){return w.max||0})));
+  h+='<div class="td-card"><h4>Squad · 6-week '+mLbl[tdMetric]+' <span>avg % of target · line = range</span></h4><div class="vt"><div class="line" style="bottom:'+(100/mx*0.85).toFixed(1)+'%"></div>'
+    +wk.map(function(w,i){if(w.avg===null)return '<div class="col"><span class="p" style="color:var(--t4)">—</span></div>';
+      return '<div class="col"><span class="p">'+Math.round(w.avg*100)+'%</span><div class="b'+(i===5?' cur':'')+'" style="height:'+(w.avg/mx*85).toFixed(1)+'%"></div>'
+      +'<div class="rg" style="bottom:'+(w.min/mx*85).toFixed(1)+'%;height:'+Math.max(1,(w.max-w.min)/mx*85).toFixed(1)+'%"></div></div>'}).join('')
+    +'</div><div class="vt-l">'+wk.map(function(w,i){return '<span>'+(i===5?'Now':fmtShort(iso(w.ws)))+'<br>'+esc(bandName(w.band,c.tournament_date?Math.ceil((parseD(c.tournament_date)-w.ws)/(7*86400000)):null))+' · '+w.n+'</span>'}).join('')+'</div></div></div>';
+  // Player table
+  var th=function(k,l){return '<th onclick="tdSet(\'s\',\''+k+'\')">'+l+(tdSort===k?' ▾':'')+'</th>'};
+  h+='<div class="td-card" style="margin-top:12px"><h4>Players <span>tap a player for their full panel</span></h4><div class="tbl-wrap"><table class="sq"><thead><tr>'
+    +th('name','Player')+'<th>Sess</th><th>Dist</th><th>HSR</th><th>VHSR</th><th>Acc</th>'+th('ratio','Ratio')+'<th>Last log</th>'+th('attention','Flags')+'</tr></thead><tbody>'
+    +sorted.map(function(p){var a=p.a,zz=zone(a.rH),top=p.flags[0];
+      var dcls=(tdSel===p.uid?'':'')+(p.flags.some(function(f){return f.cls==='red'})?'red':p.flags.length?'amber':a.S.length?'':'grey');
+      var row='<tr class="pl'+(tdSel===p.uid?' on':'')+'" onclick="tdToggle(\''+p.uid+'\')"><td class="nm"><span class="dot '+dcls+'"></span>'+esc(p.name)+'</td><td>'+a.cur.tot.n+'</td>'
+        +['dist','hsr','vhsr','acc'].map(function(k){var v=a.cur.tot.n?p.pct(k):null;return '<td><span class="pc '+pcCls(v)+'">'+pcTxt(v)+'</span></td>'}).join('')
+        +'<td><span class="pc" style="color:'+(zz.cls==='red'?'var(--red)':zz.cls==='amber'?'#b07800':zz.cls==='green'?'var(--green)':'var(--t3)')+'">'+(a.rH!==null?a.rH.toFixed(2):'—')+'</span></td>'
+        +'<td>'+(a.last?(a.ago===0?'Today':a.ago+'d'):'—')+'</td><td class="fl">'+(top?esc(top.t)+(p.flags.length>1?' <span class="muted">+'+(p.flags.length-1)+'</span>':''):'<span class="muted">On track</span>')+'</td></tr>';
+      return row}).join('')
+    +'</tbody></table></div></div>';
+  var sel=tdSel&&P.find(function(p){return p.uid===tdSel});
+  if(sel)h+='<div class="td-card" id="tdSel" style="margin-top:12px;scroll-margin-top:70px"><h4>'+esc(sel.name)+' <span><button class="link" onclick="tdToggle(\''+sel.uid+'\')">Close</button></span></h4>'+ftPanel(sel.pc)+'</div>';
+  h+='</div>';
+  document.getElementById('tdash').innerHTML=h;
+}
+function ftToggle(id){ftOpen[id]=!ftOpen[id];if(tdashId)renderTeamDash();else{render();jump(id)}}
 function setFilter(f){filter=f;render()}
 function toggleNotes(id){expanded[id]=!expanded[id];render();jump(id)}
 function jump(id){if(filter!=='all'&&filter!=='active'){filter='active';render()}var el=document.getElementById('c-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
