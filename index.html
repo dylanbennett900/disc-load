@@ -4234,22 +4234,21 @@ function closeWeekSheet(skip){
 function wkToggleTeam(i){var t=wkDraft.team,k=t.indexOf(i);if(k>=0)t.splice(k,1);else t.push(i);t.sort();wkDraft.days=genWeek(t);wkEditDay=-1;renderWeekSheet();}
 function wkSetGym(g){wkDraft.gym=g;renderWeekSheet();}
 function wkPickDay(i){wkEditDay=wkEditDay===i?-1:i;renderWeekSheet();}
-function wkToggleItem(i,k){var arr=wkOvDate?wkDraft.day:wkDraft.days[i],j=arr.indexOf(k);if(j>=0)arr.splice(j,1);else arr.push(k);
+function wkToggleItem(i,k){var arr=wkOvDate?wkDraft.day:wkDraft.days[i];if(k==='rest'){arr.length=0;}else{var j=arr.indexOf(k);if(j>=0)arr.splice(j,1);else arr.push(k);}
   var sorted=WK_ORDER.filter(function(x){return arr.indexOf(x)>=0});if(wkOvDate)wkDraft.day=sorted;else wkDraft.days[i]=sorted;renderWeekSheet();}
 function wkLine(items){
   if(!items.length)return '<span style="color:var(--t3)">Rest</span>';
   return items.map(function(k){return k==='team'?'<span style="color:var(--cyan);font-weight:700">Team training</span>':'<b>'+WK_ITEMS[k]+'</b>'}).join(' <span style="color:var(--t3)">then</span> ');
 }
 function wkChips(i,items){
-  return '<div class="ci-chips" style="padding:4px 0 10px 54px">'+WK_ORDER.map(function(k){return "<button class='ci-chip sm"+(items.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem("+i+",\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>';
+  return '<div class="ci-chips" style="padding:4px 0 10px 54px">'+"<button class='ci-chip sm"+(!items.length?" on":"")+"' onclick='wkToggleItem("+i+",\"rest\")'>Rest</button>"+WK_ORDER.map(function(k){return "<button class='ci-chip sm"+(items.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem("+i+",\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>';
 }
 function renderWeekSheet(){
   var s=document.getElementById('wk-sheet');if(!s)return;var d=wkDraft,h='';
   if(wkOvDate){
     var dt=new Date(wkOvDate+'T12:00:00');
     h+='<div class="pf-title">Change '+WK_DAYS_LONG[hv2Dow(dt)]+'</div><div class="pf-sub">Just this date. Your usual week stays the same.</div>'
-      +'<div class="ci-chips">'+WK_ORDER.map(function(k){return "<button class='ci-chip"+(d.day.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem(0,\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>'
-      +'<div class="ci-msg" style="text-align:left;margin-top:10px">Nothing selected = rest day.</div>'
+      +'<div class="ci-chips">'+"<button class='ci-chip"+(!d.day.length?" on":"")+"' onclick='wkToggleItem(0,\"rest\")'>Rest</button>"+WK_ORDER.map(function(k){return "<button class='ci-chip"+(d.day.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem(0,\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>'
       +'<div class="pf-acts"><button class="pf-skip" onclick="resetDayOverride()">Back to usual</button><button class="pf-save" onclick="saveWeekSheet()">Save</button></div>';
     s.innerHTML=h;return;
   }
