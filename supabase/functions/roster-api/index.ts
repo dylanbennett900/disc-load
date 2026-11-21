@@ -48,7 +48,7 @@ Deno.serve(async (req) => {
       const [c, n, pc, td] = await Promise.all([
         db.from('coach_clients').select('*').order('name'),
         db.from('coach_client_notes').select('*').order('created_at', { ascending: false }),
-        db.from('promo_codes').select('id,code,label').not('code', 'like', 'DBSP-%').order('code'),
+        db.from('promo_codes').select('id,code,label,team_key').not('code', 'like', 'DBSP-%').order('code'),
         db.from('coach_todos').select('*').order('sort').order('created_at'),
       ]);
       if (c.error) throw c.error;
@@ -92,6 +92,16 @@ Deno.serve(async (req) => {
             athletes[r.user_id].tournament = { name: r.tournament_name || 'Tournament', date: r.tournament_date };
         });
       }
+      // F&C phase: per team (team_settings) and per 1-on-1 client (user_kv fc_phase)
+      const ts = await db.from('team_settings').select('team_key,fc_phase');
+      const teamSettings: Record<string, string | null> = {};
+      (ts.data || []).forEach((r: any) => { teamSettings[r.team_key] = r.fc_phase; });
+      const clientPhases: Record<string, string> = {};
+      const clientIds = rows.filter((x: any) => x.app_user_id).map((x: any) => x.app_user_id);
+      if (clientIds.length) {
+        const cp = await db.from('user_kv').select('user_id,value').eq('key', 'fc_phase').in('user_id', clientIds);
+        (cp.data || []).forEach((r: any) => { clientPhases[r.user_id] = r.value; });
+      }
       // Player profiles (athlete's own, with coach overrides winning) + recent daily check-ins
       const profiles: Record<string, { display_name?: string | null; jersey?: string | null; position?: string | null; own?: unknown; coach?: unknown }> = {};
       let checkins: unknown[] = [];
@@ -113,7 +123,7 @@ Deno.serve(async (req) => {
         }
         checkins = ci.data || [];
       }
-      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label })), todos: td.data || [], athletes, profiles, checkins });
+      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label, team_key: k.team_key })), todos: td.data || [], athletes, profiles, checkins, teamSettings, clientPhases });
     }
     if (action === 'save') {
       const row = pick(body.client || {});
@@ -172,6 +182,21 @@ Deno.serve(async (req) => {
       };
       const r = await db.from('coach_athlete_overrides').upsert(row, { onConflict: 'user_id' });
       if (r.error) throw r.error;
+      return json({ ok: true });
+    }
+    if (action === 'fc_phase') {
+      const ph = ['p1', 'p2', 'p3'].includes(body.fc_phase) ? body.fc_phase : null;
+      if (!ph) return json({ error: 'Bad phase' }, 400);
+      if (body.team_key) {
+        const tk = String(body.team_key).toLowerCase().replace(/[^a-z0-9_-]/g, '').slice(0, 30);
+        const r = await db.from('team_settings').upsert({ team_key: tk, fc_phase: ph, updated_at: new Date().toISOString() }, { onConflict: 'team_key' });
+        if (r.error) throw r.error;
+      } else {
+        const uid = String(body.user_id || '');
+        if (!/^[0-9a-f-]{36}$/.test(uid)) return json({ error: 'Bad player' }, 400);
+        const r = await db.from('user_kv').upsert({ user_id: uid, key: 'fc_phase', value: ph, updated_at: new Date().toISOString() }, { onConflict: 'user_id,key' });
+        if (r.error) throw r.error;
+      }
       return json({ ok: true });
     }
     if (action === 'ping') return json({ ok: true });

@@ -769,6 +769,33 @@ input,select{font-family:inherit;outline:none}
 .ss-info-card{margin-top:16px;padding:12px 14px;border-radius:var(--radius-sm);background:rgba(2,132,199,0.05);border:1px solid rgba(2,132,199,0.18);font-size:10.5px;color:var(--t2);line-height:1.55}
 .ss-info-card strong{color:#0284c7;font-family:var(--display);letter-spacing:.3px}
 .wk-tourn-card{background:rgba(161,98,7,0.06);border:1.5px solid rgba(161,98,7,0.2);border-radius:var(--radius);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh)}
+/* New home (beta): Today's jobs */
+#panel-dashboard.v2-on > *:not(#home-v2):not(#self-report-panel){display:none!important}
+body:has(#panel-dashboard.v2-on.on) #fab-log{display:none!important}
+.hv2-head{padding:4px 2px 0}
+.hv2-eb{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3)}
+.hv2-h1{margin:4px 0 0;font-family:var(--display);font-weight:900;font-size:38px;line-height:1;text-transform:uppercase;color:var(--t)}
+.hv2-sub{font-size:14px;color:var(--t2);margin-top:6px}
+.hv2-card{margin-top:14px;background:var(--sf);border-radius:16px;border:1px solid var(--bd);box-shadow:var(--sh)}
+.hj-row{display:flex;align-items:center;gap:12px;padding:14px 14px;min-height:44px}
+.hj-sep{height:1px;background:var(--bd);margin:0 14px}
+.hj-dot{width:26px;height:26px;border-radius:13px;border:2px solid var(--t4);box-sizing:border-box;flex-shrink:0;display:flex;align-items:center;justify-content:center}
+.hj-dot.done{background:var(--green);border-color:var(--green)}
+.hj-dot.note{border:none;background:rgba(180,83,9,.12)}
+.hj-tickbtn{background:transparent;padding:0;border:none;display:flex}
+.hj-txt{flex:1;min-width:0}
+.hj-t{font-weight:700;font-size:15px;color:var(--t)}
+.hj-s{font-size:12.5px;color:var(--t3);margin-top:1px}
+.hj-row.done .hj-t{text-decoration:line-through;color:var(--t3)}
+.hj-row.note .hj-t{font-size:13.5px;color:var(--amber)}
+.hj-act{font-weight:700;font-size:13px;color:var(--cyan);background:transparent;padding:10px 4px;text-decoration:none;white-space:nowrap}
+.hv2-links{display:flex;justify-content:space-between;padding:8px 4px 0}
+.hv2-status{margin-top:12px;padding:15px;border-radius:16px;background:#0f172a;color:#fff;display:flex;gap:12px;align-items:flex-start}
+.hv2-sdot{width:10px;height:10px;border-radius:5px;background:#34d399;margin-top:6px;flex-shrink:0}
+.hv2-sdot.mid{background:#fbbf24}.hv2-sdot.hi{background:#f87171}
+.hv2-st{font-weight:700;font-size:15px}
+.hv2-ss{font-size:13px;color:#cbd5e1;line-height:1.5;margin-top:3px}
+.hv2-log{width:100%;margin-top:14px;min-height:54px;border-radius:14px;background:var(--green);color:#fff;font-family:var(--display);font-weight:800;font-size:20px;letter-spacing:1px;text-transform:uppercase;display:flex;align-items:center;justify-content:center;gap:8px}
 /* Daily check-in + athlete profile */
 .ci-sec{font-size:9.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);font-family:var(--display);margin:14px 0 7px}
 .ci-sec:first-child{margin-top:0}
@@ -958,6 +985,7 @@ input,select{font-family:inherit;outline:none}
 
 <!-- ── DASHBOARD ── -->
 <div class="panel on" id="panel-dashboard">
+  <div id="home-v2"></div>
 
   <div class="action-strip">
     <button class="sr-trigger-btn" id="sr-trigger-btn" onclick="toggleSelfReport()">
@@ -1671,7 +1699,7 @@ async function loadSessions(){
         return;
       }
       loadSessions._retrying=false;
-      currentUser=null;sessions=DEMO_SESSIONS.slice();athleteProfile=null;pfLoaded=false;checkins={};ciDraft=null;
+      currentUser=null;sessions=DEMO_SESSIONS.slice();athleteProfile=null;pfLoaded=false;checkins={};ciDraft=null;betaHome=false;weekTpl=null;weekOv={};gymDone={};if(typeof applyHomeMode==='function')setTimeout(applyHomeMode,0);
       renderAuthUI();renderAll();
       sb.auth.signOut().catch(function(){});// background cleanup, never awaited
       return;
@@ -1893,7 +1921,7 @@ async function signIn(){
 }
 async function signOut(){
   // Clear local state immediately — UI is responsive regardless of network.
-  currentUser=null;sessions=DEMO_SESSIONS.slice();athleteProfile=null;pfLoaded=false;checkins={};ciDraft=null;
+  currentUser=null;sessions=DEMO_SESSIONS.slice();athleteProfile=null;pfLoaded=false;checkins={};ciDraft=null;betaHome=false;weekTpl=null;weekOv={};gymDone={};if(typeof applyHomeMode==='function')setTimeout(applyHomeMode,0);
   renderAuthUI();renderAll();
   // Fire Supabase signOut in background with timeout — never block the UI on it.
   if(SUPABASE_READY){
@@ -3400,7 +3428,9 @@ async function loadSettings(){
   }catch(e){}
   await loadCheckins();
   await loadProfile();
+  await loadWeekStuff();
   maybePromptProfile(false);
+  if(athleteProfile)maybePromptWeek();
   renderSRButton();if(srPanelOpen)renderSRPanel();
   renderWeekStrip();renderDashboard();renderRoadmap();renderTournamentHistory();renderOFCAccordion();renderDrillLibrary();
 }
@@ -4048,7 +4078,7 @@ async function saveCheckin(){
   }
   checkins[row.date]=row;ciEditing=false;ciDraft=null;
   showSave('saved','Checked in ✓');
-  renderSRPanel();renderSRButton();renderWeekCalendar();
+  renderSRPanel();renderSRButton();renderWeekCalendar();if(typeof renderHomeV2==='function')renderHomeV2();
 }
 function ciSummary(t){
   var tags=[];
@@ -4108,6 +4138,245 @@ function renderSRPanel(){
   inner.innerHTML=h;
 }
 
+// ── NEW HOME (beta): week template + Today's jobs ──
+var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',team:'Team training'};
+var WK_ORDER=['fcs','fca','fbp','lbp','lbs','team'];
+var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+var WK_DAYS_LONG=['Monday','Tuesday','Wednesday','Thursday','Friday','Saturday','Sunday'];
+var weekTpl=null,weekOv={},gymDone={},myFcPhaseKv=null,teamFcPhase=null,betaHome=false,wkDraft=null,wkEditDay=-1,wkOvDate=null;
+function hv2Iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function hv2Dow(d){return (d.getDay()+6)%7}
+function newHomeOn(){
+  if(!currentUser)return false;
+  var pref=null;try{pref=localStorage.getItem('ft-home')}catch(e){}
+  if(pref==='classic')return false;
+  return currentUser.id===COACH_UID||betaHome;
+}
+function newHomeEligible(){return !!currentUser&&(currentUser.id===COACH_UID||betaHome)}
+function myFcPhase(){return myFcPhaseKv||teamFcPhase||'p1'}
+async function loadWeekStuff(){
+  if(!currentUser||!SUPABASE_READY)return;
+  try{
+    var r=await sb.from('user_kv').select('key,value').eq('user_id',currentUser.id).in('key',['week_template','week_overrides','gym_done','fc_phase','beta_home']);
+    weekTpl=null;weekOv={};gymDone={};myFcPhaseKv=null;betaHome=false;
+    (r.data||[]).forEach(function(x){
+      try{
+        if(x.key==='week_template')weekTpl=JSON.parse(x.value);
+        else if(x.key==='week_overrides')weekOv=JSON.parse(x.value)||{};
+        else if(x.key==='gym_done')gymDone=JSON.parse(x.value)||{};
+        else if(x.key==='fc_phase')myFcPhaseKv=x.value;
+        else if(x.key==='beta_home')betaHome=x.value==='1';
+      }catch(e){}
+    });
+    var tk=typeof dbspTeamKey==='function'?dbspTeamKey():null;
+    if(tk){var ts=await sb.from('team_settings').select('fc_phase').eq('team_key',tk).maybeSingle();teamFcPhase=ts.data&&ts.data.fc_phase||null;}
+  }catch(e){}
+  if(['p1','p2','p3'].indexOf(myFcPhase())>=0){dbspPhase=myFcPhase();fcPhase=myFcPhase();
+    document.querySelectorAll('.dbsp-phase-btn').forEach(function(b){var oc=b.getAttribute('onclick')||'';if(oc.indexOf('setDBSPPhase')>=0)b.classList.toggle('on',oc.indexOf("'"+dbspPhase+"'")>=0);});}
+  applyHomeMode();
+}
+function saveKv(key,obj){
+  if(!currentUser||!SUPABASE_READY)return Promise.resolve();
+  return sb.from('user_kv').upsert({user_id:currentUser.id,key:key,value:typeof obj==='string'?obj:JSON.stringify(obj),updated_at:new Date().toISOString()},{onConflict:'user_id,key'});
+}
+
+// Rules-based week generator (DBSP week rules, Nov 2026)
+function genWeek(team){
+  var T={};(team||[]).forEach(function(i){T[i]=1});
+  var days=[[],[],[],[],[],[],[]];
+  (team||[]).forEach(function(i){days[i].push('team')});
+  var free=[0,1,2,3,4,5,6].filter(function(i){return !T[i]});
+  // speed: earliest free day that leaves room for accel 2+ days later (Mon-Sat)
+  var speed=-1,accel=-1;
+  for(var a=0;a<free.length&&speed<0;a++){
+    var cand=free.filter(function(d){return d>=free[a]+2&&d<=5});
+    if(cand.length){speed=free[a];accel=cand[cand.length-1];}
+  }
+  if(speed<0&&free.length){speed=free[0];}
+  if(speed>=0){days[speed].push('fcs','fbp');}
+  if(accel>=0){days[accel].push('fca','lbs');}
+  // LB Power in the middle: free day between speed and accel nearest the midpoint, else a team day (gym AM)
+  if(speed>=0){
+    var end=accel>=0?accel:6,mid=(speed+end)/2,best=-1,bd=99;
+    for(var d=speed+1;d<end-(accel>=0?1:0);d++){if(!T[d]&&Math.abs(d-mid)<bd){bd=Math.abs(d-mid);best=d;}} // free day, not the day before accel + LB Str
+    if(best<0){for(var d2=speed+1;d2<end;d2++){if(Math.abs(d2-mid)<bd){bd=Math.abs(d2-mid);best=d2;}}}
+    if(best>=0)days[best].push('lbp');
+  }
+  return days.map(function(x){return WK_ORDER.filter(function(k){return x.indexOf(k)>=0})});
+}
+function itemsFor(date){
+  var iso=hv2Iso(date);
+  if(weekOv[iso])return weekOv[iso];
+  var tpl=weekTpl||{days:genWeek([1,3])};
+  return (tpl.days&&tpl.days[hv2Dow(date)])||[];
+}
+
+// ── Week setup / edit sheet ──
+function ensureWkSheet(){
+  if(document.getElementById('wk-sheet'))return;
+  var o=document.createElement('div');o.className='pf-overlay';o.id='wk-overlay';o.onclick=function(){closeWeekSheet(true)};
+  var s=document.createElement('div');s.className='pf-sheet';s.id='wk-sheet';
+  document.body.appendChild(o);document.body.appendChild(s);
+}
+function openWeekSheet(dateIso){
+  if(!currentUser){signIn();return;}
+  ensureWkSheet();
+  wkOvDate=dateIso||null;wkEditDay=-1;
+  if(wkOvDate){wkDraft={team:[],gym:(weekTpl&&weekTpl.gym)||'am',days:null,day:(itemsFor(new Date(dateIso+'T12:00:00'))||[]).slice()};}
+  else{var t=weekTpl||{team:[1,3],gym:'am',days:genWeek([1,3])};wkDraft={team:(t.team||[]).slice(),gym:t.gym||'am',days:t.days.map(function(x){return x.slice()})};}
+  renderWeekSheet();
+  document.getElementById('wk-overlay').classList.add('open');document.getElementById('wk-sheet').classList.add('open');
+}
+function closeWeekSheet(skip){
+  if(skip&&!weekTpl&&!wkOvDate&&currentUser){try{localStorage.setItem('wk-skip-'+currentUser.id,'1')}catch(e){}}
+  var o=document.getElementById('wk-overlay'),s=document.getElementById('wk-sheet');if(o)o.classList.remove('open');if(s)s.classList.remove('open');
+}
+function wkToggleTeam(i){var t=wkDraft.team,k=t.indexOf(i);if(k>=0)t.splice(k,1);else t.push(i);t.sort();wkDraft.days=genWeek(t);wkEditDay=-1;renderWeekSheet();}
+function wkSetGym(g){wkDraft.gym=g;renderWeekSheet();}
+function wkPickDay(i){wkEditDay=wkEditDay===i?-1:i;renderWeekSheet();}
+function wkToggleItem(i,k){var arr=wkOvDate?wkDraft.day:wkDraft.days[i],j=arr.indexOf(k);if(j>=0)arr.splice(j,1);else arr.push(k);
+  var sorted=WK_ORDER.filter(function(x){return arr.indexOf(x)>=0});if(wkOvDate)wkDraft.day=sorted;else wkDraft.days[i]=sorted;renderWeekSheet();}
+function wkLine(items){
+  if(!items.length)return '<span style="color:var(--t3)">Rest</span>';
+  return items.map(function(k){return k==='team'?'<span style="color:var(--cyan);font-weight:700">Team training</span>':'<b>'+WK_ITEMS[k]+'</b>'}).join(' <span style="color:var(--t3)">then</span> ');
+}
+function wkChips(i,items){
+  return '<div class="ci-chips" style="padding:4px 0 10px 54px">'+WK_ORDER.map(function(k){return "<button class='ci-chip sm"+(items.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem("+i+",\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>';
+}
+function renderWeekSheet(){
+  var s=document.getElementById('wk-sheet');if(!s)return;var d=wkDraft,h='';
+  if(wkOvDate){
+    var dt=new Date(wkOvDate+'T12:00:00');
+    h+='<div class="pf-title">Change '+WK_DAYS_LONG[hv2Dow(dt)]+'</div><div class="pf-sub">Just this date. Your usual week stays the same.</div>'
+      +'<div class="ci-chips">'+WK_ORDER.map(function(k){return "<button class='ci-chip"+(d.day.indexOf(k)>=0?" on":"")+"' onclick='wkToggleItem(0,\""+k+"\")'>"+WK_ITEMS[k]+"</button>"}).join('')+'</div>'
+      +'<div class="ci-msg" style="text-align:left;margin-top:10px">Nothing selected = rest day.</div>'
+      +'<div class="pf-acts"><button class="pf-skip" onclick="resetDayOverride()">Back to usual</button><button class="pf-save" onclick="saveWeekSheet()">Save</button></div>';
+    s.innerHTML=h;return;
+  }
+  h+='<div class="pf-title">Set up your week</div><div class="pf-sub">Tell us when your team trains. We\'ll fit your F&amp;C and gym around it. Tap any day to change it.</div>'
+    +'<span class="pf-lbl">Team training</span><div style="display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:5px">'
+    +WK_DAYS.map(function(n,i){var on=d.team.indexOf(i)>=0;return "<button class='ci-chip"+(on?" on":"")+"' style='padding:10px 0;border-radius:10px' onclick='wkToggleTeam("+i+")'>"+n+"</button>"}).join('')+'</div>'
+    +'<span class="pf-lbl">Gym usually</span><div class="ci-chips">'
+    +[['am','Morning'],['pm','Evening']].map(function(o){return "<button class='ci-chip"+(d.gym===o[0]?" on":"")+"' onclick='wkSetGym(\""+o[0]+"\")'>"+o[1]+"</button>"}).join('')+'</div>'
+    +'<span class="pf-lbl">Your week</span><div style="border:1px solid var(--bd2);border-radius:12px;padding:2px 12px;background:var(--sf)">';
+  d.days.forEach(function(items,i){
+    h+="<button onclick='wkPickDay("+i+")' style='display:grid;grid-template-columns:44px 1fr;gap:10px;width:100%;text-align:left;background:transparent;padding:10px 0;border-bottom:"+(i<6?"1px solid var(--bd)":"none")+";font-size:13px;color:var(--t)'><span style='font-weight:700;color:var(--t3)'>"+WK_DAYS[i]+"</span><span>"+wkLine(items)+"</span></button>";
+    if(wkEditDay===i)h+=wkChips(i,items);
+  });
+  h+='</div><div class="ci-msg" style="text-align:left">Speed comes before acceleration, no F&amp;C on team days, and lower body strength goes last in the week.</div>'
+    +'<div class="pf-acts"><button class="pf-skip" onclick="closeWeekSheet(true)">'+(weekTpl?'Cancel':'Later')+'</button><button class="pf-save" onclick="saveWeekSheet()">Looks good</button></div>';
+  s.innerHTML=h;
+}
+async function saveWeekSheet(){
+  if(wkOvDate){weekOv[wkOvDate]=wkDraft.day;await saveKv('week_overrides',weekOv);}
+  else{weekTpl={v:1,team:wkDraft.team,gym:wkDraft.gym,days:wkDraft.days};await saveKv('week_template',weekTpl);}
+  closeWeekSheet(false);showSave('saved','Week saved ✓');renderHomeV2();
+}
+async function resetDayOverride(){if(wkOvDate){delete weekOv[wkOvDate];await saveKv('week_overrides',weekOv);}closeWeekSheet(false);renderHomeV2();}
+function maybePromptWeek(){
+  if(!newHomeOn()||weekTpl)return;
+  var sk=null;try{sk=localStorage.getItem('wk-skip-'+currentUser.id)}catch(e){}
+  if(sk)return;
+  var tries=0;(function go(){
+    var busy=document.querySelector('.install-overlay.open,.upgrade-overlay.open,.pf-overlay.open');
+    if(busy&&tries++<60){setTimeout(go,1500);return;}
+    openWeekSheet();
+  })();
+}
+
+// ── Today's jobs ──
+function sessOn(iso){return sessions.filter(function(s){return s.date===iso})}
+function isFcLabel(l){return /Speed Day|Acceleration Day/.test(l||'')}
+function fcSessionFor(k){var p=dbspProgram()[myFcPhase()];return p?p[k==='fcs'?'speed':'accel']:null}
+function toggleGymDone(iso,k){var key=iso+':'+k;if(gymDone[key])delete gymDone[key];else gymDone[key]=1;
+  var cut=new Date();cut.setDate(cut.getDate()-21);var ci=hv2Iso(cut);Object.keys(gymDone).forEach(function(x){if(x<ci)delete gymDone[x]});
+  saveKv('gym_done',gymDone);renderHomeV2();}
+function openFcSession(k){dbspPhase=myFcPhase();dbspActiveSession=k==='fcs'?'speed':'accel';switchTab('sc',null);if(typeof renderDBSPBody==='function')renderDBSPBody();
+  setTimeout(function(){var el=document.getElementById('dbsp-program-section');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},150);}
+function logFcFromHome(k){fabLogSession();setType('fc');fcPhase=myFcPhase();fcSess=k==='fcs'?'speed':'accel';renderFCForm();}
+function logTrainingFor(iso){fabLogSession();setType('training');var el=document.getElementById('fdate-tr');if(el)el.value=iso;var lb=document.getElementById('flabel-tr');if(lb&&!lb.value)lb.value='Team training';}
+function openCheckinFromHome(){if(!srPanelOpen)toggleSelfReport();setTimeout(function(){var el=document.getElementById('self-report-panel');if(el)el.scrollIntoView({behavior:'smooth',block:'start'})},50);}
+function hv2Svg(path,col){return '<svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="'+(col||'#fff')+'" stroke-width="3" stroke-linecap="round" stroke-linejoin="round">'+path+'</svg>'}
+function jobRow(j){
+  var tick=j.note?'<span class="hj-dot note">'+hv2Svg('<path d="M13 2L4 14h7l-1 8 9-12h-7z"></path>','#b45309')+'</span>'
+    :j.done?'<span class="hj-dot done">'+hv2Svg('<path d="M5 12l5 5L20 7"></path>')+'</span>':'<span class="hj-dot"></span>';
+  if(j.manual)tick='<button class="hj-tickbtn" aria-label="'+(j.done?'Mark not done':'Mark done')+'" onclick="'+j.manual+'">'+tick+'</button>';
+  return '<div class="hj-row'+(j.done?' done':'')+(j.note?' note':'')+'">'+tick
+    +'<div class="hj-txt"'+(j.tap?' onclick="'+j.tap+'" style="cursor:pointer"':'')+'><div class="hj-t">'+j.t+'</div>'+(j.sub?'<div class="hj-s">'+j.sub+'</div>':'')+'</div>'
+    +(j.act&&!j.done?(j.href?'<a class="hj-act" href="'+j.href+'" target="_blank" rel="noopener">'+j.act+'</a>':'<button class="hj-act" onclick="'+j.actFn+'">'+j.act+'</button>'):'')+'</div>';
+}
+function weekStatus(){
+  var ws=weekStart(new Date()),we=weekEnd(new Date());
+  var wk=sessions.filter(function(s){if(!s.date)return false;var d=new Date(s.date+'T12:00:00');return d>=ws&&d<=we});
+  var hsr=wk.reduce(function(a,s){return a+(s.hsr||0)},0);
+  var G=(WT[ctx]||WT.international)[getCurrentBand()]||WT.international.moderate;
+  var pace=(hv2Dow(new Date())+1)/7,pc=G.hsr?hsr/G.hsr:0;
+  if(!wk.length)return{cls:'mid',t:'Nothing logged yet this week',s:''};
+  if(pc>pace*1.25&&pc>0.5)return{cls:'hi',t:'Running load is high',s:'Ease off. You\'re well ahead for this point in the week.'};
+  if(pc<pace*0.7)return{cls:'mid',t:'Behind on running load',s:'Get the planned F&C done to catch up.'};
+  return{cls:'ok',t:'On track this week',s:''};
+}
+function fcPlanSentence(){
+  var today=new Date(),ws=weekStart(today),parts=[];
+  for(var i=0;i<7;i++){var d=new Date(ws);d.setDate(ws.getDate()+i);var it=itemsFor(d),iso=hv2Iso(d);
+    ['fcs','fca'].forEach(function(k){if(it.indexOf(k)<0)return;
+      var name=k==='fcs'?'Speed':'Acceleration',done=sessOn(iso).some(function(s){return new RegExp(k==='fcs'?'Speed Day':'Acceleration Day').test(s.label||'')});
+      var diff=Math.round((d-new Date(hv2Iso(today)+'T00:00:00'))/86400000);
+      var when=done?'done':diff===0?'today':diff===1?'tomorrow':diff<0?'missed ('+WK_DAYS[i]+')':WK_DAYS_LONG[i];
+      parts.push(name+' '+when);});}
+  return parts.length?parts.join(', ')+'.':'';
+}
+function renderHomeV2(){
+  var el=document.getElementById('home-v2');if(!el)return;
+  if(!newHomeOn()){el.innerHTML=newHomeEligible()?'<div style="text-align:right;margin-bottom:8px"><button class="sr-change-btn" onclick="setHomeMode(\'new\')">Try the new home screen</button></div>':'';return;}
+  var now=new Date(),iso=hv2Iso(now),dow=hv2Dow(now),items=itemsFor(now),todaySess=sessOn(iso);
+  var band=getCurrentBand(),bandLbl={low:'Low week',moderate:'Build week',high:'Peak week',maintenance:'Maintenance week'}[band]||'';
+  var tEl=document.getElementById('tourn-date'),tName=(document.getElementById('tourn-name')||{}).value||'Tournament',weeksOut=null;
+  if(tEl&&tEl.value){var wo=Math.ceil((new Date(tEl.value)-weekStart(now))/(7*86400000));if(wo>=0)weeksOut=wo;}
+  if(band==='low'&&weeksOut!==null&&weeksOut<=1)bandLbl='Taper week';
+  var jobs=[];
+  // carry-over: last night's team training not logged
+  var y=new Date(now);y.setDate(now.getDate()-1);var yIso=hv2Iso(y);
+  if(itemsFor(y).indexOf('team')>=0&&!sessOn(yIso).some(function(s){return !isFcLabel(s.label)}))
+    jobs.push({t:'Log last night\'s training',sub:'So your week stays accurate',act:'Log',actFn:"logTrainingFor('"+yIso+"')"});
+  var ci=ciToday();
+  jobs.push({t:'Check in',sub:ci?ciEsc(RECOVERY_PROTOCOLS[ci.feeling].label+(ci.sleep_hrs!=null?' · '+(+ci.sleep_hrs<6?'<6':+ci.sleep_hrs>=9?'9+':+ci.sleep_hrs)+'h sleep':'')+((ci.niggles||[]).length?' · niggle logged':'')):'How are you pulling up?',done:!!ci,tap:'openCheckinFromHome()',act:ci?null:'Go',actFn:'openCheckinFromHome()'});
+  var hasFc=items.some(function(k){return k==='fcs'||k==='fca'});
+  if(items.indexOf('team')>=0){
+    var topThisWeek=sessions.some(function(s){if(!s.date||(s.vhsr||0)<50)return false;var d=new Date(s.date+'T12:00:00');return d>=weekStart(now)&&s.date<=iso});
+    if(!topThisWeek)jobs.push({note:true,t:'Top speed: get 3 flys in during the warm-up',sub:'No top speed exposure logged yet this week'});
+  }
+  // display order: F&C, then gym (morning, or straight after the run), team training, then evening gym
+  var gymLate=weekTpl&&weekTpl.gym==='pm'&&!hasFc;
+  var ordered=items.filter(function(k){return k==='fcs'||k==='fca'})
+    .concat(gymLate?[]:items.filter(function(k){return /^(fbp|lbp|lbs)$/.test(k)}))
+    .concat(items.filter(function(k){return k==='team'}))
+    .concat(gymLate?items.filter(function(k){return /^(fbp|lbp|lbs)$/.test(k)}):[]);
+  ordered.forEach(function(k){
+    if(k==='fcs'||k==='fca'){var fs=fcSessionFor(k),done=todaySess.some(function(s){return fs&&s.label===fs.label||new RegExp(k==='fcs'?'Speed Day':'Acceleration Day').test(s.label||'')});
+      jobs.push({t:'F&amp;C: '+(k==='fcs'?'Speed Day':'Acceleration Day'),sub:'Phase '+myFcPhase().slice(1)+(items.some(function(x){return x==='fbp'||x==='lbp'||x==='lbs'})?' · do this first':''),done:done,tap:"openFcSession('"+k+"')",act:'Open',actFn:"openFcSession('"+k+"')"});}
+    else if(k==='team'){var tdone=todaySess.some(function(s){return !isFcLabel(s.label)});
+      jobs.push({t:'Team training tonight',sub:tdone?'Logged':'Log it when you\'re done',done:tdone,act:'Log',actFn:"logTrainingFor('"+iso+"')"});}
+    else{var gk=iso+':'+k,gd=!!gymDone[gk];
+      jobs.push({t:WK_ITEMS[k],sub:(hasFc?'After your run':(weekTpl&&weekTpl.gym==='pm'?'Evening':'Morning'))+' · in TeamBuildr',done:gd,manual:"toggleGymDone('"+iso+"','"+k+"')",act:'Open',href:'https://app.teambuildr.com/'});}
+  });
+  var st=weekStatus(),plan=fcPlanSentence();
+  var h='<div class="hv2-head"><div class="hv2-eb">'+WK_DAYS_LONG[dow]+(bandLbl?' · '+bandLbl:'')+'</div><h1 class="hv2-h1">'+(items.length?'Today\'s jobs':'Rest day')+'</h1>'
+    +(!items.length?'<div class="hv2-sub">Do nothing and recover. That\'s the job.</div>':'')+'</div>'
+    +'<div class="hv2-card">'+jobs.map(jobRow).join('<div class="hj-sep"></div>')+'</div>'
+    +'<div class="hv2-links"><button class="sr-change-btn" onclick="openWeekSheet(\''+iso+'\')">Change today</button><button class="sr-change-btn" onclick="openWeekSheet()">Edit my week</button></div>'
+    +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div><div class="hv2-st">'+st.t+'</div><div class="hv2-ss">'+[st.s,plan,(weeksOut!==null?ciEsc(tName)+' in '+weeksOut+' week'+(weeksOut===1?'':'s')+'.':'')].filter(Boolean).join(' ')+'</div></div></div>'
+    +'<button class="hv2-log" onclick="fabLogSession()">'+hv2Svg('<path d="M12 5v14M5 12h14"></path>')+' Log session</button>'
+    +'<div style="text-align:center;margin-top:10px"><button class="sr-change-btn" onclick="setHomeMode(\'classic\')">Switch to classic home</button></div>';
+  el.innerHTML=h;
+}
+function setHomeMode(m){try{localStorage.setItem('ft-home',m)}catch(e){}applyHomeMode();if(m==='new')maybePromptWeek();}
+function applyHomeMode(){
+  var p=document.getElementById('panel-dashboard');if(!p)return;
+  p.classList.toggle('v2-on',newHomeOn());
+  renderHomeV2();
+}
+
 // ── ATHLETE PROFILE (name / jersey / position) ──
 var athleteProfile=null,pfPos=null,pfLoaded=false;
 function pfName(){if(athleteProfile&&athleteProfile.display_name)return athleteProfile.display_name;var m=currentUser&&currentUser.user_metadata||{};return m.full_name||m.name||''}
@@ -4143,6 +4412,7 @@ function renderPfPos(){
 function closeProfileSheet(skip){
   if(skip&&currentUser&&!athleteProfile){try{localStorage.setItem('pf-skip-'+currentUser.id,srDateKey())}catch(e){}}
   document.getElementById('pf-overlay').classList.remove('open');document.getElementById('pf-sheet').classList.remove('open');
+  if(skip)setTimeout(maybePromptWeek,700);
 }
 async function saveProfile(){
   var name=document.getElementById('pf-name').value.trim(),jersey=document.getElementById('pf-jersey').value.trim().replace(/[^0-9]/g,'').slice(0,3);
@@ -4153,7 +4423,7 @@ async function saveProfile(){
   var res=await sb.from('athlete_profiles').upsert(row,{onConflict:'user_id'});
   btn.disabled=false;btn.textContent='Save';
   if(res.error){msg.textContent='Couldn\'t save: '+res.error.message;return;}
-  athleteProfile=row;closeProfileSheet(false);renderAuthUI();showSave('saved','Profile saved ✓');
+  athleteProfile=row;closeProfileSheet(false);renderAuthUI();showSave('saved','Profile saved ✓');setTimeout(maybePromptWeek,700);
 }
 
 var HUBS={
@@ -5170,7 +5440,7 @@ function copyRTRLink(){
     if(next!==idx)switchTab(TAB_ORDER[next],null);
   },{passive:true});
 })();
-function renderAll(){renderDashboard();renderSessions();}
+function renderAll(){renderDashboard();renderSessions();if(typeof renderHomeV2==='function')renderHomeV2();}
 renderAll();
 // Deep-link: ?rtr=true switches to S&C tab on load
 (function(){
