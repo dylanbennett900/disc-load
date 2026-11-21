@@ -92,7 +92,28 @@ Deno.serve(async (req) => {
             athletes[r.user_id].tournament = { name: r.tournament_name || 'Tournament', date: r.tournament_date };
         });
       }
-      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label })), todos: td.data || [], athletes });
+      // Player profiles (athlete's own, with coach overrides winning) + recent daily check-ins
+      const profiles: Record<string, { display_name?: string | null; jersey?: string | null; position?: string | null; own?: unknown; coach?: unknown }> = {};
+      let checkins: unknown[] = [];
+      if (ids.size) {
+        const idl = [...ids];
+        const since = new Date(Date.now() - 21 * 864e5).toISOString().slice(0, 10);
+        const [ap, ov, ci] = await Promise.all([
+          db.from('athlete_profiles').select('user_id,display_name,jersey,position').in('user_id', idl),
+          db.from('coach_athlete_overrides').select('user_id,display_name,jersey,position').in('user_id', idl),
+          db.from('athlete_checkins').select('user_id,date,feeling,sleep_hrs,niggles,note').in('user_id', idl).gte('date', since).order('date', { ascending: false }),
+        ]);
+        (ap.data || []).forEach((r: any) => { profiles[r.user_id] = { own: r }; });
+        (ov.data || []).forEach((r: any) => { profiles[r.user_id] = { ...(profiles[r.user_id] || {}), coach: r }; });
+        for (const id of Object.keys(profiles)) {
+          const o: any = profiles[id].own || {}, c: any = profiles[id].coach || {};
+          profiles[id].display_name = c.display_name || o.display_name || null;
+          profiles[id].jersey = c.jersey || o.jersey || null;
+          profiles[id].position = c.position || o.position || null;
+        }
+        checkins = ci.data || [];
+      }
+      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label })), todos: td.data || [], athletes, profiles, checkins });
     }
     if (action === 'save') {
       const row = pick(body.client || {});
@@ -134,6 +155,22 @@ Deno.serve(async (req) => {
     }
     if (action === 'todo_delete') {
       const r = await db.from('coach_todos').delete().eq('id', body.id);
+      if (r.error) throw r.error;
+      return json({ ok: true });
+    }
+    if (action === 'player_save') {
+      const uid = String(body.user_id || '');
+      if (!/^[0-9a-f-]{36}$/.test(uid)) return json({ error: 'Bad player' }, 400);
+      const p = body.player || {};
+      const pos = ['handler', 'cutter', 'hybrid'].includes(p.position) ? p.position : null;
+      const row = {
+        user_id: uid,
+        display_name: p.display_name ? String(p.display_name).trim().slice(0, 60) || null : null,
+        jersey: p.jersey ? String(p.jersey).replace(/[^0-9]/g, '').slice(0, 3) || null : null,
+        position: pos,
+        updated_at: new Date().toISOString(),
+      };
+      const r = await db.from('coach_athlete_overrides').upsert(row, { onConflict: 'user_id' });
       if (r.error) throw r.error;
       return json({ ok: true });
     }
