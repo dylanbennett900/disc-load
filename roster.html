@@ -177,7 +177,7 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
 .vt-l{display:grid;grid-template-columns:repeat(6,1fr);gap:8px;margin-top:6px;font:500 9.5px var(--mono);color:var(--t3);text-align:center;text-transform:uppercase}
 .mchips{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
 .tbl-wrap{overflow-x:auto;margin:0 -14px;padding:0 14px}
-table.sq{width:100%;border-collapse:collapse;font-size:13px;min-width:640px}
+table.sq{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}
 table.sq th{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);text-align:right;padding:6px 6px;border-bottom:1.5px solid var(--bd2);cursor:pointer;white-space:nowrap}
 table.sq th:first-child,table.sq td:first-child{text-align:left}
 table.sq td{padding:9px 6px;border-bottom:1px solid var(--bd);text-align:right;white-space:nowrap}
@@ -190,6 +190,20 @@ table.sq td.fl{text-align:left;white-space:normal;font-size:12px;color:var(--t2)
 .dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:middle;background:var(--green-br)}
 .dot.amber{background:#ffb400}.dot.red{background:#ff6b5e}.dot.grey{background:var(--t4)}
 table.sq tr.xp td{padding:0 0 10px;background:transparent}
+.ci-strip{display:grid;grid-template-columns:repeat(14,1fr);gap:3px;margin-top:2px}
+.ci-strip span{height:18px;border-radius:3px;background:rgba(255,255,255,.08);position:relative}
+.ci-strip span.good{background:var(--green-br)}.ci-strip span.fatigued{background:#38bdf8}.ci-strip span.sore{background:#ffb400}.ci-strip span.both{background:#c084fc}
+.ci-strip span i{position:absolute;right:2px;top:2px;width:5px;height:5px;border-radius:50%;background:#ff6b5e}
+.ci-leg{display:flex;gap:10px;flex-wrap:wrap;font:500 9.5px var(--mono);color:rgba(255,255,255,.55);margin-top:6px;text-transform:uppercase;letter-spacing:.06em}
+.ci-leg b{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:4px;vertical-align:-1px}
+.ci-last{font-size:12.5px;color:rgba(255,255,255,.85);margin-top:8px;line-height:1.5}
+.ci-last .nig{color:#ffb400;font-weight:700}
+.pos{font:500 9.5px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--t3);margin-left:6px}
+.jn{font:700 11px var(--mono);color:var(--cyan-dk);margin-right:5px}
+.ed-row{display:grid;grid-template-columns:2fr 80px 1.3fr auto;gap:8px;align-items:end;margin-bottom:12px}
+.ed-row label{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:3px}
+.ed-row input,.ed-row select{width:100%;font:14px 'DM Sans',sans-serif;padding:8px 10px;border:1.5px solid var(--bd2);border-radius:6px;background:var(--sf2)}
+@media(max-width:560px){.ed-row{grid-template-columns:80px 1fr}.ed-row .full{grid-column:1/-1}}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy-deep);color:var(--cyan);padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
 .toast.show{opacity:1}
 </style>
@@ -282,7 +296,7 @@ table.sq tr.xp td{padding:0 0 10px;background:transparent}
 <script>
 var COACH_UID='c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 var OFFER_LABEL={coaching:'Custom coaching',rehab:'Injury rehab',speed:'Speed sessions',selfserve:'Self-serve'};
-var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={},todos=[],tFilter='open',tEditing=null,athletes={},sessBy={},ftOpen={};
+var KEY_STORE='dbsp_roster_key',tab='client',teamMembers={},teamCodes=[],byUser={},rkey=null,clients=[],notes={},appUsers=[],loads={},filter='active',editing=null,progId=null,expanded={},todos=[],tFilter='open',tEditing=null,athletes={},sessBy={},ftOpen={},profiles={},ciBy={};
 var main=document.getElementById('main');
 
 function esc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -352,7 +366,7 @@ async function load(){
   clients=d.clients||[];appUsers=d.users||[];
   notes={};(d.notes||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
   teamMembers=d.teamMembers||{};teamCodes=d.teamCodes||[];todos=d.todos||[];
-  var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});sessBy=by;athletes=d.athletes||{};
+  var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});sessBy=by;athletes=d.athletes||{};profiles=d.profiles||{};ciBy={};(d.checkins||[]).forEach(function(x){(ciBy[x.user_id]=ciBy[x.user_id]||[]).push(x)});
   loads={};
   clients.forEach(function(c){if(c.app_user_id)loads[c.app_user_id]=calcLoad(by[c.app_user_id]||[])});
   Object.keys(teamMembers).forEach(function(k){teamMembers[k].forEach(function(id){if(!loads[id])loads[id]=calcLoad(by[id]||[])})});
@@ -489,6 +503,21 @@ function ftAnalyse(c){
   var rH=ewma('hsr'),rV=ewma('vhsr');
   var lastTop=S.filter(function(x){return x.vhsr>=50})[0],topAgo=lastTop?Math.round((t-lastTop.d)/86400000):null;
   var dow=(t.getDay()+6)%7,flags=[];
+  // ── Daily check-ins ──
+  var C=(ciBy[uid]||[]).slice().sort(function(a,b){return a.date<b.date?1:-1}),lastCi=C[0]||null,ciAgo=lastCi?Math.round((t-parseD(lastCi.date))/86400000):null;
+  var activeNig=lastCi&&ciAgo<=3?(lastCi.niggles||[]):[];
+  activeNig.forEach(function(n){if(+n.sev>=5)flags.push({cls:'red',t:'Niggle: '+nigTxt(n)})});
+  if(lastCi){
+    // same niggle area on 3+ consecutive days up to the latest check-in
+    activeNig.forEach(function(n){var run=0,dd=parseD(lastCi.date);
+      for(var k=0;k<C.length;k++){var cd=parseD(C[k].date),exp=new Date(dd);exp.setDate(dd.getDate()-run);
+        if(cd.getTime()!==exp.getTime())break;if(!(C[k].niggles||[]).some(function(m){return m.area===n.area}))break;run++;}
+      if(run>=3)flags.push({cls:'amber',t:'Niggle '+run+' days running: '+(n.side==='l'?'L ':n.side==='r'?'R ':'')+n.area});});
+    var fr=0,dd2=parseD(lastCi.date);
+    for(var k=0;k<C.length;k++){var cd=parseD(C[k].date),exp=new Date(dd2);exp.setDate(dd2.getDate()-fr);if(cd.getTime()!==exp.getTime()||C[k].feeling==='good')break;fr++;}
+    if(fr>=3&&ciAgo<=1)flags.push({cls:'amber',t:'Fatigued or sore '+fr+' days running'});
+    if(ciAgo>=5)flags.push({cls:'amber',t:'No check-in in '+ciAgo+' days'});
+  }
   if(!S.length)flags.push({cls:'amber',t:'No sessions logged yet'});
   else{
     if(ago>=7)flags.push({cls:ago>=14?'red':'amber',t:'Nothing logged in '+ago+' days'});
@@ -497,9 +526,22 @@ function ftAnalyse(c){
     else if(rH!==null&&rH<0.8&&ago!==null&&ago<7)flags.push({cls:'amber',t:'HSR load dropping (ratio '+rH.toFixed(2)+')'});
     if(cur.band==='low'&&cur.tot.hsr>cur.tg.hsr)flags.push({cls:'amber',t:'Over HSR target in a '+(tourn&&Math.ceil((parseD(tourn.date)-wkStart(t))/(7*86400000))<=1?'taper':'low')+' week'});
     else if(dow>=3&&cur.band!=='low'&&cur.tot.hsr<cur.tg.hsr*0.4)flags.push({cls:'amber',t:'HSR well behind for the week ('+Math.round(cur.tot.hsr/cur.tg.hsr*100)+'%)'});
-    if(!flags.length)flags.push({cls:'ok',t:'On track. Nothing to flag.'});
   }
-  return{ctx:ctx,tourn:tourn,weeks:weeks,cur:cur,S:S,last:last,ago:ago,rH:rH,rV:rV,flags:flags,dow:dow};
+  if(!flags.length)flags.push({cls:'ok',t:'On track. Nothing to flag.'});
+  return{C:C,lastCi:lastCi,ciAgo:ciAgo,activeNig:activeNig,ctx:ctx,tourn:tourn,weeks:weeks,cur:cur,S:S,last:last,ago:ago,rH:rH,rV:rV,flags:flags,dow:dow};
+}
+function ciSection(a){
+  var h='<div class="ft-sec"><span>Daily check-ins · last 14 days</span><span>'+(a.lastCi?(a.ciAgo===0?'today':a.ciAgo+'d ago'):'none yet')+'</span></div>';
+  var by={};(a.C||[]).forEach(function(x){by[x.date]=x});
+  h+='<div class="ci-strip">';
+  for(var i=13;i>=0;i--){var d=new Date(today());d.setDate(d.getDate()-i);var k=iso(d),x=by[k];
+    h+='<span class="'+(x?x.feeling:'')+'" title="'+fmtShort(k)+(x?': '+esc(FEEL_LBL[x.feeling])+(x.sleep_hrs!=null?' · '+x.sleep_hrs+'h':'')+((x.niggles||[]).length?' · '+esc(x.niggles.map(nigTxt).join(', ')):''):': no check-in')+'">'+(x&&(x.niggles||[]).length?'<i></i>':'')+'</span>'}
+  h+='</div><div class="ci-leg"><span><b style="background:var(--green-br)"></b>Good</span><span><b style="background:#38bdf8"></b>Fatigued</span><span><b style="background:#ffb400"></b>Sore</span><span><b style="background:#c084fc"></b>Both</span><span><b style="background:#ff6b5e;border-radius:50%"></b>Niggle</span></div>';
+  if(a.lastCi){var x=a.lastCi;
+    h+='<div class="ci-last"><b>'+(a.ciAgo===0?'Today':fmtShort(x.date))+':</b> '+esc(FEEL_LBL[x.feeling])+(x.sleep_hrs!=null?' · '+(+x.sleep_hrs<6?'<6':+x.sleep_hrs>=9?'9+':+x.sleep_hrs)+'h sleep':'')
+      +((x.niggles||[]).length?' · <span class="nig">'+esc(x.niggles.map(nigTxt).join(', '))+'</span>':' · no niggles')
+      +(x.note?'<br><span style="color:rgba(255,255,255,.6)">“'+esc(x.note)+'”</span>':'')+'</div>';}
+  return h;
 }
 function ftPanel(c){
   if(!c.app_user_id)return '<div class="ft"><div class="ft-eb">Frisbee Track</div><div class="ft-empty">Not linked. Edit the client and pick their Frisbee Track account to see their load here.</div></div>';
@@ -512,6 +554,7 @@ function ftPanel(c){
     +'<div class="ft-ratio"><div class="n" style="color:'+zc+'">'+(a.rH!==null?a.rH.toFixed(2):'—')+'</div><div class="l">HSR ratio · '+esc(z.l)+'</div>'
     +(a.rV!==null?'<div class="l">VHSR '+a.rV.toFixed(2)+'</div>':'')+'</div></div>';
   h+='<div class="ft-flags">'+a.flags.map(function(f){return '<div class="ft-flag '+f.cls+'">'+esc(f.t)+'</div>'}).join('')+'</div>';
+  h+=ciSection(a);
   if(!a.S.length)return h+'</div>';
   var pace=Math.min(1,(a.dow+1)/7);
   h+='<div class="ft-sec"><span>This week vs target</span><span>'+cur.tot.n+' session'+(cur.tot.n===1?'':'s')+'</span></div>';
@@ -533,7 +576,15 @@ function ftPanel(c){
 }
 // ── Team squad dashboard ──
 var tdashId=null,tdMetric='hsr',tdSort='attention',tdSel=null;
-function playerName(uid){var u=appUsers.find(function(x){return x.user_id===uid});if(!u)return'Player';if(u.name)return u.name;return(u.email||'Player').split('@')[0]}
+function playerName(uid){var pr=profiles[uid];if(pr&&pr.display_name)return pr.display_name;var u=appUsers.find(function(x){return x.user_id===uid});if(!u)return'Player';if(u.name)return u.name;return(u.email||'Player').split('@')[0]}
+var POS_LBL={handler:'Handler',cutter:'Cutter',hybrid:'Hybrid'};
+function nigTxt(n){return (n.side==='l'?'L ':n.side==='r'?'R ':n.side==='both'?'Both ':'')+n.area+' '+n.sev+'/10'}
+var FEEL_LBL={good:'Good',fatigued:'Fatigued',sore:'Sore',both:'Fatigued + sore'};
+async function savePlayer(uid){
+  var g=function(id){var el=document.getElementById(id);return el?el.value.trim():''};
+  try{await api('player_save',{user_id:uid,player:{display_name:g('ed-name'),jersey:g('ed-jersey'),position:g('ed-pos')}})}catch(err){toast(err.message);return}
+  toast('Player saved');await load();
+}
 function openTeam(id){tdashId=id;tdSel=null;renderTeamDash();document.getElementById('tdash').classList.add('open');document.getElementById('tdash').scrollTop=0;document.body.style.overflow='hidden'}
 function closeTeam(){tdashId=null;document.getElementById('tdash').classList.remove('open');document.body.style.overflow=''}
 function tdSet(k,v){if(k==='m')tdMetric=v;else tdSort=v;renderTeamDash()}
@@ -590,17 +641,25 @@ function renderTeamDash(){
   // Player table
   var th=function(k,l){return '<th onclick="tdSet(\'s\',\''+k+'\')">'+l+(tdSort===k?' ▾':'')+'</th>'};
   h+='<div class="td-card" style="margin-top:12px"><h4>Players <span>tap a player for their full panel</span></h4><div class="tbl-wrap"><table class="sq"><thead><tr>'
-    +th('name','Player')+'<th>Sess</th><th>Dist</th><th>HSR</th><th>VHSR</th><th>Acc</th>'+th('ratio','Ratio')+'<th>Last log</th>'+th('attention','Flags')+'</tr></thead><tbody>'
+    +th('name','Player')+'<th>Sess</th><th>Dist</th><th>HSR</th><th>VHSR</th><th>Acc</th>'+th('ratio','Ratio')+'<th>Last log</th><th>Check-in</th><th>Niggle</th>'+th('attention','Flags')+'</tr></thead><tbody>'
     +sorted.map(function(p){var a=p.a,zz=zone(a.rH),top=p.flags[0];
       var dcls=(tdSel===p.uid?'':'')+(p.flags.some(function(f){return f.cls==='red'})?'red':p.flags.length?'amber':a.S.length?'':'grey');
-      var row='<tr class="pl'+(tdSel===p.uid?' on':'')+'" onclick="tdToggle(\''+p.uid+'\')"><td class="nm"><span class="dot '+dcls+'"></span>'+esc(p.name)+'</td><td>'+a.cur.tot.n+'</td>'
+      var row='<tr class="pl'+(tdSel===p.uid?' on':'')+'" onclick="tdToggle(\''+p.uid+'\')"><td class="nm"><span class="dot '+dcls+'"></span>'+(profiles[p.uid]&&profiles[p.uid].jersey?'<span class="jn">#'+esc(profiles[p.uid].jersey)+'</span>':'')+esc(p.name)+(profiles[p.uid]&&profiles[p.uid].position?'<span class="pos">'+esc(POS_LBL[profiles[p.uid].position]||'')+'</span>':'')+'</td><td>'+a.cur.tot.n+'</td>'
         +['dist','hsr','vhsr','acc'].map(function(k){var v=a.cur.tot.n?p.pct(k):null;return '<td><span class="pc '+pcCls(v)+'">'+pcTxt(v)+'</span></td>'}).join('')
         +'<td><span class="pc" style="color:'+(zz.cls==='red'?'var(--red)':zz.cls==='amber'?'#b07800':zz.cls==='green'?'var(--green)':'var(--t3)')+'">'+(a.rH!==null?a.rH.toFixed(2):'—')+'</span></td>'
-        +'<td>'+(a.last?(a.ago===0?'Today':a.ago+'d'):'—')+'</td><td class="fl">'+(top?esc(top.t)+(p.flags.length>1?' <span class="muted">+'+(p.flags.length-1)+'</span>':''):'<span class="muted">On track</span>')+'</td></tr>';
+        +'<td>'+(a.last?(a.ago===0?'Today':a.ago+'d'):'—')+'</td>'
+        +'<td>'+(a.lastCi?(a.ciAgo===0?esc(FEEL_LBL[a.lastCi.feeling])+(a.lastCi.sleep_hrs!=null?' · '+(+a.lastCi.sleep_hrs<6?'<6':+a.lastCi.sleep_hrs>=9?'9+':+a.lastCi.sleep_hrs)+'h':''):'<span class="muted">'+a.ciAgo+'d ago</span>'):'<span class="muted">—</span>')+'</td>'
+        +'<td>'+(a.activeNig.length?'<span class="pc '+(a.activeNig.some(function(n){return +n.sev>=5})?'hi':'lo')+'" style="'+(a.activeNig.some(function(n){return +n.sev>=5})?'color:var(--red)':'color:#b07800')+'">'+esc(nigTxt(a.activeNig.slice().sort(function(x,y){return y.sev-x.sev})[0]))+(a.activeNig.length>1?' +'+(a.activeNig.length-1):'')+'</span>':'<span class="muted">—</span>')+'</td><td class="fl">'+(top?esc(top.t)+(p.flags.length>1?' <span class="muted">+'+(p.flags.length-1)+'</span>':''):'<span class="muted">On track</span>')+'</td></tr>';
       return row}).join('')
     +'</tbody></table></div></div>';
   var sel=tdSel&&P.find(function(p){return p.uid===tdSel});
-  if(sel)h+='<div class="td-card" id="tdSel" style="margin-top:12px;scroll-margin-top:70px"><h4>'+esc(sel.name)+' <span><button class="link" onclick="tdToggle(\''+sel.uid+'\')">Close</button></span></h4>'+ftPanel(sel.pc)+'</div>';
+  if(sel){var pr=profiles[sel.uid]||{},u=appUsers.find(function(x){return x.user_id===sel.uid})||{};
+    h+='<div class="td-card" id="tdSel" style="margin-top:12px;scroll-margin-top:70px"><h4>'+esc(sel.name)+' <span>'+esc(u.email||'')+' · <button class="link" onclick="tdToggle(\''+sel.uid+'\')">Close</button></span></h4>'
+      +'<div class="ed-row"><div class="full"><label>Name</label><input id="ed-name" maxlength="60" value="'+esc(pr.display_name||sel.name)+'"></div>'
+      +'<div><label>Jersey</label><input id="ed-jersey" maxlength="3" inputmode="numeric" value="'+esc(pr.jersey||'')+'"></div>'
+      +'<div><label>Position</label><select id="ed-pos"><option value="">—</option>'+['handler','cutter','hybrid'].map(function(k){return '<option value="'+k+'"'+(pr.position===k?' selected':'')+'>'+POS_LBL[k]+'</option>'}).join('')+'</select></div>'
+      +'<div><button class="btn sm p" onclick="savePlayer(\''+sel.uid+'\')">Save</button></div></div>'
+      +ftPanel(sel.pc)+'</div>';}
   h+='</div>';
   document.getElementById('tdash').innerHTML=h;
 }

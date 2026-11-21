@@ -769,6 +769,41 @@ input,select{font-family:inherit;outline:none}
 .ss-info-card{margin-top:16px;padding:12px 14px;border-radius:var(--radius-sm);background:rgba(2,132,199,0.05);border:1px solid rgba(2,132,199,0.18);font-size:10.5px;color:var(--t2);line-height:1.55}
 .ss-info-card strong{color:#0284c7;font-family:var(--display);letter-spacing:.3px}
 .wk-tourn-card{background:rgba(161,98,7,0.06);border:1.5px solid rgba(161,98,7,0.2);border-radius:var(--radius);padding:13px 16px;margin-bottom:8px;display:flex;align-items:center;gap:10px;box-shadow:var(--sh)}
+/* Daily check-in + athlete profile */
+.ci-sec{font-size:9.5px;font-weight:800;letter-spacing:1.2px;text-transform:uppercase;color:var(--t3);font-family:var(--display);margin:14px 0 7px}
+.ci-sec:first-child{margin-top:0}
+.ci-chips{display:flex;gap:6px;flex-wrap:wrap}
+.ci-chip{padding:8px 12px;border-radius:20px;border:1.5px solid var(--bd2);background:var(--sf);color:var(--t2);font-size:12px;font-weight:700;font-family:var(--body);cursor:pointer;transition:all .15s}
+.ci-chip.on{background:var(--cyan);border-color:var(--cyan);color:#fff}
+.ci-chip.sm{padding:6px 10px;font-size:11px}
+.sr-state-btn.on{color:#fff!important}
+.ci-nig{border:1px solid var(--bd2);border-radius:var(--radius-sm);padding:10px;margin-top:8px;background:var(--sf2)}
+.ci-nig-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:11px;font-weight:700;color:var(--t2)}
+.ci-nig-x{background:transparent;color:var(--t4);font-size:18px;line-height:1;padding:0 4px}
+.ci-sev{display:flex;align-items:center;gap:10px;margin-top:8px}
+.ci-sev input{flex:1;accent-color:var(--amber)}
+.ci-sev b{font-family:var(--mono);font-size:12px;min-width:38px;text-align:right}
+.ci-note{width:100%;border:1.5px solid var(--bd2);border-radius:var(--radius-sm);padding:9px 11px;font-size:13px;font-family:var(--body);resize:vertical;min-height:40px;background:var(--sf)}
+.ci-save{width:100%;margin-top:14px;padding:12px;border-radius:var(--radius-sm);background:var(--cyan);color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.8px;text-transform:uppercase}
+.ci-save:disabled{opacity:.45;cursor:not-allowed}
+.ci-msg{font-size:11px;color:var(--t3);margin-top:8px;text-align:center}
+.ci-sum{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 8px}
+.ci-tag{font-size:10.5px;font-weight:700;padding:3px 8px;border-radius:12px;background:var(--sf3);color:var(--t2)}
+.ci-tag.warn{background:rgba(180,83,9,.1);color:var(--amber)}
+.ci-dot{display:inline-block;width:7px;height:7px;border-radius:50%;background:var(--amber);margin-left:2px;vertical-align:1px}
+.pf-overlay{position:fixed;inset:0;z-index:80;background:rgba(15,23,42,0.4);opacity:0;pointer-events:none;transition:opacity .28s}
+.pf-overlay.open{opacity:1;pointer-events:all}
+.pf-sheet{position:fixed;bottom:0;left:0;right:0;z-index:81;background:var(--sf);border-radius:22px 22px 0 0;padding:20px 18px calc(24px + env(safe-area-inset-bottom));box-shadow:0 -12px 48px rgba(15,23,42,0.18);transform:translateY(110%);transition:transform .3s cubic-bezier(.4,0,.2,1);max-height:94vh;overflow-y:auto;max-width:560px;margin:0 auto}
+.pf-sheet.open{transform:translateY(0)}
+.pf-title{font-size:22px;font-weight:900;font-family:var(--display);letter-spacing:.3px;text-transform:uppercase;color:var(--t)}
+.pf-sub{font-size:12.5px;color:var(--t3);margin:4px 0 14px;line-height:1.5}
+.pf-lbl{font-size:10px;font-weight:800;letter-spacing:1px;text-transform:uppercase;color:var(--t3);font-family:var(--display);margin:12px 0 5px;display:block}
+.pf-inp{width:100%;border:1.5px solid var(--bd2);border-radius:var(--radius-sm);padding:10px 12px;font-size:14px;background:var(--sf2);color:var(--t)}
+.pf-row{display:grid;grid-template-columns:110px 1fr;gap:10px}
+.pf-acts{display:flex;gap:10px;margin-top:18px}
+.pf-skip{flex:1;padding:12px;border-radius:var(--radius-sm);background:transparent;border:1.5px solid var(--bd2);color:var(--t3);font-weight:700}
+.pf-save{flex:2;padding:12px;border-radius:var(--radius-sm);background:var(--cyan);color:#fff;font-size:13px;font-weight:800;font-family:var(--display);letter-spacing:.8px;text-transform:uppercase}
+.auth-user .auth-name{cursor:pointer;text-decoration:underline dotted;text-underline-offset:3px}
 </style>
 <script src="config.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
@@ -927,7 +962,7 @@ input,select{font-family:inherit;outline:none}
   <div class="action-strip">
     <button class="sr-trigger-btn" id="sr-trigger-btn" onclick="toggleSelfReport()">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:inline-block;vertical-align:-2px;flex-shrink:0"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="var(--cyan)" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="var(--cyan)" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/></svg>
-      How are you feeling?
+      How are you pulling up?
     </button>
     <button class="ai-btn" id="ai-prescribe-btn" onclick="getAIPrescription()">
       <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><circle cx="7" cy="7" r="5.5" stroke="white" stroke-width="1.5"/><path d="M5 7l1.5 1.5L9.5 5" stroke="white" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/></svg>
@@ -938,8 +973,8 @@ input,select{font-family:inherit;outline:none}
     <div class="sr-panel">
       <div class="sr-panel-head">
         <div>
-          <div class="sr-panel-title">Recovery Check-In</div>
-          <div class="sr-panel-sub">Log how you're feeling — get your protocol for today</div>
+          <div class="sr-panel-title">Daily Check-In</div>
+          <div class="sr-panel-sub">10 seconds. Your recovery protocol, and your coach stays in the loop</div>
         </div>
         <button onclick="toggleSelfReport()" style="background:transparent;border:none;color:var(--t4);font-size:20px;cursor:pointer;line-height:1;padding:0 2px">&times;</button>
       </div>
@@ -1626,7 +1661,7 @@ async function loadSessions(){
         return;
       }
       loadSessions._retrying=false;
-      currentUser=null;sessions=DEMO_SESSIONS.slice();
+      currentUser=null;sessions=DEMO_SESSIONS.slice();athleteProfile=null;pfLoaded=false;checkins={};ciDraft=null;
       renderAuthUI();renderAll();
       sb.auth.signOut().catch(function(){});// background cleanup, never awaited
       return;
@@ -1804,7 +1839,7 @@ async function redeemBetaCode(){
     if(!res.ok)throw new Error(data.error||'Redemption failed');
     msg.textContent='\u2713 Code accepted \u2014 welcome to Pro!';msg.className='up-code-msg success';
     await loadSubscription();
-    setTimeout(closeUpgradeModal,1800);
+    setTimeout(function(){closeUpgradeModal();if(!athleteProfile)setTimeout(function(){maybePromptProfile(true)},500);},1800);
   }catch(e){
     msg.textContent=e.message;msg.className='up-code-msg error';
   }finally{
@@ -1848,7 +1883,7 @@ async function signIn(){
 }
 async function signOut(){
   // Clear local state immediately — UI is responsive regardless of network.
-  currentUser=null;sessions=DEMO_SESSIONS.slice();
+  currentUser=null;sessions=DEMO_SESSIONS.slice();athleteProfile=null;pfLoaded=false;checkins={};ciDraft=null;
   renderAuthUI();renderAll();
   // Fire Supabase signOut in background with timeout — never block the UI on it.
   if(SUPABASE_READY){
@@ -1864,12 +1899,11 @@ function renderAuthUI(){
     el.innerHTML="<button class='auth-login' onclick='signIn()'>Sign in</button>";
   } else {
     var initials=(currentUser.email||"?")[0].toUpperCase();
-    var name=(currentUser.user_metadata&&currentUser.user_metadata.full_name)
-      ?currentUser.user_metadata.full_name.split(" ")[0]
-      :currentUser.email.split("@")[0];
+    var nm=(typeof pfName==='function'&&pfName())||'';
+    var name=nm?nm.split(" ")[0]:currentUser.email.split("@")[0];
     el.innerHTML="<div class='auth-user'>"
       +"<div class='auth-avatar'>"+initials+"</div>"
-      +"<span>"+name+"</span>"
+      +"<span class='auth-name' title='Edit your player profile' onclick='openProfileSheet()'>"+ciEsc(name)+"</span>"
       +"<button onclick='signOut()' style='background:transparent;border:none;color:var(--t4);font-size:10px;padding:0;cursor:pointer;margin-left:2px'>Sign out</button>"
       +"</div>";
   }
@@ -3354,7 +3388,10 @@ async function loadSettings(){
     var recRes=await sb.from('user_kv').select('value').eq('user_id',currentUser.id).eq('key','recovery_states').maybeSingle();
     if(recRes.data&&recRes.data.value){try{recoveryStates=JSON.parse(recRes.data.value);}catch(e){}}
   }catch(e){}
-  renderSRButton();
+  await loadCheckins();
+  await loadProfile();
+  maybePromptProfile(false);
+  renderSRButton();if(srPanelOpen)renderSRPanel();
   renderWeekStrip();renderDashboard();renderRoadmap();renderTournamentHistory();renderOFCAccordion();renderDrillLibrary();
 }
 async function saveTournamentClick(){
@@ -3882,7 +3919,7 @@ async function saveEdit(){
 }
 
 // ── SELF-REPORT / RECOVERY ──
-function srDateKey(){ return new Date().toISOString().split('T')[0]; }
+function srDateKey(){ var d=new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0'); }
 
 function toggleSelfReport(){
   srPanelOpen=!srPanelOpen;
@@ -3914,7 +3951,7 @@ function renderSRButton(){
   if(!btn)return;
   var state=recoveryStates[srDateKey()];
   var wc=state?RECOVERY_PROTOCOLS[state].color:'var(--cyan)';
-  var label=state?RECOVERY_PROTOCOLS[state].label+' <span style="font-size:9px;opacity:.7">\u2713 logged</span>':'How are you feeling?';
+  var label=state?RECOVERY_PROTOCOLS[state].label+' <span style="font-size:9px;opacity:.7">\u2713 checked in</span>':'How are you pulling up? <span class="ci-dot"></span>';
   if(state){
     var p=RECOVERY_PROTOCOLS[state];
     btn.style.cssText='flex:1;display:inline-flex;align-items:center;justify-content:center;gap:7px;padding:10px 16px;border-radius:20px;font-size:12px;font-weight:800;font-family:var(--display);letter-spacing:.5px;transition:all .18s;cursor:pointer;border:1.5px solid '+p.color+';color:'+p.color+';background:'+p.color+'12;box-shadow:0 2px 8px '+p.color+'30;';
@@ -3924,33 +3961,150 @@ function renderSRButton(){
   var svg='<svg width="14" height="14" viewBox="0 0 14 14" fill="none" style="display:inline-block;vertical-align:-2px;flex-shrink:0"><path d="M1 9Q2.5 7 4 9Q5.5 11 7 9Q8.5 7 10 9Q11.5 11 13 9" stroke="'+wc+'" stroke-width="1.5" stroke-linecap="round" fill="none"/><path d="M1 6Q2.5 4 4 6Q5.5 8 7 6Q8.5 4 10 6Q11.5 8 13 6" stroke="'+wc+'" stroke-width="1.2" stroke-linecap="round" fill="none" opacity=".4"/></svg>';
   btn.innerHTML=svg+label;
 }
+// ── DAILY CHECK-IN (feeling + sleep + niggles + note) ──
+var CI_AREAS=['Hamstring','Quad','Calf','Groin / adductor','Hip','Knee','Ankle','Foot','Lower back','Shoulder','Other'];
+var CI_SLEEP=[{v:5.5,l:'<6'},{v:6,l:'6'},{v:7,l:'7'},{v:8,l:'8'},{v:9,l:'9+'}];
+var checkins={},ciDraft=null,ciEditing=false,ciSaving=false;
+function ciToday(){return checkins[srDateKey()]||null}
+function ciEsc(x){return String(x==null?'':x).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+async function loadCheckins(){
+  if(!currentUser||!SUPABASE_READY)return;
+  try{
+    var since=new Date();since.setDate(since.getDate()-30);
+    var res=await sb.from('athlete_checkins').select('date,feeling,sleep_hrs,niggles,note').eq('user_id',currentUser.id).gte('date',since.toISOString().slice(0,10));
+    checkins={};(res.data||[]).forEach(function(r){checkins[r.date]=r;recoveryStates[r.date]=r.feeling;});
+  }catch(e){}
+}
+function ciStart(){
+  var t=ciToday();
+  ciDraft=t?{feeling:t.feeling,sleep_hrs:t.sleep_hrs!=null?+t.sleep_hrs:null,niggles:JSON.parse(JSON.stringify(t.niggles||[])),hasNig:(t.niggles||[]).length>0,note:t.note||''}
+           :{feeling:recoveryStates[srDateKey()]||null,sleep_hrs:null,niggles:[],hasNig:null,note:''};
+}
+function ciSet(k,v){if(!ciDraft)ciStart();ciDraft[k]=v;if(k==='hasNig'){if(v&&!ciDraft.niggles.length)ciDraft.niggles.push({area:null,side:null,sev:3});if(!v)ciDraft.niggles=[];}renderSRPanel();}
+function ciNig(i,k,v){ciDraft.niggles[i][k]=v;if(k!=='sev')renderSRPanel();else{var el=document.getElementById('ci-sev-'+i);if(el)el.textContent=v+'/10';}}
+function ciAddNig(){ciDraft.niggles.push({area:null,side:null,sev:3});renderSRPanel();}
+function ciDelNig(i){ciDraft.niggles.splice(i,1);if(!ciDraft.niggles.length)ciDraft.hasNig=false;renderSRPanel();}
+function ciEdit(){ciEditing=true;ciStart();renderSRPanel();}
+async function saveCheckin(){
+  if(!ciDraft||!ciDraft.feeling||ciSaving)return;
+  var nig=(ciDraft.niggles||[]).filter(function(n){return n.area});
+  var row={date:srDateKey(),feeling:ciDraft.feeling,sleep_hrs:ciDraft.sleep_hrs,niggles:nig.map(function(n){return{area:n.area,side:n.side||null,sev:+n.sev||0}}),note:(ciDraft.note||'').trim().slice(0,500)||null};
+  recoveryStates[row.date]=row.feeling;
+  if(currentUser&&SUPABASE_READY){
+    ciSaving=true;renderSRPanel();
+    var res=await sb.from('athlete_checkins').upsert(Object.assign({user_id:currentUser.id,updated_at:new Date().toISOString()},row),{onConflict:'user_id,date'});
+    ciSaving=false;
+    if(res.error){showSave('error','Check-in not saved');renderSRPanel();return;}
+    persistRecoveryStates();
+  }
+  checkins[row.date]=row;ciEditing=false;ciDraft=null;
+  showSave('saved','Checked in ✓');
+  renderSRPanel();renderSRButton();renderWeekCalendar();
+}
+function ciSummary(t){
+  var tags=[];
+  if(t.sleep_hrs!=null)tags.push('<span class="ci-tag">Sleep '+(+t.sleep_hrs<6?'<6':+t.sleep_hrs>=9?'9+':+t.sleep_hrs)+'h</span>');
+  (t.niggles||[]).forEach(function(n){tags.push('<span class="ci-tag warn">'+ciEsc((n.side&&n.side!=='both'?n.side.toUpperCase()+' ':n.side==='both'?'Both ':'')+n.area)+' '+n.sev+'/10</span>')});
+  if(!(t.niggles||[]).length)tags.push('<span class="ci-tag">No niggles</span>');
+  return '<div class="ci-sum">'+tags.join('')+'</div>'+(t.note?'<div style="font-size:11.5px;color:var(--t2);margin-bottom:8px">“'+ciEsc(t.note)+'”</div>':'');
+}
 function renderSRPanel(){
   var inner=document.getElementById('sr-panel-inner');
   if(!inner)return;
-  var state=recoveryStates[srDateKey()];
+  var t=ciToday(),state=t?t.feeling:recoveryStates[srDateKey()];
   var panel=document.querySelector('.sr-panel');
-  if(panel){panel.style.borderColor=state?RECOVERY_PROTOCOLS[state].color+'44':'rgba(2,132,199,0.2)';}
-  if(!state){
-    inner.innerHTML="<div style='font-size:11px;color:var(--t3);margin-bottom:11px;line-height:1.55'>How are you feeling today? Pick the closest option to get your recovery protocol.</div>"
-      +"<div class='sr-state-btns'>"+Object.keys(RECOVERY_PROTOCOLS).map(function(k){
-        var p=RECOVERY_PROTOCOLS[k];
-        return "<button class='sr-state-btn' style='border-color:"+p.color+";color:"+p.color+";' onclick='setSelfReportState(\""+k+"\")'>"
-          +"<span class='sr-btn-label'>"+p.label+"</span>"
-          +"<span class='sr-btn-desc'>"+p.btnDesc+"</span>"
-          +"</button>";
-      }).join('')+"</div>";
-  } else {
+  if(panel){panel.style.borderColor=state&&!ciEditing?RECOVERY_PROTOCOLS[state].color+'44':'rgba(2,132,199,0.2)';}
+  if(state&&!ciEditing&&(t||!currentUser)){
     var proto=RECOVERY_PROTOCOLS[state];
     inner.innerHTML="<div class='sr-confirmed'>"
       +"<div style='width:8px;height:8px;border-radius:50%;background:"+proto.color+";flex-shrink:0'></div>"
       +"<span style='font-weight:700;color:"+proto.color+"'>"+proto.label+"</span>"
-      +"<span style='color:var(--t3)'>\u2014 "+proto.desc+"</span>"
+      +"<span style='color:var(--t3)'>— "+proto.desc+"</span>"
       +"</div>"
+      +(t?ciSummary(t):'')
       +"<div class='sr-protocol'>"+proto.options.map(function(o,i){
         return "<div class='sr-protocol-opt'><span class='sr-protocol-num' style='color:"+proto.color+"'>"+(i+1)+"</span><span>"+o+"</span></div>";
       }).join('')+"</div>"
-      +"<button class='sr-change-btn' onclick='clearSRState()'>\u21ba change response</button>";
+      +"<button class='sr-change-btn' onclick='ciEdit()'>↺ edit today's check-in</button>";
+    return;
   }
+  if(!ciDraft)ciStart();
+  var d=ciDraft,h='';
+  h+="<div class='ci-sec'>How are you pulling up?</div><div class='sr-state-btns'>"+Object.keys(RECOVERY_PROTOCOLS).map(function(k){
+      var p=RECOVERY_PROTOCOLS[k],on=d.feeling===k;
+      return "<button class='sr-state-btn"+(on?" on":"")+"' style='border-color:"+p.color+";color:"+p.color+";"+(on?"background:"+p.color+";":"")+"' onclick='ciSet(\"feeling\",\""+k+"\")'>"
+        +"<span class='sr-btn-label'>"+p.label+"</span><span class='sr-btn-desc'>"+p.btnDesc+"</span></button>";
+    }).join('')+"</div>";
+  h+="<div class='ci-sec'>Sleep last night (hrs)</div><div class='ci-chips'>"+CI_SLEEP.map(function(o){
+      return "<button class='ci-chip"+(d.sleep_hrs===o.v?" on":"")+"' onclick='ciSet(\"sleep_hrs\","+(d.sleep_hrs===o.v?"null":o.v)+")'>"+o.l+"</button>"}).join('')+"</div>";
+  h+="<div class='ci-sec'>Any niggles?</div><div class='ci-chips'>"
+    +"<button class='ci-chip"+(d.hasNig===false?" on":"")+"' onclick='ciSet(\"hasNig\",false)'>No</button>"
+    +"<button class='ci-chip"+(d.hasNig===true?" on":"")+"' onclick='ciSet(\"hasNig\",true)'>Yes</button></div>";
+  if(d.hasNig){
+    d.niggles.forEach(function(n,i){
+      h+="<div class='ci-nig'><div class='ci-nig-top'><span>Niggle "+(i+1)+"</span><button class='ci-nig-x' onclick='ciDelNig("+i+")' aria-label='Remove'>&times;</button></div>"
+        +"<div class='ci-chips'>"+CI_AREAS.map(function(a){return "<button class='ci-chip sm"+(n.area===a?" on":"")+"' onclick='ciNig("+i+",\"area\",\""+a+"\")'>"+a+"</button>"}).join('')+"</div>"
+        +"<div class='ci-chips' style='margin-top:8px'>"+[['l','Left'],['r','Right'],['both','Both']].map(function(o){return "<button class='ci-chip sm"+(n.side===o[0]?" on":"")+"' onclick='ciNig("+i+",\"side\",\""+o[0]+"\")'>"+o[1]+"</button>"}).join('')+"</div>"
+        +"<div class='ci-sev'><span style='font-size:11px;color:var(--t3)'>How much is it bothering you?</span></div>"
+        +"<div class='ci-sev'><input type='range' min='0' max='10' step='1' value='"+(n.sev||0)+"' oninput='ciNig("+i+",\"sev\",+this.value)'><b id='ci-sev-"+i+"'>"+(n.sev||0)+"/10</b></div></div>";
+    });
+    h+="<button class='sr-change-btn' style='margin-top:8px' onclick='ciAddNig()'>+ add another niggle</button>";
+  }
+  h+="<div class='ci-sec'>Anything else? <span style='text-transform:none;letter-spacing:0;font-weight:500'>(optional)</span></div>"
+    +"<textarea class='ci-note' maxlength='500' placeholder='e.g. big week at work, travelling Friday' oninput='ciDraft.note=this.value'>"+ciEsc(d.note)+"</textarea>";
+  var missingArea=d.hasNig&&d.niggles.some(function(n){return !n.area});
+  h+="<button class='ci-save' "+(!d.feeling||missingArea||ciSaving?"disabled":"")+" onclick='saveCheckin()'>"+(ciSaving?"Saving…":ciEditing?"Update check-in":"Check in")+"</button>";
+  h+="<div class='ci-msg'>"+(!d.feeling?"Pick how you're pulling up to check in.":missingArea?"Pick where the niggle is.":!currentUser?"Sign in to save your check-ins.":"")+"</div>";
+  if(ciEditing)h+="<div style='text-align:center'><button class='sr-change-btn' onclick='ciEditing=false;ciDraft=null;renderSRPanel()'>cancel</button></div>";
+  inner.innerHTML=h;
+}
+
+// ── ATHLETE PROFILE (name / jersey / position) ──
+var athleteProfile=null,pfPos=null,pfLoaded=false;
+function pfName(){if(athleteProfile&&athleteProfile.display_name)return athleteProfile.display_name;var m=currentUser&&currentUser.user_metadata||{};return m.full_name||m.name||''}
+async function loadProfile(){
+  if(!currentUser||!SUPABASE_READY)return;
+  try{var r=await sb.from('athlete_profiles').select('display_name,jersey,position').eq('user_id',currentUser.id).maybeSingle();athleteProfile=r.data||null;pfLoaded=!r.error;}catch(e){}
+  renderAuthUI();
+}
+function maybePromptProfile(force){
+  if(!currentUser||!pfLoaded||athleteProfile)return;
+  var k='pf-skip-'+currentUser.id,skipped=null;try{skipped=localStorage.getItem(k)}catch(e){}
+  if(skipped&&!force)return;
+  var tries=0;(function go(){
+    var busy=document.querySelector('.install-overlay.open,.upgrade-overlay.open');
+    if(busy&&tries++<40){setTimeout(go,1500);return;}
+    openProfileSheet(force?'Thanks for joining your team. Add your details so your coach knows who you are.':null);
+  })();
+}
+function openProfileSheet(sub){
+  if(!currentUser){signIn();return;}
+  var p=athleteProfile||{};
+  document.getElementById('pf-name').value=p.display_name||pfName();
+  document.getElementById('pf-jersey').value=p.jersey||'';
+  pfPos=p.position||null;renderPfPos();
+  document.getElementById('pf-sub').textContent=sub||"So your coach knows who's who. Takes 10 seconds.";
+  document.getElementById('pf-msg').textContent='';
+  document.getElementById('pf-overlay').classList.add('open');document.getElementById('pf-sheet').classList.add('open');
+}
+function renderPfPos(){
+  document.getElementById('pf-pos').innerHTML=[['handler','Handler'],['cutter','Cutter'],['hybrid','Hybrid']].map(function(o){
+    return "<button class='ci-chip"+(pfPos===o[0]?" on":"")+"' onclick='pfPos=(pfPos===\""+o[0]+"\"?null:\""+o[0]+"\");renderPfPos()'>"+o[1]+"</button>"}).join('');
+}
+function closeProfileSheet(skip){
+  if(skip&&currentUser&&!athleteProfile){try{localStorage.setItem('pf-skip-'+currentUser.id,srDateKey())}catch(e){}}
+  document.getElementById('pf-overlay').classList.remove('open');document.getElementById('pf-sheet').classList.remove('open');
+}
+async function saveProfile(){
+  var name=document.getElementById('pf-name').value.trim(),jersey=document.getElementById('pf-jersey').value.trim().replace(/[^0-9]/g,'').slice(0,3);
+  var msg=document.getElementById('pf-msg');
+  if(!name){msg.textContent='Add your name so your coach knows who you are.';return;}
+  var row={user_id:currentUser.id,display_name:name.slice(0,60),jersey:jersey||null,position:pfPos,updated_at:new Date().toISOString()};
+  var btn=document.getElementById('pf-save');btn.disabled=true;btn.textContent='Saving…';
+  var res=await sb.from('athlete_profiles').upsert(row,{onConflict:'user_id'});
+  btn.disabled=false;btn.textContent='Save';
+  if(res.error){msg.textContent='Couldn\'t save: '+res.error.message;return;}
+  athleteProfile=row;closeProfileSheet(false);renderAuthUI();showSave('saved','Profile saved ✓');
 }
 
 var HUBS={
@@ -5039,6 +5193,19 @@ renderAll();
 </div>
 
 <!-- ── UPGRADE OVERLAY ── -->
+<div class="pf-overlay" id="pf-overlay" onclick="closeProfileSheet(true)"></div>
+<div class="pf-sheet" id="pf-sheet">
+  <div class="pf-title">Your player profile</div>
+  <div class="pf-sub" id="pf-sub">So your coach knows who's who. Takes 10 seconds.</div>
+  <label class="pf-lbl" for="pf-name">Name</label>
+  <input class="pf-inp" id="pf-name" maxlength="60" placeholder="First and last name" autocomplete="name">
+  <div class="pf-row">
+    <div><label class="pf-lbl" for="pf-jersey">Jersey #</label><input class="pf-inp" id="pf-jersey" maxlength="3" inputmode="numeric" placeholder="e.g. 7"></div>
+    <div><span class="pf-lbl">Position</span><div class="ci-chips" id="pf-pos"></div></div>
+  </div>
+  <div class="ci-msg" id="pf-msg"></div>
+  <div class="pf-acts"><button class="pf-skip" onclick="closeProfileSheet(true)">Skip for now</button><button class="pf-save" id="pf-save" onclick="saveProfile()">Save</button></div>
+</div>
 <div class="upgrade-overlay" id="upgrade-overlay" onclick="closeUpgradeModal()"></div>
 
 <!-- ── UPGRADE SHEET ── -->
