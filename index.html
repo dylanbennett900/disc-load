@@ -4168,7 +4168,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var FT_BUILD='21 Nov 19:15';
+var FT_BUILD='21 Nov 19:18';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -4178,8 +4178,6 @@ function hv2Iso(d){return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,
 function hv2Dow(d){return (d.getDay()+6)%7}
 function newHomeOn(){
   if(!currentUser)return false;
-  var pref=null;try{pref=localStorage.getItem('ft-home')}catch(e){}
-  if(pref==='classic')return false;
   return true; // live for every signed-in user (21 Nov 2026)
 }
 function newHomeEligible(){return !!currentUser}
@@ -4398,7 +4396,7 @@ function fcPlanSentence(){
 }
 function renderHomeV2(){
   var el=document.getElementById('home-v2');if(!el)return;
-  if(!newHomeOn()){el.innerHTML=newHomeEligible()?'<div style="text-align:right;margin-bottom:8px"><button class="sr-change-btn" onclick="setHomeMode(\'new\')">Try the new home screen</button></div>':'';return;}
+  if(!newHomeOn()){el.innerHTML='';return;}
   var now=new Date(),iso=hv2Iso(now),dow=hv2Dow(now),items=itemsFor(now),todaySess=sessOn(iso);
   var band=getCurrentBand(),bandLbl={low:'Low week',moderate:'Build week',high:'Peak week',maintenance:'Maintenance week'}[band]||'';
   var tEl=document.getElementById('tourn-date'),tName=(document.getElementById('tourn-name')||{}).value||'Tournament',weeksOut=null;
@@ -4450,7 +4448,6 @@ function renderHomeV2(){
       +'<div class="hv2-ss">'+[st.s,plan,(weeksOut!==null?(weeksOut===0?ciEsc(tName)+' this week. Stay sharp, stay fresh.':ciEsc(tName)+' in '+weeksOut+' week'+(weeksOut===1?'':'s')+'.'):'')].filter(Boolean).join(' ')+'</div>'
       +'<div class="hv2-sacts"><button class="hv2-rx" onclick="homePrescription()">Get Prescription</button><button class="hv2-load" onclick="switchTab(\'load\',null)">See load →</button></div></div></div>'
     +'<button class="hv2-log" onclick="fabLogSession()">'+hv2Svg('<path d="M12 5v14M5 12h14"></path>')+' Log session</button>'
-    +'<div style="text-align:center;margin-top:10px"><button class="sr-change-btn" onclick="setHomeMode(\'classic\')">Switch to classic home</button></div>'
     +'<div style="text-align:center;margin-top:6px;font-size:10px;color:var(--t4);font-family:var(--mono)">Version '+FT_BUILD+'</div>';
   el.innerHTML=h;
 }
@@ -5981,7 +5978,7 @@ function maybeShowInstallModalOnSignIn(){
     function checkForUpdate(){
       if(_updBanner||typeof FT_BUILD==='undefined')return;
       fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-        var m=t&&t.match(/var FT_BUILD='21 Nov 19:15']+)'/);
+        var m=t&&t.match(/var FT_BUILD='21 Nov 19:18']+)'/);
         if(!m||m[1]===FT_BUILD)return;
         if(swReg)swReg.update().catch(function(){});
         _updBanner=true;
