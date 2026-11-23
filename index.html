@@ -4168,7 +4168,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var FT_BUILD='24 Nov 09:19';
+var FT_BUILD='24 Nov 09:28';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -4426,7 +4426,7 @@ function renderHomeV2(){
   ordered.forEach(function(k){
     if(k==='fcs'||k==='fca'){var fat=fcWeekMatch(now).done[iso+':'+k],done=!!fat;
       var taper=!!taperWeekFor(now);
-      jobs.push({t:'F&amp;C: '+(k==='fcs'?'Speed Day':'Acceleration Day')+(taper?' (taper)':''),sub:(fat&&fat!==iso?'Done '+WK_DAYS_LONG[hv2Dow(new Date(fat+'T12:00:00'))]+'. Nice work':taper?'2–3 build-ups + 4 box drills. Short and sharp, no conditioning':'Phase '+myFcPhase().slice(1))+(items.some(function(x){return x==='fbp'||x==='lbp'||x==='lbs'})?' · do this first':''),done:done,tap:"openFcSession('"+k+"')",act:'Open',actFn:"openFcSession('"+k+"')"});}
+      jobs.push({t:'F&amp;C: '+(k==='fcs'?'Speed Day':'Acceleration Day')+(taper?' (taper)':''),sub:(fat&&fat!==iso?'Done '+WK_DAYS_LONG[hv2Dow(new Date(fat+'T12:00:00'))]+'. Nice work':taper?'2–3 build-ups + 4 box drills. Own short session or at the start of team training':'Phase '+myFcPhase().slice(1))+(items.some(function(x){return x==='fbp'||x==='lbp'||x==='lbs'})?' · do this first':''),done:done,tap:"openFcSession('"+k+"')",act:'Open',actFn:"openFcSession('"+k+"')"});}
     else if(k==='tourn'){var gl=todaySess.filter(function(s){return s.type==='game'}).length,ti=tournInfo();
       jobs.push({t:'Tournament: '+ciEsc(ti?ti.name:'game day'),sub:gl?gl+' game'+(gl>1?'s':'')+' logged':'Log each game as you go',done:false,act:'Log game',actFn:"logGameFor('"+iso+"')"});}
     else if(k==='team'){var tdone=todaySess.some(function(s){return !isFcLabel(s.label)});
@@ -5978,7 +5978,7 @@ function maybeShowInstallModalOnSignIn(){
     function checkForUpdate(){
       if(_updBanner||typeof FT_BUILD==='undefined')return;
       fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-        var m=t&&t.match(/var FT_BUILD='24 Nov 09:19']+)'/);
+        var m=t&&t.match(/var FT_BUILD='24 Nov 09:28']+)'/);
         if(!m||m[1]===FT_BUILD)return;
         if(swReg)swReg.update().catch(function(){});
         _updBanner=true;
