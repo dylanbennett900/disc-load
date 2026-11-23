@@ -1477,32 +1477,33 @@ var srPanelOpen = false;
 
 // ── GAME BENCHMARKS ──
 var BM={
-  worldClass:   {label:"World Class",   color:"#a16207",pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:3.90,hacc:1.05,dec:2.42,hdec:1.05,acl:92.7}},
-  international:{label:"International", color:"#475569",pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:3.52,hacc:0.89,dec:2.18,hdec:0.88,acl:86.9}},
-  domestic:     {label:"Domestic",      color:"#92400e",pp:{dur:1.745,dist:205.7,hsr:45.8, vhsr:7.9, acc:2.70,hacc:0.52,dec:1.64,hdec:0.50,acl:59.4}}
+  worldClass:   {label:"World Class",   color:"#a16207",pp:{dur:2.017,dist:264.5,hsr:54.5, vhsr:18.1,acc:2.75,hacc:0.52,dec:1.57,hdec:0.50,acl:77.1}},
+  international:{label:"International", color:"#475569",pp:{dur:1.932,dist:254.0,hsr:54.7, vhsr:15.8,acc:2.48,hacc:0.44,dec:1.41,hdec:0.42,acl:72.3}},
+  domestic:     {label:"Domestic",      color:"#92400e",pp:{dur:1.745,dist:205.7,hsr:45.8, vhsr:7.9, acc:1.90,hacc:0.26,dec:1.06,hdec:0.24,acl:49.4}}
 };
 
 // ── WEEKLY TARGETS ──
 var WT={
   international:{
-    low:         {dist:13888,hsr:2860, vhsr:700, acc:154,hacc:42,dec:95, hdec:38,acl:4868},
-    moderate:    {dist:16864,hsr:3473, vhsr:850, acc:187,hacc:51,dec:116,hdec:47,acl:5912},
-    high:        {dist:19840,hsr:4085, vhsr:1000,acc:220,hacc:60,dec:136,hdec:55,acl:6955},
-    maintenance: {dist:17856,hsr:3677, vhsr:900, acc:198,hacc:54,dec:122,hdec:50,acl:6260}
+    low:         {dist:13888,hsr:2860, vhsr:700, acc:108,hacc:21,dec:61, hdec:18,acl:4050},
+    moderate:    {dist:16864,hsr:3473, vhsr:850, acc:132,hacc:25,dec:75,hdec:22,acl:4919},
+    high:        {dist:19840,hsr:4085, vhsr:1000,acc:155,hacc:30,dec:88,hdec:26,acl:5786},
+    maintenance: {dist:17856,hsr:3677, vhsr:900, acc:140,hacc:27,dec:79,hdec:24,acl:5208}
   },
   domestic:{
-    low:         {dist:10801,hsr:2405, vhsr:455, acc:129,hacc:21,dec:79, hdec:24,acl:3120},
-    moderate:    {dist:13116,hsr:2921, vhsr:553, acc:156,hacc:26,dec:95, hdec:29,acl:3789},
-    high:        {dist:15431,hsr:3436, vhsr:650, acc:184,hacc:31,dec:112,hdec:34,acl:4458},
-    maintenance: {dist:13888,hsr:3092, vhsr:585, acc:166,hacc:28,dec:101,hdec:31,acl:4012}
+    low:         {dist:10801,hsr:2405, vhsr:455, acc:91,hacc:10,dec:51, hdec:11,acl:2596},
+    moderate:    {dist:13116,hsr:2921, vhsr:553, acc:110,hacc:13,dec:61, hdec:14,acl:3152},
+    high:        {dist:15431,hsr:3436, vhsr:650, acc:130,hacc:15,dec:72,hdec:16,acl:3709},
+    maintenance: {dist:13888,hsr:3092, vhsr:585, acc:117,hacc:14,dec:65,hdec:15,acl:3338}
   }
 };
 
 // ── DRILL CATEGORIES ──
 var DRILLS={
-  warmup:   {label:"Warm Up / Athletic Prep",  dist_pm:79.6, hsr_pm:9.3, vhsr_pm:3.1, acc_pm:0.4},
-  drilling: {label:"Drilling & Mechanics",      dist_pm:73.4, hsr_pm:6.7, vhsr_pm:0.4, acc_pm:0.3},
-  tactical: {label:"Tactical / Unit Work",      dist_pm:101.9,hsr_pm:34.3,vhsr_pm:0.8, acc_pm:0.6},
+  warmup:   {label:"Warm Up / Athletic Prep",  dist_pm:79.6, hsr_pm:9.3, vhsr_pm:3.1, acc_pm:0.4, low:true},
+  drilling: {label:"Drilling & Mechanics",      dist_pm:73.4, hsr_pm:6.7, vhsr_pm:0.4, acc_pm:0.3, low:true},
+  tactical: {label:"Unit Battles / Live Tactical",dist_pm:120.0,hsr_pm:25.0,vhsr_pm:5.5, acc_pm:0.7},
+  tactical_walk:{label:"Walkthrough / Set Plays",dist_pm:70.0, hsr_pm:7.0, vhsr_pm:0.4, acc_pm:0.3, low:true},
   v4v4:     {label:"4v4 Mini",                  dist_pm:125.2,hsr_pm:27.1,vhsr_pm:2.5, acc_pm:0.8},
   v7v7:     {label:"7v7 / Match Sim",           dist_pm:123.1,hsr_pm:21.5,vhsr_pm:2.6, acc_pm:0.7, inputType:"points"},
   v6v6:     {label:"6v6 / Half Field",          dist_pm:119.1,hsr_pm:17.5,vhsr_pm:1.6, acc_pm:0.7},
@@ -1510,15 +1511,15 @@ var DRILLS={
   v5v5:     {label:"5v5 Small Sided",           dist_pm:83.8, hsr_pm:9.8, vhsr_pm:1.3, acc_pm:0.6},
   v3v3:     {label:"3v3 Mini",                  dist_pm:96.6, hsr_pm:8.3, vhsr_pm:0.5, acc_pm:0.8},
   v4v5:     {label:"4v5 / 5v4 Conditioned",    dist_pm:146.1,hsr_pm:8.0, vhsr_pm:0.1, acc_pm:0.6},
-  throwing: {label:"Throwing / Technical",      dist_pm:77.7, hsr_pm:6.6, vhsr_pm:0.6, acc_pm:0.1}
+  throwing: {label:"Throwing / Technical",      dist_pm:77.7, hsr_pm:6.6, vhsr_pm:0.6, acc_pm:0.1, low:true}
 };
 
 // ── CONDITIONING DRILLS ──
 var COND_DRILLS={
-  c_speedbuild:{label:"Speed Build Up",        inputType:"reps", dist:99.8, hsr:60.5, vhsr:40.6, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:18.0},
-  c_butterfly: {label:"Butterfly Speed Effort",inputType:"reps", dist:103.2,hsr:61.8, vhsr:40.6, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:18.6},
-  c_curved:    {label:"Curved Sprint",         inputType:"reps", dist:80.2, hsr:46.9, vhsr:30.5, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:14.4},
-  c_offset:    {label:"Offset Sprint",         inputType:"reps", dist:85.2, hsr:49.2, vhsr:22.7, acc:2,   hacc:0.5, dec:1.5, hdec:0.5, acl:15.3},
+  c_speedbuild:{label:"Speed Build Up",        inputType:"reps", dist:99.8, hsr:60.5, vhsr:40.6, acc:0.5, hacc:0.25,dec:0,   hdec:0,   acl:18.0},
+  c_butterfly: {label:"Butterfly Speed Effort",inputType:"reps", dist:103.2,hsr:61.8, vhsr:40.6, acc:0.5, hacc:0.25,dec:0,   hdec:0,   acl:18.6},
+  c_curved:    {label:"Curved Sprint",         inputType:"reps", dist:80.2, hsr:46.9, vhsr:30.5, acc:0.5, hacc:0.25,dec:0,   hdec:0,   acl:14.4},
+  c_offset:    {label:"Offset Sprint",         inputType:"reps", dist:85.2, hsr:49.2, vhsr:22.7, acc:0.5, hacc:0.25,dec:0,   hdec:0,   acl:15.3},
   c_jrun:      {label:"J Run",                 inputType:"reps", dist:61.7, hsr:37.2, vhsr:20.0, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:11.1},
   c_ndrill:    {label:"N Drill",               inputType:"reps", dist:77.0, hsr:39.5, vhsr:23.4, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:13.9},
   c_speedgrid: {label:"Repeat Speed Grid",     inputType:"reps", dist:49.3, hsr:30.9, vhsr:15.5, acc:3,   hacc:1.0, dec:2.0, hdec:0.5, acl:8.9},
@@ -1535,7 +1536,7 @@ var MAS_DRILLS={
   m_straight:{label:"50m Straights",  inputType:"mas",       hsr_ratio:0.548,vhsr_ratio:0.00,acc_per100:1.0},
   m_swerve: {label:"50m Swerves",     inputType:"mas",       hsr_ratio:0.522,vhsr_ratio:0.00,acc_per100:1.5},
   m_100otm: {label:"100m OTM",        inputType:"mas",       hsr_ratio:0.771,vhsr_ratio:0.00,acc_per100:0.8},
-  m_604020: {label:"60-40-20 Shuttle",inputType:"reps_fixed",distPerRep:120, hsr_ratio:0.18, vhsr_ratio:0.00,acc_per_rep:5,hacc_per_rep:0.5,dec_per_rep:5,hdec_per_rep:0.5,acl_per_rep:21.6},
+  m_604020: {label:"60-40-20 Shuttle",inputType:"reps_fixed",distPerRep:120, hsr_ratio:0.18, vhsr_ratio:0.00,acc_per_rep:3,hacc_per_rep:0.5,dec_per_rep:3,hdec_per_rep:0.5,acl_per_rep:21.6},
 };
 
 // ── DRILL SELECT OPTIONS ──
@@ -1545,7 +1546,7 @@ var DRILL_OPTS=(function(){
   o+=opt('warmup','Warm Up / Athletic Prep');
   o+=opt('drilling','Drilling & Mechanics');
   o+='<optgroup label="── Frisbee Drills (minutes) ──"></optgroup>';
-  ['v7v7','v6v6','v5v5','v4v4','v3v3','tactical','zone_d','v4v5','throwing'].forEach(function(k){o+=opt(k,DRILLS[k].label);});
+  ['v7v7','v6v6','v5v5','v4v4','v3v3','tactical','tactical_walk','zone_d','v4v5','throwing'].forEach(function(k){o+=opt(k,DRILLS[k].label);});
   o+='<optgroup label="── Speed Drills (reps) ──"></optgroup>';
   ['c_speedbuild','c_butterfly','c_curved','c_offset'].forEach(function(k){o+=opt(k,COND_DRILLS[k].label);});
   o+='<optgroup label="── Accel Drills (reps) ──"></optgroup>';
@@ -1627,8 +1628,9 @@ function drillLoad(dk,val1,val2){
     }
     return{dk:dk,inputType:'mins',durMin:val1,
       dist:Math.round(val1*d.dist_pm),hsr:Math.round(val1*d.hsr_pm),vhsr:Math.round(val1*d.vhsr_pm),
-      acc:Math.round(val1*d.acc_pm),hacc:Math.round(val1*d.acc_pm*.3),
-      dec:Math.round(val1*d.acc_pm*.55),hdec:Math.round(val1*d.acc_pm*.16),
+      // dec:acc ratios from Match Database v2 training periods (Break Mark/AP ~0.2, 4v4 ~0.45)
+      acc:Math.round(val1*d.acc_pm),hacc:Math.round(val1*d.acc_pm*.2),
+      dec:Math.round(val1*d.acc_pm*(d.low?.2:.45)),hdec:Math.round(val1*d.acc_pm*(d.low?.05:.1)),
       acl:Math.round(val1*d.dist_pm*.18)};
   }
   if(COND_DRILLS[dk]){
@@ -4168,7 +4170,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var FT_BUILD='24 Nov 10:03';
+var FT_BUILD='24 Nov 10:29';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -5978,7 +5980,7 @@ function maybeShowInstallModalOnSignIn(){
     function checkForUpdate(){
       if(_updBanner||typeof FT_BUILD==='undefined')return;
       fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-        var m=t&&t.match(/var FT_BUILD='24 Nov 10:03']+)'/);
+        var m=t&&t.match(/var FT_BUILD='24 Nov 10:29']+)'/);
         if(!m||m[1]===FT_BUILD)return;
         if(swReg)swReg.update().catch(function(){});
         _updBanner=true;
