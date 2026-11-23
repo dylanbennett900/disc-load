@@ -101,6 +101,7 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
 .td[data-s=done] .tick{background:var(--green-br);border-color:var(--green-br)}
 .td .bd{flex:1;min-width:0;cursor:pointer}
 .tt{font-weight:700;color:var(--t)}
+.tnum{font:700 11px var(--mono);color:var(--cyan-dk);margin-right:6px;letter-spacing:.02em}
 .tdet{font-size:12.5px;color:var(--t3);margin-top:3px}
 .tmeta{display:flex;gap:6px;flex-wrap:wrap;margin-top:5px;align-items:center}
 .tmeta a{font:500 10.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--cyan-dk)}
@@ -732,7 +733,7 @@ function todoRow(t){
   var n=daysUntil(t.due_date),due='';
   if(t.due_date){var cls=t.status!=='open'?'grey':n<0?'red':n<=3?'amber':'grey';due='<span class="pill '+cls+'">'+(n<0&&t.status==='open'?'Overdue · ':'Due ')+fmtShort(t.due_date)+'</span>'}
   return '<div class="td" data-s="'+t.status+'"><button class="tick" title="Mark done" onclick="toggleDone(\''+t.id+'\')">'+(t.status==='done'?'✓':'')+'</button>'
-    +'<div class="bd" onclick="openTodo(\''+t.id+'\')"><div class="tt">'+esc(t.title)+'</div>'
+    +'<div class="bd" onclick="openTodo(\''+t.id+'\')"><div class="tt">'+(t.num?'<span class="tnum">#'+t.num+'</span>':'')+esc(t.title)+'</div>'
     +(t.detail?'<div class="tdet">'+esc(t.detail)+'</div>':'')
     +'<div class="tmeta">'+due+(t.needs_check?'<span class="pill amber">Check</span>':'')+(t.status==='later'?'<span class="pill grey">Later</span>':'')+(t.status==='dropped'?'<span class="pill grey">Dropped</span>':'')
     +(t.link?'<a href="'+esc(t.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Source</a>':'')+'</div></div></div>';
@@ -758,7 +759,7 @@ function openTodo(id){
   tEditing=id?todos.find(function(t){return t.id===id}):null;
   var f=document.getElementById('tForm');f.reset();
   document.getElementById('secList').innerHTML=sections().map(function(s){return '<option value="'+esc(s)+'">'}).join('');
-  document.getElementById('tTitle').textContent=tEditing?'Edit to-do':'New to-do';
+  document.getElementById('tTitle').textContent=tEditing?'Edit to-do'+(tEditing.num?' #'+tEditing.num:''):'New to-do';
   document.getElementById('tDel').style.visibility=tEditing?'visible':'hidden';
   if(tEditing)Array.prototype.forEach.call(f.elements,function(el){if(el.name&&tEditing[el.name]!=null)el.value=String(tEditing[el.name])});
   else f.elements.section.value='Coaching + leads';
