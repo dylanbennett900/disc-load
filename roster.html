@@ -204,6 +204,20 @@ table.sq tr.xp td{padding:0 0 10px;background:transparent}
 .ed-row label{font:500 9.5px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t3);display:block;margin-bottom:3px}
 .ed-row input,.ed-row select{width:100%;font:14px 'DM Sans',sans-serif;padding:8px 10px;border:1.5px solid var(--bd2);border-radius:6px;background:var(--sf2)}
 @media(max-width:560px){.ed-row{grid-template-columns:80px 1fr}.ed-row .full{grid-column:1/-1}}
+.pillars{display:grid;grid-template-columns:repeat(var(--cols,3),minmax(260px,1fr));gap:12px;align-items:start}
+@media(max-width:860px){.pillars{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;scroll-padding-left:16px;margin:0 -16px;padding:0 16px 10px;gap:10px;-webkit-overflow-scrolling:touch}
+  .pillar{flex:0 0 86%;scroll-snap-align:start}}
+.pillar{background:var(--bg2);border-radius:12px;padding:10px;min-width:0}
+.pillar-h{background:var(--navy-deep);color:#fff;border-radius:9px;padding:10px 12px;display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.pillar-h b{font:900 17px/1.1 var(--display);text-transform:uppercase;letter-spacing:.4px}
+.pillar-h span{font:500 10px var(--mono);letter-spacing:.1em;color:var(--cyan)}
+.pillar .td{margin-bottom:6px}
+.pillar .tdet{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.pillar .empty{padding:18px 8px;font-size:12.5px}
+.padd{display:flex;gap:6px;margin-top:4px}
+.padd input{flex:1;min-width:0;font:13px 'DM Sans',sans-serif;padding:8px 10px;border:1.5px dashed var(--bd2);border-radius:8px;background:transparent}
+.padd input:focus{border-style:solid;background:#fff;outline:none}
+main.wide{max-width:1400px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy-deep);color:var(--cyan);padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
 .toast.show{opacity:1}
 </style>
@@ -380,6 +394,7 @@ function kindOf(c){return c.kind||'client'}
 function setTab(t){tab=t;try{localStorage.setItem('dbsp_roster_tab',t)}catch(e){}render();window.scrollTo(0,0)}
 function render(){
   if(tab==='todo')return renderTodos();
+  main.classList.remove('wide');
   var isTeam=tab==='team',noun=isTeam?'team':'client';
   document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t===tab)});
   document.getElementById('addBtn').textContent=isTeam?'+ Team':'+ Client';
@@ -687,6 +702,7 @@ var SECTION_ORDER=['Coaching + leads','DBSP website + funnel','Frisbee Track app
 function onAdd(){if(tab==='todo')openTodo();else openEditor()}
 function sections(){var s=SECTION_ORDER.slice();todos.forEach(function(t){if(t.section&&s.indexOf(t.section)<0)s.push(t.section)});return s}
 function renderTodos(){
+  main.classList.add('wide');
   document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t==='todo')});
   document.getElementById('addBtn').textContent='+ To-do';
   var hdr=document.querySelector('header');if(hdr)document.documentElement.style.setProperty('--hdrh',hdr.offsetHeight+'px');
@@ -698,17 +714,18 @@ function renderTodos(){
    +'<div class="stat"><div class="k">Later</div><div class="v">'+cnt('later')+'</div></div>'
    +'<div class="stat"><div class="k">Done</div><div class="v">'+cnt('done')+'</div></div></div>';
   var secs=sections();
-  h+='<form class="quickadd" onsubmit="quickAdd(event)"><input id="qaT" placeholder="Add a to-do…" maxlength="200"><select id="qaS">'
-    +secs.map(function(s){return '<option>'+esc(s)+'</option>'}).join('')+'</select><button class="btn p">Add</button></form>';
   h+='<div class="bar">'+['open','later','done','all'].map(function(f){return '<button class="chip'+(tFilter===f?' on':'')+'" onclick="setTFilter(\''+f+'\')">'+f+'</button>'}).join('')+'</div>';
   var list=todos.filter(function(t){return tFilter==='all'||t.status===tFilter||(tFilter==='done'&&t.status==='dropped')});
-  if(!list.length)h+='<div class="empty">Nothing '+(tFilter==='all'?'here':tFilter)+'.</div>';
-  secs.forEach(function(s){
-    var items=list.filter(function(t){return (t.section||'Other')===s});if(!items.length)return;
+  // one pillar per stream, side by side (swipe across on a phone)
+  h+='<div class="pillars" style="--cols:'+secs.length+'">';
+  secs.forEach(function(s,si){
+    var items=list.filter(function(t){return (t.section||'Other')===s});
     items.sort(function(a,b){var da=a.due_date||'9999',db=b.due_date||'9999';return da<db?-1:da>db?1:(a.sort-b.sort)});
-    h+='<div class="sect">'+esc(s)+' <span class="muted" style="font-weight:600">· '+items.length+'</span></div>';
-    items.forEach(function(t){h+=todoRow(t)});
+    h+='<section class="pillar" aria-label="'+esc(s)+'"><div class="pillar-h"><b>'+esc(s)+'</b><span>'+items.length+' '+(tFilter==='all'?'total':tFilter)+'</span></div>'
+      +(items.length?items.map(todoRow).join(''):'<div class="empty">Nothing '+(tFilter==='all'?'here':tFilter)+'.</div>')
+      +'<form class="padd" onsubmit="pillarAdd(event,'+si+')"><input placeholder="+ Add to '+esc(s)+'" maxlength="200" aria-label="Add a to-do to '+esc(s)+'"></form></section>';
   });
+  h+='</div>';
   main.innerHTML=h;
 }
 function todoRow(t){
@@ -721,6 +738,11 @@ function todoRow(t){
     +(t.link?'<a href="'+esc(t.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Source</a>':'')+'</div></div></div>';
 }
 function setTFilter(f){tFilter=f;renderTodos()}
+async function pillarAdd(e,si){
+  e.preventDefault();var inp=e.target.querySelector('input'),v=inp.value.trim();if(!v)return;
+  try{await api('todo_save',{todo:{title:v,section:sections()[si],status:'open'}})}catch(err){toast(err.message);return}
+  toast('Added');await load();
+}
 async function quickAdd(e){
   e.preventDefault();var v=document.getElementById('qaT').value.trim();if(!v)return;
   try{await api('todo_save',{todo:{title:v,section:document.getElementById('qaS').value,status:'open'}})}catch(err){toast(err.message);return}
