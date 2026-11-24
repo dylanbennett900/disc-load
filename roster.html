@@ -121,6 +121,12 @@ form[data-kind=client] .fg .f[data-only=client],form[data-kind=team] .fg .f[data
 .ft-flags{display:flex;flex-direction:column;gap:5px;margin-top:12px}
 .ft-flag{font-size:12.5px;padding:6px 9px;border-radius:6px;background:rgba(255,255,255,.06);border-left:3px solid var(--cyan)}
 .ft-flag.red{border-left-color:#ff6b5e}.ft-flag.amber{border-left-color:#ffb400}.ft-flag.ok{border-left-color:var(--green-br)}
+.ft-wknav{display:grid;grid-template-columns:30px 1fr 30px;gap:8px;align-items:center;margin:14px 0 9px}
+.ft-wknav button{height:30px;border-radius:8px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-size:17px;line-height:1;cursor:pointer}
+.ft-wknav button:disabled{opacity:.25;cursor:default}
+.ft-wknav div{text-align:center}
+.ft-wknav b{display:block;font:600 12px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:#fff}
+.ft-wknav span{font:500 10px var(--mono);color:rgba(255,255,255,.55)}
 .ft-sec{font:500 9.5px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.5);margin:14px 0 7px;display:flex;justify-content:space-between}
 .ft-row{display:grid;grid-template-columns:42px 1fr 112px;gap:8px;align-items:center;margin-bottom:6px;font:500 11px var(--mono)}
 .ft-row .k{color:rgba(255,255,255,.7);letter-spacing:.06em}
@@ -518,13 +524,14 @@ function ftAnalyse(c){
   var tourn=A.tournament&&A.tournament.date?A.tournament:(c.tournament_date&&daysUntil(c.tournament_date)>=0?{name:c.next_tournament||'Tournament',date:c.tournament_date}:null);
   var S=(sessBy[uid]||[]).map(function(r){var x=r.data||{};return{date:x.date,d:parseD(x.date),label:x.label||'',type:x.type||'',dist:num(x.dist),hsr:num(x.hsr),vhsr:num(x.vhsr),acc:num(x.acc),hacc:num(x.hacc),dec:num(x.dec),hdec:num(x.hdec),dur:num(x.dur)}}).filter(function(x){return x.d}).sort(function(a,b){return b.d-a.d});
   var t=today(),ws0=wkStart(t),weeks=[];
-  for(var i=5;i>=0;i--){
-    var ws=new Date(ws0);ws.setDate(ws.getDate()-7*i);var we=new Date(ws);we.setDate(we.getDate()+7);
+  function weekAt(off){
+    var ws=new Date(ws0);ws.setDate(ws.getDate()-7*off);var we=new Date(ws);we.setDate(we.getDate()+7);
     var band=bandFor(ws,tourn?tourn.date:null),tg=FT_WT[ctx][band];
-    var tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,n:0};
-    S.forEach(function(x){if(x.d>=ws&&x.d<we){FT_METRICS.forEach(function(m){tot[m[0]]+=x[m[0]]});tot.n++}});
-    weeks.push({ws:ws,band:band,tg:tg,tot:tot});
+    var tot={dist:0,hsr:0,vhsr:0,acc:0,hacc:0,dec:0,hdec:0,n:0},sess=[];
+    S.forEach(function(x){if(x.d>=ws&&x.d<we){FT_METRICS.forEach(function(m){tot[m[0]]+=x[m[0]]});tot.n++;sess.push(x)}});
+    return{ws:ws,band:band,tg:tg,tot:tot,sess:sess,off:off};
   }
+  for(var i=5;i>=0;i--)weeks.push(weekAt(i));
   var cur=weeks[5],last=S[0]||null,ago=last?Math.round((t-last.d)/86400000):null;
   // EWMA acute:chronic on HSR and VHSR (same constants as the app)
   function ewma(k){var start=new Date(t);start.setDate(t.getDate()-41);var daily=new Array(42).fill(0);
@@ -558,7 +565,7 @@ function ftAnalyse(c){
     else if(dow>=3&&cur.band!=='low'&&cur.tot.hsr<cur.tg.hsr*0.4)flags.push({cls:'amber',t:'HSR well behind for the week ('+Math.round(cur.tot.hsr/cur.tg.hsr*100)+'%)'});
   }
   if(!flags.length)flags.push({cls:'ok',t:'On track. Nothing to flag.'});
-  return{C:C,lastCi:lastCi,ciAgo:ciAgo,activeNig:activeNig,ctx:ctx,tourn:tourn,weeks:weeks,cur:cur,S:S,last:last,ago:ago,rH:rH,rV:rV,flags:flags,dow:dow};
+  return{weekAt:weekAt,C:C,lastCi:lastCi,ciAgo:ciAgo,activeNig:activeNig,ctx:ctx,tourn:tourn,weeks:weeks,cur:cur,S:S,last:last,ago:ago,rH:rH,rV:rV,flags:flags,dow:dow};
 }
 function ciSection(a){
   var h='<div class="ft-sec"><span>Daily check-ins · last 14 days</span><span>'+(a.lastCi?(a.ciAgo===0?'today':a.ciAgo+'d ago'):'none yet')+'</span></div>';
@@ -586,17 +593,26 @@ function ftPanel(c){
   h+='<div class="ft-flags">'+a.flags.map(function(f){return '<div class="ft-flag '+f.cls+'">'+esc(f.t)+'</div>'}).join('')+'</div>';
   h+=ciSection(a);
   if(!a.S.length)return h+'</div>';
-  var pace=Math.min(1,(a.dow+1)/7);
-  h+='<div class="ft-sec"><span>This week vs target</span><span>'+cur.tot.n+' session'+(cur.tot.n===1?'':'s')+'</span></div>';
+  var off=ftWk[c.id]||0,W=off?a.weekAt(off):cur,pace=off?1:Math.min(1,(a.dow+1)/7),maxOff=FT_MAXWK;
+  var wkLbl=off===0?'This week':off===1?'Last week':'Week of '+fmtShort(iso(W.ws));
+  var wo2=a.tourn?Math.ceil((parseD(a.tourn.date)-W.ws)/(7*86400000)):null;
+  var wEnd=new Date(W.ws);wEnd.setDate(wEnd.getDate()+6);
+  h+='<div class="ft-wknav" onclick="event.stopPropagation()"><button '+(off>=maxOff?'disabled':'')+' onclick="ftWeek(\''+c.id+'\','+(off+1)+')" title="Previous week">‹</button>'
+    +'<div><b>'+wkLbl+'</b><span>'+fmtShort(iso(W.ws))+' to '+fmtShort(iso(wEnd))+' · '+esc(bandName(W.band,wo2))+' · '+W.tot.n+' session'+(W.tot.n===1?'':'s')+'</span></div>'
+    +'<button '+(off<=0?'disabled':'')+' onclick="ftWeek(\''+c.id+'\','+(off-1)+')" title="Next week">›</button></div>';
   FT_METRICS.forEach(function(m){
-    var v=cur.tot[m[0]],g=cur.tg[m[0]],pc=g?v/g:0,cls=pc>1.15?'over':pc>=0.9?'done':'';
-    h+='<div class="ft-row"><span class="k">'+m[1]+'</span><div class="ft-bar"><i class="'+cls+'" style="width:'+Math.min(100,pc*100).toFixed(0)+'%"></i><s style="left:'+(pace*100).toFixed(0)+'%" title="Where they should be by today"></s></div>'
+    var v=W.tot[m[0]],g=W.tg[m[0]],pc=g?v/g:0,cls=pc>1.15?'over':pc>=0.9?'done':'';
+    h+='<div class="ft-row"><span class="k">'+m[1]+'</span><div class="ft-bar"><i class="'+cls+'" style="width:'+Math.min(100,pc*100).toFixed(0)+'%"></i>'+(off?'':'<s style="left:'+(pace*100).toFixed(0)+'%" title="Where they should be by today"></s>')+'</div>'
       +'<span class="v"><b>'+Math.round(v).toLocaleString()+'</b> / '+Math.round(g).toLocaleString()+m[2]+'</span></div>';
   });
+  if(off){
+    h+='<div class="ft-sec"><span>Sessions that week</span><span>Dist · HSR · VHSR</span></div>'
+      +(W.sess.length?W.sess.map(function(x){return '<div class="ft-sess"><span class="d">'+fmtShort(x.date)+'</span><span>'+esc(x.label||x.type||'Session')+'</span><span class="m">'+Math.round(x.dist).toLocaleString()+' · '+Math.round(x.hsr)+' · '+Math.round(x.vhsr)+'</span></div>'}).join(''):'<div class="ft-empty">Nothing logged that week.</div>');
+  }
   if(ftOpen[c.id]){
     var mx=Math.max(1.3,Math.max.apply(null,a.weeks.map(function(w){return w.tg.hsr?w.tot.hsr/w.tg.hsr:0})));
     h+='<div class="ft-sec"><span>6-week HSR vs target</span><span>dashed = 100%</span></div><div class="ft-trend"><div class="line" style="bottom:'+(100/mx).toFixed(1)+'%"></div>'
-      +a.weeks.map(function(w,i){var pc=w.tg.hsr?w.tot.hsr/w.tg.hsr:0;return '<div class="col"><span class="p">'+Math.round(pc*100)+'%</span><div class="b'+(i===5?' cur':'')+(pc>1.15?' hi':'')+'" style="height:'+Math.max(2,pc/mx*78).toFixed(0)+'%"></div></div>'}).join('')+'</div>'
+      +a.weeks.map(function(w,i){var pc=w.tg.hsr?w.tot.hsr/w.tg.hsr:0;return '<div class="col" style="cursor:pointer" title="Open this week" onclick="event.stopPropagation();ftWeek(\''+c.id+'\','+(5-i)+')"><span class="p">'+Math.round(pc*100)+'%</span><div class="b'+((5-i)===off?' cur':'')+(pc>1.15?' hi':'')+'" style="height:'+Math.max(2,pc/mx*78).toFixed(0)+'%"></div></div>'}).join('')+'</div>'
       +'<div class="ft-wk">'+a.weeks.map(function(w,i){return '<span>'+(i===5?'Now':fmtShort(iso(w.ws)).replace(/ /,'&nbsp;'))+'<br>'+esc(bandName(w.band,a.tourn?Math.ceil((parseD(a.tourn.date)-w.ws)/(7*86400000)):null).slice(0,5))+'</span>'}).join('')+'</div>';
     h+='<div class="ft-sec"><span>Recent sessions</span><span>Dist · HSR · VHSR</span></div>'
       +a.S.slice(0,5).map(function(x){return '<div class="ft-sess"><span class="d">'+fmtShort(x.date)+'</span><span>'+esc(x.label||x.type||'Session')+'</span><span class="m">'+Math.round(x.dist).toLocaleString()+' · '+Math.round(x.hsr)+' · '+Math.round(x.vhsr)+'</span></div>'}).join('');
@@ -693,6 +709,8 @@ function renderTeamDash(){
   h+='</div>';
   document.getElementById('tdash').innerHTML=h;
 }
+var ftWk={},FT_MAXWK=25;
+function ftWeek(id,o){ftWk[id]=Math.max(0,Math.min(FT_MAXWK,o));if(tdashId)renderTeamDash();else{render();jump(id)}}
 function ftToggle(id){ftOpen[id]=!ftOpen[id];if(tdashId)renderTeamDash();else{render();jump(id)}}
 function setFilter(f){filter=f;render()}
 function toggleNotes(id){expanded[id]=!expanded[id];render();jump(id)}
