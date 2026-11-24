@@ -1,4 +1,5 @@
 import { createClient } from 'jsr:@supabase/supabase-js@2';
+import ICAL from 'npm:ical.js@1.5.0';
 
 // Passphrase-protected API for the DBSP roster (roster.html): clients + teams + to-dos.
 // Auth: header x-roster-key must match the ROSTER_PASSPHRASE secret.
@@ -9,7 +10,7 @@ const CORS = {
 };
 const COACH_UID = 'c0b4da2f-8ee8-4926-8b27-0d095cab8e17';
 const CLIENT_FIELDS = ['kind','name','team','offer','status','start_date','app_user_id','team_code','contact','squad_size','programmed_until','block_name','phase','block_start','block_weeks','next_tournament','tournament_date','goals','notes'];
-const TODO_FIELDS = ['section','title','detail','status','needs_check','link','due_date','sort'];
+const TODO_FIELDS = ['section','stream','title','detail','status','needs_check','link','due_date','sort','star','client_id'];
 
 function json(body: unknown, status = 200) {
   return new Response(JSON.stringify(body), { status, headers: { ...CORS, 'Content-Type': 'application/json' } });
@@ -45,11 +46,12 @@ Deno.serve(async (req) => {
   const action = body.action;
   try {
     if (action === 'list') {
-      const [c, n, pc, td] = await Promise.all([
+      const [c, n, pc, td, dm] = await Promise.all([
         db.from('coach_clients').select('*').order('name'),
         db.from('coach_client_notes').select('*').order('created_at', { ascending: false }),
         db.from('promo_codes').select('id,code,label,team_key').not('code', 'like', 'DBSP-%').order('code'),
         db.from('coach_todos').select('*').order('sort').order('created_at'),
+        db.from('coach_dismissals').select('key,cleared_at'),
       ]);
       if (c.error) throw c.error;
       const list = await db.auth.admin.listUsers({ perPage: 1000 });
@@ -123,7 +125,7 @@ Deno.serve(async (req) => {
         }
         checkins = ci.data || [];
       }
-      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label, team_key: k.team_key })), todos: td.data || [], athletes, profiles, checkins, teamSettings, clientPhases });
+      return json({ clients: rows, notes: n.data || [], users, sessions, teamMembers, teamCodes: codes.map((k: any) => ({ code: k.code, label: k.label, team_key: k.team_key })), todos: td.data || [], dismissals: (dm.data || []).map((x: any) => x.key), athletes, profiles, checkins, teamSettings, clientPhases });
     }
     if (action === 'save') {
       const row = pick(body.client || {});
@@ -208,6 +210,62 @@ Deno.serve(async (req) => {
         if (r.error) throw r.error;
       }
       return json({ ok: true });
+    }
+    if (action === 'dismiss' || action === 'undismiss') {
+      const key = String(body.key || '').slice(0, 200);
+      if (!key) return json({ error: 'Key required' }, 400);
+      const r = action === 'dismiss'
+        ? await db.from('coach_dismissals').upsert({ key, cleared_at: new Date().toISOString() }, { onConflict: 'key' })
+        : await db.from('coach_dismissals').delete().eq('key', key);
+      if (r.error) throw r.error;
+      // keep the table small: forget dismissals older than 60 days
+      await db.from('coach_dismissals').delete().lt('cleared_at', new Date(Date.now() - 60 * 864e5).toISOString());
+      return json({ ok: true });
+    }
+    if (action === 'calendar') {
+      const url = Deno.env.get('GCAL_ICS_URL');
+      if (!url) return json({ events: [], setup: true });
+      const days = Math.min(7, Math.max(1, +body.days || 2));
+      const res = await fetch(url);
+      if (!res.ok) return json({ error: 'Calendar feed returned ' + res.status }, 502);
+      const comp = new ICAL.Component(ICAL.parse(await res.text()));
+      comp.getAllSubcomponents('vtimezone').forEach((tz: any) => ICAL.TimezoneService.register(tz));
+      // window: start of today to +days, Sydney time
+      const tzName = 'Australia/Sydney';
+      const nowSyd = new Date(new Date().toLocaleString('en-US', { timeZone: tzName }));
+      const offMs = nowSyd.getTime() - Date.now();
+      const startSyd = new Date(nowSyd); startSyd.setHours(0, 0, 0, 0);
+      const from = new Date(startSyd.getTime() - offMs), to = new Date(from.getTime() + days * 864e5);
+      const masters: Record<string, any> = {}, exceptions: any[] = [];
+      for (const ve of comp.getAllSubcomponents('vevent')) {
+        const ev = new ICAL.Event(ve);
+        if (ve.getFirstPropertyValue('recurrence-id')) exceptions.push(ev); else masters[ev.uid] = ev;
+      }
+      exceptions.forEach((ex) => { const m = masters[ex.uid]; if (m) m.relateException(ex); });
+      const out: any[] = [];
+      const push = (title: string, s: any, e: any, allDay: boolean, loc?: string) => {
+        const sd = s.toJSDate(), ed = e ? e.toJSDate() : sd;
+        if (ed <= from || sd >= to) return;
+        out.push({ title: title || '(busy)', start: sd.toISOString(), end: ed.toISOString(), allDay, location: loc || null, date: allDay ? s.toString().slice(0, 10) : null });
+      };
+      for (const ev of Object.values(masters)) {
+        const status = ev.component.getFirstPropertyValue('status');
+        if (status === 'CANCELLED') continue;
+        const allDay = ev.startDate.isDate;
+        if (!ev.isRecurring()) { push(ev.summary, ev.startDate, ev.endDate, allDay, ev.location); continue; }
+        const it = ev.iterator(); let next: any, guard = 0;
+        while ((next = it.next()) && guard++ < 20000) {
+          const nd = next.toJSDate();
+          if (nd >= to) break;
+          const occ = ev.getOccurrenceDetails(next);
+          if (nd < new Date(from.getTime() - 3 * 864e5)) continue;
+          const st = occ.item.component.getFirstPropertyValue('status');
+          if (st === 'CANCELLED') continue;
+          push(occ.item.summary, occ.startDate, occ.endDate, allDay, occ.item.location);
+        }
+      }
+      out.sort((a, b) => (a.start < b.start ? -1 : 1));
+      return json({ events: out.slice(0, 60), tz: tzName });
     }
     if (action === 'ping') return json({ ok: true });
     return json({ error: 'Unknown action' }, 400);
