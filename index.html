@@ -5420,9 +5420,9 @@ async function renderCoachPanel(){
     if(list)list.innerHTML='<div class="coach-empty">Error loading codes</div>';
   }
 
-  // Load users via coach_users_view
+  // Load users via coach_users() RPC (coach-only)
   try{
-    var uvRes=await sb.from('coach_users_view').select('user_id,email,joined_at,tier,status,trial_end');
+    var uvRes=await sb.rpc('coach_users');
     // Per-user session counts via coach-only RPC (RLS hides other users' sessions from direct reads)
     var sesRes=await sb.rpc('coach_session_counts');
     var sesMap={};
