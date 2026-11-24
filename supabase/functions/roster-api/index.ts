@@ -69,7 +69,7 @@ Deno.serve(async (req) => {
       Object.values(teamMembers).forEach((arr) => arr.forEach((id) => ids.add(id)));
       let sessions: unknown[] = [];
       if (ids.size) {
-        const since = new Date(Date.now() - 75 * 864e5).toISOString();
+        const since = new Date(Date.now() - 182 * 864e5).toISOString();
         const s = await db.from('sessions').select('user_id,data').in('user_id', [...ids]).gte('created_at', since);
         if (s.error) throw s.error;
         sessions = s.data || [];
