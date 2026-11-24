@@ -4202,6 +4202,7 @@ async function loadWeekStuff(){
         else if(x.key==='beta_home')betaHome=x.value==='1';
       }catch(e){}
     });
+    try{var op=await sb.rpc('am_i_on_program');onProgram=!!op.data;}catch(e){onProgram=false}
     var tk=typeof dbspTeamKey==='function'?dbspTeamKey():null;
     if(tk){var ts=await sb.from('team_settings').select('fc_phase,tourn_date,tourn_name').eq('team_key',tk).maybeSingle();teamFcPhase=ts.data&&ts.data.fc_phase||null;
       teamTourn=ts.data&&ts.data.tourn_date?{date:ts.data.tourn_date,name:ts.data.tourn_name||'Tournament'}:null;
@@ -4444,7 +4445,7 @@ function renderHomeV2(){
     +(!items.length?'<div class="hv2-sub">Do nothing and recover. That\'s the job.</div>':'')+'</div>'
     +'<div class="hv2-card">'+jobs.map(jobRow).join('<div class="hj-sep"></div>')+'</div>'
     +'<div class="hv2-links"><button class="sr-change-btn" onclick="openWeekSheet(\''+iso+'\')">Change today</button><button class="sr-change-btn" onclick="openWeekSheet()">Edit my week</button></div>'
-    +(currentUser?'<a class="hv2-guide" href="https://dbsportperformance.com/onboarding.html" target="_blank" rel="noopener">How your program works &#8599;</a>':'')
+    +(currentUser&&(onProgram||currentUser.id===COACH_UID)?'<a class="hv2-guide" href="https://dbsportperformance.com/onboarding.html" target="_blank" rel="noopener">How your program works &#8599;</a>':'')
     +renderWeekGlance()
     +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div style="flex:1;min-width:0"><div class="hv2-st">'+st.t+'</div>'
       +'<div class="hv2-bars">'+st.bars.map(function(b){return '<div class="hv2-bar"><span>'+b.l+'</span><div class="hv2-track"><i class="'+(b.pc>1.15?'hi':b.behind?'lo':'')+'" style="width:'+Math.min(100,b.pc*100).toFixed(0)+'%"></i><s style="left:'+(st.pace*100).toFixed(0)+'%"></s></div></div>'}).join('')+'</div>'
@@ -5185,6 +5186,7 @@ var ROGUE_SESSIONS={
                  {name:'Box Drill',load:'× 4',rest:'2 min',note:'Go on the 45s'}],
       conditioning:_rMAS}}
 };
+var onProgram=false; // Rogue/Sunder code or active DBSP coaching client (am_i_on_program RPC)
 var TEAM_PROGRAMS={dbsp:{label:'DBSP',sessions:DBSP_SESSIONS},sunder:{label:'Sunder 2026',sessions:DBSP_SESSIONS},rogue:{label:'Rogue 2026',sessions:ROGUE_SESSIONS}};
 var dbspCoachTeam='sunder';
 function dbspTeamKey(){
