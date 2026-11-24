@@ -279,6 +279,9 @@ main.wide{max-width:1400px}
 .cb .bt s{position:absolute;top:-2px;bottom:-2px;width:1.5px;background:var(--navy-deep)}
 .cb .v{text-align:right}.cb .v b{color:var(--t);font-weight:700}
 .spw{display:flex;flex-direction:column;align-items:flex-end;gap:2px}.spw span{font:500 8.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--t4)}
+.cal-cols{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px}
+.cal-ahead{border-left:1px solid var(--bd);padding-left:14px}.cal-ahead .cal-t{width:118px}.cal-ahead .cal-t b{display:block;color:var(--navy-deep);font-weight:700}
+@media(max-width:520px){.cal-cols{grid-template-columns:1fr;gap:4px}.cal-ahead{border-left:0;padding-left:0;border-top:1px solid var(--bd);padding-top:4px}}
 </style>
 </head>
 <body>
@@ -1080,7 +1083,7 @@ async function toggleStar(id){
 // ── Calendar ──
 async function loadCal(){
   calState='loading';
-  try{var d=await api('calendar',{days:2});calEvents=d.events||[];calState=d.setup?'setup':'ok'}catch(e){calState='err';calEvents=[]}
+  try{var d=await api('calendar',{days:14});calEvents=d.events||[];calState=d.setup?'setup':'ok'}catch(e){calState='err';calEvents=[]}
   if(tab==='today')render();
 }
 function sydDate(d){return new Date(d).toLocaleDateString('en-CA',{timeZone:TZ})}
@@ -1089,15 +1092,19 @@ function calBlock(){
   var h='<section class="tb cal"><div class="tb-h"><b>Calendar</b><span>'+(calState==='loading'||calState==='idle'?'Loading…':calState==='err'?'Couldn\'t load':'')+'</span></div>';
   if(calState==='setup')return h+'<div class="tb-empty">Calendar feed not connected yet.</div></section>';
   var t0=sydDate(new Date()),t1=sydDate(new Date(Date.now()+864e5)),now=Date.now();
+  function onDay(e,day){return e.allDay?(e.date<=day&&sydDate(new Date(e.end).getTime()-1)>=day):sydDate(e.start)===day}
+  function row(e,withDay){var past=!e.allDay&&new Date(e.end).getTime()<now;
+    return '<div class="cal-e'+(past?' past':'')+'"><span class="cal-t">'+(withDay?'<b>'+new Date(e.allDay?e.date+'T12:00:00':e.start).toLocaleDateString('en-AU',{weekday:'short',day:'numeric',month:'short',timeZone:TZ})+'</b>':'')+(e.allDay?'All day':sydTime(e.start)+(withDay?'':'–'+sydTime(e.end)))+'</span><span>'+esc(e.title)+(e.location&&!withDay?' <i>· '+esc(e.location)+'</i>':'')+'</span></div>'}
+  var left='';
   [[t0,'Today'],[t1,'Tomorrow']].forEach(function(dd){
-    var ev=(calEvents||[]).filter(function(e){return e.allDay?(e.date<=dd[0]&&sydDate(new Date(e.end).getTime()-1)>=dd[0]):sydDate(e.start)===dd[0]});
-    if(dd[1]==='Tomorrow'&&!ev.length)return;
-    h+='<div class="cal-d">'+dd[1]+'</div>';
-    if(!ev.length&&calState==='ok')h+='<div class="tb-empty">Nothing on.</div>';
-    ev.forEach(function(e){var past=!e.allDay&&new Date(e.end).getTime()<now;
-      h+='<div class="cal-e'+(past?' past':'')+'"><span class="cal-t">'+(e.allDay?'All day':sydTime(e.start)+'–'+sydTime(e.end))+'</span><span>'+esc(e.title)+(e.location?' <i>· '+esc(e.location)+'</i>':'')+'</span></div>'});
+    var ev=(calEvents||[]).filter(function(e){return onDay(e,dd[0])});
+    left+='<div class="cal-d">'+dd[1]+'</div>';
+    if(!ev.length)left+='<div class="tb-empty">'+(calState==='ok'?'Nothing on.':'')+'</div>';
+    ev.forEach(function(e){left+=row(e,false)});
   });
-  return h+'</section>';
+  var ahead=(calEvents||[]).filter(function(e){var sd=e.allDay?e.date:sydDate(e.start);return sd>t1}).sort(function(x,y){var kx=(x.allDay?x.date+'T00':sydDate(x.start)+'T'+new Date(x.start).toISOString()),ky=(y.allDay?y.date+'T00':sydDate(y.start)+'T'+new Date(y.start).toISOString());return kx<ky?-1:kx>ky?1:0}).slice(0,6);
+  var right='<div class="cal-d">Coming up</div>'+(ahead.length?ahead.map(function(e){return row(e,true)}).join(''):'<div class="tb-empty">'+(calState==='ok'?'Nothing in the next 2 weeks.':'')+'</div>');
+  return h+'<div class="cal-cols"><div>'+left+'</div><div class="cal-ahead">'+right+'</div></div></section>';
 }
 // ── Render ──
 function renderToday(){

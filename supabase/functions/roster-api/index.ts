@@ -225,7 +225,7 @@ Deno.serve(async (req) => {
     if (action === 'calendar') {
       const url = Deno.env.get('GCAL_ICS_URL');
       if (!url) return json({ events: [], setup: true });
-      const days = Math.min(7, Math.max(1, +body.days || 2));
+      const days = Math.min(21, Math.max(1, +body.days || 2));
       const res = await fetch(url);
       if (!res.ok) return json({ error: 'Calendar feed returned ' + res.status }, 502);
       const comp = new ICAL.Component(ICAL.parse(await res.text()));
@@ -265,7 +265,7 @@ Deno.serve(async (req) => {
         }
       }
       out.sort((a, b) => (a.start < b.start ? -1 : 1));
-      return json({ events: out.slice(0, 60), tz: tzName });
+      return json({ events: out.slice(0, 120), tz: tzName });
     }
     if (action === 'ping') return json({ ok: true });
     return json({ error: 'Unknown action' }, 400);
