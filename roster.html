@@ -227,16 +227,55 @@ table.sq tr.xp td{padding:0 0 10px;background:transparent}
 main.wide{max-width:1400px}
 .toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--navy-deep);color:var(--cyan);padding:9px 16px;border-radius:20px;font-size:13px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:60}
 .toast.show{opacity:1}
+.today{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:14px;align-items:start}
+.tcol{display:flex;flex-direction:column;gap:14px}
+@media(max-width:860px){.today{display:flex;flex-direction:column;align-items:stretch;gap:12px}.tcol{display:contents}}
+.t-hello{display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;margin:4px 0 14px}
+.t-hello b{font:900 26px/1 var(--display);text-transform:uppercase;color:var(--navy-deep)}.t-hello span{font:500 11px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t3)}
+.tb{background:#fff;border:1px solid var(--bd);border-radius:12px;padding:12px 14px}
+.tb-h{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:6px}
+.tb-h b{font:800 15px var(--display);letter-spacing:.6px;text-transform:uppercase;color:var(--navy-deep)}.tb-h span{font:500 10px var(--mono);letter-spacing:.1em;text-transform:uppercase;color:var(--t4)}
+.tb-empty{font-size:13px;color:var(--t3);padding:6px 0}
+.mr,.nyr{display:flex;gap:10px;align-items:flex-start;padding:8px 0;border-top:1px solid var(--bd)}
+.tb-h+.mr,.tb-h+.nyr{border-top:0}
+.mr-b{flex:1;min-width:0;cursor:pointer;display:flex;flex-direction:column;gap:3px;font-size:14px}
+.mr-m{display:flex;flex-wrap:wrap;gap:6px;font:500 10.5px var(--mono);color:var(--t3)}
+.mr-m i{font-style:normal}.mr-m i.st{background:var(--bg2);padding:1px 6px;border-radius:4px}
+.mr-m i.cl{background:rgba(0,212,255,.14);color:var(--navy);padding:1px 6px;border-radius:4px;font-weight:700}.mr-m i.cl.tm{background:rgba(255,180,0,.18);color:#7a5200}
+.mr-m i.red{color:var(--red);font-weight:700}.mr-m i.amber{color:var(--amber);font-weight:700}
+.star{flex-shrink:0;border:0;background:none;font-size:18px;line-height:1;color:var(--bd2);cursor:pointer;padding:2px}.star.on{color:#ffb400}
+.td .star{margin-left:auto}
+.pill.cl{background:rgba(0,212,255,.14);color:var(--navy)}
+.nyr{border-left:3px solid var(--amber);padding-left:10px;margin-left:-14px;padding-right:0}.nyr.red{border-left-color:var(--red)}
+.nyr .tick{border-color:var(--bd2)}
+.tb-g{border-top:1px solid var(--bd);padding:6px 0 0;margin-top:4px}.tb-g summary{cursor:pointer;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--t3);padding:4px 0}
+.tb-g summary span{color:var(--t4);margin-left:4px}
+.tb-add{display:flex;gap:6px;margin-top:8px}.tb-add input{flex:1;min-width:0;border:1px dashed var(--bd2);border-radius:8px;padding:8px 10px;font:inherit;font-size:13px;background:var(--sf2)}
+.tb-add select{border:1px solid var(--bd2);border-radius:8px;font:500 11px var(--mono);padding:0 6px;background:#fff}
+.cal-d{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--t4);margin:8px 0 2px}
+.cal-e{display:flex;gap:10px;font-size:13.5px;padding:4px 0}.cal-e.past{opacity:.45}.cal-e i{color:var(--t3);font-style:normal}
+.cal-t{flex-shrink:0;width:104px;font:500 11.5px var(--mono);color:var(--navy);padding-top:2px}
+.cchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:4px}
+.cchip{text-align:left;background:var(--sf2);border:1px solid var(--bd);border-left:4px solid var(--green);border-radius:10px;padding:9px 11px;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;gap:5px}
+.cchip.red{border-left-color:var(--red)}.cchip.amber{border-left-color:var(--amber)}.cchip.grey{border-left-color:var(--bd2)}
+.cc-top{display:flex;align-items:center;gap:7px}.cc-top b{font-size:14.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.cc-n{font:700 10px var(--mono);background:var(--navy-deep);color:var(--cyan);border-radius:10px;padding:2px 7px}.cc-tag{font:600 9.5px var(--mono);text-transform:uppercase;color:var(--t4)}
+.rd{width:10px;height:10px;border-radius:50%;flex-shrink:0;background:var(--bd2)}.rd.green{background:var(--green-br)}.rd.amber{background:#ffb400}.rd.red{background:#ff6b5e}
+.cc-ld{display:flex;gap:8px;flex-wrap:wrap}.ld{display:inline-flex;align-items:center;gap:3px;font:600 10px var(--mono);color:var(--t3)}
+.ld i{width:8px;height:8px;border-radius:50%;background:var(--bd2)}.ld.green i{background:var(--green-br)}.ld.amber i{background:#ffb400}.ld.red i{background:#ff6b5e}
+.cc-sub{font:500 11px var(--mono);color:var(--t3)}
+.cc-leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font:500 10px var(--mono);color:var(--t4)}.cc-leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}.cc-leg i.g{background:var(--green-br)}.cc-leg i.a{background:#ffb400}.cc-leg i.r{background:#ff6b5e}
+.ctodo{color:var(--t);margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}.ctodo .k{font:500 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:2px}
 </style>
 </head>
 <body>
 <header>
-  <div><h1>DBSP <em>Hub</em></h1><div class="hsub">Clients · Teams · To-dos</div></div>
+  <div><h1>DBSP <em>Hub</em></h1><div class="hsub">Morning brief · Clients · To-dos</div></div>
   <div class="sp"></div>
   <button class="btn" id="addBtn" style="display:none" onclick="onAdd()">+ Client</button>
   <button class="btn" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.3)" onclick="lock()" title="Forget passphrase on this device">Lock</button>
 </header>
-<nav class="tabs" id="tabs" style="display:none"><button class="tab" data-t="client" onclick="setTab('client')">Clients</button><button class="tab" data-t="team" onclick="setTab('team')">Teams</button><button class="tab" data-t="todo" onclick="setTab('todo')">To-dos</button></nav>
+<nav class="tabs" id="tabs" style="display:none"><button class="tab" data-t="today" onclick="setTab('today')">Today</button><button class="tab" data-t="client" onclick="setTab('client')">Clients</button><button class="tab" data-t="team" onclick="setTab('team')">Teams</button><button class="tab" data-t="todo" onclick="setTab('todo')">To-dos</button></nav>
 <main id="main"><div class="empty">Loading…</div></main>
 
 <!-- Client editor -->
@@ -297,7 +336,10 @@ main.wide{max-width:1400px}
     <h3 id="tTitle">New to-do</h3>
     <div class="fg">
       <div class="f full"><label>To-do</label><input name="title" required maxlength="200"></div>
-      <div class="f"><label>Section</label><input name="section" list="secList" placeholder="e.g. Coaching + leads"><datalist id="secList"></datalist></div>
+      <div class="f"><label>Pillar</label><select name="section" id="tSection" onchange="fillStreams(this.value)"><option>RA</option><option>DBSP</option><option>Personal</option></select><datalist id="secList"></datalist></div>
+      <div class="f"><label>Stream</label><select name="stream" id="tStream"><option value="">None</option></select></div>
+      <div class="f"><label>Client or team</label><select name="client_id" id="tClient"><option value="">None</option></select></div>
+      <div class="f"><label>Star for today?</label><select name="star"><option value="false">No</option><option value="true">Yes ★</option></select></div>
       <div class="f"><label>Status</label><select name="status"><option value="open">Open</option><option value="later">Later</option><option value="done">Done</option><option value="dropped">Dropped</option></select></div>
       <div class="f"><label>Due (optional)</label><input type="date" name="due_date"></div>
       <div class="f"><label>Needs checking?</label><select name="needs_check"><option value="false">No</option><option value="true">Yes, may already be done</option></select></div>
@@ -311,6 +353,7 @@ main.wide{max-width:1400px}
   </form>
 </div>
 <div id="tdash" class="tdash"></div>
+<div id="csheet" class="tdash"></div>
 <div class="toast" id="toast"></div>
 
 <script src="config.js"></script>
@@ -386,21 +429,22 @@ async function load(){
   try{d=await api('list')}catch(e){if(rkey)main.innerHTML='<div class="empty">Couldn\'t load clients: '+esc(e.message)+'</div>';return}
   clients=d.clients||[];appUsers=d.users||[];
   notes={};(d.notes||[]).forEach(function(x){(notes[x.client_id]=notes[x.client_id]||[]).push(x)});
-  teamMembers=d.teamMembers||{};teamCodes=d.teamCodes||[];todos=d.todos||[];
+  teamMembers=d.teamMembers||{};teamCodes=d.teamCodes||[];todos=d.todos||[];dismissed={};(d.dismissals||[]).forEach(function(k){dismissed[k]=1});
   var by={};(d.sessions||[]).forEach(function(x){(by[x.user_id]=by[x.user_id]||[]).push(x)});sessBy=by;athletes=d.athletes||{};profiles=d.profiles||{};teamSettings=d.teamSettings||{};clientPhases=d.clientPhases||{};ciBy={};(d.checkins||[]).forEach(function(x){(ciBy[x.user_id]=ciBy[x.user_id]||[]).push(x)});
   loads={};
   clients.forEach(function(c){if(c.app_user_id)loads[c.app_user_id]=calcLoad(by[c.app_user_id]||[])});
   Object.keys(teamMembers).forEach(function(k){teamMembers[k].forEach(function(id){if(!loads[id])loads[id]=calcLoad(by[id]||[])})});
   document.getElementById('addBtn').style.display='';
   document.getElementById('tabs').style.display='flex';
-  try{tab=localStorage.getItem('dbsp_roster_tab')||'client'}catch(e){}
-  render();if(tdashId)renderTeamDash();
+  try{tab=localStorage.getItem('dbsp_roster_tab')||'today'}catch(e){}
+  render();if(tdashId)renderTeamDash();if(sheetId)renderSheet();
 }
 
 function kindOf(c){return c.kind||'client'}
 function setTab(t){tab=t;try{localStorage.setItem('dbsp_roster_tab',t)}catch(e){}render();window.scrollTo(0,0)}
 function render(){
   if(tab==='todo')return renderTodos();
+  if(tab==='today')return renderToday();
   main.classList.remove('wide');
   var isTeam=tab==='team',noun=isTeam?'team':'client';
   document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t===tab)});
@@ -458,6 +502,7 @@ function card(c){
     +phaseCell(c)
     +'</div>'
     +(kindOf(c)==='client'?ftPanel(c):'')
+    +clientTodos(c)
     +(c.goals?'<div class="goals"><b>Goals:</b> '+esc(c.goals)+'</div>':'')
     +'<div class="log"><div class="k">Change log</div>'
     +(shown.length?shown.map(function(x){return '<div class="note"><span class="dt">'+fmtShort(x.created_at)+'</span><span>'+esc(x.note)+'</span></div>'}).join(''):'<div class="note muted">No notes yet</div>')
@@ -710,15 +755,15 @@ function renderTeamDash(){
   document.getElementById('tdash').innerHTML=h;
 }
 var ftWk={},FT_MAXWK=25;
-function ftWeek(id,o){ftWk[id]=Math.max(0,Math.min(FT_MAXWK,o));if(tdashId)renderTeamDash();else{render();jump(id)}}
-function ftToggle(id){ftOpen[id]=!ftOpen[id];if(tdashId)renderTeamDash();else{render();jump(id)}}
+function ftWeek(id,o){ftWk[id]=Math.max(0,Math.min(FT_MAXWK,o));if(tdashId)renderTeamDash();else if(sheetId)renderSheet();else{render();jump(id)}}
+function ftToggle(id){ftOpen[id]=!ftOpen[id];if(tdashId)renderTeamDash();else if(sheetId)renderSheet();else{render();jump(id)}}
 function setFilter(f){filter=f;render()}
-function toggleNotes(id){expanded[id]=!expanded[id];render();jump(id)}
+function toggleNotes(id){expanded[id]=!expanded[id];if(sheetId)renderSheet();else{render();jump(id)}}
 function jump(id){if(filter!=='all'&&filter!=='active'){filter='active';render()}var el=document.getElementById('c-'+id);if(el)el.scrollIntoView({behavior:'smooth',block:'start'})}
 
 // ── To-dos ──
-var SECTION_ORDER=['Coaching + leads','DBSP website + funnel','Frisbee Track app'];
-function onAdd(){if(tab==='todo')openTodo();else openEditor()}
+var SECTION_ORDER=['RA','DBSP','Personal'];
+function onAdd(){if(tab==='todo'||tab==='today')openTodo();else openEditor()}
 function sections(){var s=SECTION_ORDER.slice();todos.forEach(function(t){if(t.section&&s.indexOf(t.section)<0)s.push(t.section)});return s}
 function renderTodos(){
   main.classList.add('wide');
@@ -739,7 +784,7 @@ function renderTodos(){
   h+='<div class="pillars" style="--cols:'+secs.length+'">';
   secs.forEach(function(s,si){
     var items=list.filter(function(t){return (t.section||'Other')===s});
-    items.sort(function(a,b){var da=a.due_date||'9999',db=b.due_date||'9999';return da<db?-1:da>db?1:(a.sort-b.sort)});
+    items.sort(function(a,b){var da=a.due_date||'9999',db=b.due_date||'9999';return (b.star?1:0)-(a.star?1:0)||String(a.stream||'').localeCompare(String(b.stream||''))||(da<db?-1:da>db?1:(a.sort-b.sort))});
     h+='<section class="pillar" aria-label="'+esc(s)+'"><div class="pillar-h"><b>'+esc(s)+'</b><span>'+items.length+' '+(tFilter==='all'?'total':tFilter)+'</span></div>'
       +(items.length?items.map(todoRow).join(''):'<div class="empty">Nothing '+(tFilter==='all'?'here':tFilter)+'.</div>')
       +'<form class="padd" onsubmit="pillarAdd(event,'+si+')"><input placeholder="+ Add to '+esc(s)+'" maxlength="200" aria-label="Add a to-do to '+esc(s)+'"></form></section>';
@@ -753,8 +798,8 @@ function todoRow(t){
   return '<div class="td" data-s="'+t.status+'"><button class="tick" title="Mark done" onclick="toggleDone(\''+t.id+'\')">'+(t.status==='done'?'✓':'')+'</button>'
     +'<div class="bd" onclick="openTodo(\''+t.id+'\')"><div class="tt">'+(t.num?'<span class="tnum">#'+t.num+'</span>':'')+esc(t.title)+'</div>'
     +(t.detail?'<div class="tdet">'+esc(t.detail)+'</div>':'')
-    +'<div class="tmeta">'+due+(t.needs_check?'<span class="pill amber">Check</span>':'')+(t.status==='later'?'<span class="pill grey">Later</span>':'')+(t.status==='dropped'?'<span class="pill grey">Dropped</span>':'')
-    +(t.link?'<a href="'+esc(t.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Source</a>':'')+'</div></div></div>';
+    +'<div class="tmeta">'+(t.stream?'<span class="pill grey">'+esc(t.stream)+'</span>':'')+(t.client_id&&clientName(t.client_id)?'<span class="pill cl">'+esc(clientName(t.client_id))+'</span>':'')+due+(t.needs_check?'<span class="pill amber">Check</span>':'')+(t.status==='later'?'<span class="pill grey">Later</span>':'')+(t.status==='dropped'?'<span class="pill grey">Dropped</span>':'')
+    +(t.link?'<a href="'+esc(t.link)+'" target="_blank" rel="noopener" onclick="event.stopPropagation()">Source</a>':'')+'</div></div><button class="star'+(t.star?' on':'')+'" onclick="toggleStar(\''+t.id+'\')" title="'+(t.star?'Unstar':'Star for today')+'">★</button></div>';
 }
 function setTFilter(f){tFilter=f;renderTodos()}
 async function pillarAdd(e,si){
@@ -769,25 +814,29 @@ async function quickAdd(e){
 }
 async function toggleDone(id){
   var t=todos.find(function(x){return x.id===id});if(!t)return;
-  var s=t.status==='done'?'open':'done';t.status=s;renderTodos();
+  var s=t.status==='done'?'open':'done';t.status=s;refresh();
   try{await api('todo_save',{id:id,todo:{status:s}})}catch(err){toast(err.message);await load();return}
   toast(s==='done'?'Done':'Reopened');
 }
-function openTodo(id){
+function openTodo(id,preset){
   tEditing=id?todos.find(function(t){return t.id===id}):null;
   var f=document.getElementById('tForm');f.reset();
   document.getElementById('secList').innerHTML=sections().map(function(s){return '<option value="'+esc(s)+'">'}).join('');
   document.getElementById('tTitle').textContent=tEditing?'Edit to-do'+(tEditing.num?' #'+tEditing.num:''):'New to-do';
   document.getElementById('tDel').style.visibility=tEditing?'visible':'hidden';
-  if(tEditing)Array.prototype.forEach.call(f.elements,function(el){if(el.name&&tEditing[el.name]!=null)el.value=String(tEditing[el.name])});
-  else f.elements.section.value='Coaching + leads';
+  var secSel=document.getElementById('tSection');
+  secSel.innerHTML=sections().map(function(s){return '<option>'+esc(s)+'</option>'}).join('');
+  document.getElementById('tClient').innerHTML='<option value="">None</option>'+clients.filter(function(c){return c.status==='active'||(tEditing&&tEditing.client_id===c.id)}).map(function(c){return '<option value="'+c.id+'">'+esc(c.name)+(kindOf(c)==='team'?' (team)':'')+'</option>'}).join('');
+  var pre=tEditing||preset||{section:tab==='today'?'RA':'DBSP'};
+  fillStreams(pre.section||'DBSP',pre.stream);
+  Array.prototype.forEach.call(f.elements,function(el){if(el.name&&el.name!=='stream'&&pre[el.name]!=null)el.value=String(pre[el.name])});
   document.getElementById('tScrim').classList.add('open');
 }
 function closeTodo(){document.getElementById('tScrim').classList.remove('open');tEditing=null}
 async function saveTodo(e){
   e.preventDefault();var row={};
   Array.prototype.forEach.call(e.target.elements,function(el){if(!el.name)return;var v=el.value.trim();row[el.name]=v===''?null:v});
-  row.needs_check=row.needs_check==='true';if(!row.section)row.section='Coaching + leads';if(!row.status)row.status='open';
+  row.needs_check=row.needs_check==='true';row.star=row.star==='true';if(!row.section)row.section='DBSP';if(!row.status)row.status='open';
   try{await api('todo_save',{id:tEditing?tEditing.id:null,todo:row})}catch(err){toast(err.message);return}
   closeTodo();toast('Saved');await load();
 }
@@ -878,6 +927,211 @@ function lock(){try{localStorage.removeItem(KEY_STORE)}catch(e){}rkey=null;docum
   try{rkey=localStorage.getItem(KEY_STORE)}catch(e){}
   if(rkey)load();else showGate();
 })();
+// ══ Today tab: morning brief (Nov 2026) ══
+var PILLARS=[{k:'RA',streams:['M7s','W7s','Rehab']},{k:'DBSP',streams:['Coaching','Business','Frisbee Track']},{k:'Personal',streams:[]}];
+var dismissed={},calEvents=null,calState='idle',sheetId=null,tOpenGroups={};
+var TZ='Australia/Sydney';
+function pillarOf(k){return PILLARS.find(function(p){return p.k===k})}
+function refresh(){render();if(sheetId)renderSheet();if(tdashId)renderTeamDash()}
+function clientName(id){var c=clients.find(function(x){return x.id===id});return c?c.name:null}
+function teamForUid(uid){return clients.find(function(c){return kindOf(c)==='team'&&c.status==='active'&&c.team_code&&(teamMembers[String(c.team_code).toUpperCase()]||[]).indexOf(uid)>=0})}
+// ── Needs you: auto to-dos from client + team data ──
+function needsYou(){
+  var out=[],t=today(),y48=new Date(t);y48.setDate(t.getDate()-1);var y48i=iso(y48);
+  var PRI={nig:0,prog:1,spike:2,tourn:3,quiet:4};
+  function add(o){if(!dismissed[o.key])out.push(o)}
+  function nigItem(uid,who,openFn,teamName){
+    var a=ftAnalyse({app_user_id:uid});
+    var rec=(a.C||[]).filter(function(x){return x.date>=y48i&&(x.niggles||[]).length})[0];
+    if(!rec)return a;
+    var mx=Math.max.apply(null,rec.niggles.map(function(n){return +n.sev||0}));
+    var running=a.flags.some(function(f){return /days running: /.test(f.t)});
+    add({cat:'nig',key:'nig:'+uid+':'+rec.date+':'+rec.niggles.map(function(n){return n.area+n.sev}).join(','),sev:mx>=5||running?'red':'amber',
+      who:who,team:teamName,t:'Niggle: '+rec.niggles.map(nigTxt).join(', '),sub:(rec.date===iso(t)?'Checked in today':'Checked in yesterday')+(running?' · 3+ days running':'')+(rec.note?' · “'+rec.note+'”':''),open:openFn});
+    return a;
+  }
+  clients.filter(function(c){return c.status==='active'}).forEach(function(c){
+    var isTeam=kindOf(c)==='team',r=runway(c),open=isTeam?"openTeam('"+c.id+"')":"openClient('"+c.id+"')";
+    if(r.n===null)add({cat:'prog',key:'prog:'+c.id+':unset',sev:'amber',who:c.name,isTeam:isTeam,t:'No program end date set',sub:'Add it so you get warned before it runs out',open:"openProg('"+c.id+"')"});
+    else if(r.n<=7)add({cat:'prog',key:'prog:'+c.id+':'+c.programmed_until,sev:r.n<=2?'red':'amber',who:c.name,isTeam:isTeam,t:r.n<0?'Program ran out '+(-r.n)+'d ago':'Program runs out '+fmtD(c.programmed_until)+(r.n===0?' (today)':' ('+r.n+'d)'),sub:'Write the next block, then update programmed-to',open:"openProg('"+c.id+"')"});
+    if(isTeam){
+      var tn=daysUntil(c.tournament_date);
+      if(tn!==null&&tn>=0&&tn<=14)add({cat:'tourn',key:'tourn:'+c.id+':'+c.tournament_date,sev:'amber',who:c.name,isTeam:true,t:(c.next_tournament||'Tournament')+' in '+tn+'d: set the taper',sub:'Taper week is the final week',open:open});
+      (c.team_code?(teamMembers[String(c.team_code).toUpperCase()]||[]):[]).forEach(function(uid){
+        nigItem(uid,playerName(uid),"openTeamPlayer('"+c.id+"','"+uid+"')",c.name);
+      });
+      return;
+    }
+    if(!c.app_user_id)return;
+    var a=nigItem(c.app_user_id,c.name,open,null);
+    if(a.rH!==null&&a.rH>1.5)add({cat:'spike',key:'spike:'+c.app_user_id+':'+iso(wkStart(t)),sev:'red',who:c.name,t:'HSR spike (ratio '+a.rH.toFixed(2)+')',sub:'Check what drove it before the next session',open:open});
+    if(a.tourn){var dd=daysUntil(a.tourn.date);if(dd!==null&&dd>=0&&dd<=14)add({cat:'tourn',key:'tourn:'+c.id+':'+a.tourn.date,sev:'amber',who:c.name,t:a.tourn.name+' in '+dd+'d: set the taper',sub:'Taper week is the final week',open:open});}
+    var lastS=a.last?a.last.date:null,lastC=a.lastCi?a.lastCi.date:null,lastA=[lastS,lastC].filter(Boolean).sort().pop()||null;
+    var qa=lastA?daysUntil(lastA)*-1:null;
+    if(lastA===null)add({cat:'quiet',key:'quiet:'+c.app_user_id+':none',sev:'amber',who:c.name,t:'No sessions or check-ins yet',sub:'Check they\'re set up in Frisbee Track',open:open});
+    else if(qa>=7)add({cat:'quiet',key:'quiet:'+c.app_user_id+':'+lastA,sev:qa>=14?'red':'amber',who:c.name,t:'Gone quiet: nothing in '+qa+' days',sub:'Last '+(lastA===lastS?'session':'check-in')+' '+fmtShort(lastA),open:open});
+  });
+  out.sort(function(a,b){return (a.sev==='red'?0:1)-(b.sev==='red'?0:1)||PRI[a.cat]-PRI[b.cat]});
+  return out;
+}
+var NY_LAST=[];
+function dismissNYi(i){var x=NY_LAST[i];if(x)dismissNY(x.key)}
+async function dismissNY(key){
+  dismissed[key]=1;render();
+  try{await api('dismiss',{key:key})}catch(e){delete dismissed[key];render();toast(e.message);return}
+  toast('Cleared until it triggers again');
+}
+function openTeamPlayer(teamId,uid){openTeam(teamId);tdToggle(uid)}
+// ── Client chips ──
+function readiness(a){
+  if(!a||!a.lastCi||a.ciAgo>2)return{cls:'none',t:'No recent check-in'};
+  var x=a.lastCi,ng=(x.niggles||[]),mx=ng.length?Math.max.apply(null,ng.map(function(n){return +n.sev||0})):0;
+  var lbl=FEEL_LBL[x.feeling]+(x.sleep_hrs!=null?' · '+x.sleep_hrs+'h':'')+(ng.length?' · '+ng.map(nigTxt).join(', '):'');
+  if(mx>=5||x.feeling==='both')return{cls:'red',t:lbl};
+  if(ng.length||x.feeling!=='good')return{cls:'amber',t:lbl};
+  return{cls:'green',t:lbl};
+}
+function loadDots(a){
+  var pace=Math.max(1/7,(a.dow+1)/7);
+  return [['hsr','HSR'],['vhsr','VHSR'],['acc','Acc'],['dec','Dec']].map(function(m){
+    var v=a.cur.tot[m[0]],g=a.cur.tg[m[0]],pc=g?v/(g*pace):null,cls=pc===null?'none':pc>1.3?'red':pc>=0.7?'green':'amber';
+    return '<span class="ld '+cls+'" title="'+m[1]+': '+Math.round(v)+' of '+Math.round(g)+' this week ('+(g?Math.round(v/g*100):0)+'%)"><i></i>'+m[1]+'</span>';
+  }).join('');
+}
+function clientChip(c){
+  var a=c.app_user_id?ftAnalyse(c):null,r=runway(c),bp=blockPos(c);
+  var nTodo=todos.filter(function(t){return t.client_id===c.id&&t.status==='open'}).length;
+  var rd=readiness(a);
+  var prog=(bp&&!bp.over?bp.txt.replace('Week ','Wk ').replace(' of ','/'):bp&&bp.over?'Block done':'')+(r.n===null?'':(bp?' · ':'')+(r.n<0?'program ran out':'due '+fmtShort(c.programmed_until)));
+  return '<button class="cchip '+r.cls+'" onclick="openClient(\''+c.id+'\')">'
+    +'<div class="cc-top"><span class="rd '+rd.cls+'" title="'+esc(rd.t)+'"></span><b>'+esc(c.name)+'</b>'+(nTodo?'<span class="cc-n">'+nTodo+'</span>':'')+'</div>'
+    +(a?'<div class="cc-ld">'+loadDots(a)+'</div>':'<div class="cc-sub">Not linked to Frisbee Track</div>')
+    +'<div class="cc-sub '+(r.cls==='red'?'red':r.cls==='amber'?'amber':'')+'">'+esc(prog||'No program dates')+'</div>'
+    +(a&&rd.cls!=='none'&&rd.cls!=='green'?'<div class="cc-sub">'+esc(rd.t)+'</div>':'')
+    +'</button>';
+}
+function teamChip(c){
+  var ids=c.team_code?(teamMembers[String(c.team_code).toUpperCase()]||[]):[],y=new Date(today());y.setDate(y.getDate()-1);var yi=iso(y);
+  var nig=ids.filter(function(uid){return (ciBy[uid]||[]).some(function(x){return x.date>=yi&&(x.niggles||[]).length})}).length;
+  var ci=ids.filter(function(uid){return (ciBy[uid]||[]).some(function(x){return x.date>=yi})}).length;
+  var r=runway(c),tn=daysUntil(c.tournament_date);
+  return '<button class="cchip '+r.cls+'" onclick="openTeam(\''+c.id+'\')">'
+    +'<div class="cc-top"><span class="rd '+(nig?'amber':'green')+'"></span><b>'+esc(c.name)+'</b><span class="cc-tag">Team</span></div>'
+    +'<div class="cc-sub">'+ids.length+' player'+(ids.length===1?'':'s')+' · '+ci+' checked in · '+(nig?'<span class="amber">'+nig+' niggle'+(nig>1?'s':'')+'</span>':'no niggles')+'</div>'
+    +'<div class="cc-sub '+(r.cls==='red'?'red':r.cls==='amber'?'amber':'')+'">'+(r.n===null?'No program dates':r.n<0?'Program ran out':'Programmed to '+fmtShort(c.programmed_until))+(tn!==null&&tn>=0?' · '+esc(c.next_tournament||'Tournament')+' '+tn+'d':'')+'</div>'
+    +'</button>';
+}
+// ── Pillar blocks on Today ──
+function isTop(t){var n=daysUntil(t.due_date);return t.star||(n!==null&&n<=1)}
+function miniRow(t){
+  var n=daysUntil(t.due_date),cn=t.client_id?clientName(t.client_id):null;
+  return '<div class="mr"><button class="tick" onclick="toggleDone(\''+t.id+'\')" title="Mark done">'+(t.status==='done'?'✓':'')+'</button>'
+    +'<div class="mr-b" onclick="openTodo(\''+t.id+'\')"><span>'+esc(t.title)+'</span>'
+    +'<span class="mr-m">'+(t.stream?'<i class="st">'+esc(t.stream)+'</i>':'')+(cn?'<i class="cl">'+esc(cn)+'</i>':'')
+    +(t.due_date?'<i class="'+(n<0?'red':n<=1?'amber':'')+'">'+(n<0?'Overdue ':n===0?'Today':n===1?'Tomorrow':'Due ')+(n>1||n<0?fmtShort(t.due_date):'')+'</i>':'')+'</span></div>'
+    +'<button class="star'+(t.star?' on':'')+'" onclick="toggleStar(\''+t.id+'\')" title="'+(t.star?'Unstar':'Star for today')+'">★</button></div>';
+}
+function pillarBlock(p,title){
+  var open=todos.filter(function(t){return (t.section||'')===p.k&&t.status==='open'});
+  var top=open.filter(isTop).sort(function(a,b){return (b.star?1:0)-(a.star?1:0)||String(a.due_date||'9').localeCompare(String(b.due_date||'9'))||a.sort-b.sort});
+  var rest=open.filter(function(t){return !isTop(t)});
+  var h='<section class="tb"><div class="tb-h"><b>'+esc(title||p.k)+'</b><span>'+open.length+' open</span></div>';
+  h+=top.length?top.map(miniRow).join(''):'<div class="tb-empty">'+(p.k==='RA'?'Nothing starred. Tap ★ on the must-dos for today.':'Nothing due or starred.')+'</div>';
+  var groups=(p.streams.length?p.streams:[]).concat(['']);
+  groups.forEach(function(s){
+    var items=rest.filter(function(t){return (t.stream||'')===s||(s===''&&p.streams.indexOf(t.stream||'')<0)});
+    if(!items.length)return;
+    var gk=p.k+'|'+s;
+    h+='<details class="tb-g"'+(tOpenGroups[gk]?' open':'')+' ontoggle="tOpenGroups[\''+gk+'\']=this.open"><summary>'+esc(s||(p.streams.length?'Other':'More'))+' <span>'+items.length+'</span></summary>'+items.map(miniRow).join('')+'</details>';
+  });
+  h+='<form class="tb-add" onsubmit="todayAdd(event,\''+p.k+'\')"><input placeholder="+ Add to '+esc(p.k)+'" maxlength="200">'
+    +(p.streams.length?'<select aria-label="Stream">'+p.streams.map(function(s){return '<option>'+esc(s)+'</option>'}).join('')+'<option value="">None</option></select>':'')+'</form>';
+  return h+'</section>';
+}
+async function todayAdd(e,pk){
+  e.preventDefault();var inp=e.target.querySelector('input'),sel=e.target.querySelector('select'),v=inp.value.trim();if(!v)return;
+  try{await api('todo_save',{todo:{title:v,section:pk,stream:sel?sel.value||null:null,status:'open'}})}catch(err){toast(err.message);return}
+  toast('Added');await load();
+}
+async function toggleStar(id){
+  var t=todos.find(function(x){return x.id===id});if(!t)return;t.star=!t.star;refresh();
+  try{await api('todo_save',{id:id,todo:{star:t.star}})}catch(err){toast(err.message);await load()}
+}
+// ── Calendar ──
+async function loadCal(){
+  calState='loading';
+  try{var d=await api('calendar',{days:2});calEvents=d.events||[];calState=d.setup?'setup':'ok'}catch(e){calState='err';calEvents=[]}
+  if(tab==='today')render();
+}
+function sydDate(d){return new Date(d).toLocaleDateString('en-CA',{timeZone:TZ})}
+function sydTime(d){return new Date(d).toLocaleTimeString('en-AU',{hour:'numeric',minute:'2-digit',timeZone:TZ}).replace(' ','').toLowerCase()}
+function calBlock(){
+  var h='<section class="tb cal"><div class="tb-h"><b>Calendar</b><span>'+(calState==='loading'||calState==='idle'?'Loading…':calState==='err'?'Couldn\'t load':'')+'</span></div>';
+  if(calState==='setup')return h+'<div class="tb-empty">Calendar feed not connected yet.</div></section>';
+  var t0=sydDate(new Date()),t1=sydDate(new Date(Date.now()+864e5)),now=Date.now();
+  [[t0,'Today'],[t1,'Tomorrow']].forEach(function(dd){
+    var ev=(calEvents||[]).filter(function(e){return e.allDay?(e.date<=dd[0]&&sydDate(new Date(e.end).getTime()-1)>=dd[0]):sydDate(e.start)===dd[0]});
+    if(dd[1]==='Tomorrow'&&!ev.length)return;
+    h+='<div class="cal-d">'+dd[1]+'</div>';
+    if(!ev.length&&calState==='ok')h+='<div class="tb-empty">Nothing on.</div>';
+    ev.forEach(function(e){var past=!e.allDay&&new Date(e.end).getTime()<now;
+      h+='<div class="cal-e'+(past?' past':'')+'"><span class="cal-t">'+(e.allDay?'All day':sydTime(e.start)+'–'+sydTime(e.end))+'</span><span>'+esc(e.title)+(e.location?' <i>· '+esc(e.location)+'</i>':'')+'</span></div>'});
+  });
+  return h+'</section>';
+}
+// ── Render ──
+function renderToday(){
+  main.classList.add('wide');
+  document.querySelectorAll('.tab').forEach(function(b){b.classList.toggle('on',b.dataset.t==='today')});
+  document.getElementById('addBtn').textContent='+ To-do';
+  var hdr=document.querySelector('header');if(hdr)document.documentElement.style.setProperty('--hdrh',hdr.offsetHeight+'px');
+  if(calState==='idle')loadCal();
+  var ny=needsYou();NY_LAST=ny;var reds=ny.filter(function(x){return x.sev==='red'}).length;
+  var d=new Date();
+  var h='<div class="t-hello"><b>'+d.toLocaleDateString('en-AU',{weekday:'long',day:'numeric',month:'short'})+'</b><span>'+(ny.length?ny.length+' client item'+(ny.length>1?'s':'')+(reds?', '+reds+' urgent':''):'Clients all clear')+'</span></div>';
+  var nyH='<section class="tb ny"><div class="tb-h"><b>Needs you</b><span>'+ny.length+'</span></div>'
+    +(ny.length?ny.map(function(x,i){return '<div class="nyr '+x.sev+'"><button class="tick" title="Clear until it triggers again" onclick="dismissNYi('+i+')"></button>'
+      +'<div class="mr-b" onclick="'+x.open+'"><span>'+esc(x.t)+'</span><span class="mr-m"><i class="cl'+(x.isTeam?' tm':'')+'">'+esc(x.who)+'</i>'+(x.team?'<i class="st">'+esc(x.team)+'</i>':'')+'<i>'+esc(x.sub)+'</i></span></div></div>'}).join('')
+      :'<div class="tb-empty">Nothing from clients or teams. Programs, niggles and logging are all on track.</div>')+'</section>';
+  var act=clients.filter(function(c){return c.status==='active'});
+  var chips='<section class="tb"><div class="tb-h"><b>Clients</b><span>'+act.filter(function(c){return kindOf(c)!=='team'}).length+' active</span></div><div class="cchips">'
+    +act.filter(function(c){return kindOf(c)!=='team'}).map(clientChip).join('')+act.filter(function(c){return kindOf(c)==='team'}).map(teamChip).join('')
+    +'</div><div class="cc-leg"><span><i class="g"></i>On pace</span><span><i class="a"></i>Behind</span><span><i class="r"></i>Well over</span><span>Dot left of name = latest check-in</span></div></section>';
+  var others=sections().filter(function(s){return !pillarOf(s)&&todos.some(function(t){return t.section===s&&t.status==='open'})});
+  h+='<div class="today"><div class="tcol a">'
+    +'<div style="order:1">'+calBlock()+'</div>'
+    +'<div style="order:2">'+pillarBlock(PILLARS[0],'RA today')+'</div>'
+    +'<div style="order:3">'+nyH+'</div>'
+    +'<div style="order:7">'+chips+'</div>'
+    +'</div><div class="tcol b">'
+    +'<div style="order:4">'+pillarBlock(PILLARS[1])+'</div>'
+    +'<div style="order:5">'+pillarBlock(PILLARS[2])+'</div>'
+    +others.map(function(s){return '<div style="order:6">'+pillarBlock({k:s,streams:[]})+'</div>'}).join('')
+    +'</div></div>';
+  main.innerHTML=h;
+}
+// ── Client sheet (full card in an overlay) ──
+function openClient(id){sheetId=id;renderSheet();var el=document.getElementById('csheet');el.classList.add('open');el.scrollTop=0;document.body.style.overflow='hidden'}
+function closeClient(){sheetId=null;document.getElementById('csheet').classList.remove('open');document.body.style.overflow=''}
+function renderSheet(){
+  var c=clients.find(function(x){return x.id===sheetId});if(!c){closeClient();return}
+  document.getElementById('csheet').innerHTML='<div class="td-top"><button class="btn sm" style="background:transparent;color:#fff;border-color:rgba(255,255,255,.3)" onclick="closeClient()">← Back</button><div class="sp"></div></div><div class="td-main" style="max-width:820px">'+card(c)+'</div>';
+}
+function clientTodos(c){
+  var list=todos.filter(function(t){return t.client_id===c.id&&(t.status==='open'||t.status==='later')});
+  return '<div class="ctodo"><div class="k">To-dos for '+esc(c.name)+'</div>'+(list.length?list.map(miniRow).join(''):'<div class="tb-empty">None yet.</div>')
+    +'<form class="tb-add" onsubmit="clientAdd(event,\''+c.id+'\')"><input placeholder="+ Add a to-do for '+esc(c.name)+'" maxlength="200"></form></div>';
+}
+async function clientAdd(e,cid){
+  e.preventDefault();var inp=e.target.querySelector('input'),v=inp.value.trim();if(!v)return;
+  try{await api('todo_save',{todo:{title:v,section:'DBSP',stream:'Coaching',client_id:cid,status:'open'}})}catch(err){toast(err.message);return}
+  toast('Added');await load();
+}
+function fillStreams(pk,val){
+  var p=pillarOf(pk),sel=document.getElementById('tStream');if(!sel)return;
+  sel.innerHTML='<option value="">None</option>'+(p?p.streams:[]).map(function(s){return '<option>'+esc(s)+'</option>'}).join('');
+  sel.value=val||'';
+}
 </script>
 </body>
 </html>
