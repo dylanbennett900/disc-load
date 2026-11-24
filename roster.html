@@ -255,7 +255,7 @@ main.wide{max-width:1400px}
 .cal-d{font:600 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--t4);margin:8px 0 2px}
 .cal-e{display:flex;gap:10px;font-size:13.5px;padding:4px 0}.cal-e.past{opacity:.45}.cal-e i{color:var(--t3);font-style:normal}
 .cal-t{flex-shrink:0;width:104px;font:500 11.5px var(--mono);color:var(--navy);padding-top:2px}
-.cchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px;margin-top:4px}
+.cchips{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:8px;margin-top:4px}
 .cchip{text-align:left;background:var(--sf2);border:1px solid var(--bd);border-left:4px solid var(--green);border-radius:10px;padding:9px 11px;cursor:pointer;font:inherit;color:inherit;display:flex;flex-direction:column;gap:5px}
 .cchip.red{border-left-color:var(--red)}.cchip.amber{border-left-color:var(--amber)}.cchip.grey{border-left-color:var(--bd2)}
 .cc-top{display:flex;align-items:center;gap:7px}.cc-top b{font-size:14.5px;flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -266,6 +266,19 @@ main.wide{max-width:1400px}
 .cc-sub{font:500 11px var(--mono);color:var(--t3)}
 .cc-leg{display:flex;flex-wrap:wrap;gap:12px;margin-top:8px;font:500 10px var(--mono);color:var(--t4)}.cc-leg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px;vertical-align:middle}.cc-leg i.g{background:var(--green-br)}.cc-leg i.a{background:#ffb400}.cc-leg i.r{background:#ff6b5e}
 .ctodo{color:var(--t);margin-top:12px;border-top:1px solid var(--bd);padding-top:10px}.ctodo .k{font:500 10px var(--mono);letter-spacing:.12em;text-transform:uppercase;color:var(--t3);margin-bottom:2px}
+.cc-mid{display:flex;align-items:flex-end;justify-content:space-between;gap:8px}
+.cc-rt{display:flex;gap:5px;flex-wrap:wrap}.rt{font:700 10.5px var(--mono);padding:2px 6px;border-radius:4px;background:var(--bg2);color:var(--t2)}
+.rt.green{background:rgba(0,232,122,.16);color:var(--green)}.rt.amber{background:rgba(255,180,0,.18);color:#8a5c00}.rt.red{background:rgba(255,107,94,.18);color:var(--red)}.rt.muted{color:var(--t4)}
+.spk{position:relative;display:flex;align-items:flex-end;gap:2px;height:24px;width:56px;flex-shrink:0}
+.spk i{flex:1;border-radius:2px 2px 0 0;background:var(--bd2)}.spk i.ok{background:var(--green-br)}.spk i.hi{background:#ffb400}.spk i.lo{background:#c9c7c1}.spk i.cur{outline:1.5px solid var(--navy-deep);outline-offset:0}
+.spk s{position:absolute;left:0;right:0;border-top:1px dashed var(--t3)}
+.cc-bars{display:flex;flex-direction:column;gap:3px}
+.cb{display:grid;grid-template-columns:34px 1fr 74px;align-items:center;gap:6px;font:500 10.5px var(--mono);color:var(--t3)}
+.cb .bt{position:relative;height:6px;border-radius:3px;background:var(--bg2)}.cb .bt i{position:absolute;left:0;top:0;bottom:0;border-radius:3px;background:var(--bd2)}
+.cb .bt i.green{background:var(--green-br)}.cb .bt i.amber{background:#ffb400}.cb .bt i.red{background:#ff6b5e}
+.cb .bt s{position:absolute;top:-2px;bottom:-2px;width:1.5px;background:var(--navy-deep)}
+.cb .v{text-align:right}.cb .v b{color:var(--t);font-weight:700}
+.spw{display:flex;flex-direction:column;align-items:flex-end;gap:2px}.spw span{font:500 8.5px var(--mono);letter-spacing:.06em;text-transform:uppercase;color:var(--t4)}
 </style>
 </head>
 <body>
@@ -991,12 +1004,19 @@ function readiness(a){
   if(ng.length||x.feeling!=='good')return{cls:'amber',t:lbl};
   return{cls:'green',t:lbl};
 }
-function loadDots(a){
+function kfmt(v){v=Math.round(v||0);return v>=10000?(v/1000).toFixed(0)+'k':v>=1000?(v/1000).toFixed(1)+'k':String(v)}
+function loadBars(a){
   var pace=Math.max(1/7,(a.dow+1)/7);
-  return [['hsr','HSR'],['vhsr','VHSR'],['acc','Acc'],['dec','Dec']].map(function(m){
-    var v=a.cur.tot[m[0]],g=a.cur.tg[m[0]],pc=g?v/(g*pace):null,cls=pc===null?'none':pc>1.3?'red':pc>=0.7?'green':'amber';
-    return '<span class="ld '+cls+'" title="'+m[1]+': '+Math.round(v)+' of '+Math.round(g)+' this week ('+(g?Math.round(v/g*100):0)+'%)"><i></i>'+m[1]+'</span>';
-  }).join('');
+  return '<div class="cc-bars">'+[['dist','Dist'],['hsr','HSR'],['vhsr','VHSR'],['acc','Acc'],['dec','Dec']].map(function(m){
+    var v=a.cur.tot[m[0]],g=a.cur.tg[m[0]],pc=g?v/g:0,pp=g?v/(g*pace):null,cls=pp===null?'':pp>1.3?'red':pp>=0.7?'green':'amber';
+    return '<div class="cb"><span class="k">'+m[1]+'</span><div class="bt"><i class="'+cls+'" style="width:'+Math.min(100,pc*100).toFixed(0)+'%"></i><s style="left:'+(pace*100).toFixed(0)+'%"></s></div><span class="v"><b>'+kfmt(v)+'</b>/'+kfmt(g)+'</span></div>';
+  }).join('')+'</div>';
+}
+function ratioTag(l,r){var z=zone(r);return '<span class="rt '+(z.cls||'n')+'" title="'+esc(z.l)+'">'+l+' '+(r===null||!isFinite(r)?'–':r.toFixed(2))+'</span>'}
+function hsrSpark(a){
+  var mx=Math.max.apply(null,a.weeks.map(function(w){return w.tg.hsr?w.tot.hsr/w.tg.hsr:0}).concat([1.2]));
+  return '<div class="spk" title="Weekly HSR vs target, last 6 weeks">'+a.weeks.map(function(w,i){var pc=w.tg.hsr?w.tot.hsr/w.tg.hsr:0;
+    return '<i class="'+(i===5?'cur ':'')+(pc>1.15?'hi':pc>=0.9?'ok':'lo')+'" style="height:'+Math.max(6,Math.min(100,pc/mx*100)).toFixed(0)+'%" title="Wk of '+fmtShort(iso(w.ws))+': '+Math.round(pc*100)+'%"></i>'}).join('')+'<s style="bottom:'+(100/mx).toFixed(0)+'%"></s></div>';
 }
 function clientChip(c){
   var a=c.app_user_id?ftAnalyse(c):null,r=runway(c),bp=blockPos(c);
@@ -1005,7 +1025,7 @@ function clientChip(c){
   var prog=(bp&&!bp.over?bp.txt.replace('Week ','Wk ').replace(' of ','/'):bp&&bp.over?'Block done':'')+(r.n===null?'':(bp?' · ':'')+(r.n<0?'program ran out':'due '+fmtShort(c.programmed_until)));
   return '<button class="cchip '+r.cls+'" onclick="openClient(\''+c.id+'\')">'
     +'<div class="cc-top"><span class="rd '+rd.cls+'" title="'+esc(rd.t)+'"></span><b>'+esc(c.name)+'</b>'+(nTodo?'<span class="cc-n">'+nTodo+'</span>':'')+'</div>'
-    +(a?'<div class="cc-ld">'+loadDots(a)+'</div>':'<div class="cc-sub">Not linked to Frisbee Track</div>')
+    +(a?'<div class="cc-mid"><div class="cc-rt">'+ratioTag('HSR',a.rH)+ratioTag('VHSR',a.rV)+'</div>'+'<div class="spw">'+hsrSpark(a)+'<span>6 wk HSR</span></div>'+'</div>'+loadBars(a):'<div class="cc-sub">Not linked to Frisbee Track</div>')
     +'<div class="cc-sub '+(r.cls==='red'?'red':r.cls==='amber'?'amber':'')+'">'+esc(prog||'No program dates')+'</div>'
     +(a&&rd.cls!=='none'&&rd.cls!=='green'?'<div class="cc-sub">'+esc(rd.t)+'</div>':'')
     +'</button>';
@@ -1096,7 +1116,7 @@ function renderToday(){
   var act=clients.filter(function(c){return c.status==='active'});
   var chips='<section class="tb"><div class="tb-h"><b>Clients</b><span>'+act.filter(function(c){return kindOf(c)!=='team'}).length+' active</span></div><div class="cchips">'
     +act.filter(function(c){return kindOf(c)!=='team'}).map(clientChip).join('')+act.filter(function(c){return kindOf(c)==='team'}).map(teamChip).join('')
-    +'</div><div class="cc-leg"><span><i class="g"></i>On pace</span><span><i class="a"></i>Behind</span><span><i class="r"></i>Well over</span><span>Dot left of name = latest check-in</span></div></section>';
+    +'</div><div class="cc-leg"><span><i class="g"></i>On pace</span><span><i class="a"></i>Behind</span><span><i class="r"></i>Well over</span><span>| = where they should be today</span><span>Ratios: green = sweet spot 0.9–1.1</span><span>Dot by name = latest check-in</span></div></section>';
   var others=sections().filter(function(s){return !pillarOf(s)&&todos.some(function(t){return t.section===s&&t.status==='open'})});
   h+='<div class="today"><div class="tcol a">'
     +'<div style="order:1">'+calBlock()+'</div>'
