@@ -777,6 +777,7 @@ body:has(#panel-dashboard.v2-on.on) #fab-log{display:none!important}
 .hv2-eb{font-family:var(--mono);font-size:11px;letter-spacing:1.5px;text-transform:uppercase;color:var(--t3)}
 .hv2-h1{margin:4px 0 0;font-family:var(--display);font-weight:900;font-size:38px;line-height:1;text-transform:uppercase;color:var(--t)}
 .hv2-sub{font-size:14px;color:var(--t2);margin-top:6px}
+.hv2-guide{display:block;text-align:center;margin:10px 0 2px;font-size:12px;font-weight:700;color:var(--green);text-decoration:none}
 .hv2-card{margin-top:14px;background:var(--sf);border-radius:16px;border:1px solid var(--bd);box-shadow:var(--sh)}
 .hj-row{display:flex;align-items:center;gap:12px;padding:14px 14px;min-height:44px}
 .hj-sep{height:1px;background:var(--bd);margin:0 14px}
@@ -4443,6 +4444,7 @@ function renderHomeV2(){
     +(!items.length?'<div class="hv2-sub">Do nothing and recover. That\'s the job.</div>':'')+'</div>'
     +'<div class="hv2-card">'+jobs.map(jobRow).join('<div class="hj-sep"></div>')+'</div>'
     +'<div class="hv2-links"><button class="sr-change-btn" onclick="openWeekSheet(\''+iso+'\')">Change today</button><button class="sr-change-btn" onclick="openWeekSheet()">Edit my week</button></div>'
+    +(currentUser?'<a class="hv2-guide" href="https://dbsportperformance.com/onboarding.html" target="_blank" rel="noopener">How your program works &#8599;</a>':'')
     +renderWeekGlance()
     +'<div class="hv2-status"><span class="hv2-sdot '+st.cls+'"></span><div style="flex:1;min-width:0"><div class="hv2-st">'+st.t+'</div>'
       +'<div class="hv2-bars">'+st.bars.map(function(b){return '<div class="hv2-bar"><span>'+b.l+'</span><div class="hv2-track"><i class="'+(b.pc>1.15?'hi':b.behind?'lo':'')+'" style="width:'+Math.min(100,b.pc*100).toFixed(0)+'%"></i><s style="left:'+(st.pace*100).toFixed(0)+'%"></s></div></div>'}).join('')+'</div>'
