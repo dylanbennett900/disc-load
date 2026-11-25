@@ -6038,7 +6038,7 @@ function maybeShowInstallModalOnSignIn(){
     function checkForUpdate(){
       if(_updBanner||typeof FT_BUILD==='undefined')return;
       fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-        var m=t&&t.match(/var FT_BUILD='([^']+)'/);
+        var m=t&&t.match(/var FT_BUILD=\x27([^\x27]+)\x27/);
         if(!m||m[1]===FT_BUILD)return;
         if(swReg)swReg.update().catch(function(){});
         _updBanner=true;

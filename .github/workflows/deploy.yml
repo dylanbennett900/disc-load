@@ -28,7 +28,7 @@ jobs:
           git checkout stash -- config.js
           git checkout main -- index.html
           # Stamp the build so the app can tell when a newer version is live
-          sed -i "s/var FT_BUILD='[^']*'/var FT_BUILD='$(TZ=Australia/Sydney date '+%-d %b %H:%M')'/" index.html
+          sed -i "s/^var FT_BUILD='[^']*';/var FT_BUILD='$(TZ=Australia/Sydney date '+%-d %b %H:%M')';/" index.html
           git checkout main -- sw.js
           git checkout main -- manifest.json
           git checkout main -- roster.html
