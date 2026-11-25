@@ -1069,6 +1069,15 @@ button.hw-pill{cursor:pointer;font-family:inherit}
       <button class="tbtn on" id="tb-game" onclick="setType('game')">🏆 Game</button>
       <button class="tbtn" id="tb-training" onclick="setType('training')">🏃 Training</button>
       <button class="tbtn" id="tb-fc" onclick="setType('fc')" style="display:none">⚡ F&amp;C</button>
+      <button class="tbtn" id="tb-rtr" onclick="setType('rtr')" style="display:none">🦵 RTR</button>
+    </div>
+    <div id="fw-rtr" style="display:none">
+      <div style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px">Return to run · 6-week reload</div>
+      <div class="dbsp-phase-tabs" id="rtr-log-sess" style="flex-wrap:wrap"></div>
+      <div class="fgrid" style="margin-top:10px"><div class="ff"><label>Date</label><input type="date" id="fdate-rtr"></div></div>
+      <div style="font-size:9px;color:var(--t3);letter-spacing:.8px;text-transform:uppercase;margin:4px 0 6px;font-weight:700">What gets logged</div>
+      <div id="rtr-log-rows"></div>
+      <div id="rtr-log-prev" style="margin-top:10px;padding:9px 12px;border-radius:var(--radius-sm);background:var(--sf3);border:1px solid var(--bd2);font-size:11px;color:var(--t2)"></div>
     </div>
     <div id="fw-fc" style="display:none">
       <div id="fc-prog" style="font-size:10px;color:var(--t3);font-weight:700;letter-spacing:.8px;text-transform:uppercase;margin-bottom:8px"></div>
@@ -3793,13 +3802,47 @@ function setType(t){
   document.getElementById("fw-training").style.display=t==="training"?"block":"none";
   var fb=document.getElementById("tb-fc");if(fb)fb.className="tbtn"+(t==="fc"?" on":"");
   var fw=document.getElementById("fw-fc");if(fw)fw.style.display=t==="fc"?"block":"none";
+  var rb=document.getElementById("tb-rtr");if(rb)rb.className="tbtn"+(t==="rtr"?" on":"");
+  var rw=document.getElementById("fw-rtr");if(rw)rw.style.display=t==="rtr"?"block":"none";
+  if(t==="rtr"){if(rtrLogIdx===null)rtrLogIdx=rtrNextIdx();var dr=document.getElementById("fdate-rtr");if(dr&&!dr.value)dr.value=srDateKey();renderRTRLogForm();}
   if(t==="training"&&!document.getElementById("drill-rows").children.length)addDrillRow();
   if(t==="fc"){if(!fcPhase)fcPhase=dbspPhase||'p1';var de=document.getElementById("fdate-fc");if(de&&!de.value)de.value=srDateKey();renderFCForm();}
 }
 // ── F&C session logging from the Log Session form ──
 var fcPhase=null,fcSess='speed',_fcRows=null;
 function fcAccess(){return (currentUser&&currentUser.id===COACH_UID)||(typeof canAccess==='function'&&canAccess('ai_prescription'));}
-function updateFCButton(){var b=document.getElementById('tb-fc');if(!b)return;var ok=fcAccess();b.style.display=ok?'':'none';if(!ok&&sType==='fc')setType('training');}
+function updateFCButton(){var b=document.getElementById('tb-fc');if(b){var ok=fcAccess();b.style.display=ok?'':'none';if(!ok&&sType==='fc')setType('training');}updateRTRButton();}
+// ── RTR session logging (one press, like F&C). Only for players with return-to-run access ──
+var rtrLogIdx=null;
+function rtrLogAccess(){return !!(currentUser&&(currentUser.id===COACH_UID||rtrAccess));}
+function updateRTRButton(){var b=document.getElementById('tb-rtr');if(!b)return;var ok=rtrLogAccess();b.style.display=ok?'':'none';if(!ok&&sType==='rtr')setType('training');}
+function rtrLogList(){var out=[];['linear','cod'].forEach(function(ph){(RTR_PHASES[ph]?RTR_PHASES[ph].weeks:[]).forEach(function(w){out.push({ph:ph,s:w})})});return out;}
+function rtrNextIdx(){
+  var list=rtrLogList(),done=-1;
+  sessions.forEach(function(x){var m=/^RTR Session (\d+)/.exec(x.label||'');if(m)done=Math.max(done,parseInt(m[1])-1)});
+  return Math.min(list.length-1,done+1);
+}
+// RTR drill -> app drill key. Mechanics drills fold into the warm-up/drilling minutes.
+var RTR_MAP=[[/^50m Straights/,'m_straight',50],[/^50m Swerves/,'m_swerve',50],[/^50m Lane Changes/,'m_swerve',50],[/^Speed Build Up/,'c_speedbuild'],
+  [/Mungo/,'c_mungo'],[/^Curved Speed/,'c_curved'],[/^Accel 10m/,'c_shortaccel'],[/Shuffle \+ 15m Accel/,'c_shortaccel'],[/^J Bend/,'c_jrun'],[/^Box Drill/,'c_boxdrill']];
+function rtrRows(s){
+  var rows=[{dk:'warmup',val1:15,txt:'Warm-up + mechanics drilling · 15 min'}];
+  (s.main||[]).forEach(function(d){
+    var m=/^×\s*(\d+)/.exec(d.load||'');if(!m)return;
+    var hit=RTR_MAP.find(function(x){return x[0].test(d.name)});if(!hit)return;
+    rows.push({dk:hit[1],val1:parseInt(m[1]),val2:hit[2],txt:d.name+' '+d.load});
+  });
+  return rows;
+}
+function renderRTRLogForm(){
+  var list=rtrLogList();
+  document.getElementById('rtr-log-sess').innerHTML=list.map(function(x,i){return '<button class="dbsp-phase-btn'+(i===rtrLogIdx?' on':'')+'" style="flex:1 0 30%" onclick="rtrLogIdx='+i+';renderRTRLogForm()">'+x.s.label.replace('Session ','S')+(x.ph==='cod'?' · COD':'')+'</button>'}).join('');
+  var cur=list[rtrLogIdx];if(!cur){document.getElementById('rtr-log-rows').innerHTML='';return;}
+  var rows=rtrRows(cur.s),t={dist:0,hsr:0,vhsr:0,dec:0,dur:0};
+  rows.forEach(function(r){var l=drillLoad(r.dk,r.val1,r.val2);t.dist+=l.dist;t.hsr+=l.hsr;t.vhsr+=l.vhsr;t.dec+=l.dec||0;t.dur+=l.durMin;});
+  document.getElementById('rtr-log-rows').innerHTML=rows.map(function(r){return "<div style='padding:7px 0;border-bottom:1px solid var(--bd);font-size:13px'>"+escHtml(r.txt)+"</div>"}).join('');
+  document.getElementById('rtr-log-prev').innerHTML='Estimated load: <b>'+Math.round(t.dist)+'m</b> total · <b>'+Math.round(t.hsr)+'m</b> HSR · <b>'+Math.round(t.vhsr)+'m</b> VHSR · '+Math.round(t.dec)+' decels · ~'+Math.round(t.dur)+' min';
+}
 function renderFCForm(){
   var prog=dbspProgram(),tk=dbspTeamKey(),isCoach=currentUser&&currentUser.id===COACH_UID;
   document.getElementById('fc-prog').innerHTML=isCoach
@@ -3882,6 +3925,11 @@ async function addSession(){
     var date=document.getElementById("fdate-game").value;
     newSession=makeGame(lbl||(BM[lvl].label+" ("+pts+"pts)"),pts,lvl,date);
     document.getElementById("flabel").value="";document.getElementById("fdate-game").value="";
+  } else if(sType==="rtr"){
+    var rl=rtrLogList()[rtrLogIdx],rr=rl?rtrRows(rl.s):[];
+    if(!rl||!rr.length)return;
+    newSession=makeTraining('RTR '+rl.s.label,rr,document.getElementById("fdate-rtr").value);
+    rtrLogIdx=null;
   } else if(sType==="fc"){
     var fs=dbspProgram()[fcPhase]&&dbspProgram()[fcPhase][fcSess];var fr=fcRowsFinal();
     if(!fs||!fr.length)return;
@@ -4171,7 +4219,7 @@ function renderSRPanel(){
 }
 
 // ── NEW HOME (beta): week template + Today's jobs ──
-var FT_BUILD='24 Nov 16:28';
+var FT_BUILD='25 Nov 11:47';
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -4897,13 +4945,13 @@ function setRTRWeek(w){rtrWeek=w;renderRTRBody();}
 // ── RTR ACCESS CHECK ──
 async function checkRTRAccess(){
   if(!currentUser)return;
-  if(currentUser.id===COACH_UID){rtrAccess=true;renderRTRCard();return;}
+  if(currentUser.id===COACH_UID){rtrAccess=true;renderRTRCard();updateRTRButton();return;}
   try{
     var res=await sb.from('user_kv')
       .select('value').eq('user_id',currentUser.id).eq('key','rtr_access').maybeSingle();
     if(res.data&&res.data.value){
       rtrAccess=true;
-      renderRTRCard();
+      renderRTRCard();updateRTRButton();
     }
   }catch(e){}
   // Check URL for code on first load
@@ -4934,7 +4982,7 @@ async function redeemRTRCode(code){
       updated_at:new Date().toISOString()
     },{onConflict:'user_id,key'});
     rtrAccess=true;
-    renderRTRCard();
+    renderRTRCard();updateRTRButton();
     // Clean URL
     var url=new URL(window.location.href);
     url.searchParams.delete('code');
@@ -5984,7 +6032,7 @@ function maybeShowInstallModalOnSignIn(){
     function checkForUpdate(){
       if(_updBanner||typeof FT_BUILD==='undefined')return;
       fetch('/disc-load/index.html?v='+Date.now(),{cache:'no-store'}).then(function(r){return r.ok?r.text():''}).then(function(t){
-        var m=t&&t.match(/var FT_BUILD='24 Nov 16:28']+)'/);
+        var m=t&&t.match(/var FT_BUILD='25 Nov 11:47']+)'/);
         if(!m||m[1]===FT_BUILD)return;
         if(swReg)swReg.update().catch(function(){});
         _updBanner=true;
