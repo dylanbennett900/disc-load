@@ -1538,6 +1538,12 @@ var COND_DRILLS={
   c_shortaccel:{label:"Short Accel",           inputType:"reps", dist:38.6, hsr:19.1, vhsr:6.6, acc:1, hacc:0.8, dec:0, hdec:0, acl:14.0},
   c_zdrill:{label:"Z Drill",               inputType:"reps", dist:67.3, hsr:10.4, vhsr:0.0, acc:0.5, hacc:0.1, dec:0, hdec:0, acl:12.3},
   c_shuttles:{label:"Ground Shuttles",       inputType:"reps", dist:227.8, hsr:0.0, vhsr:0.0, acc:2.7, hacc:0.1, dec:0.1, hdec:0, acl:41.0},
+  // RTR (return to run) versions: rehab pace / 80-90% intent. From rehab + reconditioning GPS (Nov 2026 review)
+  r_warm:{label:"RTR Warm-up + Mechanics",  inputType:"reps", dur:15, dist:1000, hsr:40, vhsr:0, acc:4, hacc:0, dec:0, hdec:0, acl:180},
+  r_straight:{label:"RTR 50m Straights",    inputType:"reps", dur:0.5, dist:63, hsr:17, vhsr:0, acc:1, hacc:0, dec:0, hdec:0, acl:11},
+  r_swerve:{label:"RTR 50m Swerves",        inputType:"reps", dur:0.5, dist:67, hsr:17, vhsr:0, acc:1, hacc:0, dec:0, hdec:0, acl:12},
+  r_speedbuild:{label:"RTR Speed Build Up", inputType:"reps", dist:94.1, hsr:47.8, vhsr:12.4, acc:0.4, hacc:0.1, dec:0, hdec:0, acl:17.9},
+  r_curved:{label:"RTR Curved Effort",      inputType:"reps", dist:80.3, hsr:37.4, vhsr:9.1, acc:0.5, hacc:0.1, dec:0.1, hdec:0, acl:16.5},
 };
 
 // ── MAS DRILLS ──
@@ -1645,7 +1651,7 @@ function drillLoad(dk,val1,val2){
   }
   if(COND_DRILLS[dk]){
     var c=COND_DRILLS[dk],r=val1;
-    return{dk:dk,inputType:'reps',reps:r,durMin:+(r*0.5).toFixed(1),
+    return{dk:dk,inputType:'reps',reps:r,durMin:+(r*(c.dur||0.5)).toFixed(1),
       dist:Math.round(r*c.dist),hsr:Math.round(r*c.hsr),vhsr:Math.round(r*c.vhsr),
       acc:Math.round(r*c.acc),hacc:Math.round(r*c.hacc),
       dec:Math.round(r*c.dec),hdec:Math.round(r*c.hdec),acl:Math.round(r*c.acl)};
@@ -3823,14 +3829,14 @@ function rtrNextIdx(){
   return Math.min(list.length-1,done+1);
 }
 // RTR drill -> app drill key. Mechanics drills fold into the warm-up/drilling minutes.
-var RTR_MAP=[[/^50m Straights/,'m_straight',50],[/^50m Swerves/,'m_swerve',50],[/^50m Lane Changes/,'m_swerve',50],[/^Speed Build Up/,'c_speedbuild'],
-  [/Mungo/,'c_mungo'],[/^Curved Speed/,'c_curved'],[/^Accel 10m/,'c_shortaccel'],[/Shuffle \+ 15m Accel/,'c_shortaccel'],[/^J Bend/,'c_jrun'],[/^Box Drill/,'c_boxdrill']];
+var RTR_MAP=[[/^50m Straights/,'r_straight'],[/^50m Swerves/,'r_swerve'],[/^50m Lane Changes/,'r_swerve'],[/^Speed Build Up/,'r_speedbuild'],
+  [/Mungo/,'c_mungo'],[/^Curved Speed/,'r_curved'],[/^Accel 10m/,'c_shortaccel'],[/Shuffle \+ 15m Accel/,'c_shortaccel'],[/^J Bend/,'c_jrun'],[/^Box Drill/,'c_boxdrill']];
 function rtrRows(s){
-  var rows=[{dk:'warmup',val1:15,txt:'Warm-up + mechanics drilling · 15 min'}];
+  var rows=[{dk:'r_warm',val1:1,txt:'Warm-up + mechanics drilling · 15 min'}];
   (s.main||[]).forEach(function(d){
     var m=/^×\s*(\d+)/.exec(d.load||'');if(!m)return;
     var hit=RTR_MAP.find(function(x){return x[0].test(d.name)});if(!hit)return;
-    rows.push({dk:hit[1],val1:parseInt(m[1]),val2:hit[2],txt:d.name+' '+d.load});
+    rows.push({dk:hit[1],val1:parseInt(m[1]),txt:d.name+' '+d.load});
   });
   return rows;
 }
