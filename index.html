@@ -808,6 +808,8 @@ body:has(#panel-dashboard.v2-on.on) #fab-log{display:none!important}
 .hw-dn{font-size:9px;font-weight:800;text-transform:uppercase;letter-spacing:.8px;color:var(--t3);font-family:var(--display)}
 .hw-dd{font-size:14px;font-weight:700;font-family:var(--mono);color:var(--t)}
 .hw-row.today .hw-dn,.hw-row.today .hw-dd{color:var(--green)}
+.hj-opt{display:inline-block;margin-left:6px;padding:1px 7px;border-radius:99px;border:1px dashed var(--t3);font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--t3);vertical-align:middle}
+.hw-pill.opt{border-style:dashed}
 .hw-pills{display:flex;flex-wrap:wrap;gap:4px;flex:1;min-width:0}
 .hw-pill{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:12px;font-size:11px;font-weight:700;line-height:1.3;white-space:nowrap;border:1.5px solid var(--bd2);color:var(--t2);background:var(--sf)}
 .hw-pill.done{background:rgba(5,150,105,.1);border-color:rgba(5,150,105,.35);color:var(--green)}
@@ -4226,6 +4228,8 @@ function renderSRPanel(){
 
 // ── NEW HOME (beta): week template + Today's jobs ──
 var FT_BUILD='21 Nov 14:10';
+// Rogue: Gym 3 (LB Strength) is optional (Nov 2026)
+function gymOptional(k){return k==='lbs'&&typeof dbspTeamKey==='function'&&dbspTeamKey()==='rogue'}
 var WK_ITEMS={fcs:'F&C Speed',fca:'F&C Accel',fbp:'Gym: Full Body Power',lbp:'Gym: Lower Body Power',lbs:'Gym: Lower Body Strength',gd2:'Gym: GD-2 Power Up',team:'Team training',tourn:'Tournament'};
 var WK_ORDER=['fcs','fca','fbp','lbp','lbs','gd2','team','tourn'];
 var WK_DAYS=['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
@@ -4490,7 +4494,7 @@ function renderHomeV2(){
     else if(k==='team'){var tdone=todaySess.some(function(s){return !isFcLabel(s.label)});
       jobs.push({t:'Team training tonight',sub:tdone?'Logged':'Log it when you\'re done',done:tdone,act:'Log',actFn:"logTrainingFor('"+iso+"')"});}
     else{var gk=iso+':'+k,gd=!!gymDone[gk];
-      jobs.push({t:WK_ITEMS[k],sub:(k==='gd2'?'Activation only. Protect the legs':hasFc?'After your run':(weekTpl&&weekTpl.gym==='pm'?'Evening':'Morning'))+' · in TeamBuildr',done:gd,manual:"toggleGymDone('"+iso+"','"+k+"')",act:'Open',href:'https://app.teambuildr.com/'});}
+      jobs.push({t:WK_ITEMS[k]+(gymOptional(k)?' <span class="hj-opt">Optional</span>':''),sub:(k==='gd2'?'Activation only. Protect the legs':hasFc?'After your run':(weekTpl&&weekTpl.gym==='pm'?'Evening':'Morning'))+' · in TeamBuildr',done:gd,manual:"toggleGymDone('"+iso+"','"+k+"')",act:'Open',href:'https://app.teambuildr.com/'});}
   });
   var rp0=recoveryPlan();
   if(rp0&&rp0.iso===iso)jobs.push({t:'Recovery: '+ciEsc(rp0.txt),sub:'Because you checked in '+({fatigued:'fatigued',sore:'sore',both:'fatigued and sore'})[rp0.feeling],done:rp0.done,manual:"toggleGymDone('"+iso+"','rec')"});
@@ -4551,8 +4555,10 @@ function renderWeekGlance(){
       var ok,note='';
       if(k==='fcs'||k==='fca'){var at=fm.done[iso+':'+k];ok=!!at;if(at&&at!==iso)note=' ('+WK_DAYS[hv2Dow(new Date(at+'T12:00:00'))]+')';}
       else ok=itemDone(k,iso);
-      planned++;if(ok)done++;
-      var cls=ok?'done':'todo',lbl=(ok?'✓ ':'○ ')+HW_SHORT[k]+note;
+      var opt=gymOptional(k);
+      if(!opt||ok)planned++;if(ok)done++; // optional gym only counts once it's done
+      var cls=ok?'done':'todo',lbl=(ok?'✓ ':'○ ')+HW_SHORT[k]+(opt?' (optional)':'')+note;
+      if(opt&&!ok)cls+=' opt';
       if(/^(fbp|lbp|lbs|gd2)$/.test(k)&&!future)return '<button class="hw-pill '+cls+'" onclick="hwGymTap(\''+iso+'\',\''+k+'\',event)" aria-label="'+(ok?'Untick ':'Tick ')+WK_ITEMS[k]+'">'+lbl+'</button>';
       return '<span class="hw-pill '+cls+'">'+lbl+'</span>';
     });
